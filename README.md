@@ -1,3 +1,2 @@
 # opea-project.github.io
-Work in progress.
-0802
+Work in progress
