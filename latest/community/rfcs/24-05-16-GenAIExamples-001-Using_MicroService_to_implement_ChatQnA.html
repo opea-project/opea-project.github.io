@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>24-05-16 GenAIExamples-001 Using MicroService to Implement ChatQnA &mdash; OPEA™ 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/opea-custom.css?v=a771719c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
+    <link rel="shortcut icon" href="../../_static/OPEA-favicon-32x32.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a0e24af7"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/opea-custom.js?v=22d49862"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            OPEA™
+              <img src="../../_static/opea-horizontal-white-w200.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> OPEA Project</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Document Versions</dt>
+        
+          <dd><a href="/latest/">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>OPEA Project links</dt>
+          <dd>
+            <a href="https://opea.dev">Project Home</a>
+          </dd>
+          <dd>
+            <a href="https://github.com/opea-project/docs/wiki">Wiki</a>
+          </dd>
+      </dl>
+    </div>
+  </div>
+  
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release_notes/v0.8.html">OPEA Release Notes v0.8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.8.html#whats-new-in-opea-v0-8">What’s New in OPEA v0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.8.html#details">Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.8.html#thanks-to-these-contributors">Thanks to these contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../release_notes/v0.7.html">OPEA Release Notes v0.7</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.7.html#opea-highlights">OPEA Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.7.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.7.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.7.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.7.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../release_notes/v0.6.html">OPEA Release Notes v0.6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.6.html#opea-highlight">OPEA Highlight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.6.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.6.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.6.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.6.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OPEA™</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!-- Latest -->
+  
+  
+
+  <li><a href="../../index.html">Latest</a> &raquo;</li>
+  
+  <li>24-05-16 GenAIExamples-001 Using MicroService to Implement ChatQnA</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/community/rfcs/24-05-16-GenAIExamples-001-Using_MicroService_to_implement_ChatQnA.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+    <!-- div class="admonition important">
+        <p class="admonition-title">Important</p>
+        <p>This is the latest documentation for the development branch of
+        the OPEA Project (main).<br/>Use the drop-down menu on the left to select
+        documentation for a stable release.</p>
+    </div -->
+  
+  
+           <div itemprop="articleBody">
+             
+  <section id="genaiexamples-001-using-microservice-to-implement-chatqna">
+<h1>24-05-16 GenAIExamples-001 Using MicroService to Implement ChatQnA<a class="headerlink" href="#genaiexamples-001-using-microservice-to-implement-chatqna" title="Link to this heading">¶</a></h1>
+<section id="author">
+<h2>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/lvliang-intel">lvliang-intel</a>, <a class="reference external" href="https://github.com/ftian1">ftian1</a>, <a class="reference external" href="https://github.com/hshen14">hshen14</a>, <a class="reference external" href="https://github.com/Spycsh">Spycsh</a>, <a class="reference external" href="https://github.com/letonghan">letonghan</a></p>
+</section>
+<section id="status">
+<h2>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h2>
+<p>Under Review</p>
+</section>
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
+<p>This RFC aims to introduce the OPEA microservice design and demonstrate its application to Retrieval-Augmented Generation (RAG). The objective is to address the challenge of designing a flexible architecture for Enterprise AI applications by adopting a microservice approach. This approach facilitates easier deployment, enabling one or multiple microservices to form a megaservice. Each megaservice interfaces with a gateway, allowing users to access services through endpoints exposed by the gateway. The architecture is general and RAG is the first example that we want to apply.</p>
+</section>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
+<p>In designing the Enterprise AI applications, leveraging a microservices architecture offers significant advantages, particularly in handling large volumes of user requests. By breaking down the system into modular microservices, each dedicated to a specific function, we can achieve substantial performance improvements through the ability to scale out individual components. This scalability ensures that the system can efficiently manage high demand, distributing the load across multiple instances of each microservice as needed.</p>
+<p>The microservices architecture contrasts sharply with monolithic approaches, such as the tightly coupled module structure found in LangChain. In such monolithic designs, all modules are interdependent, posing significant deployment challenges and limiting scalability. Any change or scaling requirement in one module necessitates redeploying the entire system, leading to potential downtime and increased complexity.</p>
+</section>
+<section id="design-proposal">
+<h2>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h2>
+<section id="microservice">
+<h3>Microservice<a class="headerlink" href="#microservice" title="Link to this heading">¶</a></h3>
+<p>Microservices are akin to building blocks, offering the fundamental services for constructing RAG (Retrieval-Augmented Generation) applications. Each microservice is designed to perform a specific function or task within the application architecture. By breaking down the system into smaller, self-contained services, microservices promote modularity, flexibility, and scalability. This modular approach allows developers to independently develop, deploy, and scale individual components of the application, making it easier to maintain and evolve over time. Additionally, microservices facilitate fault isolation, as issues in one service are less likely to impact the entire system.</p>
+</section>
+<section id="megaservice">
+<h3>Megaservice<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
+<p>A megaservice is a higher-level architectural construct composed of one or more microservices, providing the capability to assemble end-to-end applications. Unlike individual microservices, which focus on specific tasks or functions, a megaservice orchestrates multiple microservices to deliver a comprehensive solution. Megaservices encapsulate complex business logic and workflow orchestration, coordinating the interactions between various microservices to fulfill specific application requirements. This approach enables the creation of modular yet integrated applications, where each microservice contributes to the overall functionality of the megaservice.</p>
+</section>
+<section id="gateway">
+<h3>Gateway<a class="headerlink" href="#gateway" title="Link to this heading">¶</a></h3>
+<p>The Gateway serves as the interface for users to access the megaservice, providing customized access based on user requirements. It acts as the entry point for incoming requests, routing them to the appropriate microservices within the megaservice architecture. Gateways support API definition, API versioning, rate limiting, and request transformation, allowing for fine-grained control over how users interact with the underlying microservices. By abstracting the complexity of the underlying infrastructure, gateways provide a seamless and user-friendly experience for interacting with the megaservice.</p>
+</section>
+<section id="proposal">
+<h3>Proposal<a class="headerlink" href="#proposal" title="Link to this heading">¶</a></h3>
+<p>The proposed architecture for the ChatQnA application involves the creation of two megaservices. The first megaservice functions as the core pipeline, comprising four microservices: embedding, retriever, reranking, and LLM. This megaservice exposes a ChatQnAGateway, allowing users to query the system via the <code class="docutils literal notranslate"><span class="pre">/v1/chatqna</span></code> endpoint. The second megaservice manages user data storage in VectorStore and is composed of a single microservice, dataprep. This megaservice provides a DataprepGateway, enabling user access through the <code class="docutils literal notranslate"><span class="pre">/v1/dataprep</span></code> endpoint.</p>
+<p>The Gateway class facilitates the registration of additional endpoints, enhancing the system’s flexibility and extensibility. The /v1/dataprep endpoint is responsible for handling user documents to be stored in VectorStore under a predefined database name. The first megaservice will then query the data from this predefined database.</p>
+<p><img alt="architecture" src="https://i.imgur.com/YdsXy46.png" /></p>
+<section id="example-python-code-for-constructing-services">
+<h4>Example Python Code for Constructing Services<a class="headerlink" href="#example-python-code-for-constructing-services" title="Link to this heading">¶</a></h4>
+<p>Users can use <code class="docutils literal notranslate"><span class="pre">ServiceOrchestrator</span></code> class to build the microservice pipeline and add a gateway for each megaservice.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ChatQnAService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rag_port</span><span class="o">=</span><span class="mi">8888</span><span class="p">,</span> <span class="n">data_port</span><span class="o">=</span><span class="mi">9999</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_port</span> <span class="o">=</span> <span class="n">rag_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_port</span> <span class="o">=</span> <span class="n">data_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span> <span class="o">=</span> <span class="n">ServiceOrchestrator</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_service</span> <span class="o">=</span> <span class="n">ServiceOrchestrator</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">construct_rag_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">6000</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/embeddings&quot;</span><span class="p">,</span>
+            <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">EMBEDDING</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">retriever</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;retriever&quot;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">7000</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/retrieval&quot;</span><span class="p">,</span>
+            <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">RETRIEVER</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">rerank</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rerank&quot;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/reranking&quot;</span><span class="p">,</span>
+            <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">RERANK</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">llm</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;llm&quot;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/chat/completions&quot;</span><span class="p">,</span>
+            <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">LLM</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">retriever</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rerank</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">llm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">retriever</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">rerank</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">rerank</span><span class="p">,</span> <span class="n">llm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_gateway</span> <span class="o">=</span> <span class="n">ChatQnAGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_port</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">construct_data_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dataprep</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dataprep&quot;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/dataprep&quot;</span><span class="p">,</span>
+            <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">DATAPREP</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_service</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dataprep</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_gateway</span> <span class="o">=</span> <span class="n">DataPrepGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_port</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">construct_rag_service</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">construct_data_service</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">chatqna</span> <span class="o">=</span> <span class="n">ChatQnAService</span><span class="p">()</span>
+    <span class="n">chatqna</span><span class="o">.</span><span class="n">start_service</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="constructing-services-with-yaml">
+<h4>Constructing Services with yaml<a class="headerlink" href="#constructing-services-with-yaml" title="Link to this heading">¶</a></h4>
+<p>Below is an example of how to define microservices and megaservices using YAML for the ChatQnA application. This configuration outlines the endpoints for each microservice and specifies the workflow for the megaservices.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">opea_micro_services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataprep</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:5000/v1/chat/completions</span>
+<span class="w">  </span><span class="nt">embedding</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:6000/v1/embeddings</span>
+<span class="w">  </span><span class="nt">retrieval</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:7000/v1/retrieval</span>
+<span class="w">  </span><span class="nt">reranking</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:8000/v1/reranking</span>
+<span class="w">  </span><span class="nt">llm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:9000/v1/chat/completions</span>
+
+<span class="nt">opea_mega_service</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mega_flow</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedding &gt;&gt; retrieval &gt;&gt; reranking &gt;&gt; llm</span>
+<span class="w">  </span><span class="nt">dataprep</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">mega_flow</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataprep</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">opea_micro_services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataprep</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:5000/v1/chat/completions</span>
+
+<span class="nt">opea_mega_service</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mega_flow</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dataprep</span>
+</pre></div>
+</div>
+<p>The following Python code demonstrates how to use the YAML configurations to initialize the microservices and megaservices, and set up the gateways for user interaction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">comps</span> <span class="kn">import</span> <span class="n">ServiceOrchestratorWithYaml</span>
+<span class="kn">from</span> <span class="nn">comps</span> <span class="kn">import</span> <span class="n">ChatQnAGateway</span><span class="p">,</span> <span class="n">DataPrepGateway</span>
+<span class="n">data_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">&quot;dataprep.yaml&quot;</span><span class="p">)</span>
+<span class="n">rag_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">&quot;rag.yaml&quot;</span><span class="p">)</span>
+<span class="n">rag_gateway</span> <span class="o">=</span> <span class="n">ChatQnAGateway</span><span class="p">(</span><span class="n">data_service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8888</span><span class="p">)</span>
+<span class="n">data_gateway</span> <span class="o">=</span> <span class="n">DataPrepGateway</span><span class="p">(</span><span class="n">data_service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9999</span><span class="p">)</span>
+<span class="c1"># Start gateways</span>
+<span class="n">rag_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">data_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="example-code-for-customizing-gateway">
+<h4>Example Code for Customizing Gateway<a class="headerlink" href="#example-code-for-customizing-gateway" title="Link to this heading">¶</a></h4>
+<p>The Gateway class provides a customizable interface for accessing the megaservice. It handles requests and responses, allowing users to interact with the megaservice. The class defines methods for adding custom routes, stopping the service, and listing available services and parameters. Users can extend this class to implement specific handling for requests and responses according to their requirements.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Gateway</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">megaservice</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+        <span class="n">port</span><span class="o">=</span><span class="mi">8888</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">CHAT_QNA</span><span class="p">),</span>
+        <span class="n">input_datatype</span><span class="o">=</span><span class="n">ChatCompletionRequest</span><span class="p">,</span>
+        <span class="n">output_datatype</span><span class="o">=</span><span class="n">ChatCompletionResponse</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gateway</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
+            <span class="n">service_role</span><span class="o">=</span><span class="n">ServiceRoleType</span><span class="o">.</span><span class="n">MEGASERVICE</span><span class="p">,</span>
+            <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">,</span>
+            <span class="o">...</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">define_default_routes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">define_default_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_SERVICE</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_service</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_PARAMETERS</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_parameter</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="n">methods</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gateway</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">list_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">list_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+
+    <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="alternatives-considered">
+<h2>Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Link to this heading">¶</a></h2>
+<p>An alternative approach could be to design a monolithic application for RAG instead of a microservice architecture. However, this approach may lack the flexibility and scalability offered by microservices. Pros of the proposed microservice architecture include easier deployment, independent scaling of components, and improved fault isolation. Cons may include increased complexity in managing multiple services.</p>
+</section>
+<section id="compatibility">
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h2>
+<p>Potential incompatible interface or workflow changes may include adjustments needed for existing clients to interact with the new microservice architecture. However, careful planning and communication can mitigate any disruptions.</p>
+</section>
+<section id="miscs">
+<h2>Miscs<a class="headerlink" href="#miscs" title="Link to this heading">¶</a></h2>
+<p>Performance Impact: The microservice architecture may impact performance metrics, depending on factors such as network latency. But for large-scale user access, scaling out microservices can enhance responsiveness, thereby significantly improving performance compared to monolithic designs.</p>
+<p>By adopting this microservice architecture for RAG, we aim to enhance the flexibility, scalability, and maintainability of the Enterprise AI application deployment, ultimately improving the user experience and facilitating future development and enhancements.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2024 OPEA™, a Series of LF Projects, LLC.
+
+<!-- span class="lastupdated">Last updated on Aug 05, 2024. Published on </span -->
+<span class="lastupdated">Published on Aug 05, 2024.</span>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

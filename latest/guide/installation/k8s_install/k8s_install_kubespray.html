@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kubernetes installation using Kubespray &mdash; OPEA™ 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/opea-custom.css?v=a771719c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/OPEA-favicon-32x32.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=a0e24af7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/opea-custom.js?v=22d49862"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            OPEA™
+              <img src="../../../_static/opea-horizontal-white-w200.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> OPEA Project</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Document Versions</dt>
+        
+          <dd><a href="/latest/">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>OPEA Project links</dt>
+          <dd>
+            <a href="https://opea.dev">Project Home</a>
+          </dd>
+          <dd>
+            <a href="https://github.com/opea-project/docs/wiki">Wiki</a>
+          </dd>
+      </dl>
+    </div>
+  </div>
+  
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.8.html">OPEA Release Notes v0.8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#whats-new-in-opea-v0-8">What’s New in OPEA v0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#details">Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#thanks-to-these-contributors">Thanks to these contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.7.html">OPEA Release Notes v0.7</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#opea-highlights">OPEA Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.6.html">OPEA Release Notes v0.6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#opea-highlight">OPEA Highlight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OPEA™</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!-- Latest -->
+  
+  
+
+  <li><a href="../../../index.html">Latest</a> &raquo;</li>
+  
+  <li>Kubernetes installation using Kubespray</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/guide/installation/k8s_install/k8s_install_kubespray.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+    <!-- div class="admonition important">
+        <p class="admonition-title">Important</p>
+        <p>This is the latest documentation for the development branch of
+        the OPEA Project (main).<br/>Use the drop-down menu on the left to select
+        documentation for a stable release.</p>
+    </div -->
+  
+  
+           <div itemprop="articleBody">
+             
+  <section id="kubernetes-installation-using-kubespray">
+<h1>Kubernetes installation using Kubespray<a class="headerlink" href="#kubernetes-installation-using-kubespray" title="Link to this heading">¶</a></h1>
+<p>In this document, we’ll install Kubernetes v1.29 using <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray">Kubespray</a> on a 2-node cluster.</p>
+<p>There are several ways to use Kubespray to deploy a Kubernetes cluster. In this document, we choose to use the Ansible way. For other ways to use Kubespary, refer to <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray">Kubespray’s document</a>.</p>
+<section id="node-preparation">
+<h2>Node preparation<a class="headerlink" href="#node-preparation" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>hostname</p></th>
+<th class="head"><p>ip address</p></th>
+<th class="head"><p>Operating System</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>k8s-master</p></td>
+<td><p>192.168.121.35/24</p></td>
+<td><p>Ubuntu 22.04</p></td>
+</tr>
+<tr class="row-odd"><td><p>k8s-worker</p></td>
+<td><p>192.168.121.133/24</p></td>
+<td><p>Ubuntu 22.04</p></td>
+</tr>
+</tbody>
+</table>
+<p>We assume these two machines are used for Kubernetes 2-node cluster. They have direct internet access both in bash terminal and in apt repository.</p>
+<p>If on any of the above 2 nodes, you have previously installed either Kubernetes, or any other container runtime(i.e. docker, containerd, etc.), please make sure you have clean-up those first. Refer to <a class="reference internal" href="k8s_install_kubeadm.html"><span class="std std-doc">Kubernetes installation demo using kubeadm</span></a> to clean up the environment.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>We assume that there is a third machine as your operating machine. You can log in to this machine and execute the Ansible command. Any of the above two K8s nodes can be used as the operating machine. Unless otherwise specified, all the following operations are performed on the operating machine.</p>
+<p>Please make sure that the operating machine can login to both K8s nodes via SSH without a password prompt. There are different ways to configure the ssh login without password promotion. A simple way is to copy the public key of the operating machine to the K8s nodes. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate key pair in the operation machine</span>
+<span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">b</span> <span class="mi">4096</span>
+<span class="c1"># manually copy the public key to the K8s master and worker nodes</span>
+<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">master</span> <span class="s2">&quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">worker</span> <span class="s2">&quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-set-up-kubespray-and-ansible">
+<h2>Step 1. Set up Kubespray and Ansible<a class="headerlink" href="#step-1-set-up-kubespray-and-ansible" title="Link to this heading">¶</a></h2>
+<p>Python3 (version &gt;= 3.10) is required in this step. If you don’t have, go to <a class="reference external" href="https://docs.python.org/3/using/index.html">Python website</a> for installation guide.</p>
+<p>You shall set up a Python virtual environment and install Ansible and other Kubespray dependencies. Simply, you can just run following commands. You can also go to <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible/ansible.md#installing-ansible">Kubespray Ansible installation guide</a> for details. To get the kubespray code, please check out the <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray/releases">latest release version</a> tag of kubespray. Here we use kubespary v2.25.0 as an example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/kubernetes-sigs/kubespray.git
+VENVDIR=kubespray-venv
+KUBESPRAYDIR=kubespray
+python3 -m venv $VENVDIR
+source $VENVDIR/bin/activate
+cd $KUBESPRAYDIR
+# Check out the latest release version tag of kubespray.
+git checkout v2.25.0
+pip install -U -r requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="step-2-build-your-own-inventory">
+<h2>Step 2. Build your own inventory<a class="headerlink" href="#step-2-build-your-own-inventory" title="Link to this heading">¶</a></h2>
+<p>Ansible inventory defines the hosts and groups of hosts on which Ansible tasks are to be executed. You can copy a sample inventory with following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="n">inventory</span><span class="o">/</span><span class="n">sample</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span>
+</pre></div>
+</div>
+<p>Edit your inventory file <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/inventory.ini</span></code> to config the node name and IP address. The inventory file used in this demo is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">all</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168.121.35</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">worker</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168.121.133</span>
+
+<span class="p">[</span><span class="n">kube_control_plane</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">etcd</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">kube_node</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">worker</span>
+
+<span class="p">[</span><span class="n">calico_rr</span><span class="p">]</span>
+
+<span class="p">[</span><span class="n">k8s_cluster</span><span class="p">:</span><span class="n">children</span><span class="p">]</span>
+<span class="n">kube_control_plane</span>
+<span class="n">kube_node</span>
+<span class="n">calico_rr</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-define-kubernetes-configuration">
+<h2>Step 3. Define Kubernetes configuration<a class="headerlink" href="#step-3-define-kubernetes-configuration" title="Link to this heading">¶</a></h2>
+<p>Kubespray gives you ability to customize Kubernetes instalation, for example define:</p>
+<ul class="simple">
+<li><p>network plugin</p></li>
+<li><p>container manager</p></li>
+<li><p>kube_apiserver_port</p></li>
+<li><p>kube_pods_subnet</p></li>
+<li><p>all K&amp;s addons configurations, or even define to deploy cluster on hyperscaller like AWS or GCP.
+All of those settings are stored in group vars defined in <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars</span></code></p></li>
+</ul>
+<p>For K&amp;s settings look in <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml</span></code></p>
+<p><strong><em>NOTE:</em></strong> If you noted issues on <code class="docutils literal notranslate"><span class="pre">TASK</span> <span class="pre">[kubernetes/control-plane</span> <span class="pre">:</span> <span class="pre">Kubeadm</span> <span class="pre">|</span> <span class="pre">Initialize</span> <span class="pre">first</span> <span class="pre">master]</span></code> in K&amp; deployment, change the port on which API Server will be listening on from 6443 to 8080. By default Kubespray configures kube_control_plane hosts with insecure access to kube-apiserver via port 8080. Refer to <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray/blob/master/docs/getting_started/getting-started.md">kubespray getting-started</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The port the API Server will be listening on.</span>
+<span class="n">kube_apiserver_ip</span><span class="p">:</span> <span class="s2">&quot;{{ kube_service_addresses | ansible.utils.ipaddr(&#39;net&#39;) | ansible.utils.ipaddr(1) | ansible.utils.ipaddr(&#39;address&#39;) }}&quot;</span>
+<span class="n">kube_apiserver_port</span><span class="p">:</span> <span class="mi">8080</span>  <span class="c1"># (http)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-deploy-kubernetes">
+<h2>Step 4. Deploy Kubernetes<a class="headerlink" href="#step-4-deploy-kubernetes" title="Link to this heading">¶</a></h2>
+<p>You can clean up old Kubernetes cluster with Ansible playbook with following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clean up old Kubernetes cluster with Ansible Playbook - run the playbook as root</span>
+<span class="c1"># The option `--become` is required, as for example cleaning up SSL keys in /etc/,</span>
+<span class="c1"># uninstalling old packages and interacting with various systemd daemons.</span>
+<span class="c1"># Without --become the playbook will fail to run!</span>
+<span class="c1"># And be mindful that it will remove the current Kubernetes cluster (if it&#39;s running)!</span>
+<span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="o">-</span><span class="n">i</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">inventory</span><span class="o">.</span><span class="n">ini</span>  <span class="o">--</span><span class="n">become</span> <span class="o">--</span><span class="n">become</span><span class="o">-</span><span class="n">user</span><span class="o">=</span><span class="n">root</span> <span class="o">-</span><span class="n">e</span> <span class="n">override_system_hostname</span><span class="o">=</span><span class="n">false</span> <span class="n">reset</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+<p>Then you can deploy Kubernetes with Ansible playbook with following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deploy Kubespray with Ansible Playbook - run the playbook as root</span>
+<span class="c1"># The option `--become` is required, as for example writing SSL keys in /etc/,</span>
+<span class="c1"># installing packages and interacting with various systemd daemons.</span>
+<span class="c1"># Without --become the playbook will fail to run!</span>
+<span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="o">-</span><span class="n">i</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">inventory</span><span class="o">.</span><span class="n">ini</span>  <span class="o">--</span><span class="n">become</span> <span class="o">--</span><span class="n">become</span><span class="o">-</span><span class="n">user</span><span class="o">=</span><span class="n">root</span> <span class="o">-</span><span class="n">e</span> <span class="n">override_system_hostname</span><span class="o">=</span><span class="n">false</span> <span class="n">cluster</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+<p>The Ansible playbooks will take several minutes to finish. After playbook is done, you can check the output. If <code class="docutils literal notranslate"><span class="pre">failed=0</span></code> exists, it means playbook execution is successfully done.</p>
+</section>
+<section id="step-5-create-kubectl-configuration">
+<h2>Step 5. Create kubectl configuration<a class="headerlink" href="#step-5-create-kubectl-configuration" title="Link to this heading">¶</a></h2>
+<p>If you want to use Kubernetes command line tool <code class="docutils literal notranslate"><span class="pre">kubectl</span></code> on <strong>k8s-master</strong> node, please login to the node <strong>k8s-master</strong> and run the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</pre></div>
+</div>
+<p>If you want to access this Kubernetes cluster from other machines, you can install kubectl by <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">-y</span> <span class="pre">kubectl</span></code> and copy over the configuration from the k8-master node and set ownership as above.</p>
+<p>Then run following command to check the status of your Kubernetes cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kubectl get node
+NAME          STATUS   ROLES           AGE     VERSION
+k8s-master    Ready    control-plane   31m     v1.29.5
+k8s-worker   Ready    &lt;none&gt;          7m31s   v1.29.5
+$ kubectl get pods -A
+NAMESPACE                    NAME                                       READY   STATUS    RESTARTS   AGE
+kube-system                  calico-kube-controllers-68485cbf9c-vwqqj   1/1     Running   0          23m
+kube-system                  calico-node-fxr6v                          1/1     Running   0          24m
+kube-system                  calico-node-v95sp                          1/1     Running   0          23m
+kube-system                  coredns-69db55dd76-ctld7                   1/1     Running   0          23m
+kube-system                  coredns-69db55dd76-ztwfg                   1/1     Running   0          23m
+kube-system                  dns-autoscaler-6d5984c657-xbwtc            1/1     Running   0          23m
+kube-system                  kube-apiserver-satg-opea-0                 1/1     Running   0          24m
+kube-system                  kube-controller-manager-satg-opea-0        1/1     Running   0          24m
+kube-system                  kube-proxy-8zmhk                           1/1     Running   0          23m
+kube-system                  kube-proxy-hbq78                           1/1     Running   0          23m
+kube-system                  kube-scheduler-satg-opea-0                 1/1     Running   0          24m
+kube-system                  nginx-proxy-satg-opea-3                    1/1     Running   0          23m
+kube-system                  nodelocaldns-kbcnv                         1/1     Running   0          23m
+kube-system                  nodelocaldns-wvktt                         1/1     Running   0          24m
+</pre></div>
+</div>
+<p>Now congratulations. Your two-node K8s cluster is ready to use.</p>
+</section>
+<section id="quick-reference">
+<h2>Quick reference<a class="headerlink" href="#quick-reference" title="Link to this heading">¶</a></h2>
+<section id="how-to-deploy-a-single-node-kubernetes">
+<h3>How to deploy a single node Kubernetes?<a class="headerlink" href="#how-to-deploy-a-single-node-kubernetes" title="Link to this heading">¶</a></h3>
+<p>Deploying a single-node K8s cluster is very similar to setting up a multi-node (&gt;=2) K8s cluster.</p>
+<p>Follow the previous <a class="reference internal" href="#step-1-set-up-kubespray-and-ansible"><span class="xref myst">Step 1. Set up Kubespray and Ansible</span></a> to set up the environment.</p>
+<p>And then in <a class="reference internal" href="#step-2-build-your-own-inventory"><span class="xref myst">Step 2. Build your own inventory</span></a>, you can create single-node Ansible inventory by copying the single-node inventory sample as following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="n">inventory</span><span class="o">/</span><span class="n">local</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span>
+</pre></div>
+</div>
+<p>Edit your single-node inventory <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/hosts.ini</span></code> to replace the node name from <code class="docutils literal notranslate"><span class="pre">node1</span></code> to your real node name (for example <code class="docutils literal notranslate"><span class="pre">k8s-master</span></code>) using following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/node1/k8s-master/g&quot;</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">hosts</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+</div>
+<p>Then your single-node inventory will look like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k8s</span><span class="o">-</span><span class="n">master</span> <span class="n">ansible_connection</span><span class="o">=</span><span class="n">local</span> <span class="n">local_release_dir</span><span class="o">=</span><span class="p">{{</span><span class="n">ansible_env</span><span class="o">.</span><span class="n">HOME</span><span class="p">}}</span><span class="o">/</span><span class="n">releases</span>
+
+<span class="p">[</span><span class="n">kube_control_plane</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">etcd</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">kube_node</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">k8s_cluster</span><span class="p">:</span><span class="n">children</span><span class="p">]</span>
+<span class="n">kube_node</span>
+<span class="n">kube_control_plane</span>
+</pre></div>
+</div>
+<p>And then follow <a class="reference internal" href="#step-3-deploy-kubernetes"><span class="xref myst">Step 3. Deploy Kubernetes</span></a>, please pay attention to the <strong>inventory name</strong> while executing Ansible playbook, which is <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/hosts.ini</span></code> in single node deployment. When the playbook is executed successfully, you will get a 1-node K8s ready.</p>
+<p>And the follow <a class="reference internal" href="#step-4-create-kubectl-configuration"><span class="xref myst">Step 4. Create kubectl configuration</span></a> to set up <code class="docutils literal notranslate"><span class="pre">kubectl</span></code>. You can check the status by <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">nodes</span></code>.</p>
+</section>
+<section id="how-to-scale-kubernetes-cluster-to-add-more-nodes">
+<h3>How to scale Kubernetes cluster to add more nodes?<a class="headerlink" href="#how-to-scale-kubernetes-cluster-to-add-more-nodes" title="Link to this heading">¶</a></h3>
+<p>Assume you’ve already have a two-node K8s cluster and you want to scale it to three nodes. The third node information is:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>hostname</p></th>
+<th class="head"><p>ip address</p></th>
+<th class="head"><p>Operating System</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>third-node</p></td>
+<td><p>192.168.121.134/24</p></td>
+<td><p>Ubuntu 22.04</p></td>
+</tr>
+</tbody>
+</table>
+<p>Make sure the third node has internet access and can be logged in via <code class="docutils literal notranslate"><span class="pre">SSH</span></code> without password promotion from your operating machine.</p>
+<p>Edit your Ansible inventory file to add the third node information to <code class="docutils literal notranslate"><span class="pre">[all]</span></code> and <code class="docutils literal notranslate"><span class="pre">[kube_node]</span></code> section as following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">all</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168.121.35</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">worker</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168.121.133</span>
+<span class="n">third</span><span class="o">-</span><span class="n">node</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168.121.134</span>
+
+<span class="p">[</span><span class="n">kube_control_plane</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">etcd</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+
+<span class="p">[</span><span class="n">kube_node</span><span class="p">]</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">master</span>
+<span class="n">k8s</span><span class="o">-</span><span class="n">worker</span>
+<span class="n">third</span><span class="o">-</span><span class="n">node</span>
+
+<span class="p">[</span><span class="n">calico_rr</span><span class="p">]</span>
+
+<span class="p">[</span><span class="n">k8s_cluster</span><span class="p">:</span><span class="n">children</span><span class="p">]</span>
+<span class="n">kube_control_plane</span>
+<span class="n">kube_node</span>
+<span class="n">calico_rr</span>
+</pre></div>
+</div>
+<p>Then you can deploy Kubernetes to the third node with Ansible playbook with following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deploy Kubespray with Ansible Playbook - run the playbook as root</span>
+<span class="c1"># The option `--become` is required, as for example writing SSL keys in /etc/,</span>
+<span class="c1"># installing packages and interacting with various systemd daemons.</span>
+<span class="c1"># Without --become the playbook will fail to run!</span>
+<span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="o">-</span><span class="n">i</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">inventory</span><span class="o">.</span><span class="n">ini</span> <span class="o">--</span><span class="n">limit</span> <span class="n">third</span><span class="o">-</span><span class="n">node</span> <span class="o">--</span><span class="n">become</span> <span class="o">--</span><span class="n">become</span><span class="o">-</span><span class="n">user</span><span class="o">=</span><span class="n">root</span> <span class="n">scale</span><span class="o">.</span><span class="n">yml</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+</div>
+<p>When the playbook is executed successfully, you can check if the third node is ready with following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">get</span> <span class="n">nodes</span>
+</pre></div>
+</div>
+<p>For more information, you can visit <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray/blob/master/docs/operations/nodes.md#addingreplacing-a-worker-node">Kubespray document</a> for adding/removing Kubernetes node.</p>
+</section>
+<section id="how-to-config-proxy">
+<h3>How to config proxy?<a class="headerlink" href="#how-to-config-proxy" title="Link to this heading">¶</a></h3>
+<p>If your nodes need proxy to access internet, you will need extra configurations during deploying K8s.</p>
+<p>We assume your proxy is as below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;http://proxy.fake-proxy.com:911&quot;</span>
+<span class="o">-</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;http://proxy.fake-proxy.com:912&quot;</span>
+</pre></div>
+</div>
+<p>You can change parameters in <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars/all/all.yml</span></code> to set <code class="docutils literal notranslate"><span class="pre">http_proxy</span></code>,<code class="docutils literal notranslate"><span class="pre">https_proxy</span></code>, and <code class="docutils literal notranslate"><span class="pre">additional_no_proxy</span></code> as following. Please make sure you’ve added all the nodes’ ip addresses into the <code class="docutils literal notranslate"><span class="pre">additional_no_proxy</span></code> parameter. In this example, we use <code class="docutils literal notranslate"><span class="pre">192.168.121.0/24</span></code> to represent all nodes’ ip addresses.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## Set these proxy values in order to update package manager and docker daemon to use proxies and custom CA for https_proxy if needed</span>
+<span class="n">http_proxy</span><span class="p">:</span> <span class="s2">&quot;http://proxy.fake-proxy.com:911&quot;</span>
+<span class="n">https_proxy</span><span class="p">:</span> <span class="s2">&quot;http://proxy.fake-proxy.com:912&quot;</span>
+
+<span class="c1">## If you need exclude all cluster nodes from proxy and other resources, add other resources here.</span>
+<span class="n">additional_no_proxy</span><span class="p">:</span> <span class="s2">&quot;localhost,127.0.0.1,192.168.121.0/24&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2024 OPEA™, a Series of LF Projects, LLC.
+
+<!-- span class="lastupdated">Last updated on Aug 05, 2024. Published on </span -->
+<span class="lastupdated">Published on Aug 05, 2024.</span>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

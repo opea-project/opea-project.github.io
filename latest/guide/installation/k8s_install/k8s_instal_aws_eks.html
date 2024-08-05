@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kubernetes Installation using AWS EKS Cluster &mdash; OPEA™ 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/opea-custom.css?v=a771719c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/OPEA-favicon-32x32.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=a0e24af7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/opea-custom.js?v=22d49862"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            OPEA™
+              <img src="../../../_static/opea-horizontal-white-w200.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> OPEA Project</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Document Versions</dt>
+        
+          <dd><a href="/latest/">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>OPEA Project links</dt>
+          <dd>
+            <a href="https://opea.dev">Project Home</a>
+          </dd>
+          <dd>
+            <a href="https://github.com/opea-project/docs/wiki">Wiki</a>
+          </dd>
+      </dl>
+    </div>
+  </div>
+  
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.8.html">OPEA Release Notes v0.8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#whats-new-in-opea-v0-8">What’s New in OPEA v0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#details">Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#thanks-to-these-contributors">Thanks to these contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.7.html">OPEA Release Notes v0.7</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#opea-highlights">OPEA Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.6.html">OPEA Release Notes v0.6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#opea-highlight">OPEA Highlight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OPEA™</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!-- Latest -->
+  
+  
+
+  <li><a href="../../../index.html">Latest</a> &raquo;</li>
+  
+  <li>Kubernetes Installation using AWS EKS Cluster</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/guide/installation/k8s_install/k8s_instal_aws_eks.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+    <!-- div class="admonition important">
+        <p class="admonition-title">Important</p>
+        <p>This is the latest documentation for the development branch of
+        the OPEA Project (main).<br/>Use the drop-down menu on the left to select
+        documentation for a stable release.</p>
+    </div -->
+  
+  
+           <div itemprop="articleBody">
+             
+  <section id="kubernetes-installation-using-aws-eks-cluster">
+<h1>Kubernetes Installation using AWS EKS Cluster<a class="headerlink" href="#kubernetes-installation-using-aws-eks-cluster" title="Link to this heading">¶</a></h1>
+<p>In this document, we’ll install Kubernetes v1.30 using <a class="reference external" href="https://docs.aws.amazon.com/eks/latest/userguide/clusters.html">AWS EKS Cluster</a>.</p>
+<p>There are two ways to create a new Kubernetes cluster with nodes in AWS EKS:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html">“eksctl”</a></p></li>
+<li><p><a class="reference external" href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html">“AWS Management Console and AWS CLI”</a>.</p></li>
+</ul>
+<p>In this document, we’ll introduce the “AWS Management Console and AWS CLI” method.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>Before starting this tutorial, you must install and configure the following tools and resources that you need to create and manage an Amazon EKS cluster.</p>
+<ul>
+<li><p>AWS CLI – A command line tool for working with AWS services, including Amazon EKS. For more information, see <a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">“Installing, updating, and uninstalling the AWS CLI”</a> in the AWS Command Line Interface User Guide. After installing the AWS CLI, we recommend that you also configure it. For more information, see <a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-configure-quickstart-config">“Quick configuration with aws configure”</a> in the AWS Command Line Interface User Guide.</p></li>
+<li><p>kubectl – A command line tool for working with Kubernetes clusters. For more information, see <a class="reference external" href="https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html">“Installing or updating kubectl”</a>.</p></li>
+<li><p>Required IAM permissions – The IAM security principal that you’re using must have permissions to work with Amazon EKS IAM roles, service linked roles, AWS CloudFormation, a VPC, and related resources. For more information, see <a class="reference external" href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelastickubernetesservice.html">“Actions, resources, and condition keys for Amazon Elastic Kubernetes Service”</a> and <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html">“Using service-linked roles”</a> in the IAM User Guide. You must complete all steps in this guide as the same user. To check the current user, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">sts</span> <span class="n">get</span><span class="o">-</span><span class="n">caller</span><span class="o">-</span><span class="n">identity</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="create-aws-eks-cluster-in-aws-console">
+<h2>Create AWS EKS Cluster in AWS Console<a class="headerlink" href="#create-aws-eks-cluster-in-aws-console" title="Link to this heading">¶</a></h2>
+<p>You can refer to the YouTube video that demonstrates the steps to create an EKS cluster in the AWS console:
+https://www.youtube.com/watch?v=KxxgF-DAGWc</p>
+<p>Alternatively, you can refer to the AWS documentation directly: <a class="reference external" href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html">“AWS Management Console and AWS CLI”</a></p>
+</section>
+<section id="uploading-images-to-an-aws-private-registry">
+<h2>Uploading images to an AWS Private Registry<a class="headerlink" href="#uploading-images-to-an-aws-private-registry" title="Link to this heading">¶</a></h2>
+<p>There are several reasons why your images might not be uploaded to a public image repository like Docker Hub.
+You can upload your image to an AWS private registry using the following steps:</p>
+<ol class="arabic simple">
+<li><p>Create a new ECR repository (if not already created):</p></li>
+</ol>
+<p>An Amazon ECR private repository contains your Docker images, Open Container Initiative (OCI) images, and OCI compatible artifacts. More information about Amazon ECR private repository: https://docs.aws.amazon.com/AmazonECR/latest/userguide/Repositories.html</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">ecr</span> <span class="n">create</span><span class="o">-</span><span class="n">repository</span> <span class="o">--</span><span class="n">repository</span><span class="o">-</span><span class="n">name</span> <span class="n">my</span><span class="o">-</span><span class="n">app</span><span class="o">-</span><span class="n">repo</span> <span class="o">--</span><span class="n">region</span> <span class="o">&lt;</span><span class="n">region</span><span class="o">&gt;</span> 
+</pre></div>
+</div>
+<p>Replace my-app-repo with your desired repository name and <region> with your AWS region (e.g., us-west-1).</p>
+<ol class="arabic simple" start="2">
+<li><p>Authenticate Docker to Your ECR Registry：</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aws</span> <span class="n">ecr</span> <span class="n">get</span><span class="o">-</span><span class="n">login</span><span class="o">-</span><span class="n">password</span> <span class="o">--</span><span class="n">region</span> <span class="o">&lt;</span><span class="n">region</span><span class="o">&gt;</span> <span class="o">|</span> <span class="n">docker</span> <span class="n">login</span> <span class="o">--</span><span class="n">username</span> <span class="n">AWS</span> <span class="o">--</span><span class="n">password</span><span class="o">-</span><span class="n">stdin</span> <span class="o">&lt;</span><span class="n">account_id</span><span class="o">&gt;.</span><span class="n">dkr</span><span class="o">.</span><span class="n">ecr</span><span class="o">.&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span> 
+</pre></div>
+</div>
+<p>Replace <region> with your AWS region and &lt;account_id&gt; with your AWS account ID.</p>
+<ol class="arabic simple" start="3">
+<li><p>Build Your Docker Image：</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">my</span><span class="o">-</span><span class="n">app</span><span class="p">:</span><span class="o">&lt;</span><span class="n">tag</span><span class="o">&gt;</span> <span class="o">.</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Tag your Docker image so that it can be pushed to your ECR repository:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">tag</span> <span class="n">my</span><span class="o">-</span><span class="n">app</span><span class="p">:</span><span class="o">&lt;</span><span class="n">tag</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">account_id</span><span class="o">&gt;.</span><span class="n">dkr</span><span class="o">.</span><span class="n">ecr</span><span class="o">.&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="n">app</span><span class="o">-</span><span class="n">repo</span><span class="p">:</span><span class="o">&lt;</span><span class="n">tag</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Replace &lt;account_id&gt; with your AWS account ID, <region> with your AWS region, and my-app-repo with your repository name.</p>
+<ol class="arabic simple" start="5">
+<li><p>Push your Docker image to the ECR repository with this command:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">push</span> <span class="o">&lt;</span><span class="n">account_id</span><span class="o">&gt;.</span><span class="n">dkr</span><span class="o">.</span><span class="n">ecr</span><span class="o">.&lt;</span><span class="n">region</span><span class="o">&gt;.</span><span class="n">amazonaws</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="n">app</span><span class="o">-</span><span class="n">repo</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2024 OPEA™, a Series of LF Projects, LLC.
+
+<!-- span class="lastupdated">Last updated on Aug 05, 2024. Published on </span -->
+<span class="lastupdated">Published on Aug 05, 2024.</span>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
