@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRUD-RAG &mdash; OPEA™ 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=a5c4661c" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/OPEA-favicon-32x32.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=a0e24af7"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/opea-custom.js?v=22d49862"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Metric Card for BLEU" href="../../metrics/bleu/README.html" />
+    <link rel="prev" title="StressCli" href="../../benchmark/stresscli/README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            OPEA™
+              <img src="../../../../_static/opea-horizontal-white-w200.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> OPEA Project</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Document Versions</dt>
+        
+          <dd><a href="/latest/">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>OPEA Project links</dt>
+          <dd>
+            <a href="https://opea.dev">Project Home</a>
+          </dd>
+          <dd>
+            <a href="https://github.com/opea-project/docs/wiki">Wiki</a>
+          </dd>
+      </dl>
+    </div>
+  </div>
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">OPEA Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../framework/framework.html">Open Platform for Enterprise AI (OPEA) Framework Draft Proposal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#summary">1. Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#introduction">2. Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#key-capabilities">2.1 Key capabilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#framework-components-architecture-and-flow">3. Framework Components, Architecture and Flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#assessing-genai-components-and-flows">4. Assessing GenAI components and flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#grading-structure">5. Grading Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#reference-flows">6. Reference flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../framework/framework.html#appendix-a-draft-opea-specifications">Appendix A – Draft OPEA Specifications</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a1-system-components">A1: System Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a2-sw-architecture">A2: SW Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a3-system-flows">A3: System Flows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a4-select-specifications">A4: Select Specifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a5-grading">A5: Grading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../framework/framework.html#a6-reference-flows">A6: Reference Flows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting-started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">GenAI Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIExamples/README.html">Generative AI Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/README.html#deployment">Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#support-examples">Support Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIExamples/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIExamples/docker_images_list.html">Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/docker_images_list.html#example-images">Example images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/docker_images_list.html#microservice-images">Microservice images</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html">Supported Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#chatqna">ChatQnA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#codegen">CodeGen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#codetrans">CodeTrans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#docsum">DocSum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#language-translation">Language Translation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#searchqna">SearchQnA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/supported_examples.html#visualqna">VisualQnA</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#audioqna-application">AudioQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html#build-docker-images">🚀 Build Docker images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html#set-the-environment-variables">🚀 Set the environment variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html#start-the-megaservice">🚀 Start the MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html#test-microservices">🚀 Test MicroServices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/gaudi/README.html#test-megaservice">🚀 Test MegaService</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html#build-docker-images">🚀 Build Docker images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html#set-the-environment-variables">🚀 Set the environment variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html#start-the-megaservice">🚀 Start the MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html#test-microservices">🚀 Test MicroServices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/xeon/README.html#test-megaservice">🚀 Test MegaService</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/ui/svelte/README.html">AudioQnA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#chatqna-application">ChatQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html#deploy-chatqna-service">Deploy ChatQnA Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html#consume-chatqna-service">Consume ChatQnA Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html#monitoring-opea-service-with-prometheus-and-grafana-dashboard">Monitoring OPEA Service with Prometheus and Grafana dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/README.html">Deploy ChatQnA in Kubernetes Cluster on Xeon and Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/README.html#using-prebuilt-images">Using prebuilt images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/README.html#deploy-chatqna-pipeline">Deploy ChatQnA pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/aipc/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/aipc/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/aipc/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html">Build MegaService of ChatQnA on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html#start-microservices-and-megaservice">🚀 Start MicroServices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html#enable-langsmith-for-monotoring-application-optional">Enable LangSmith for Monotoring Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/README.html#launch-the-conversational-ui-optional">🚀 Launch the Conversational UI (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/how_to_validate_service.html#check-environment-variables">1. Check environment variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/how_to_validate_service.html#check-the-docker-container-status">2. Check the docker container status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/how_to_validate_service.html#check-docker-container-log">3. Check docker container log</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gaudi/how_to_validate_service.html#check-each-micro-service-used-by-the-mega-service">4. Check each micro service used by the Mega Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gpu/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gpu/README.html#start-microservices-and-megaservice">🚀 Start MicroServices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gpu/README.html#enable-langsmith-for-monotoring-application-optional">Enable LangSmith for Monotoring Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/gpu/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#apply-xeon-server-on-aws">🚀 Apply Xeon Server on AWS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#enable-langsmith-for-monotoring-application-optional">Enable LangSmith for Monotoring Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README.html#launch-the-conversational-ui-optional">🚀 Launch the Conversational UI (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#apply-xeon-server-on-aws">🚀 Apply Xeon Server on AWS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#enable-langsmith-for-monotoring-application-optional">Enable LangSmith for Monotoring Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/xeon/README_qdrant.html#launch-the-conversational-ui-react">🚀 Launch the Conversational UI (react)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/manifests/README.html">Deploy ChatQnA in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/manifests/README.html#deploy-on-xeon">Deploy On Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/manifests/README.html#deploy-on-gaudi">Deploy On Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/kubernetes/manifests/README.html#verify-services">Verify Services</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/react/README.html">ChatQnA Conversational UI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/react/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/react/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/react/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/svelte/README.html">ChatQnA Customized UI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#code-generation-application">Code Generation Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/README.html">Code Generation Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/README.html#deploy-codegen-service">Deploy CodeGen Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/README.html#consume-codegen-service">Consume CodeGen Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/README.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/README.html">Deploy CodeGen in a Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/README.html#deploy-the-rag-application">Deploy the RAG application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html">Build MegaService of CodeGen on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#start-microservices-and-megaservice">🚀 Start MicroServices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#enable-langsmith-to-monitor-application-optional">Enable LangSmith to Monitor Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#launch-the-svelte-based-ui">🚀 Launch the Svelte Based UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#launch-the-react-based-ui">🚀 Launch the React Based UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/gaudi/README.html#install-copilot-vscode-extension-from-plugin-marketplace-as-the-frontend">Install Copilot VSCode extension from Plugin Marketplace as the frontend</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html">Build MegaService of CodeGen on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#create-an-aws-xeon-instance">🚀 Create an AWS Xeon Instance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#enable-langsmith-for-monitoring-application-optional">Enable LangSmith for Monitoring Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#launch-the-react-based-ui">🚀 Launch the React Based UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/xeon/README.html#install-copilot-vscode-extension-from-plugin-marketplace-as-the-frontend">Install Copilot VSCode extension from Plugin Marketplace as the frontend</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/README.html">Deploy CodeGen in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/README.html#deploy-on-xeon">Deploy On Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/README.html#deploy-on-gaudi">Deploy On Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/README.html#verify-services">Verify Services</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/react/README.html">Code Gen</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/react/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/react/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/react/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/svelte/README.html">Code Gen</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/xeon/ui/README.html">Deploy CodeGen with ReactUI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/xeon/ui/README.html#prerequisites-for-deploying-codegen-with-reactui">Prerequisites for Deploying CodeGen with ReactUI:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/kubernetes/manifests/xeon/ui/README.html#verify-services">Verify Services:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#code-translation-application">Code Translation Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/README.html">Code Translation Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/README.html#deploy-code-translation-service">Deploy Code Translation Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/README.html#consume-code-translation-service">Consume Code Translation Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/README.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/README.html">Deploy CodeTrans in a Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/README.html#deploy-the-rag-application">Deploy the RAG application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/gaudi/README.html">Build Mega Service of CodeTrans on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/gaudi/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/gaudi/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/gaudi/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/xeon/README.html">Build Mega Service of CodeTrans on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/xeon/README.html#create-an-aws-xeon-instance">🚀 Create an AWS Xeon Instance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/xeon/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/xeon/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/manifests/README.html">Deploy CodeTrans in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/manifests/README.html#deploy-on-xeon">Deploy On Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/manifests/README.html#deploy-on-gaudi">Deploy On Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/kubernetes/manifests/README.html#verify-services">Verify Services</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/ui/svelte/README.html">Code Translation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeTrans/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#document-summarization-application">Document Summarization Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/README.html">Document Summarization Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/README.html#deploy-document-summarization-service">Deploy Document Summarization Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/README.html#consume-document-summarization-service">Consume Document Summarization Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/README.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/README.html">Deploy DocSum in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/README.html#deploy-the-rag-pipeline">Deploy the RAG pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html#launch-the-svelte-ui">🚀 Launch the Svelte UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/gaudi/README.html#launch-the-react-ui">🚀 Launch the React UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html#apply-intel-xeon-server-on-aws">🚀 Apply Intel Xeon Server on AWS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/README.html">Deploy DocSum in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/README.html#deploy-on-xeon">Deploy On Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/README.html#deploy-on-gaudi">Deploy On Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/README.html#verify-services">Verify Services</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/react/README.html">Doc Summary React</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/react/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/react/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/react/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/svelte/README.html">Doc Summary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/xeon/ui/README.html">Deploy DocSum with ReactUI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/xeon/ui/README.html#prerequisites-for-deploying-docsum-with-reactui">Prerequisites for Deploying DocSum with ReactUI:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DocSum/kubernetes/manifests/xeon/ui/README.html#verify-services">Verify Services:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#faqgen-application">FaqGen Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/README.html">FAQ Generation Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/README.html#deploy-faq-generation-service">Deploy FAQ Generation Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html">Build MegaService of FAQ Generation on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/gaudi/README.html#launch-the-react-ui-optional">🚀 Launch the React UI (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html">Build Mega Service of FAQ Generation on Intel Xeon Processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#apply-intel-xeon-server-on-aws">🚀 Apply Intel Xeon Server on AWS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#enable-langsmith-to-monitor-an-application-optional">Enable LangSmith to Monitor an Application (Optional)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/xeon/README.html#launch-the-react-ui-optional">🚀 Launch the React UI (Optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/README.html">Deploy FaqGen in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/README.html#deploy-on-xeon">Deploy On Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/README.html#deploy-on-gaudi">Deploy On Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/README.html#verify-services">Verify Services</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/react/README.html">Doc Summary React</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/react/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/react/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/react/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/svelte/README.html">FAQ Generation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/xeon/ui/README.html">Deploy FaqGen with ReactUI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/xeon/ui/README.html#prerequisites-for-deploying-faqgen-with-reactui">Prerequisites for Deploying FaqGen with ReactUI:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/FaqGen/kubernetes/manifests/xeon/ui/README.html#verify-services">Verify Services:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#searchqna-application">SearchQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/README.html">SearchQnA Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/README.html#deploy-searchqna-service">Deploy SearchQnA Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/README.html#consume-searchqna-service">Consume SearchQnA Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/README.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/kubernetes/README.html">Deploy SearchQnA in a Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/kubernetes/README.html#deploy-the-rag-application">Deploy the RAG application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html">Build Mega Service of SearchQnA on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html#set-the-environment-variables">🚀 Set the environment variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html#start-the-megaservice">🚀 Start the MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html#test-microservices">🚀 Test MicroServices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/gaudi/README.html#test-megaservice">🚀 Test MegaService</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html">Build Mega Service of SearchQnA on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html#build-docker-images">🚀 Build Docker images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html#set-the-environment-variables">🚀 Set the environment variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html#start-the-megaservice">🚀 Start the MegaService</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html#test-microservices">🚀 Test MicroServices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/xeon/README.html#test-megaservice">🚀 Test MegaService</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/ui/svelte/README.html">Neural Chat</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/SearchQnA/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#translation-application">Translation Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/Translation/README.html">Translation Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/README.html#deploy-translation-service">Deploy Translation Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/Translation/kubernetes/README.html">Deploy Translation in a Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/kubernetes/README.html#deploy-the-rag-application">Deploy the RAG application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/gaudi/README.html">Build MegaService of Translation on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/gaudi/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/gaudi/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/gaudi/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/xeon/README.html">Build Mega Service of Translation on Xeon</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/xeon/README.html#apply-xeon-server-on-aws">🚀 Apply Xeon Server on AWS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/xeon/README.html#start-microservices">🚀 Start Microservices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/ui/svelte/README.html">Language Translation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/ui/svelte/README.html#project-screenshots">📸 Project Screenshots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/ui/svelte/README.html#features">🧐 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/Translation/docker/ui/svelte/README.html#get-it-running">🛠️ Get it Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#visualqna-application">VisualQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/VisualQnA/README.html">Visual Question and Answering</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/VisualQnA/README.html#start-the-llava-service">Start the LLaVA service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/VisualQnA/README.html#start-the-gradio-app">Start the Gradio app</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../microservices/index.html">GenAI Microservices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/README.html">Generative AI Components (GenAIComps)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/README.html#genaicomps">GenAIComps</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/README.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/README.html#microservice">MicroService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/README.html#megaservice">MegaService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/README.html#gateway">Gateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html">ASR Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-whisper-service-test">1.2 Start Whisper Service/Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-asr-service-test">1.3 Start ASR Service/Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#build-images">2.1 Build Images</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#whisper-server-image">2.1.1 Whisper Server Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#asr-service-image">2.1.2 ASR Service Image</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-whisper-and-asr-service">2.2 Start Whisper and ASR Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-whisper-server">2.2.1 Start Whisper Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#start-asr-service">2.2.2 Start ASR service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/asr/README.html#test">2.2.3 Test</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html">Dataprep Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#install-requirements">Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#use-lvm-large-vision-model-for-summarizing-image-data">Use LVM (Large Vision Model) for Summarizing Image Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#dataprep-microservice-with-redis">Dataprep Microservice with Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#dataprep-microservice-with-milvus">Dataprep Microservice with Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#dataprep-microservice-with-qdrant">Dataprep Microservice with Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#dataprep-microservice-with-pinecone">Dataprep Microservice with Pinecone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/README.html#dataprep-microservice-with-pgvector">Dataprep Microservice with PGVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html">Embeddings Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#start-embedding-service">1.2 Start Embedding Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#start-embedding-service-with-tei">Start Embedding Service with TEI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#start-embedding-service-with-local-model">Start Embedding Service with Local Model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#start-microservice-with-docker-optional-2">🚀2. Start Microservice with Docker (Optional 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#id1">2.1 Start Embedding Service with TEI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#build-docker-image">2.2 Build Docker Image</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#build-langchain-docker-option-a">Build Langchain Docker (Option a)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#build-llamaindex-docker-option-b">Build LlamaIndex Docker (Option b)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#run-docker-with-cli">2.3 Run Docker with CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#run-docker-with-docker-compose">2.4 Run Docker with Docker Compose</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#consume-embedding-service">🚀3. Consume Embedding Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/README.html#id2">3.2 Consume Embedding Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/README.html">Trust and Safety with LLM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html">Knowledge Graph Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#start-microservice-with-docker">🚀1. Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#setup-environment-variables">1.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#start-neo4j-service">1.2 Start Neo4j Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#start-llm-service-for-rag-query-mode">1.3 Start LLM Service for “rag”/”query” mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#start-microservice">1.4 Start Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#consume-knowledge-graph-service">🚀2. Consume Knowledge Graph Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#cypher-mode">2.1 Cypher mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#rag-mode">2.2 Rag mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/knowledgegraphs/README.html#query-mode">2.3 Query mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html">LLM Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-llm-service">1.2 Start LLM Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-tgi-service">1.2.1 Start TGI Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-vllm-service">1.2.2 Start vLLM Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-ray-service">1.2.3 Start Ray Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#verify-the-llm-service">1.3 Verify the LLM Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#verify-the-tgi-service">1.3.1 Verify the TGI Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#verify-the-vllm-service">1.3.2 Verify the vLLM Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#verify-the-ray-service">1.3.3 Verify the Ray Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-llm-service-with-python-script">1.4 Start LLM Service with Python Script</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-the-tgi-service">1.4.1 Start the TGI Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-the-vllm-service">1.4.2 Start the vLLM Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-the-ray-service">1.4.3 Start the Ray Service</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#build-docker-image">2.2 Build Docker Image</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#tgi">2.2.1 TGI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#vllm">2.2.2 vLLM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#ray-serve">2.2.3 Ray Serve</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id1">2.3.1 TGI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id2">2.3.2 vLLM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id3">2.3.3 Ray Serve</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id4">2.4.1 TGI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id5">2.4.2 vLLM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id6">2.4.3 Ray Serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#consume-llm-service">🚀3. Consume LLM Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#id7">3.2 Consume LLM Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/README.html#validated-model">4. Validated Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html">LVM Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-llava-service-test">1.2 Start LLaVA Service/Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-image-to-text-service-test">1.3 Start Image To Text Service/Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#build-images">2.1 Build Images</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#llava-server-image">2.1.1 LLaVA Server Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#lvm-service-image">2.1.2 LVM Service Image</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-llava-and-lvm-service">2.2 Start LLaVA and LVM Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-llava-server">2.2.1 Start LLaVA server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#start-lvm-service">2.2.2 Start LVM service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/lvms/README.html#test">2.2.3 Test</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html">Reranking Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#start-tei-service">1.2 Start TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#verify-the-tei-service">1.3 Verify the TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#start-reranking-service-with-python-script">1.4 Start Reranking Service with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#consume-reranking-service">🚀3. Consume Reranking Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/README.html#id1">3.2 Consume Reranking Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html">TTS Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-speecht5-service-test">1.2 Start SpeechT5 Service/Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-tts-service-test">1.3 Start TTS Service/Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#build-images">2.1 Build Images</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#whisper-server-image">2.1.1 Whisper Server Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#tts-service-image">2.1.2 TTS Service Image</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-speecht5-and-tts-service">2.2 Start SpeechT5 and TTS Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-speecht5-server">2.2.1 Start SpeechT5 Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#start-tts-service">2.2.2 Start TTS service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/tts/README.html#test">2.2.3 Test</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/README.html">Vectorstores Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/README.html#vectorstores-microservice-with-redis">Vectorstores Microservice with Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/README.html#vectorstores-microservice-with-qdrant">Vectorstores Microservice with Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/README.html#vectorstores-microservice-with-pgvector">Vectorstores Microservice with PGVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/README.html#vectorstores-microservice-with-pinecone">Vectorstores Microservice with Pinecone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html">langchain Agent Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#start-microservice-with-python-script">1.2 Start Microservice with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#build-microservices">Build Microservices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#start-microservices">start microservices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#validate-microservice">🚀3. Validate Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/README.html#provide-your-own-tools">🚀4. Provide your own tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html">Chat History Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/chathistory/mongo/README.html#invoke-microservice">Invoke Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html">Dataprep Microservice with Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#start-microservice-with-python">🚀Start Microservice with Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#install-requirements">Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#start-milvus-server">Start Milvus Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#start-document-preparation-microservice-for-milvus-with-python-script">Start Document Preparation Microservice for Milvus with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/milvus/README.html#invoke-microservice">Invoke Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html">Dataprep Microservice with PGVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#setup-environment-variables">1.2 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#start-pgvector">1.3 Start PGVector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#start-document-preparation-microservice-for-pgvector-with-python-script">1.4 Start Document Preparation Microservice for PGVector with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#id1">2.1 Start PGVector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#id2">2.2 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#build-docker-image">2.3 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#run-docker-with-cli-option-a">2.4 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#run-with-docker-compose-option-b">2.5 Run with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#consume-microservice">🚀3. Consume Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#consume-upload-api">3.1 Consume Upload API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#consume-get-file-api">3.2 Consume get_file API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pgvector/README.html#consume-delete-file-api">4.3 Consume delete_file API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html">Dataprep Microservice with Pinecone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#start-microservice-with-python">🚀Start Microservice with Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#install-requirements">Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#start-pinecone-server">Start Pinecone Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#start-document-preparation-microservice-for-pinecone-with-python-script">Start Document Preparation Microservice for Pinecone with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#id1">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#run-docker-with-docker-compose">Run Docker with Docker Compose</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/pinecone/README.html#invoke-microservice">Invoke Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html">Dataprep Microservice with Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#start-microservice-with-python">🚀Start Microservice with Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#install-requirements">Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#start-qdrant-server">Start Qdrant Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#start-document-preparation-microservice-for-qdrant-with-python-script">Start Document Preparation Microservice for Qdrant with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#id1">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#run-docker-with-docker-compose">Run Docker with Docker Compose</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/qdrant/README.html#invoke-microservice">Invoke Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html">Dataprep Microservice with Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#start-redis-stack-server">1.2 Start Redis Stack Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#setup-environment-variables">1.3 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#start-embedding-service">1.4 Start Embedding Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#start-document-preparation-microservice-for-redis-with-python-script">1.4 Start Document Preparation Microservice for Redis with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#id1">2.1 Start Redis Stack Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#id2">2.2 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#build-docker-image">2.3 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#run-docker-with-cli-option-a">2.4 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#run-with-docker-compose-option-b-deprecated-will-move-to-genaiexample-in-future">2.5 Run with Docker Compose (Option B - deprecated, will move to genAIExample in future)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#status-microservice">🚀3. Status Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#consume-microservice">🚀4. Consume Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#consume-upload-api">4.1 Consume Upload API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#consume-get-file-api">4.2 Consume get_file API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/dataprep/redis/README.html#consume-delete-file-api">4.3 Consume delete_file API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/README.html">build Mosec endpoint docker image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/README.html#build-embedding-microservice-docker-image">build embedding microservice docker image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/README.html#launch-mosec-endpoint-docker-container">launch Mosec endpoint docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/README.html#launch-embedding-microservice-docker-container">launch embedding microservice docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/README.html#run-client-test">run client test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html">Guardrails Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#start-tgi-gaudi-service">1.2 Start TGI Gaudi Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#verify-the-tgi-gaudi-service">1.3 Verify the TGI Gaudi Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#start-guardrails-service">1.4 Start Guardrails Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#run-docker-with-cli">2.3 Run Docker with CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#run-docker-with-docker-compose">2.4 Run Docker with Docker Compose</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#consume-guardrails-service">🚀3. Consume Guardrails Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/llama_guard/README.html#id1">3.2 Consume Guardrails Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html">PII Detection Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#ner-strategy">NER strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#ml-strategy">ML strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#input-and-output">Input and output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#start-pii-detection-microservice-with-python-script">1.2 Start PII Detection Microservice with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#prepare-pii-detection-model">2.1 Prepare PII detection model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#use-llm-endpoint-will-add-later">2.1.1 use LLM endpoint (will add later)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#run-docker-with-cli">2.3 Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#get-status-of-microservice">🚀3. Get Status of Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/guardrails/pii_detection/README.html#consume-microservice">🚀4. Consume Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html">Prompt Registry Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#start-prompt-registry-microservice-for-mongodb-with-python-script">Start Prompt Registry microservice for MongoDB with Python script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/prompt_registry/mongo/README.html#invoke-microservice">Invoke Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html">Reranking Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#install-fastrag">1.2 Install fastRAG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#start-reranking-service-with-python-script">1.3 Start Reranking Service with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#run-docker">2.3 Run Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#consume-reranking-service">🚀3. Consume Reranking Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/fastrag/README.html#id1">3.2 Consume Reranking Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/langchain-mosec/README.html">build reranking Mosec endpoint docker image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/langchain-mosec/README.html#build-reranking-microservice-docker-image">build reranking microservice docker image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/langchain-mosec/README.html#launch-mosec-endpoint-docker-container">launch Mosec endpoint docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/langchain-mosec/README.html#launch-embedding-microservice-docker-container">launch embedding microservice docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/reranks/langchain-mosec/README.html#run-client-test">run client test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/README.html">Retriever Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/README.html#retriever-microservice-with-redis">Retriever Microservice with Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/README.html#retriever-microservice-with-milvus">Retriever Microservice with Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/README.html#retriever-microservice-with-pgvector">Retriever Microservice with PGVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html">Retriever Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#setup-vectordb-service">1.2 Setup VectorDB Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#start-retriever-service">1.3 Start Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/llamaindex/README.html#id1">3.2 Consume Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html">Embedding Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html#introduction">1. Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html#quick-start">2. Quick Start</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html#build-docker-image">2.1 Build Docker image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html#launch-server">2.2 Launch server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/embeddings/langchain-mosec/mosec-docker/README.html#client-test">2.3 Client test</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html">TGI FAQGen LLM Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#start-microservice-with-docker">🚀1. Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#setup-environment-variables">1.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#build-docker-image">1.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#run-docker-with-cli-option-a">1.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#run-docker-with-docker-compose-option-b">1.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#consume-llm-service">🚀3. Consume LLM Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/faq-generation/tgi/README.html#consume-faqgen-llm-service">3.2 Consume FAQGen LLM Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html">Document Summary TGI Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#start-llm-service">1.2 Start LLM Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#verify-the-tgi-service">1.3 Verify the TGI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#start-llm-service-with-python-script">1.4 Start LLM Service with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#consume-llm-service">🚀3. Consume LLM Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/summarization/tgi/README.html#id1">3.2 Consume LLM Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#get-started">Get Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#usage">Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#in-the-terminal">In the terminal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#api-access">API access</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#run-the-ollama-microservice">Run the Ollama Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/ollama/README.html#consume-the-ollama-microservice">Consume the Ollama Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html">TGI LLM Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#start-llm-service">1.2 Start LLM Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#verify-the-tgi-service">1.3 Verify the TGI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#start-llm-service-with-python-script">1.4 Start LLM Service with Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#consume-llm-service">🚀3. Consume LLM Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#id1">3.2 Consume LLM Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/tgi/README.html#validated-model">4. Validated Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html">Use vLLM with OpenVINO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html#use-vllm-serving-with-openai-api">Use vLLM serving with OpenAI API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html#start-the-server">Start The Server:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html#request-completion-with-curl">Request Completion With Curl:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-openvino/README.html#performance-tips">Performance tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html">VLLM-Ray Endpoint Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#set-up-environment">Set up environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#set-up-vllm-ray-gaudi-service">Set up VLLM Ray Gaudi Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#build-docker">Build docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#launch-the-service">Launch the service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#query-the-service">Query the service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#set-up-opea-microservice">Set up OPEA microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#id1">Build docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#launch-the-microservice">Launch the microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-ray/README.html#query-the-microservice">Query the microservice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html">🚀 Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html#build-docker-image">1 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html#run-docker-with-cli">2 Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html#consume-llm-service">🚀3. Consume LLM Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm-xft/README.html#id1">3.2 Consume LLM Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html">vLLM Endpoint Serve</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#set-up-environment-variables">set up environment variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#set-up-vllm-ray-service">Set up VLLM Ray Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#vllm-on-cpu">vLLM on CPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#vllm-on-gaudi">vLLM on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#query-the-service">Query the service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#set-up-opea-microservice">Set up OPEA microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#id2">Build docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#launch-the-microservice">Launch the microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/README.html#query-the-microservice">Query the microservice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/llms/utils/lm-eval/README.html">LM-Eval Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/utils/lm-eval/README.html#cpu-service">CPU service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/utils/lm-eval/README.html#build-cpu-docker">build cpu docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/utils/lm-eval/README.html#start-the-server">start the server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/utils/lm-eval/README.html#evaluate-the-model">evaluate the model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html">Retriever Microservice with Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#start-microservice-with-python-option-1">1. 🚀Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#start-qdrant-server">1.2 Start Qdrant Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#setup-environment-variables">1.3 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#start-retriever-service">1.4 Start Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#start-microservice-with-docker-option-2">2. 🚀Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#id1">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#run-docker-with-cli">2.3 Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/haystack/qdrant/README.html#consume-embedding-service">3.2 Consume Embedding Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html">Retriever Microservice with Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#start-microservice-with-python">🚀Start Microservice with Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#install-requirements">Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#start-milvus-server">Start Milvus Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#setup-environment-variables">Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#start-retriever-service">Start Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#run-docker-with-cli">Run Docker with CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/milvus/README.html#consume-embedding-service">3.2 Consume Embedding Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html">Retriever Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#start-tei-service">1.2 Start TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#verify-the-tei-service">1.3 Verify the TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#setup-vectordb-service">1.4 Setup VectorDB Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#start-retriever-service">1.5 Start Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/pgvector/README.html#consume-embedding-service">3.2 Consume Embedding Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html">Retriever Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#install-requirements">1.1 Install Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#start-tei-service">1.2 Start TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#verify-the-tei-service">1.3 Verify the TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#setup-vectordb-service">1.4 Setup VectorDB Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#start-retriever-service">1.5 Start Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#setup-environment-variables">2.1 Setup Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#build-docker-image">2.2 Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#run-docker-with-cli-option-a">2.3 Run Docker with CLI (Option A)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#run-docker-with-docker-compose-option-b">2.4 Run Docker with Docker Compose (Option B)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#check-service-status">3.1 Check Service Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/retrievers/langchain/redis/README.html#consume-embedding-service">3.2 Consume Embedding Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/chroma/README.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/chroma/README.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/chroma/README.html#start-chroma-server">Start Chroma Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/chroma/README.html#start-log-output">Start Log Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/milvus/README.html">Start Milvus server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/milvus/README.html#configuration">1. Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/milvus/README.html#run-milvus-service">2. Run Milvus service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pgvector/README.html">Start PGVector server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pgvector/README.html#download-pgvector-image">1. Download Pgvector image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pgvector/README.html#configure-the-username-password-and-dbname">2. Configure the username, password and dbname</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pgvector/README.html#run-pgvector-service">3. Run Pgvector service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pinecone/README.html">Pinecone setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pinecone/README.html#create-pinecone-account-from-the-below-link">1. Create Pinecone account from the below link</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pinecone/README.html#get-api-key">2. Get API key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/pinecone/README.html#create-the-index-in-https-app-pinecone-io">3. Create the index in https://app.pinecone.io/</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/qdrant/README.html">Start Qdrant server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/qdrant/README.html#download-qdrant-image">1. Download Qdrant image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/qdrant/README.html#run-qdrant-service">2. Run Qdrant service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/redis/README.html">Start Redis server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/redis/README.html#download-redis-image">1. Download Redis image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/vectorstores/langchain/redis/README.html#run-redis-service">2. Run Redis service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html">Web Retriever Microservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html#start-microservice-with-docker">Start Microservice with Docker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html#start-tei-service">Start TEI Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html#start-web-retriever-service">Start Web Retriever Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/web_retrievers/langchain/chroma/README.html#consume-web-retriever-service">Consume Web Retriever Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/src/strategy/agentic_rag/README.html">Agentic Rag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIComps/comps/agent/langchain/src/strategy/planexec/README.html">Plan Execute</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deploy/index.html">Deploying GenAI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIInfra/README.html">GenAIInfra</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/README.html#prerequisite">Prerequisite</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/README.html#setup-kubernetes-cluster">Setup Kubernetes cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/README.html#optional-to-run-genaiinfra-on-intel-gaudi-product">(Optional) To run GenAIInfra on Intel Gaudi product:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/README.html#usages">Usages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/README.html#use-genai-microservices-connector-gmc-to-deploy-and-adjust-genaiexamples">Use GenAI Microservices Connector (GMC) to deploy and adjust GenAIExamples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/README.html#use-helm-charts-to-deploy">Use helm charts to deploy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/README.html#use-manifests-to-deploy">Use manifests to deploy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIInfra/DEVELOPMENT.html">Development</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/DEVELOPMENT.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/DEVELOPMENT.html#testing">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/DEVELOPMENT.html#pre-commit-testing">pre-commit testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIInfra/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deploy/index.html#helm-charts">Helm Charts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/README.html">Helm charts for deploying GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/chatqna/README.html">ChatQnA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/chatqna/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/chatqna/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/chatqna/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codegen/README.html">CodeGen</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codegen/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codegen/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codegen/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codetrans/README.html">CodeTrans</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codetrans/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codetrans/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/codetrans/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/docsum/README.html">DocSum</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/docsum/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/docsum/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/docsum/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/asr/README.html">asr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/asr/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/asr/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/asr/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/asr/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/data-prep/README.html">data-prep</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/data-prep/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/data-prep/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/data-prep/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/data-prep/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html">embedding-usvc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/llm-uservice/README.html">llm-uservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/llm-uservice/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/llm-uservice/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/llm-uservice/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/llm-uservice/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/redis-vector-db/README.html">redis-vector-db</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/redis-vector-db/README.html#install-the-chart">Install the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/redis-vector-db/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/redis-vector-db/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html">reranking-usvc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html">retriever-usvc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/speecht5/README.html">speecht5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/speecht5/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/speecht5/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/speecht5/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tei/README.html">tei</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tei/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tei/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tei/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/teirerank/README.html">teirerank</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/teirerank/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/teirerank/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/teirerank/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tgi/README.html">tgi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tgi/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tgi/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tgi/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tts/README.html">tts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tts/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tts/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tts/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/tts/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/web-retriever/README.html">web-retriever</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/web-retriever/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/web-retriever/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/web-retriever/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/web-retriever/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/whisper/README.html">whisper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/whisper/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/whisper/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/helm-charts/common/whisper/README.html#values">Values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deploy/index.html#kubernetes-addons">Kubernetes Addons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/kubernetes-addons/README.html">Deploy Kubernetes add-ons for OPEA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deploy/index.html#microservices-connector">Microservices Connector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/README.html">genai-microservices-connector(GMC)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/README.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/README.html#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/README.html#personas">Personas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/README.html#getting-started">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/usage_guide.html">Usage guide for genai-microservices-connector(GMC)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/usage_guide.html#use-gmc-to-compose-a-chatqna-pipeline">Use GMC to compose a chatQnA Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/usage_guide.html#use-gmc-to-adjust-the-chatqna-pipeline">Use GMC to adjust the chatQnA Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/usage_guide.html#use-gmc-and-istio-to-compose-an-opea-pipeline-with-authentication-and-authorization-enabled">Use GMC and Istio to compose an OPEA Pipeline with authentication and authorization enabled</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/helm/README.html">Helm chart for genai-microservices-connector(GMC)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/helm/README.html#installing-the-gmc-helm-chart">Installing the GMC Helm Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/helm/README.html#check-the-installation-result">Check the installation result</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/helm/README.html#next-step">Next step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/helm/README.html#uninstall">Uninstall</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/config/authN-authZ/README.html">Use GMC and Istio to compose an OPEA Pipeline with authentication and authorization enabled</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/config/authN-authZ/README.html#prerequisite">Prerequisite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/config/authN-authZ/README.html#perform-authentication-and-authorization-via-fake-jwt-tokens">Perform authentication and authorization via fake JWT tokens</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/microservices-connector/config/authN-authZ/README.html#perform-authentication-and-authorization-via-jwt-tokens-generated-by-keycloak">Perform authentication and authorization via JWT tokens generated by Keycloak</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../deploy/index.html#scripts">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/scripts/README.html">Scripts and tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIInfra/scripts/ray/README.html">Deploy Autoscaling Ray Cluster with KubeRay in Kubernetes Cluster</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/scripts/ray/README.html#install-kuberay">Install KubeRay</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/scripts/ray/README.html#start-ray-cluster-with-autoscaling">Start Ray Cluster with Autoscaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/scripts/ray/README.html#delete-ray-cluster-with-autoscaling">Delete Ray Cluster with Autoscaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIInfra/scripts/ray/README.html#uninstall-kuberay">Uninstall KubeRay</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../eval/index.html">Evaluating GenAI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html">GenAIEval</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../README.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../README.html#evaluation">Evaluation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../README.html#lm-evaluation-harness">lm-evaluation-harness</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../README.html#bigcode-evaluation-harness">bigcode-evaluation-harness</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../benchmark/README.html">Stress Test Script</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#usage">Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/README.html#example-commands">Example Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/README.html#running-the-test">Running the Test</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/README.html#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#notes">Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/README.html#logging">Logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../benchmark/grafana/README.html">Setup Prometheus and Grafana to visualize microservice metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/grafana/README.html#setup-prometheus">1. Setup Prometheus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/grafana/README.html#setup-grafana">2. Setup Grafana</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../benchmark/stresscli/README.html">StressCli</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/stresscli/README.html#stresscli-py">stresscli.py</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/stresscli/README.html#prerequirements">Prerequirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/stresscli/README.html#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../benchmark/stresscli/README.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CRUD-RAG</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisite">Prerequisite</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prepare-dataset">Prepare Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#launch-service-of-rag-system">Launch Service of RAG System</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluation">Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../metrics/bleu/README.html">Metric Card for BLEU</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#metric-description">Metric Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#intended-uses">Intended Uses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#how-to-use">How to Use</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/bleu/README.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/bleu/README.html#output-values">Output Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/bleu/README.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#limitations-and-bias">Limitations and Bias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#citation">Citation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../metrics/bleu/README.html#further-references">Further References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../benchmark/stresscli/locust/README.html">locust scripts for OPEA ChatQnA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/stresscli/locust/README.html#configuration-file">Configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../benchmark/stresscli/locust/README.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../autorag/evaluation/README.html">AutoRAG to evaluate the RAG system performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autorag/evaluation/README.html#service-preparation">Service preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autorag/evaluation/README.html#rag-evaluation">RAG evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autorag/evaluation/README.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">OPEA Community</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../community/index.html#community-support">Community Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../community/index.html#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../community/index.html#contributing-guides">Contributing Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../community/CONTRIBUTING.html">Contribution Guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CONTRIBUTING.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CONTRIBUTING.html#all-the-ways-to-contribute">All The Ways To Contribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CONTRIBUTING.html#support">Support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CONTRIBUTING.html#contributor-covenant-code-of-conduct">Contributor Covenant Code of Conduct</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../community/SECURITY.html">Reporting a Vulnerability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/SECURITY.html#script-usage-notice">Script Usage Notice</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#markdown-vs-restructuredtext">Markdown vs. RestructuredText</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#documentation-organization">Documentation Organization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#multi-column-lists">Multi-Column Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#tables">Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#file-names-and-commands">File Names and Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#branch-specific-file-links">Branch-Specific File Links</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#images">Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, Spaces, and Indenting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#background-colors">Background Colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#drawings">Drawings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#alternative-tabbed-content">Alternative Tabbed Content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#instruction-steps">Instruction Steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#first-instruction-step">First Instruction Step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#second-instruction-step">Second Instruction Step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/doc_guidelines.html#documentation-generation">Documentation Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer-guides/graphviz.html">Drawings Using Graphviz</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/graphviz.html#simple-directed-graph">Simple Directed Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/graphviz.html#adding-edge-labels">Adding Edge Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/graphviz.html#tables">Tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/graphviz.html#finite-state-machine">Finite-State Machine</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer-guides/docbuild.html">OPEA Documentation Generation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#documentation-overview">Documentation Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#set-up-the-documentation-working-folders">Set Up the Documentation Working Folders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#install-the-documentation-tools">Install the Documentation Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#documentation-presentation-theme">Documentation Presentation Theme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#run-the-documentation-processors">Run the Documentation Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#publish-content">Publish Content</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#document-versioning">Document Versioning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer-guides/docbuild.html#filter-expected-warnings">Filter Expected Warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../community/index.html#project-governance">Project Governance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#our-pledge">Our Pledge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#our-standards">Our Standards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#enforcement-responsibilities">Enforcement Responsibilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#scope">Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#enforcement">Enforcement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#enforcement-guidelines">Enforcement Guidelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/CODE_OF_CONDUCT.html#attribution">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../community/SECURITY.html">Reporting a Vulnerability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/SECURITY.html#script-usage-notice">Script Usage Notice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../community/index.html#rfc-proposals">RFC Proposals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../community/rfcs.html">Request for Comments (RFCs)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/rfcs/24-05-16-GenAIExamples-001-Using_MicroService_to_implement_ChatQnA.html">24-05-16 GenAIExamples-001 Using MicroService to Implement ChatQnA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/rfcs/24-05-16-OPEA-001-Overall-Design.html">24-05-16 OPEA-001 Overall Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../community/rfcs/24-05-24-OPEA-001-Code-Structure.html">24-05-24 OPEA-001 Code Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../release_notes/v0.8.html">OPEA Release Notes v0.8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.8.html#whats-new-in-opea-v0-8">What’s New in OPEA v0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.8.html#details">Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.8.html#thanks-to-these-contributors">Thanks to these contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../release_notes/v0.7.html">OPEA Release Notes v0.7</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.7.html#opea-highlights">OPEA Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.7.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.7.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.7.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.7.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../release_notes/v0.6.html">OPEA Release Notes v0.6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.6.html#opea-highlight">OPEA Highlight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.6.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.6.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.6.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release_notes/v0.6.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">OPEA™</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!-- Latest -->
+  
+  
+
+  <li><a href="../../../../index.html">Latest</a> &raquo;</li>
+  
+     <li><a href="../../../../eval/index.html">Evaluating GenAI</a> &raquo;</li>
+  
+  <li>CRUD-RAG</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/GenAIEval/evals/evaluation/rag_eval/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+    <!-- div class="admonition important">
+        <p class="admonition-title">Important</p>
+        <p>This is the latest documentation for the development branch of
+        the OPEA Project (main).<br/>Use the drop-down menu on the left to select
+        documentation for a stable release.</p>
+    </div -->
+  
+  
+           <div itemprop="articleBody">
+             
+  <section id="crud-rag">
+<h1>CRUD-RAG<a class="headerlink" href="#crud-rag" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://arxiv.org/abs/2401.17043">CRUD-RAG</a> is a Chinese benchmark for RAG (Retrieval-Augmented Generation) system. This example utilize CRUD-RAG for evaluating the RAG system.</p>
+<section id="prerequisite">
+<h2>Prerequisite<a class="headerlink" href="#prerequisite" title="Link to this heading">¶</a></h2>
+<section id="environment">
+<h3>Environment<a class="headerlink" href="#environment" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="prepare-dataset">
+<h3>Prepare Dataset<a class="headerlink" href="#prepare-dataset" title="Link to this heading">¶</a></h3>
+<p>We use the evaluation dataset from <a class="reference external" href="https://github.com/IAAR-Shanghai/CRUD_RAG">CRUD-RAG</a> repo, use the below command to prepare the dataset.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IAAR-Shanghai/CRUD_RAG
+mkdir<span class="w"> </span>data/
+cp<span class="w"> </span>CRUD_RAG/data/crud_split/split_merged.json<span class="w"> </span>data/
+cp<span class="w"> </span>-r<span class="w"> </span>CRUD_RAG/data/80000_docs/<span class="w"> </span>data/
+python<span class="w"> </span>examples/process_crud_dataset.py
+</pre></div>
+</div>
+</section>
+<section id="launch-service-of-rag-system">
+<h3>Launch Service of RAG System<a class="headerlink" href="#launch-service-of-rag-system" title="Link to this heading">¶</a></h3>
+<p>Please refer to this <a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html"><span class="std std-doc">guide</span></a> to launch the service of RAG system.</p>
+</section>
+</section>
+<section id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h2>
+<p>Use below command to run the evaluation, please note that for the first run, argument <code class="docutils literal notranslate"><span class="pre">--ingest_docs</span></code> should be added in the command to ingest the documents into the vector database, while for the subsequent run, this argument should be omitted.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples
+python<span class="w"> </span>run_crud.py<span class="w"> </span>--dataset_path<span class="w"> </span>../data/split_merged.json<span class="w"> </span>--docs_path<span class="w"> </span>../data/80000_docs<span class="w"> </span>--ingest_docs
+</pre></div>
+</div>
+</section>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading">¶</a></h2>
+<p>This example is mostly adapted from <a class="reference external" href="https://github.com/IAAR-Shanghai/CRUD_RAG">CRUD-RAG</a> repo, we thank the authors for their great work!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../benchmark/stresscli/README.html" class="btn btn-neutral float-left" title="StressCli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../metrics/bleu/README.html" class="btn btn-neutral float-right" title="Metric Card for BLEU" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
+
+<!-- span class="lastupdated">Last updated on Aug 14, 2024. Published on </span -->
+<span class="lastupdated">Published on Aug 14, 2024.</span>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
