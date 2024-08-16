@@ -46,7 +46,7 @@ docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_pr
 Build vllm docker.
 
 ```bash
-docker build --no-cache -t vllm:hpu --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm/docker/Dockerfile.hpu .
+docker build --no-cache -t opea/llm-vllm-hpu:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm/docker/Dockerfile.hpu .
 ```
 
 Build microservice docker.
@@ -60,7 +60,7 @@ docker build --no-cache -t opea/llm-vllm:latest --build-arg https_proxy=$https_p
 Build vllm-on-ray docker.
 
 ```bash
-docker build --no-cache -t vllm_ray:habana --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm-ray/docker/Dockerfile.vllmray .
+docker build --no-cache -t opea/llm-vllm-ray-hpu:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm-ray/docker/Dockerfile.vllmray .
 ```
 
 Build microservice docker.
@@ -124,9 +124,7 @@ Build frontend Docker image that enables Conversational experience with ChatQnA 
 
 ```bash
 cd GenAIExamples/ChatQnA/docker/ui/
-export BACKEND_SERVICE_ENDPOINT="http://${host_ip}:8888/v1/chatqna"
-export DATAPREP_SERVICE_ENDPOINT="http://${host_ip}:6007/v1/dataprep"
-docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy --build-arg BACKEND_SERVICE_ENDPOINT=$BACKEND_SERVICE_ENDPOINT --build-arg DATAPREP_SERVICE_ENDPOINT=$DATAPREP_SERVICE_ENDPOINT -f ./docker/Dockerfile.react .
+docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
 cd ../../../..
 ```
 
@@ -175,9 +173,9 @@ export LLM_MODEL_ID="Intel/neural-chat-7b-v3-3"
 export LLM_MODEL_ID_NAME="neural-chat-7b-v3-3"
 export TEI_EMBEDDING_ENDPOINT="http://${host_ip}:8090"
 export TEI_RERANKING_ENDPOINT="http://${host_ip}:8808"
-export TGI_LLM_ENDPOINT="http://${host_ip}:8008"
-export vLLM_LLM_ENDPOINT="http://${host_ip}:8008"
-export vLLM_RAY_LLM_ENDPOINT="http://${host_ip}:8008"
+export TGI_LLM_ENDPOINT="http://${host_ip}:8005"
+export vLLM_LLM_ENDPOINT="http://${host_ip}:8007"
+export vLLM_RAY_LLM_ENDPOINT="http://${host_ip}:8006"
 export LLM_SERVICE_PORT=9000
 export REDIS_URL="redis://${host_ip}:6379"
 export INDEX_NAME="rag-redis"
@@ -189,8 +187,8 @@ export RERANK_SERVICE_HOST_IP=${host_ip}
 export LLM_SERVICE_HOST_IP=${host_ip}
 export BACKEND_SERVICE_ENDPOINT="http://${host_ip}:8888/v1/chatqna"
 export DATAPREP_SERVICE_ENDPOINT="http://${host_ip}:6007/v1/dataprep"
-export DATAPREP_GET_FILE_ENDPOINT="http://${host_ip}:6008/v1/dataprep/get_file"
-export DATAPREP_DELETE_FILE_ENDPOINT="http://${host_ip}:6009/v1/dataprep/delete_file"
+export DATAPREP_GET_FILE_ENDPOINT="http://${host_ip}:6007/v1/dataprep/get_file"
+export DATAPREP_DELETE_FILE_ENDPOINT="http://${host_ip}:6007/v1/dataprep/delete_file"
 ```
 
 If guardrails microservice is enabled in the pipeline, the below environment variables are necessary to be set.
@@ -298,7 +296,7 @@ curl http://${host_ip}:8000/v1/reranking \
 
 ```bash
 #TGI Service
-curl http://${host_ip}:8008/generate \
+curl http://${host_ip}:8005/generate \
   -X POST \
   -d '{"inputs":"What is Deep Learning?","parameters":{"max_new_tokens":64, "do_sample": true}}' \
   -H 'Content-Type: application/json'
@@ -306,7 +304,7 @@ curl http://${host_ip}:8008/generate \
 
 ```bash
 #vLLM Service
-curl http://${your_ip}:8008/v1/completions \
+curl http://${host_ip}:8007/v1/completions \
   -H "Content-Type: application/json" \
   -d '{
   "model": "${LLM_MODEL_ID}",
@@ -318,7 +316,7 @@ curl http://${your_ip}:8008/v1/completions \
 
 ```bash
 #vLLM-on-Ray Service
-curl http://${your_ip}:8008/v1/chat/completions \
+curl http://${host_ip}:8006/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{"model": "${LLM_MODEL_ID}", "messages": [{"role": "user", "content": "What is Deep Learning?"}]}'
 ```
@@ -367,7 +365,7 @@ This command updates a knowledge base by submitting a list of HTTP links for pro
 Also, you are able to get the file/link list that you uploaded:
 
 ```bash
-curl -X POST "http://${host_ip}:6008/v1/dataprep/get_file" \
+curl -X POST "http://${host_ip}:6007/v1/dataprep/get_file" \
      -H "Content-Type: application/json"
 ```
 
@@ -375,17 +373,17 @@ To delete the file/link you uploaded:
 
 ```bash
 # delete link
-curl -X POST "http://${host_ip}:6009/v1/dataprep/delete_file" \
+curl -X POST "http://${host_ip}:6007/v1/dataprep/delete_file" \
      -d '{"file_path": "https://opea.dev"}' \
      -H "Content-Type: application/json"
 
 # delete file
-curl -X POST "http://${host_ip}:6009/v1/dataprep/delete_file" \
+curl -X POST "http://${host_ip}:6007/v1/dataprep/delete_file" \
      -d '{"file_path": "nke-10k-2023.pdf"}' \
      -H "Content-Type: application/json"
 
 # delete all uploaded files and links
-curl -X POST "http://${host_ip}:6009/v1/dataprep/delete_file" \
+curl -X POST "http://${host_ip}:6007/v1/dataprep/delete_file" \
      -d '{"file_path": "all"}' \
      -H "Content-Type: application/json"
 ```
@@ -397,25 +395,6 @@ curl http://${host_ip}:9090/v1/guardrails\
   -X POST \
   -d '{"text":"How do you buy a tiger in the US?","parameters":{"max_new_tokens":32}}' \
   -H 'Content-Type: application/json'
-```
-
-## Enable LangSmith for Monotoring Application (Optional)
-
-LangSmith offers tools to debug, evaluate, and monitor language models and intelligent agents. It can be used to assess benchmark data for each microservice. Before launching your services with `docker compose -f compose.yaml up -d`, you need to enable LangSmith tracing by setting the `LANGCHAIN_TRACING_V2` environment variable to true and configuring your LangChain API key.
-
-Here's how you can do it:
-
-1. Install the latest version of LangSmith:
-
-```bash
-pip install -U langsmith
-```
-
-2. Set the necessary environment variables:
-
-```bash
-export LANGCHAIN_TRACING_V2=true
-export LANGCHAIN_API_KEY=ls_...
 ```
 
 ## 🚀 Launch the UI
@@ -445,9 +424,8 @@ chaqna-gaudi-conversation-ui-server:
   image: opea/chatqna-conversation-ui:latest
   container_name: chatqna-gaudi-conversation-ui-server
   environment:
-    - no_proxy=${no_proxy}
-    - https_proxy=${https_proxy}
-    - http_proxy=${http_proxy}
+    - APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
+    - APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
   ports:
     - "5174:80"
   depends_on:

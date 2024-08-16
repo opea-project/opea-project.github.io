@@ -16,7 +16,7 @@ cd GenAIComps
 As TGI Gaudi has been officially published as a Docker image, we simply need to pull it:
 
 ```bash
-docker pull ghcr.io/huggingface/tgi-gaudi:1.2.1
+docker pull ghcr.io/huggingface/tgi-gaudi:2.0.1
 ```
 
 ### 2. Build LLM Image
@@ -56,7 +56,7 @@ docker build -t opea/faqgen-react-ui:latest --build-arg https_proxy=$https_proxy
 
 Then run the command `docker images`, you will have the following Docker Images:
 
-1. `ghcr.io/huggingface/tgi-gaudi:1.2.1`
+1. `ghcr.io/huggingface/tgi-gaudi:2.0.1`
 2. `opea/llm-faqgen-tgi:latest`
 3. `opea/faqgen:latest`
 4. `opea/faqgen-ui:latest`
@@ -115,25 +115,6 @@ curl http://${host_ip}:9000/v1/faqgen \
 curl http://${host_ip}:8888/v1/faqgen -H "Content-Type: application/json" -d '{
      "messages": "Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5."
      }'
-```
-
-## Enable LangSmith to Monitor an Application (Optional)
-
-LangSmith offers a suite of tools to debug, evaluate, and monitor language models and intelligent agents. It can be used to assess benchmark data for each microservice. Before launching your services with `docker compose -f compose.yaml up -d`, you need to enable LangSmith tracing by setting the `LANGCHAIN_TRACING_V2` environment variable to true and configuring your LangChain API key.
-
-Here's how you can do it:
-
-1. Install the latest version of LangSmith:
-
-```bash
-pip install -U langsmith
-```
-
-2. Set the necessary environment variables:
-
-```bash
-export LANGCHAIN_TRACING_V2=true
-export LANGCHAIN_API_KEY=ls_...
 ```
 
 ## 🚀 Launch the UI
