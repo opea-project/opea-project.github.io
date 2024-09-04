@@ -10,7 +10,90 @@ ChatQnA architecture shows below:
 
 ChatQnA is implemented on top of [GenAIComps](https://github.com/opea-project/GenAIComps), the ChatQnA Flow Chart shows below:
 
-![Flow Chart](./assets/img/chatqna_flow_chart.png)
+```{mermaid}
+---
+config:
+  flowchart:
+    nodeSpacing: 100
+    rankSpacing: 100
+    curve: linear
+  theme: base
+  themeVariables:
+    fontSize: 42px
+---
+flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style ChatQnA-MegaService stroke:#000000
+    %% Subgraphs %%
+    subgraph ChatQnA-MegaService["ChatQnA-MegaService"]
+        direction LR
+        EM([Embedding <br>]):::blue
+        RET([Retrieval <br>]):::blue
+        RER([Rerank <br>]):::blue
+        LLM([LLM <br>]):::blue
+    end
+    subgraph User Interface
+        direction TB
+        a([User Input Query]):::orchid
+        Ingest([Ingest data]):::orchid
+        UI([UI server<br>]):::orchid
+    end
+    subgraph ChatQnA GateWay
+        direction LR
+        invisible1[ ]:::invisible
+        GW([ChatQnA GateWay<br>]):::orange
+    end
+    subgraph .
+        X([OPEA Micsrservice]):::blue
+        Y{{Open Source Service}}
+        Z([OPEA Gateway]):::orange
+        Z1([UI]):::orchid
+    end
+
+    TEI_RER{{Reranking service<br>}}
+    TEI_EM{{Embedding service <br>}}
+    VDB{{Vector DB<br><br>}}
+    R_RET{{Retriever service <br>}}
+    DP([Data Preparation<br>]):::blue
+    LLM_gen{{LLM Service <br>}}
+
+    %% Data Preparation flow
+    %% Ingest data flow
+    direction LR
+    Ingest[Ingest data] -->|a| UI
+    UI -->|b| DP
+    DP <-.->|c| TEI_EM
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] -->|1| UI
+    UI -->|2| GW
+    GW <==>|3| ChatQnA-MegaService
+    EM ==>|4| RET
+    RET ==>|5| RER
+    RER ==>|6| LLM
+
+
+    %% Embedding service flow
+    direction TB
+    EM <-.->|3'| TEI_EM
+    RET <-.->|4'| R_RET
+    RER <-.->|5'| TEI_RER
+    LLM <-.->|6'| LLM_gen
+
+    direction TB
+    %% Vector DB interaction
+    R_RET <-.->|d|VDB
+    DP <-.->|d|VDB
+
+
+
+
+```
 
 This ChatQnA use case performs RAG using LangChain, Redis VectorDB and Text Generation Inference on Intel Gaudi2 or Intel XEON Scalable Processors. The Intel Gaudi2 accelerator supports both training and inference for deep learning models in particular for LLMs. Visit [Habana AI products](https://habana.ai/products) for more details.
 
@@ -37,6 +120,18 @@ Currently we support two ways of deploying ChatQnA services with docker compose:
    ```
 
 2. Start services using the docker images `built from source`: [Guide](./docker)
+
+### Required Models
+
+By default, the embedding, reranking and LLM models are set to a default value as listed below:
+
+| Service   | Model                     |
+| --------- | ------------------------- |
+| Embedding | BAAI/bge-base-en-v1.5     |
+| Reranking | BAAI/bge-reranker-base    |
+| LLM       | Intel/neural-chat-7b-v3-3 |
+
+Change the `xxx_MODEL_ID` in `docker/xxx/set_env.sh` for your needs.
 
 ### Setup Environment Variable
 
@@ -128,6 +223,19 @@ Refer to the [AI PC Guide](./docker/aipc/README.md) for instructions on deployin
 Refer to the [Intel Technology enabling for Openshift readme](https://github.com/intel/intel-technology-enabling-for-openshift/blob/main/workloads/opea/chatqna/README.md) for instructions to deploy ChatQnA prototype on RHOCP with [Red Hat OpenShift AI (RHOAI)](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai).
 
 ## Consume ChatQnA Service
+
+Before consuming ChatQnA Service, make sure the TGI/vLLM service is ready (which takes up to 2 minutes to start).
+
+```bash
+# TGI example
+docker logs tgi-service | grep Connected
+```
+
+Consume ChatQnA service until you get the TGI response like below.
+
+```log
+2024-09-03T02:47:53.402023Z  INFO text_generation_router::server: router/src/server.rs:2311: Connected
+```
 
 Two ways of consuming ChatQnA Service:
 
