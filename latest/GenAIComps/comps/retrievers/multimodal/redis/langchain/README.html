@@ -323,7 +323,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html">Build MegaService of CodeGen on Xeon</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#create-an-aws-xeon-instance">🚀 Create an AWS Xeon Instance</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#download-or-build-docker-images">🚀 Download or Build Docker Images</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#launch-the-react-based-ui-optional">🚀 Launch the React Based UI (Optional)</a></li>
@@ -1303,7 +1303,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../llms/text-generation/vllm/langchain/README.html#set-up-llm-microservice">🚀3. Set up LLM microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../llms/text-generation/vllm/langchain/README.html#id3">Build docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../llms/text-generation/vllm/langchain/README.html#launch-the-microservice">Launch the microservice</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../llms/text-generation/vllm/langchain/README.html#query-the-microservice">Query the microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../llms/text-generation/vllm/langchain/README.html#consume-the-microservice">Consume the microservice</a></li>
 </ul>
 </li>
 </ul>
@@ -2553,7 +2553,7 @@ Remember to ingest data into it manually.</p>
 <section id="build-docker-image">
 <h3>2.2 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../../
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/multimodal-retriever-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/multimodal/redis/langchain/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/retriever-multimodal-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/multimodal/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <p>To start a docker container, you have two options:</p>
@@ -2565,7 +2565,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-docker-with-cli-option-a">
 <h3>2.3 Run Docker with CLI (Option A)<a class="headerlink" href="#run-docker-with-cli-option-a" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;multimodal-retriever-redis-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="nv">$REDIS_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="nv">$INDEX_NAME</span><span class="w"> </span>opea/multimodal-retriever-redis:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;retriever-multimodal-redis&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="nv">$REDIS_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="nv">$INDEX_NAME</span><span class="w"> </span>opea/retriever-multimodal-redis:latest
 </pre></div>
 </div>
 </section>
@@ -2636,8 +2636,8 @@ curl<span class="w"> </span>http://localhost:7000/v1/multimodal_retrieval<span c
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<!-- span class="lastupdated">Last updated on Sep 12, 2024. Published on </span -->
-<span class="lastupdated">Published on Sep 12, 2024.</span>
+<!-- span class="lastupdated">Last updated on Sep 13, 2024. Published on </span -->
+<span class="lastupdated">Published on Sep 13, 2024.</span>
 
   </div>
 
