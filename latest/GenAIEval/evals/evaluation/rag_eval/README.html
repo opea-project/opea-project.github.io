@@ -323,7 +323,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html">Build MegaService of CodeGen on Xeon</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#create-an-aws-xeon-instance">🚀 Create an AWS Xeon Instance</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#build-docker-images">🚀 Build Docker Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#download-or-build-docker-images">🚀 Download or Build Docker Images</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#start-microservices-and-megaservice">🚀 Start Microservices and MegaService</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#launch-the-ui">🚀 Launch the UI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html#launch-the-react-based-ui-optional">🚀 Launch the React Based UI (Optional)</a></li>
@@ -1303,7 +1303,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html#set-up-llm-microservice">🚀3. Set up LLM microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html#id3">Build docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html#launch-the-microservice">Launch the microservice</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html#query-the-microservice">Query the microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html#consume-the-microservice">Consume the microservice</a></li>
 </ul>
 </li>
 </ul>
@@ -2570,7 +2570,10 @@
 <h2>Prerequisite<a class="headerlink" href="#prerequisite" title="Link to this heading">¶</a></h2>
 <section id="environment">
 <h3>Environment<a class="headerlink" href="#environment" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIEval
+<span class="nb">cd</span><span class="w"> </span>GenAIEval
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2594,7 +2597,7 @@
 <section id="prepare-dataset">
 <h3>Prepare Dataset<a class="headerlink" href="#prepare-dataset" title="Link to this heading">¶</a></h3>
 <p>We use the evaluation dataset from <a class="reference external" href="https://github.com/yixuantt/MultiHop-RAG">MultiHop-RAG</a> repo, use the below command to prepare the dataset.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>evals/evaluation/rag_eval/examples
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yixuantt/MultiHop-RAG.git
 </pre></div>
 </div>
@@ -2602,7 +2605,83 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yixua
 <section id="evaluation">
 <h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h3>
 <p>Use below command to run the evaluation, please note that for the first run, argument <code class="docutils literal notranslate"><span class="pre">--ingest_docs</span></code> should be added in the command to ingest the documents into the vector database, while for the subsequent run, this argument should be omitted. Set <code class="docutils literal notranslate"><span class="pre">--retrieval_metrics</span></code> to get retrieval related metrics (MRR&#64;10/MAP&#64;10/Hits&#64;10/Hits&#64;4). Set <code class="docutils literal notranslate"><span class="pre">--ragas_metrics</span></code> and <code class="docutils literal notranslate"><span class="pre">--llm_endpoint</span></code> to get end-to-end rag pipeline metrics (faithfulness/answer_relevancy/…), which are judged by LLMs. We set <code class="docutils literal notranslate"><span class="pre">--limits</span></code> is 100 as default, which means only 100 examples are evaluated by llm-as-judge as it is very time consuming.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>eval_multihop.py<span class="w"> </span>--docs_path<span class="w"> </span>MultiHop-RAG/dataset/corpus.json<span class="w">  </span>--dataset_path<span class="w"> </span>MultiHop-RAG/dataset/MultiHopRAG.json<span class="w"> </span>--ingest_docs<span class="w"> </span>--retrieval_metrics<span class="w"> </span>--ragas_metrics<span class="w"> </span>--llm_endpoint<span class="w"> </span>http://<span class="o">{</span>your_ip<span class="o">}</span>:<span class="o">{</span>your_llm_port<span class="o">}</span>/generate
+<p>If you are using docker compose to deploy RAG system, you can simply run the evaluation as following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>eval_multihop.py<span class="w"> </span>--docs_path<span class="w"> </span>MultiHop-RAG/dataset/corpus.json<span class="w">  </span>--dataset_path<span class="w"> </span>MultiHop-RAG/dataset/MultiHopRAG.json<span class="w"> </span>--ingest_docs<span class="w"> </span>--retrieval_metrics<span class="w"> </span>--ragas_metrics<span class="w"> </span>--llm_endpoint<span class="w"> </span>http://<span class="o">{</span>llm_as_judge_ip<span class="o">}</span>:<span class="o">{</span>llm_as_judge_port<span class="o">}</span>/generate
+</pre></div>
+</div>
+<p>If you are using Kubernetes manifest/helm to deploy RAG system, you must specify more arguments as following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>eval_multihop.py<span class="w"> </span>--docs_path<span class="w"> </span>MultiHop-RAG/dataset/corpus.json<span class="w">  </span>--dataset_path<span class="w"> </span>MultiHop-RAG/dataset/MultiHopRAG.json<span class="w"> </span>--ingest_docs<span class="w"> </span>--retrieval_metrics<span class="w"> </span>--ragas_metrics<span class="w"> </span>--llm_endpoint<span class="w"> </span>http://<span class="o">{</span>llm_as_judge_ip<span class="o">}</span>:<span class="o">{</span>llm_as_judge_port<span class="o">}</span>/generate<span class="w"> </span>--database_endpoint<span class="w"> </span>http://<span class="o">{</span>your_dataprep_ip<span class="o">}</span>:<span class="o">{</span>your_dataprep_port<span class="o">}</span>/v1/dataprep<span class="w"> </span>--embedding_endpoint<span class="w"> </span>http://<span class="o">{</span>your_embedding_ip<span class="o">}</span>:<span class="o">{</span>your_embedding_port<span class="o">}</span>/v1/embeddings<span class="w"> </span>--tei_embedding_endpoint<span class="w"> </span>http://<span class="o">{</span>your_tei_embedding_ip<span class="o">}</span>:<span class="o">{</span>your_tei_embedding_port<span class="o">}</span><span class="w"> </span>--retrieval_endpoint<span class="w"> </span>http://<span class="o">{</span>your_retrieval_ip<span class="o">}</span>:<span class="o">{</span>your_retrieval_port<span class="o">}</span>/v1/retrieval<span class="w"> </span>--service_url<span class="w"> </span>http://<span class="o">{</span>your_chatqna_ip<span class="o">}</span>:<span class="o">{</span>your_chatqna_port<span class="o">}</span>/v1/chatqna
+</pre></div>
+</div>
+<p>The default values for arguments are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>service_url</p></td>
+<td><p>http://localhost:8888/v1/chatqna</p></td>
+</tr>
+<tr class="row-odd"><td><p>database_endpoint</p></td>
+<td><p>http://localhost:6007/v1/dataprep</p></td>
+</tr>
+<tr class="row-even"><td><p>embedding_endpoint</p></td>
+<td><p>http://localhost:6000/v1/embeddings</p></td>
+</tr>
+<tr class="row-odd"><td><p>tei_embedding_endpoint</p></td>
+<td><p>http://localhost:8090</p></td>
+</tr>
+<tr class="row-even"><td><p>retrieval_endpoint</p></td>
+<td><p>http://localhost:7000/v1/retrieval</p></td>
+</tr>
+<tr class="row-odd"><td><p>reranking_endpoint</p></td>
+<td><p>http://localhost:8000/v1/reranking</p></td>
+</tr>
+<tr class="row-even"><td><p>output_dir</p></td>
+<td><p>./output</p></td>
+</tr>
+<tr class="row-odd"><td><p>temperature</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-even"><td><p>max_new_tokens</p></td>
+<td><p>1280</p></td>
+</tr>
+<tr class="row-odd"><td><p>chunk_size</p></td>
+<td><p>256</p></td>
+</tr>
+<tr class="row-even"><td><p>chunk_overlap</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>search_type</p></td>
+<td><p>similarity</p></td>
+</tr>
+<tr class="row-even"><td><p>retrival_k</p></td>
+<td><p>10</p></td>
+</tr>
+<tr class="row-odd"><td><p>fetch_k</p></td>
+<td><p>20</p></td>
+</tr>
+<tr class="row-even"><td><p>lambda_mult</p></td>
+<td><p>0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataset_path</p></td>
+<td><p>../data/split_merged.json</p></td>
+</tr>
+<tr class="row-even"><td><p>docs_path</p></td>
+<td><p>../data/80000_docs</p></td>
+</tr>
+<tr class="row-odd"><td><p>tasks</p></td>
+<td><p>[“question_answering”]</p></td>
+</tr>
+<tr class="row-even"><td><p>limits</p></td>
+<td><p>100</p></td>
+</tr>
+</tbody>
+</table>
+<p>You can check arguments details use below command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>eval_multihop.py<span class="w"> </span>--help
 </pre></div>
 </div>
 </section>
@@ -2613,7 +2692,8 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yixua
 <section id="id1">
 <h3>Prepare Dataset<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <p>We use the evaluation dataset from <a class="reference external" href="https://github.com/IAAR-Shanghai/CRUD_RAG">CRUD-RAG</a> repo, use the below command to prepare the dataset.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IAAR-Shanghai/CRUD_RAG
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>evals/evaluation/rag_eval
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IAAR-Shanghai/CRUD_RAG
 mkdir<span class="w"> </span>data/
 cp<span class="w"> </span>CRUD_RAG/data/crud_split/split_merged.json<span class="w"> </span>data/
 cp<span class="w"> </span>-r<span class="w"> </span>CRUD_RAG/data/80000_docs/<span class="w"> </span>data/
@@ -2628,8 +2708,67 @@ python<span class="w"> </span>examples/process_crud_dataset.py
 <section id="id3">
 <h3>Evaluation<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <p>Use below command to run the evaluation, please note that for the first run, argument <code class="docutils literal notranslate"><span class="pre">--ingest_docs</span></code> should be added in the command to ingest the documents into the vector database, while for the subsequent run, this argument should be omitted.</p>
+<p>If you are using docker compose to deploy RAG system, you can simply run the evaluation as following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples
 python<span class="w"> </span>eval_crud.py<span class="w"> </span>--dataset_path<span class="w"> </span>../data/split_merged.json<span class="w"> </span>--docs_path<span class="w"> </span>../data/80000_docs<span class="w"> </span>--ingest_docs
+</pre></div>
+</div>
+<p>If you are using Kubernetes manifest/helm to deploy RAG system, you must specify more arguments as following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples
+python<span class="w"> </span>eval_crud.py<span class="w"> </span>--dataset_path<span class="w"> </span>../data/split_merged.json<span class="w"> </span>--docs_path<span class="w"> </span>../data/80000_docs<span class="w"> </span>--ingest_docs<span class="w"> </span>--database_endpoint<span class="w"> </span>http://<span class="o">{</span>your_dataprep_ip<span class="o">}</span>:<span class="o">{</span>your_dataprep_port<span class="o">}</span>/v1/dataprep<span class="w"> </span>--embedding_endpoint<span class="w"> </span>http://<span class="o">{</span>your_embedding_ip<span class="o">}</span>:<span class="o">{</span>your_embedding_port<span class="o">}</span>/v1/embeddings<span class="w"> </span>--retrieval_endpoint<span class="w"> </span>http://<span class="o">{</span>your_retrieval_ip<span class="o">}</span>:<span class="o">{</span>your_retrieval_port<span class="o">}</span>/v1/retrieval<span class="w"> </span>--service_url<span class="w"> </span>http://<span class="o">{</span>your_chatqna_ip<span class="o">}</span>:<span class="o">{</span>your_chatqna_port<span class="o">}</span>/v1/chatqna
+</pre></div>
+</div>
+<p>The default values for arguments are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>service_url</p></td>
+<td><p>http://localhost:8888/v1/chatqna</p></td>
+</tr>
+<tr class="row-odd"><td><p>database_endpoint</p></td>
+<td><p>http://localhost:6007/v1/dataprep</p></td>
+</tr>
+<tr class="row-even"><td><p>embedding_endpoint</p></td>
+<td><p>http://localhost:6000/v1/embeddings</p></td>
+</tr>
+<tr class="row-odd"><td><p>retrieval_endpoint</p></td>
+<td><p>http://localhost:7000/v1/retrieval</p></td>
+</tr>
+<tr class="row-even"><td><p>reranking_endpoint</p></td>
+<td><p>http://localhost:8000/v1/reranking</p></td>
+</tr>
+<tr class="row-odd"><td><p>output_dir</p></td>
+<td><p>./output</p></td>
+</tr>
+<tr class="row-even"><td><p>temperature</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_new_tokens</p></td>
+<td><p>1280</p></td>
+</tr>
+<tr class="row-even"><td><p>chunk_size</p></td>
+<td><p>256</p></td>
+</tr>
+<tr class="row-odd"><td><p>chunk_overlap</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-even"><td><p>dataset_path</p></td>
+<td><p>../data/split_merged.json</p></td>
+</tr>
+<tr class="row-odd"><td><p>docs_path</p></td>
+<td><p>../data/80000_docs</p></td>
+</tr>
+<tr class="row-even"><td><p>tasks</p></td>
+<td><p>[“question_answering”]</p></td>
+</tr>
+</tbody>
+</table>
+<p>You can check arguments details use below command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>eval_crud.py<span class="w"> </span>--help
 </pre></div>
 </div>
 </section>
@@ -2654,8 +2793,8 @@ python<span class="w"> </span>eval_crud.py<span class="w"> </span>--dataset_path
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<!-- span class="lastupdated">Last updated on Sep 12, 2024. Published on </span -->
-<span class="lastupdated">Published on Sep 12, 2024.</span>
+<!-- span class="lastupdated">Last updated on Sep 13, 2024. Published on </span -->
+<span class="lastupdated">Published on Sep 13, 2024.</span>
 
   </div>
 
