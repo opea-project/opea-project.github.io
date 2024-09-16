@@ -2081,7 +2081,7 @@ GenAIExamples and deploy them as microservices.</p>
 </div>
 <p>Checkout the release tag</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIComps</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v0</span><span class="mf">.9</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
 </pre></div>
 </div>
 <p>The examples utilize model weights from HuggingFace and langchain.</p>
@@ -2119,33 +2119,33 @@ the images will be pushed to docker hub soon by Intel.</p>
 <section id="build-dataprep-image">
 <h4>Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/docker/Dockerfile .
+  --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
 </pre></div>
 </div>
 </section>
 <section id="build-embedding-image">
 <h4>Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/embedding-tei:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f comps/embeddings/langchain/docker/Dockerfile .
+  --build-arg http_proxy=$http_proxy -f comps/embeddings/tei/langchain/Dockerfile .
 </pre></div>
 </div>
 </section>
 <section id="build-retriever-image">
 <h4>Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f comps/retrievers/langchain/redis/docker/Dockerfile .
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy \
+  --build-arg http_proxy=$http_proxy -f comps/retrievers/redis/langchain/Dockerfile .
 </pre></div>
 </div>
 </section>
 <section id="build-rerank-image">
 <h4>Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/reranking-tei:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f comps/reranks/tei/docker/Dockerfile .
+  --build-arg http_proxy=$http_proxy -f comps/reranks/tei/Dockerfile .
 </pre></div>
 </div>
 </section>
-<section id="build-docker">
-<h4>Build docker<a class="headerlink" href="#build-docker" title="Link to this heading">¶</a></h4>
+<section id="build-llm-image">
+<h4>Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h4>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-0">
@@ -2161,8 +2161,9 @@ cd ..
 <p>Next, we’ll build the vllm microservice docker. This will set the entry point
 needed for the vllm to suit the ChatQnA examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-vllm:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy \
-   -f comps/llms/text-generation/vllm/docker/Dockerfile.microservice .
+  --build-arg http_proxy=$http_proxy \
+  -f comps/llms/text-generation/vllm/langchain/Dockerfile.microservice .
+
 </pre></div>
 </div>
 </div>
@@ -2170,7 +2171,7 @@ needed for the vllm to suit the ChatQnA examples</p>
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-1">
 TGI</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
+  --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
 </pre></div>
 </div>
 </div>
@@ -2188,12 +2189,12 @@ on. You can also add newer or remove some microservices and customize the
 megaservice to suit the needs.</p>
 <p>Build the megaservice image for this use case</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v0</span><span class="mf">.9</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/chatqna:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f Dockerfile .
+  --build-arg http_proxy=$http_proxy -f Dockerfile .
 </pre></div>
 </div>
 </section>
@@ -2203,16 +2204,16 @@ megaservice to suit the needs.</p>
 <h4>Build the UI Image<a class="headerlink" href="#build-the-ui-image" title="Link to this heading">¶</a></h4>
 <p>As mentioned, you can build 2 modes of UI</p>
 <p><em>Basic UI</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/docker/ui/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
 docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
+  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
 </pre></div>
 </div>
 <p><em>Conversation UI</em>
 If you want a conversational experience with chatqna megaservice.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/chatqna-conversation-ui:latest \
-   --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \
-   -f ./docker/Dockerfile.react .
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
+docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy \
+  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
 </pre></div>
 </div>
 </section>
@@ -2230,7 +2231,7 @@ vllm</label><div class="sd-tab-content docutils">
 <li><p>opea/retriever-redis:latest</p></li>
 <li><p>opea/reranking-tei:latest</p></li>
 <li><p>opea/vllm:latest</p></li>
-<li><p>opea/chatqna:latest  or  opea/chatqna-guardrails:latest</p></li>
+<li><p>opea/chatqna:latest</p></li>
 <li><p>opea/chatqna-ui:latest</p></li>
 <li><p>opea/llm-vllm:latest</p></li>
 </ul>
@@ -2243,8 +2244,7 @@ TGI</label><div class="sd-tab-content docutils">
 <li><p>opea/embedding-tei:latest</p></li>
 <li><p>opea/retriever-redis:latest</p></li>
 <li><p>opea/reranking-tei:latest</p></li>
-<li><p>opea/vllm:latest</p></li>
-<li><p>opea/chatqna:latest  or  opea/chatqna-guardrails:latest</p></li>
+<li><p>opea/chatqna:latest</p></li>
 <li><p>opea/chatqna-ui:latest</p></li>
 <li><p>opea/llm-tgi:latest</p></li>
 </ul>
@@ -2377,7 +2377,7 @@ export INDEX_NAME=&quot;rag-redis&quot;
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;
 export EMBEDDING_SERVICE_HOST_IP=${host_ip}
 export RETRIEVER_SERVICE_HOST_IP=${host_ip}
-export TEI_EMBEDDING_ENDPOINT=&quot;http://${host_ip}:8090&quot;
+export TEI_EMBEDDING_ENDPOINT=&quot;http://${host_ip}:6006&quot;
 </pre></div>
 </div>
 </section>
@@ -2396,10 +2396,9 @@ export RERANK_SERVICE_HOST_IP=${host_ip}
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-6">
 vllm</label><div class="sd-tab-content docutils">
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID=&quot;Intel/neural-chat-7b-v3-3&quot;
-export LLM_MODEL_ID_NAME=&quot;neural-chat-7b-v3-3&quot;
 export LLM_SERVICE_HOST_IP=${host_ip}
 export LLM_SERVICE_PORT=9000
-export vLLM_LLM_ENDPOINT=&quot;http://${host_ip}:8007&quot;
+export vLLM_LLM_ENDPOINT=&quot;http://${host_ip}:9009&quot;
 </pre></div>
 </div>
 </div>
@@ -2407,10 +2406,9 @@ export vLLM_LLM_ENDPOINT=&quot;http://${host_ip}:8007&quot;
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-7">
 TGI</label><div class="sd-tab-content docutils">
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID=&quot;Intel/neural-chat-7b-v3-3&quot;
-export LLM_MODEL_ID_NAME=&quot;neural-chat-7b-v3-3&quot;
 export LLM_SERVICE_HOST_IP=${host_ip}
 export LLM_SERVICE_PORT=9000
-export TGI_LLM_ENDPOINT=&quot;http://${host_ip}:8007&quot;
+export TGI_LLM_ENDPOINT=&quot;http://${host_ip}:9009&quot;
 </pre></div>
 </div>
 </div>
@@ -2420,14 +2418,6 @@ export TGI_LLM_ENDPOINT=&quot;http://${host_ip}:8007&quot;
 <h3>Megaservice<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export MEGA_SERVICE_HOST_IP=${host_ip}
 export BACKEND_SERVICE_ENDPOINT=&quot;http://${host_ip}:8888/v1/chatqna&quot;
-</pre></div>
-</div>
-</section>
-<section id="guardrails">
-<h3>Guardrails<a class="headerlink" href="#guardrails" title="Link to this heading">¶</a></h3>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export GUARDRAILS_MODEL_ID=&quot;meta-llama/Meta-Llama-Guard-2-8B&quot;
-export SAFETY_GUARD_MODEL_ID=&quot;meta-llama/Meta-Llama-Guard-2-8B&quot;
-export SAFETY_GUARD_ENDPOINT=&quot;http://${host_ip}:8088&quot;
 </pre></div>
 </div>
 </section>
@@ -2441,7 +2431,7 @@ above mentioned services as containers.</p>
 <input checked="checked" id="sd-tab-item-8" name="sd-tab-set-4" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-8">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker</span><span class="o">/</span><span class="n">xeon</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span>
 <span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
@@ -2449,7 +2439,7 @@ vllm</label><div class="sd-tab-content docutils">
 <input id="sd-tab-item-9" name="sd-tab-set-4" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-9">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker</span><span class="o">/</span><span class="n">xeon</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span>
 <span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
@@ -2459,13 +2449,15 @@ TGI</label><div class="sd-tab-content docutils">
 <h3>Validate microservice<a class="headerlink" href="#validate-microservice" title="Link to this heading">¶</a></h3>
 <section id="check-env-variables">
 <h4>Check Env Variables<a class="headerlink" href="#check-env-variables" title="Link to this heading">¶</a></h4>
-<p>Check the start up log by <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">./docker/xeon/compose_vllm.yaml</span> <span class="pre">logs</span></code>.
-The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-10" name="sd-tab-set-5" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-10">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker/xeon$ docker compose -f ./compose_vllm.yaml up -d
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Check the start up log by `docker compose -f ./compose_vllm.yaml logs`.
+</pre></div>
+</div>
+<p>The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose_vllm.yaml up -d
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
@@ -2474,14 +2466,18 @@ WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to 
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
-WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker/xeon/compose.yaml: `version` is obsolete
+WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml: `version` is obsolete
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-11" name="sd-tab-set-5" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-11">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker/xeon$ docker compose -f ./compose.yaml up -d
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Check the start up log by `docker compose -f ./compose.yaml logs`.
+</pre></div>
+</div>
+<p>The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose.yaml up -d
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
@@ -2490,7 +2486,7 @@ WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to 
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
-WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker/xeon/compose.yaml: `version` is obsolete
+WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml: `version` is obsolete
 </pre></div>
 </div>
 </div>
@@ -2715,7 +2711,7 @@ vllm</label><div class="sd-tab-content docutils">
      &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;
 </pre></div>
 </div>
-<p>vLLM service generate text for the input prompt. Here is the expected result
+<p>vLLM service generates text for the input prompt. Here is the expected result
 from vllm:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span><span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.</span><span class="se">\n\n</span><span class="s2">Deep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="p">}</span>
 </pre></div>
@@ -2757,7 +2753,6 @@ TGI</label><div class="sd-tab-content docutils">
 </section>
 <section id="llm-microservice">
 <h3>LLM Microservice<a class="headerlink" href="#llm-microservice" title="Link to this heading">¶</a></h3>
-<p><a class="reference internal" href="#/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#7-llm-microservice"><code class="xref myst docutils literal notranslate"><span class="pre">/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#7-llm-microservice</span></code></a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions\
   -X POST \
   -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,\
@@ -2790,7 +2785,6 @@ TGI</label><div class="sd-tab-content docutils">
 </section>
 <section id="id1">
 <h3>MegaService<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<p><a class="reference internal" href="#/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#8-megaservice"><code class="xref myst docutils literal notranslate"><span class="pre">/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#8-megaservice</span></code></a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna -H &quot;Content-Type: application/json&quot; -d &#39;{
      &quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;,
      &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;
@@ -2838,7 +2832,6 @@ TGI</label><div class="sd-tab-content docutils">
 </section>
 <section id="check-docker-container-log">
 <h2>Check docker container log<a class="headerlink" href="#check-docker-container-log" title="Link to this heading">¶</a></h2>
-<p><a class="reference internal" href="#/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#3-check-docker-container-log"><code class="xref myst docutils literal notranslate"><span class="pre">/GenAIExamples/ChatQnA/docker/xeon/how_to_validate_service.md#3-check-docker-container-log</span></code></a></p>
 <p>Check the log of container by:</p>
 <p><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">&lt;CONTAINER</span> <span class="pre">ID&gt;</span> <span class="pre">-t</span></code></p>
 <p>Check the log by  <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">f7a08f9867f9</span> <span class="pre">-t</span></code>.</p>
@@ -2853,7 +2846,7 @@ TGI</label><div class="sd-tab-content docutils">
 <input checked="checked" id="sd-tab-item-16" name="sd-tab-set-8" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-16">
 vllm</label><div class="sd-tab-content docutils">
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker/xeon/compose_vllm.yaml</span></code></p>
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>vllm_service:
     image: ${REGISTRY:-opea}/vllm:${TAG:-latest}
     container_name: vllm-service
@@ -2876,7 +2869,7 @@ vllm</label><div class="sd-tab-content docutils">
 <input id="sd-tab-item-17" name="sd-tab-set-8" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-17">
 TGI</label><div class="sd-tab-content docutils">
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker/xeon/compose.yaml</span></code></p>
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> tgi-service:
     image: ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu
     container_name: tgi-service
@@ -2907,18 +2900,78 @@ compose.yaml is the mega service docker-compose configuration file.</p>
 <input checked="checked" id="sd-tab-item-18" name="sd-tab-set-9" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-18">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker</span><span class="o">-</span><span class="n">composer</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-19" name="sd-tab-set-9" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-19">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker</span><span class="o">-</span><span class="n">composer</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="launch-ui">
+<h2>Launch UI<a class="headerlink" href="#launch-ui" title="Link to this heading">¶</a></h2>
+<section id="basic-ui">
+<h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
+<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:5173&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="conversational-ui">
+<h3>Conversational UI<a class="headerlink" href="#conversational-ui" title="Link to this heading">¶</a></h3>
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the compose.yaml file. Replace chaqna-xeon-ui-server service with the chatqna-xeon-conversation-ui-server service as per the config below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>chaqna-xeon-conversation-ui-server:
+  image: opea/chatqna-conversation-ui:latest
+  container_name: chatqna-xeon-conversation-ui-server
+  environment:
+    - APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
+    - APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
+  ports:
+    - &quot;5174:80&quot;
+  depends_on:
+    - chaqna-xeon-backend-server
+  ipc: host
+  restart: always
+</pre></div>
+</div>
+<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:80&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="stop-the-services">
+<h3>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h3>
+<p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-20" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-20">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-21" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-21">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
