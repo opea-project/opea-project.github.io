@@ -1,14 +1,12 @@
-# Single node on-prem deployment with vLLM or TGI on Xeon Scalable processors
+# Single node on-prem deployment with TGI on Nvidia gpu
 
 This deployment section covers single-node on-prem deployment of the ChatQnA
-example with OPEA comps to deploy using vLLM or TGI service. There are several
+example with OPEA comps to deploy using TGI service. There are several
 slice-n-dice ways to enable RAG with vectordb and LLM models, but here we will
 be covering one option of doing it for convenience : we will be showcasing  how
 to build an e2e chatQnA with Redis VectorDB and neural-chat-7b-v3-3 model,
-deployed on IDC. For more information on how to setup IDC instance to proceed,
-Please follow the instructions here (*** getting started section***). If you do
-not have an IDC instance you can skip the step and make sure that all the
-(***system level validation***) metrics are addressed such as docker versions.
+deployed on on-prem. If you do not have an IDC instance you can skip 
+the step and make sure that all the (***system level validation***) metrics are addressed such as docker versions.
 
 ## Overview
 
@@ -20,10 +18,10 @@ GenAIComps to deploy a single node vLLM or TGI megaservice solution.
 2. Embedding
 3. Retriever
 4. Reranking
-5. LLM with vLLM or TGI
+5. LLM with TGI
 
 The solution is aimed to show how to use Redis vectordb for RAG and
-neural-chat-7b-v3-3 model on Intel Xeon Scalable processors. We will go through
+neural-chat-7b-v3-3 model on Nvidia GPU. We will go through
 how to setup docker container to start a microservices and megaservice . The
 solution will then utilize a sample Nike dataset which is in PDF format. Users
 can then ask a question about Nike and get a chat-like response by default for
@@ -95,62 +93,36 @@ From within the `GenAIComps` folder
 #### Build Dataprep Image
 
 ```
-docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
+docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
 ```
 
 #### Build Embedding Image
 
 ```
-docker build --no-cache -t opea/embedding-tei:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/embeddings/tei/langchain/Dockerfile .
+docker build --no-cache -t opea/embedding-tei:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/embeddings/tei/langchain/Dockerfile .
 ```
 
 #### Build Retriever Image
 
 ```
- docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/retrievers/redis/langchain/Dockerfile .
+ docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/retrievers/redis/langchain/Dockerfile .
 ```
 
 #### Build Rerank Image
 
 ```
-docker build --no-cache -t opea/reranking-tei:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/reranks/tei/Dockerfile .
+docker build --no-cache -t opea/reranking-tei:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/reranks/tei/Dockerfile .
 ```
 
 #### Build LLM Image
 
 ::::{tab-set}
 
-:::{tab-item} vllm
-:sync: vllm
-
-We build the vllm docker image from source
-```
-git clone https://github.com/vllm-project/vllm.git
-cd ./vllm/
-docker build --no-cache -t opea/vllm:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f Dockerfile.cpu .
-cd ..
-```
-
-Next, we'll build the vllm microservice docker. This will set the entry point
-needed for the vllm to suit the ChatQnA examples
-```
-docker build --no-cache -t opea/llm-vllm:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy \
-  -f comps/llms/text-generation/vllm/langchain/Dockerfile.microservice .
-
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
 ```
-docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
+docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
 ```
 :::
 ::::
@@ -174,8 +146,7 @@ git checkout tags/v1.0
 ```
 
 ```
-docker build --no-cache -t opea/chatqna:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f Dockerfile .
+docker build --no-cache -t opea/chatqna:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f Dockerfile .
 ```
 
 ### Build Other Service images
@@ -188,8 +159,7 @@ As mentioned, you can build 2 modes of UI
 
 ```
 cd GenAIExamples/ChatQnA/ui/
-docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
+docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
 ```
 
 *Conversation UI*
@@ -197,26 +167,14 @@ If you want a conversational experience with chatqna megaservice.
 
 ```
 cd GenAIExamples/ChatQnA/ui/
-docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
+docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
 ```
 
 ### Sanity Check
 Check if you have the below set of docker images, before moving on to the next step:
 
 ::::{tab-set}
-:::{tab-item} vllm
-:sync: vllm
 
-* opea/dataprep-redis:latest
-* opea/embedding-tei:latest
-* opea/retriever-redis:latest
-* opea/reranking-tei:latest
-* opea/vllm:latest
-* opea/chatqna:latest
-* opea/chatqna-ui:latest
-* opea/llm-vllm:latest
-:::
 :::{tab-item} TGI
 :sync: TGI
 
@@ -238,21 +196,6 @@ with the tools
 
 ::::{tab-set}
 
-:::{tab-item} vllm
-:sync: vllm
-
-|use case components | Tools |   Model     | Service Type |
-|----------------     |--------------|-----------------------------|-------|
-|Data Prep            |  LangChain   | NA                       |OPEA Microservice |
-|VectorDB             |  Redis       | NA                       |Open source service|
-|Embedding            |   TEI        | BAAI/bge-base-en-v1.5    |OPEA Microservice |
-|Reranking            |   TEI        | BAAI/bge-reranker-base   | OPEA Microservice |
-|LLM                  |   vLLM       |Intel/neural-chat-7b-v3-3 |OPEA Microservice |
-|UI                   |              | NA                       | Gateway Service |
-
-Tools and models mentioned in the table are configurable either through the
-environment variable or `compose_vllm.yaml` file.
-:::
 :::{tab-item} TGI
 :sync: TGI
 
@@ -289,9 +232,9 @@ Set the necessary environment variables to setup the use case case
   ### Embedding Service
 
     export EMBEDDING_MODEL_ID="BAAI/bge-base-en-v1.5"
-    export EMBEDDING_SERVICE_HOST_IP=${host_ip}
+    export EMBEDDING_SERVICE_HOST_IP=${host_ip}    
     export RETRIEVER_SERVICE_HOST_IP=${host_ip}
-    export TEI_EMBEDDING_ENDPOINT="http://${host_ip}:6006"
+    export TEI_EMBEDDING_ENDPOINT="http://${host_ip}:8090"
 
 ### Reranking Service
 
@@ -302,21 +245,13 @@ Set the necessary environment variables to setup the use case case
 ### LLM Service
 
 ::::{tab-set}
-:::{tab-item} vllm
-:sync: vllm
-
-    export LLM_MODEL_ID="Intel/neural-chat-7b-v3-3"
-    export LLM_SERVICE_HOST_IP=${host_ip}
-    export LLM_SERVICE_PORT=9000
-    export vLLM_LLM_ENDPOINT="http://${host_ip}:9009"
-:::
 :::{tab-item} TGI
 :sync: TGI
 
     export LLM_MODEL_ID="Intel/neural-chat-7b-v3-3"
     export LLM_SERVICE_HOST_IP=${host_ip}
     export LLM_SERVICE_PORT=9000
-    export TGI_LLM_ENDPOINT="http://${host_ip}:9009"
+    export TGI_LLM_ENDPOINT="http://${host_ip}:8008"
 :::
 ::::
 
@@ -332,19 +267,11 @@ YAML file.  The docker compose instructions should be starting all the
 above mentioned services as containers.
 
 ::::{tab-set}
-:::{tab-item} vllm
-:sync: vllm
-
-```
-cd GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon
-docker compose -f compose_vllm.yaml up -d
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
 ```
-cd GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon
+cd GenAIExamples/ChatQnA/docker_compose/nvidia/gpu/
 docker compose -f compose.yaml up -d
 ```
 :::
@@ -352,31 +279,14 @@ docker compose -f compose.yaml up -d
 
 ### Validate microservice
 #### Check Env Variables
-
-::::{tab-set}
-:::{tab-item} vllm
-:sync: vllm
-    Check the start up log by `docker compose -f ./compose_vllm.yaml logs`.
+Check the start up log by `docker compose -f ./compose.yaml logs`.
 The warning messages print out the variables if they are **NOT** set.
 
-    ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose_vllm.yaml up -d
-    WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
-    WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
-    WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml: `version` is obsolete
-:::
+::::{tab-set}
 :::{tab-item} TGI
 :sync: TGI
 
-    Check the start up log by `docker compose -f ./compose.yaml logs`.
-The warning messages print out the variables if they are **NOT** set.
-
-    ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose.yaml up -d
+    ubuntu@nvidia-vm:~/GenAIExamples/ChatQnA/docker_compose/nvidia/gpu$ docker compose -f ./compose.yaml up -d
     WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
     WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
     WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
@@ -385,7 +295,7 @@ The warning messages print out the variables if they are **NOT** set.
     WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
     WARN[0000] The "LANGCHAIN_API_KEY" variable is not set. Defaulting to a blank string.
     WARN[0000] The "LANGCHAIN_TRACING_V2" variable is not set. Defaulting to a blank string.
-    WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml: `version` is obsolete
+    WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/nvidia/gpu/compose.yaml: `version` is obsolete
 :::
 ::::
 
@@ -398,25 +308,6 @@ containers are all running, i.e, all the containers  `STATUS`  are  `Up`
 To do a quick sanity check, try `docker ps -a` to see if all the containers are running
 
 ::::{tab-set}
-
-:::{tab-item} vllm
-:sync: vllm
-
-```
-CONTAINER ID   IMAGE                                                   COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
-3b5fa9a722da   opea/chatqna-ui:latest                                  "docker-entrypoint.s…"   32 hours ago   Up 2 hours   0.0.0.0:5173->5173/tcp, :::5173->5173/tcp                                              chatqna-xeon-ui-server
-d3b37f3d1faa   opea/chatqna:latest                                     "python chatqna.py"      32 hours ago   Up 2 hours   0.0.0.0:8888->8888/tcp, :::8888->8888/tcp                                              chatqna-xeon-backend-server
-b3e1388fa2ca   opea/reranking-tei:latest                               "python reranking_te…"   32 hours ago   Up 2 hours   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp                                              reranking-tei-xeon-server
-24a240f8ad1c   opea/retriever-redis:latest                             "python retriever_re…"   32 hours ago   Up 2 hours   0.0.0.0:7000->7000/tcp, :::7000->7000/tcp                                              retriever-redis-server
-9c0d2a2553e8   opea/embedding-tei:latest                               "python embedding_te…"   32 hours ago   Up 2 hours   0.0.0.0:6000->6000/tcp, :::6000->6000/tcp                                              embedding-tei-server
-24cae0db1a70   opea/llm-vllm:latest                                    "bash entrypoint.sh"     32 hours ago   Up 2 hours   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp                                              llm-vllm-server
-ea3986c3cf82   opea/dataprep-redis:latest                              "python prepare_doc_…"   32 hours ago   Up 2 hours   0.0.0.0:6007->6007/tcp, :::6007->6007/tcp                                              dataprep-redis-server
-e10dd14497a8   redis/redis-stack:7.2.0-v9                              "/entrypoint.sh"         32 hours ago   Up 2 hours   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp, 0.0.0.0:8001->8001/tcp, :::8001->8001/tcp   redis-vector-db
-b98fa07a4f5c   opea/vllm:latest                                        "python3 -m vllm.ent…"   32 hours ago   Up 2 hours   0.0.0.0:9009->80/tcp, :::9009->80/tcp                                                  vllm-service
-79276cf45a47   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   "text-embeddings-rou…"   32 hours ago   Up 2 hours   0.0.0.0:6006->80/tcp, :::6006->80/tcp                                                  tei-embedding-server
-4943e5f6cd80   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   "text-embeddings-rou…"   32 hours ago   Up 2 hours   0.0.0.0:8808->80/tcp, :::8808->80/tcp                                                  tei-reranking-server
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
@@ -430,7 +321,7 @@ b3e1388fa2ca   opea/reranking-tei:latest                               "python r
 24cae0db1a70   opea/llm-tgi:latest                                    "bash entrypoint.sh"     32 hours ago   Up 2 hours   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp                                              llm-tgi-server
 ea3986c3cf82   opea/dataprep-redis:latest                              "python prepare_doc_…"   32 hours ago   Up 2 hours   0.0.0.0:6007->6007/tcp, :::6007->6007/tcp                                              dataprep-redis-server
 e10dd14497a8   redis/redis-stack:7.2.0-v9                              "/entrypoint.sh"         32 hours ago   Up 2 hours   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp, 0.0.0.0:8001->8001/tcp, :::8001->8001/tcp   redis-vector-db
-79276cf45a47   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   "text-embeddings-rou…"   32 hours ago   Up 2 hours   0.0.0.0:6006->80/tcp, :::6006->80/tcp                                                  tei-embedding-server
+79276cf45a47   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   "text-embeddings-rou…"   32 hours ago   Up 2 hours   0.0.0.0:8090->80/tcp, :::8090->80/tcp                                                  tei-embedding-server
 4943e5f6cd80   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   "text-embeddings-rou…"   32 hours ago   Up 2 hours   0.0.0.0:8808->80/tcp, :::8808->80/tcp                                                  tei-reranking-server
 ```
 :::
@@ -510,7 +401,7 @@ vector of a specific length determined by the embedding model and returns this
 embedded vector.
 
 ```
-curl ${host_ip}:6006/embed \
+curl ${host_ip}:8090/embed \
     -X POST \
     -d '{"inputs":"What is Deep Learning?"}' \
     -H 'Content-Type: application/json'
@@ -616,36 +507,15 @@ Here is the output:
 You may notice reranking microservice are with state ('ID' and other meta data),
 while reranking service are not.
 
-### vLLM and TGI Service
+### TGI Service
 
 ::::{tab-set}
 
-:::{tab-item} vllm
-:sync: vllm
-
-```
-curl http://${host_ip}:9009/v1/completions \
-  -H "Content-Type: application/json" \
-  -d '{"model": "Intel/neural-chat-7b-v3-3", \
-     "prompt": "What is Deep Learning?", \
-     "max_tokens": 32, "temperature": 0}'
-```
-
-vLLM service generates text for the input prompt. Here is the expected result
-from vllm:
-
-```
-{"generated_text":"We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.\n\nDeep Learning makes machines act more like humans through their ability to generalize from very large"}
-```
-
-**NOTE**: After launch the vLLM, it takes few minutes for vLLM server to load
-LLM model and warm up.
-:::
 :::{tab-item} TGI
 :sync: TGI
 
 ```
-curl http://${host_ip}:9009/generate \
+curl http://${host_ip}:8008/generate \
   -X POST \
   -d '{"inputs":"What is Deep Learning?", \
      "parameters":{"max_new_tokens":17, "do_sample": true}}' \
@@ -653,7 +523,7 @@ curl http://${host_ip}:9009/generate \
 
 ```
 
-TGI service generate text for the input prompt. Here is the expected result from TGI:
+TGI service generates text for the input prompt. Here is the expected result from TGI:
 
 ```
 {"generated_text":"We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.\n\nDeep Learning makes machines act more like humans through their ability to generalize from very large"}
@@ -783,35 +653,10 @@ The log indicates the `MODEL_ID` is not set.
 
 
 ::::{tab-set}
-
-:::{tab-item} vllm
-:sync: vllm
-
-View the docker input parameters in  `./ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml`
-
-```
-vllm_service:
-    image: ${REGISTRY:-opea}/vllm:${TAG:-latest}
-    container_name: vllm-service
-    ports:
-      - "9009:80"
-    volumes:
-      - "./data:/data"
-    shm_size: 128g
-    environment:
-      no_proxy: ${no_proxy}
-      http_proxy: ${http_proxy}
-      https_proxy: ${https_proxy}
-      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
-      LLM_MODEL_ID: ${LLM_MODEL_ID}
-    command: --model $LLM_MODEL_ID --host 0.0.0.0 --port 80
-
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
-View the docker input parameters in  `./ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml`
+View the docker input parameters in  `./ChatQnA/docker_compose/nvidia/gpu/compose.yaml`
 
 ```
  tgi-service:
@@ -846,18 +691,11 @@ compose.yaml is the mega service docker-compose configuration file.
 
 ::::{tab-set}
 
-:::{tab-item} vllm
-:sync: vllm
-
-```
-docker compose -f ./docker_compose/intel/cpu/xeon/compose_vllm.yaml logs
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
 ```
-docker compose -f ./docker_compose/intel/cpu/xeon/compose.yaml logs
+docker compose -f ./docker_compose/nvidia/gpu/compose.yaml logs
 ```
 :::
 ::::
@@ -907,14 +745,6 @@ Once the services are up, open the following URL in your browser: http://{host_i
 
 Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:
 ::::{tab-set}
-
-:::{tab-item} vllm
-:sync: vllm
-
-```
-docker compose -f compose_vllm.yaml down
-```
-:::
 :::{tab-item} TGI
 :sync: TGI
 
