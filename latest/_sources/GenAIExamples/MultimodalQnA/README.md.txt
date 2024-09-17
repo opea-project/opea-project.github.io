@@ -10,7 +10,7 @@ The MultimodalQnA architecture shows below:
 
 MultimodalQnA is implemented on top of [GenAIComps](https://github.com/opea-project/GenAIComps), the MultimodalQnA Flow Chart shows below:
 
-```{mermaid}
+```mermaid
 ---
 config:
   flowchart:
