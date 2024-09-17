@@ -62,7 +62,7 @@ The CodeGen megaservice manages a single microservice called LLM within a Direct
 
 The mega flow of the CodeGen application, from user's input query to the application's output response, is as follows:
 
-```{mermaid}
+```mermaid
 flowchart LR
     subgraph CodeGen
         direction LR

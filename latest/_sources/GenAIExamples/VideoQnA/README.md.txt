@@ -4,7 +4,7 @@ VideoQnA is a framework that retrieves video based on provided user prompt. It u
 
 VideoQnA is implemented on top of [GenAIComps](https://github.com/opea-project/GenAIComps), with the architecture flow chart shows below:
 
-```{mermaid}
+```mermaid
 ---
 config:
   flowchart:

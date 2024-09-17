@@ -6,7 +6,7 @@ Guardrails in OPEA Pipeline Proxy supports both rule-based detection and AI-powe
 
 ## Architecture
 
-```{mermaid}
+```mermaid
 flowchart LR
     subgraph Filter[HTTP Filter]
         direction BT

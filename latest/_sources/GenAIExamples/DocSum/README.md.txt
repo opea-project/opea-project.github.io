@@ -104,7 +104,7 @@ Refer to the [DocSum helm chart](https://github.com/opea-project/GenAIInfra/tree
 
 The workflow of the Document Summarization Service, from user's input query to the application's output response, is as follows:
 
-```{mermaid}
+```mermaid
 flowchart LR
     subgraph DocSum
         direction LR
