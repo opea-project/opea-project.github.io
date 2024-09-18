@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of MultimodalRAGWithVideos on Gaudi &mdash; OPEA™ 1.0 documentation</title>
+  <title>Build Mega Service of MultimodalQnA on Gaudi &mdash; OPEA™ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -219,7 +219,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../../examples/index.html#multimodalqna-application">MultimodalQnA Application</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../../../../README.html">MultimodalQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Build Mega Service of MultimodalRAGWithVideos on Gaudi</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
@@ -353,7 +353,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html#get-started">Get Started</a></li>
@@ -745,7 +746,7 @@
   
      <li><a href="../../../../../../examples/index.html">GenAI Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of MultimodalRAGWithVideos on Gaudi</li>
+  <li>Build Mega Service of MultimodalQnA on Gaudi</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/MultimodalQnA/docker_compose/intel/hpu/gaudi/README.md.txt" rel="nofollow"> View page source</a>
@@ -765,8 +766,8 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-multimodalragwithvideos-on-gaudi">
-<h1>Build Mega Service of MultimodalRAGWithVideos on Gaudi<a class="headerlink" href="#build-mega-service-of-multimodalragwithvideos-on-gaudi" title="Link to this heading">¶</a></h1>
+  <section id="build-mega-service-of-multimodalqna-on-gaudi">
+<h1>Build Mega Service of MultimodalQnA on Gaudi<a class="headerlink" href="#build-mega-service-of-multimodalqna-on-gaudi" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a MultimodalQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">multimodal_embedding</span></code> that employs <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower</a> model as embedding model, <code class="docutils literal notranslate"><span class="pre">multimodal_retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">lvm</span></code>, and <code class="docutils literal notranslate"><span class="pre">multimodal-data-prep</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
 <section id="setup-environment-variables">
 <h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
@@ -812,14 +813,12 @@
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
 <section id="build-embedding-multimodal-bridgetower-image">
 <h3>1. Build embedding-multimodal-bridgetower Image<a class="headerlink" href="#build-embedding-multimodal-bridgetower-image" title="Link to this heading">¶</a></h3>
 <p>Build embedding-multimodal-bridgetower docker image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/multimodal/bridgetower/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="nb">cd</span><span class="w"> </span>GenAIComps
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/multimodal/bridgetower/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <p>Build embedding-multimodal microservice image</p>
@@ -836,7 +835,7 @@
 <section id="build-lvm-images">
 <h3>3. Build LVM Images<a class="headerlink" href="#build-lvm-images" title="Link to this heading">¶</a></h3>
 <p>Build TGI Gaudi image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.4
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.5
 </pre></div>
 </div>
 <p>Build lvm-tgi microservice image</p>
@@ -856,7 +855,6 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 </section>
@@ -865,14 +863,13 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w">  </span>GenAIExamples/MultimodalQnA/ui/
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-multimodal-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-tgi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.4</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.5</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-multimodal-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-bridgetower:latest</span></code></p></li>

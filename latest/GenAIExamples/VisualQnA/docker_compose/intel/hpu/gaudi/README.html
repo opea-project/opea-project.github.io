@@ -219,7 +219,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalRAGWithVideos on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
@@ -353,7 +353,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html#get-started">Get Started</a></li>
@@ -771,29 +772,23 @@
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally. This step can be ignored after the Docker images published to Docker hub.</p>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
+<section id="build-lvm-and-nginx-docker-images">
+<h3>1. Build LVM and NGINX Docker Images<a class="headerlink" href="#build-lvm-and-nginx-docker-images" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</section>
-<section id="build-lvm-and-nginx-docker-images">
-<h3>2. Build LVM and NGINX Docker Images<a class="headerlink" href="#build-lvm-and-nginx-docker-images" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/lvm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/tgi-llava/Dockerfile<span class="w"> </span>.
-
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/lvm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/tgi-llava/Dockerfile<span class="w"> </span>.
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/nginx/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="pull-tgi-gaudi-image">
-<h3>3. Pull TGI Gaudi Image<a class="headerlink" href="#pull-tgi-gaudi-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.4
+<h3>2. Pull TGI Gaudi Image<a class="headerlink" href="#pull-tgi-gaudi-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.5
 </pre></div>
 </div>
 </section>
 <section id="build-megaservice-docker-image">
-<h3>4. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<h3>3. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">visuralqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/VisualQnA
@@ -803,16 +798,15 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div>
 </section>
 <section id="build-ui-docker-image">
-<h3>5. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>4. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/VisualQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/visualqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.4</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.5</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-tgi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/visualqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/visualqna-ui:latest</span></code></p></li>
