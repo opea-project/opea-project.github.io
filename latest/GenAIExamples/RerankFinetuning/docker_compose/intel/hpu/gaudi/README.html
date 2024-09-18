@@ -219,7 +219,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalRAGWithVideos on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
@@ -353,7 +353,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html#get-started">Get Started</a></li>
@@ -771,22 +772,17 @@
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally. This step can be ignored after the Docker images published to Docker hub.</p>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<p>Build docker image with below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</section>
-<section id="build-docker-image">
-<h3>2. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build docker image with below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/finetuning-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/finetuning/Dockerfile.intel_hpu<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/finetuning-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/finetuning/Dockerfile.intel_hpu<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="run-docker-with-cli">
-<h3>3. Run Docker with CLI<a class="headerlink" href="#run-docker-with-cli" title="Link to this heading">¶</a></h3>
+<h3>2. Run Docker with CLI<a class="headerlink" href="#run-docker-with-cli" title="Link to this heading">¶</a></h3>
 <p>Start docker container with below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_huggingface_token</span><span class="si">}</span>
 docker<span class="w"> </span>run<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-p<span class="w"> </span><span class="m">8015</span>:8015<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>opea/finetuning-gaudi:latest

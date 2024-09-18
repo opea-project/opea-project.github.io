@@ -219,7 +219,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalRAGWithVideos on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
@@ -353,7 +353,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html#get-started">Get Started</a></li>
@@ -771,27 +772,22 @@
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally. This step can be ignored after the Docker images published to Docker hub.</p>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
+<section id="build-embedding-image">
+<h3>1. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</section>
-<section id="build-embedding-image">
-<h3>2. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-retriever-image">
-<h3>3. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
+<h3>2. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-rerank-image">
-<h3>4. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
+<h3>3. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>Skip for ChatQnA without Rerank pipeline</p>
 </div></blockquote>
@@ -800,16 +796,16 @@
 </div>
 </section>
 <section id="build-llm-image">
-<h3>5. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
+<h3>4. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
 <p>You can use different LLM serving solutions, choose one of following four options.</p>
 <section id="use-tgi">
-<h4>5.1 Use TGI<a class="headerlink" href="#use-tgi" title="Link to this heading">¶</a></h4>
+<h4>4.1 Use TGI<a class="headerlink" href="#use-tgi" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="use-vllm">
-<h4>5.2 Use VLLM<a class="headerlink" href="#use-vllm" title="Link to this heading">¶</a></h4>
+<h4>4.2 Use VLLM<a class="headerlink" href="#use-vllm" title="Link to this heading">¶</a></h4>
 <p>Build vllm docker.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-vllm-hpu:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/langchain/dependency/Dockerfile.intel_hpu<span class="w"> </span>.
 </pre></div>
@@ -820,7 +816,7 @@
 </div>
 </section>
 <section id="use-vllm-on-ray">
-<h4>5.3 Use VLLM-on-Ray<a class="headerlink" href="#use-vllm-on-ray" title="Link to this heading">¶</a></h4>
+<h4>4.3 Use VLLM-on-Ray<a class="headerlink" href="#use-vllm-on-ray" title="Link to this heading">¶</a></h4>
 <p>Build vllm-on-ray docker.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-vllm-ray-hpu:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/ray/dependency/Dockerfile<span class="w"> </span>.
 </pre></div>
@@ -832,30 +828,26 @@
 </section>
 </section>
 <section id="build-dataprep-image">
-<h3>6. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
+<h3>5. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="build-tei-gaudi-image">
-<h3>7. Build TEI Gaudi Image<a class="headerlink" href="#build-tei-gaudi-image" title="Link to this heading">¶</a></h3>
-<p>Since a TEI Gaudi Docker image hasn’t been published, we’ll need to build it from the <a class="reference external" href="https://github.com/huggingface/tei-gaudi">tei-gaudi</a> repository.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/huggingface/tei-gaudi
-<span class="nb">cd</span><span class="w"> </span>tei-gaudi/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile-hpu<span class="w"> </span>-t<span class="w"> </span>opea/tei-gaudi:latest<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../..
+<section id="build-guardrails-docker-image-optional">
+<h3>6. Build Guardrails Docker Image (Optional)<a class="headerlink" href="#build-guardrails-docker-image-optional" title="Link to this heading">¶</a></h3>
+<p>To fortify AI initiatives in production, Guardrails microservice can secure model inputs and outputs, building Trustworthy, Safe, and Secure LLM-based Applications.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/guardrails-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/guardrails/llama_guard/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-megaservice-docker-image">
-<h3>8. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<h3>7. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <ol class="arabic">
 <li><p>MegaService with Rerank</p>
 <p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 </li>
@@ -864,7 +856,6 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-guardrails:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.guardrails<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 </li>
@@ -873,46 +864,33 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-without-rerank:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.without_rerank<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 </li>
 </ol>
 </section>
 <section id="build-ui-docker-image">
-<h3>9. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>8. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Construct the frontend Docker image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../..
 </pre></div>
 </div>
 </section>
 <section id="build-conversational-react-ui-docker-image-optional">
-<h3>10. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
+<h3>9. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image that enables Conversational experience with ChatQnA megaservice via below command:</p>
 <p><strong>Export the value of the public IP address of your Gaudi node to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../..
 </pre></div>
 </div>
-</section>
-<section id="build-guardrails-docker-image-optional">
-<h3>11. Build Guardrails Docker Image (Optional)<a class="headerlink" href="#build-guardrails-docker-image-optional" title="Link to this heading">¶</a></h3>
-<p>To fortify AI initiatives in production, Guardrails microservice can secure model inputs and outputs, building Trustworthy, Safe, and Secure LLM-based Applications.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/guardrails-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/guardrails/llama_guard/langchain/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 7 Docker Images:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-tei:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking-tei:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-tgi:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/llm-vllm:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/llm-vllm-ray:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/tei-gaudi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/chatqna-guardrails:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/chatqna-without-rerank:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
@@ -951,13 +929,13 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </tbody>
 </table>
 <p>Change the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> below for your needs.</p>
-<p>For customers with proxy issues, the models from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> are also supported in ChatQnA with TGI serving. ModelScope models are supported in two ways for TGI:</p>
+<p>For users in China who are unable to download models directly from Huggingface, you can use <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> or a Huggingface mirror to download models. TGI can load the models either online or offline as described below:</p>
 <ol class="arabic">
 <li><p>Online</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
 <span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.1.0<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ENABLE_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LIMIT_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">USE_FLASH_ATTENTION</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">FLASH_ATTENTION_RECOMPUTE</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.5<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--max-input-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span>--max-total-tokens<span class="w"> </span><span class="m">2048</span>
 </pre></div>
 </div>
 </li>
@@ -968,7 +946,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <li><p>Run the following command to start TGI service.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi_service<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.1.0<span class="w"> </span>--model-id<span class="w"> </span>/data
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi_service<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ENABLE_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LIMIT_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">USE_FLASH_ATTENTION</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">FLASH_ATTENTION_RECOMPUTE</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.5<span class="w"> </span>--model-id<span class="w"> </span>/data<span class="w"> </span>--max-input-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span>--max-total-tokens<span class="w"> </span><span class="m">2048</span>
 </pre></div>
 </div>
 </li>

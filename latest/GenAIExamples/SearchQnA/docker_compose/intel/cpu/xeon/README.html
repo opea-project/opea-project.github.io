@@ -219,7 +219,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalRAGWithVideos on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
@@ -353,7 +353,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html#get-started">Get Started</a></li>
@@ -770,53 +771,46 @@
 <p>This document outlines the deployment process for a SearchQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server.</p>
 <section id="build-docker-images">
 <h2>🚀 Build Docker images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
+<section id="build-embedding-image">
+<h3>1. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</section>
-<section id="build-embedding-image">
-<h3>2. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-retriever-image">
-<h3>3. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
+<h3>2. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/web-retriever-chroma:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/web_retrievers/chroma/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-rerank-image">
-<h3>4. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
+<h3>3. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/reranks/tei/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-llm-image">
-<h3>5. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
+<h3>4. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-megaservice-docker-image">
-<h3>6. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<h3>5. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">searchqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/SearchQnA
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/searchqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 </section>
 <section id="build-ui-docker-image">
-<h3>7. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>6. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/SearchQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/opea/searchqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../..
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have following images ready:</p>
