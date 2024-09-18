@@ -210,6 +210,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#genaiexamples-application">GenAIExamples Application</a><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#instructiontuning-application">InstructionTuning Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../InstructionTuning/README.html">Instruction Tuning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../InstructionTuning/docker_compose/intel/cpu/xeon/README.html">Deploy Instruction Tuning Service on Xeon</a></li>
@@ -368,6 +371,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../microservices/index.html#lvms-microservice">Lvms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/llava/README.html">LVM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/predictionguard/README.html">LVM Prediction Guard Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/predictionguard/README.html#start-microservice-with-python">🚀1. Start Microservice with Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/predictionguard/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/predictionguard/README.html#consume-lvm-service">🚀3. Consume LVM Service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/lvms/video-llama/README.html">LVM Microservice</a></li>
 </ul>
 </li>
@@ -769,6 +776,63 @@
   <section id="build-megaservice-of-chatqna-on-gaudi">
 <h1>Build MegaService of ChatQnA on Gaudi<a class="headerlink" href="#build-megaservice-of-chatqna-on-gaudi" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as embedding, retriever, rerank, and llm. We will publish the Docker images to Docker Hub, it will simplify the deployment process for this service.</p>
+<p>Quick Start:</p>
+<ol class="arabic simple">
+<li><p>Set up the environment variables.</p></li>
+<li><p>Run Docker Compose.</p></li>
+<li><p>Consume the ChatQnA Service.</p></li>
+</ol>
+<section id="quick-start-1-setup-environment-variable">
+<h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
+<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
+<ol class="arabic">
+<li><p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set up other environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="quick-start-2-run-docker-compose">
+<h2>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
+docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
+</pre></div>
+</div>
+<p>If you want to build docker by yourself, please refer to ‘Build Docker Images’ in below.</p>
+<blockquote>
+<div><p>Note: The optional docker image <strong>opea/chatqna-without-rerank:latest</strong> has not been published yet, users need to build this docker image from source.</p>
+</div></blockquote>
+</section>
+<section id="quickstart-3-consume-the-chatqna-service">
+<h2>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">    }&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally. This step can be ignored after the Docker images published to Docker hub.</p>
@@ -1257,7 +1321,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 17, 2024.</span>
+<span class="lastupdated">Published on Sep 18, 2024.</span>
 
   </div>
 

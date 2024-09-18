@@ -212,6 +212,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/index.html#genaiexamples-application">GenAIExamples Application</a><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../examples/index.html#instructiontuning-application">InstructionTuning Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../InstructionTuning/README.html">Instruction Tuning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../InstructionTuning/docker_compose/intel/cpu/xeon/README.html">Deploy Instruction Tuning Service on Xeon</a></li>
@@ -370,6 +373,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#lvms-microservice">Lvms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/llava/README.html">LVM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/predictionguard/README.html">LVM Prediction Guard Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/predictionguard/README.html#start-microservice-with-python">🚀1. Start Microservice with Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/predictionguard/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/predictionguard/README.html#consume-lvm-service">🚀3. Consume LVM Service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/lvms/video-llama/README.html">LVM Microservice</a></li>
 </ul>
 </li>
@@ -772,8 +779,85 @@
 <h1>ChatQnA Application<a class="headerlink" href="#chatqna-application" title="Link to this heading">¶</a></h1>
 <p>Chatbots are the most widely adopted use case for leveraging the powerful chat and reasoning capabilities of large language models (LLMs). The retrieval augmented generation (RAG) architecture is quickly becoming the industry standard for chatbots development. It combines the benefits of a knowledge base (via a vector store) and generative models to reduce hallucinations, maintain up-to-date information, and leverage domain-specific knowledge.</p>
 <p>RAG bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that responses generated remain factual and current. The core of this architecture are vector databases, which are instrumental in enabling efficient and semantic retrieval of information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
-<p>ChatQnA architecture shows below:</p>
-<p><img alt="architecture" src="../../_images/chatqna_architecture.png" /></p>
+<section id="deploy-chatqna-service">
+<h2>Deploy ChatQnA Service<a class="headerlink" href="#deploy-chatqna-service" title="Link to this heading">¶</a></h2>
+<p>The ChatQnA service can be effortlessly deployed on Intel Gaudi2, Intel Xeon Scalable Processors and Nvidia GPU.</p>
+<p>Two types of ChatQnA pipeline are supported now: <code class="docutils literal notranslate"><span class="pre">ChatQnA</span> <span class="pre">with/without</span> <span class="pre">Rerank</span></code>. And the <code class="docutils literal notranslate"><span class="pre">ChatQnA</span> <span class="pre">without</span> <span class="pre">Rerank</span></code> pipeline (including Embedding, Retrieval, and LLM) is offered for Xeon customers who can not run rerank service on HPU yet require high performance and accuracy.</p>
+<p>Quick Start Deployment Steps:</p>
+<ol class="arabic simple">
+<li><p>Set up the environment variables.</p></li>
+<li><p>Run Docker Compose.</p></li>
+<li><p>Consume the ChatQnA Service.</p></li>
+</ol>
+<section id="quick-start-1-setup-environment-variable">
+<h3>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
+<ol class="arabic">
+<li><p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set up other environment variables:</p>
+<blockquote>
+<div><p>Notice that you can only choose <strong>one</strong> command below to set up envs according to your hardware. Other that the port numbers may be set incorrectly.</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Gaudi</span>
+<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/hpu/gaudi/set_env.sh
+<span class="c1"># on Xeon</span>
+<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/cpu/xeon/set_env.sh
+<span class="c1"># on Nvidia GPU</span>
+<span class="nb">source</span><span class="w"> </span>./docker_compose/nvidia/gpu/set_env.sh
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="quick-start-2-run-docker-compose">
+<h3>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h3>
+<p>Select the compose.yaml file that matches your hardware.
+CPU example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
+<span class="c1"># cd GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/</span>
+<span class="c1"># cd GenAIExamples/ChatQnA/docker_compose/nvidia/gpu/</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
+docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
+</pre></div>
+</div>
+<p>If you want to build docker by yourself, please refer to <code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">from</span> <span class="pre">source</span></code>: <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Guide</span></a>.</p>
+<blockquote>
+<div><p>Note: The optional docker image <strong>opea/chatqna-without-rerank:latest</strong> has not been published yet, users need to build this docker image from source.</p>
+</div></blockquote>
+</section>
+<section id="quickstart-3-consume-the-chatqna-service">
+<h3>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">    }&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="architecture-and-deploy-details">
+<h2>Architecture and Deploy details<a class="headerlink" href="#architecture-and-deploy-details" title="Link to this heading">¶</a></h2>
+<p>ChatQnA architecture shows below:
+<img alt="architecture" src="../../_images/chatqna_architecture.png" /></p>
 <p>The ChatQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
             flowchart LR
@@ -835,15 +919,11 @@
 
     direction TB
     %% Vector DB interaction
-    R_RET &lt;-.-&gt;VDB
-    DP &lt;-.-&gt;VDB
-
-
-
+    R_RET &lt;-.-&gt;|d|VDB
+    DP &lt;-.-&gt;|d|VDB
         </div><p>This ChatQnA use case performs RAG using LangChain, Redis VectorDB and Text Generation Inference on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> or <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>.
 In the below, we provide a table that describes for each microservice component in the ChatQnA architecture, the default configuration of the open source project, hardware, port, and endpoint.</p>
-<details>
-<summary><b>Gaudi default compose.yaml</b></summary>
+<p>Gaudi default compose.yaml</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>MicroService</p></th>
@@ -886,34 +966,6 @@ In the below, we provide a table that describes for each microservice component 
 </tr>
 </tbody>
 </table>
-</details>
-<section id="deploy-chatqna-service">
-<h2>Deploy ChatQnA Service<a class="headerlink" href="#deploy-chatqna-service" title="Link to this heading">¶</a></h2>
-<p>The ChatQnA service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.</p>
-<p>Two types of ChatQnA pipeline are supported now: <code class="docutils literal notranslate"><span class="pre">ChatQnA</span> <span class="pre">with/without</span> <span class="pre">Rerank</span></code>. And the <code class="docutils literal notranslate"><span class="pre">ChatQnA</span> <span class="pre">without</span> <span class="pre">Rerank</span></code> pipeline (including Embedding, Retrieval, and LLM) is offered for Xeon customers who can not run rerank service on HPU yet require high performance and accuracy.</p>
-<section id="prepare-docker-image">
-<h3>Prepare Docker Image<a class="headerlink" href="#prepare-docker-image" title="Link to this heading">¶</a></h3>
-<p>Currently we support two ways of deploying ChatQnA services with docker compose:</p>
-<ol class="arabic">
-<li><p>Using the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
-</pre></div>
-</div>
-<p>Two type of UI are supported now, choose one you like and pull the referred docker image.</p>
-<p>If you choose conversational UI, follow the <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/docker_compose/intel/hpu/gaudi#-launch-the-conversational-ui-optional">instruction</a> and modify the <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
-<span class="c1"># or</span>
-docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-conversation-ui:latest
-</pre></div>
-</div>
-</li>
-<li><p>Using the docker images <code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">from</span> <span class="pre">source</span></code>: <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Guide</span></a></p>
-<blockquote>
-<div><p>Note: The <strong>opea/chatqna-without-rerank:latest</strong> docker image has not been published yet, users need to build this docker image from source.</p>
-</div></blockquote>
-</li>
-</ol>
-</section>
 <section id="required-models">
 <h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
 <p>By default, the embedding, reranking and LLM models are set to a default value as listed below:</p>
@@ -937,40 +989,6 @@ docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-conversat
 </table>
 <p>Change the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> in <code class="docutils literal notranslate"><span class="pre">docker_compose/xxx/set_env.sh</span></code> for your needs.</p>
 <p>For customers with proxy issues, the models from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> are also supported in ChatQnA. Refer to <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">this readme</span></a> for details.</p>
-</section>
-<section id="setup-environment-variable">
-<h3>Setup Environment Variable<a class="headerlink" href="#setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<blockquote>
-<div><p>Notice that you can only choose <strong>one</strong> command below to set up envs according to your hardware. Other that the port numbers may be set incorrectly.</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Gaudi</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/hpu/gaudi/set_env.sh
-<span class="c1"># on Xeon</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/cpu/xeon/set_env.sh
-<span class="c1"># on Nvidia GPU</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/nvidia/gpu/set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
 </section>
 <section id="deploy-chatqna-on-gaudi">
 <h3>Deploy ChatQnA on Gaudi<a class="headerlink" href="#deploy-chatqna-on-gaudi" title="Link to this heading">¶</a></h3>
@@ -1086,7 +1104,7 @@ docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 17, 2024.</span>
+<span class="lastupdated">Published on Sep 18, 2024.</span>
 
   </div>
 
