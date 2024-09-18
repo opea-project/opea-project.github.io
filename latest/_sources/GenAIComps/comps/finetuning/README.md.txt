@@ -223,4 +223,4 @@ After fine-tuning job is done, fine-tuned model can be chosen from listed checkp
 
 ## 🚀4. Descriptions for Finetuning parameters
 
-We utilize [OpenAI finetuning parameters](https://platform.openai.com/docs/api-reference/fine-tuning) and extend it with more customizable parameters, see the definitions at [finetune_config](https://github.com/opea-project/GenAIComps/blob/main/comps/finetuning/finetune_config.py).
+We utilize [OpenAI finetuning parameters](https://platform.openai.com/docs/api-reference/fine-tuning) and extend it with more customizable parameters, see the definitions at [finetune_config](/GenAIComps/comps/finetuning/finetune_config.py/README.md).

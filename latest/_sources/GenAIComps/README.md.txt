@@ -252,7 +252,7 @@ self.gateway = ChatQnAGateway(megaservice=self.megaservice, host="0.0.0.0", port
 
 ## Additional Content
 
-- [Code of Conduct](/community/CODE_OF_CONDUCT.md)
-- [Contribution](/community/CONTRIBUTING.md)
-- [Security Policy](/community/SECURITY.md)
+- [Code of Conduct](/community/CODE_OF_CONDUCT.md/README.md)
+- [Contribution](/community/CONTRIBUTING.md/README.md)
+- [Security Policy](/community/SECURITY.md/README.md)
 - [Legal Information](/LEGAL_INFORMATION.md)

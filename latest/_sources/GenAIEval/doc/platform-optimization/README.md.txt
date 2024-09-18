@@ -94,11 +94,11 @@ kubectl edit balloonspolicy default
 ```
 
 Let us consider isolating AI inference and reranking containers in
-[ChatQnA](https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA)
+[ChatQnA](/GenAIExamples/ChatQnA/README.md)
 application's Gaudi accelerated pipeline.
 
 In the
-[manifest](https://github.com/opea-project/GenAIExamples/blob/main/ChatQnA/kubernetes/manifests/gaudi/chatqna.yaml)
+[manifest](/GenAIExamples/ChatQnA/kubernetes/manifests/gaudi/chatqna.yaml/README.md)
 there are "tgi", "tei" and "teirerank" containers in "chatqna-tgi" and
 "chatqna-tei" and "chatqna-teirerank" deployments that will need a lot
 of CPUs. They implement text-generation-interface and

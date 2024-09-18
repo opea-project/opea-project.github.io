@@ -99,13 +99,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../getting-started/index.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../examples/index.html">GenAI Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#introduction-purpose">Introduction/Purpose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#validation-matrix-and-prerequisites">Validation Matrix and Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#architecture">Architecture</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#deployment">Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#monitoring">Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#summary-and-next-steps">Summary and Next Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#preview">Preview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#key-implementation-details">Key Implementation Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#expected-output">Expected Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#microservice-outline-and-diagram">Microservice Outline and Diagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#single-node">Single Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#kubernetes">Kubernetes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#cloud-native">Cloud Native</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#set-up-the-prometheus-server">Set Up the Prometheus Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/ChatQnA/ChatQnA_Guide.html#set-up-the-grafana-dashboard">Set Up the Grafana Dashboard</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../README.html">Generative AI Examples</a><ul>
@@ -208,9 +213,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../FaqGen/kubernetes/intel/cpu/xeon/manifest/README_react_ui.html">Deploy FaqGen with ReactUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../FaqGen/ui/react/README.html">Doc Summary React</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../examples/index.html#genaiexamples-application">GenAIExamples Application</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/index.html#instructiontuning-application">InstructionTuning Application</a><ul>
@@ -806,7 +808,7 @@
 <section id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Install Kubernetes by following <a class="reference internal" href="../../../guide/installation/k8s_install/k8s_install_kubespray.html"><span class="std std-doc">this guide</span></a>.</p></li>
+<li><p>Install Kubernetes by following <a class="reference internal" href="#/guide/installation/k8s_install/k8s_install_kubespray.md/README.md"><span class="xref myst">this guide</span></a>.</p></li>
 <li><p>Every node has direct internet access</p></li>
 <li><p>Set up kubectl on the master node with access to the Kubernetes cluster.</p></li>
 <li><p>Install Python 3.8+ on the master node for running the stress tool.</p></li>
@@ -836,7 +838,7 @@ k8s-work3<span class="w">           </span>Ready<span class="w">    </span>&lt;n
 </section>
 <section id="manifest-preparation">
 <h3>Manifest preparation<a class="headerlink" href="#manifest-preparation" title="Link to this heading">¶</a></h3>
-<p>We have created the <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark">BKC manifest</a> for single node, two nodes and four nodes K8s cluster. In order to apply, we need to check out and configure some values.</p>
+<p>We have created the <a class="reference internal" href="#"><span class="std std-doc">BKC manifest</span></a> for single node, two nodes and four nodes K8s cluster. In order to apply, we need to check out and configure some values.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/benchmark
@@ -861,7 +863,7 @@ find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </spa
 </section>
 <section id="benchmark-tool-preparation">
 <h3>Benchmark tool preparation<a class="headerlink" href="#benchmark-tool-preparation" title="Link to this heading">¶</a></h3>
-<p>The test uses the <a class="reference external" href="https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark">benchmark tool</a> to do performance test. We need to set up benchmark tool at the master node of Kubernetes which is k8s-master.</p>
+<p>The test uses the <a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html"><span class="std std-doc">benchmark tool</span></a> to do performance test. We need to set up benchmark tool at the master node of Kubernetes which is k8s-master.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIEval.git
 <span class="nb">cd</span><span class="w"> </span>GenAIEval
@@ -962,7 +964,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 </section>
 <section id="install-chatqna">
 <h5>2. Install ChatQnA<a class="headerlink" href="#install-chatqna" title="Link to this heading">¶</a></h5>
-<p>Go to <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark/tuned/with_rerank/single_gaudi">BKC manifest</a> and apply to K8s.</p>
+<p>Go to <a class="reference internal" href="#/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi/README.md"><span class="xref myst">BKC manifest</span></a> and apply to K8s.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>.
@@ -1036,7 +1038,7 @@ kubectl<span class="w"> </span>label<span class="w"> </span>nodes<span class="w"
 </section>
 <section id="id2">
 <h5>2. Install ChatQnA<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h5>
-<p>Go to <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark/tuned/with_rerank/two_gaudi">BKC manifest</a> and apply to K8s.</p>
+<p>Go to <a class="reference internal" href="#/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/two_gaudi/README.md"><span class="xref myst">BKC manifest</span></a> and apply to K8s.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/two_gaudi
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>.
@@ -1081,7 +1083,7 @@ kubectl<span class="w"> </span>label<span class="w"> </span>nodes<span class="w"
 </section>
 <section id="id7">
 <h5>2. Install ChatQnA<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h5>
-<p>Go to <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark/tuned/with_rerank/four_gaudi">BKC manifest</a> and apply to K8s.</p>
+<p>Go to <a class="reference internal" href="#/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/four_gaudi/README.md"><span class="xref myst">BKC manifest</span></a> and apply to K8s.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/four_gaudi
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>.
