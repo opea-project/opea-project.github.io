@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -99,13 +101,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">GenAI Examples</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ChatQnA Sample Guide</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#introduction-purpose">Introduction/Purpose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#validation-matrix-and-prerequisites">Validation Matrix and Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deployment">Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#summary-and-next-steps">Summary and Next Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preview">Preview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-implementation-details">Key Implementation Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expected-output">Expected Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microservice-outline-and-diagram">Microservice Outline and Diagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#single-node">Single Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cloud-native">Cloud Native</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-the-prometheus-server">Set Up the Prometheus Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-the-grafana-dashboard">Set Up the Grafana Dashboard</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../GenAIExamples/README.html">Generative AI Examples</a><ul>
@@ -208,9 +215,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/FaqGen/kubernetes/intel/cpu/xeon/manifest/README_react_ui.html">Deploy FaqGen with ReactUI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/FaqGen/ui/react/README.html">Doc Summary React</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#genaiexamples-application">GenAIExamples Application</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#instructiontuning-application">InstructionTuning Application</a><ul>
@@ -780,11 +784,8 @@
 <p>This guide is in its early development and is a work-in-progress with
 placeholder content.</p>
 </div>
-<section id="introduction-purpose">
-<h2>Introduction/Purpose<a class="headerlink" href="#introduction-purpose" title="Link to this heading">¶</a></h2>
-<p>TODO: Tom to provide.</p>
-<section id="overview-intro">
-<h3>Overview/Intro<a class="headerlink" href="#overview-intro" title="Link to this heading">¶</a></h3>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>Chatbots are a  widely adopted use case for leveraging the powerful chat and
 reasoning capabilities of large language models (LLMs).  The ChatQnA example
 provides the starting point for developers to begin working in the GenAI space.
@@ -792,7 +793,7 @@ Consider it the “hello world” of GenAI applications and can be leveraged for
 solutions across wide enterprise verticals, both internally and externally.</p>
 </section>
 <section id="purpose">
-<h3>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">¶</a></h3>
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">¶</a></h2>
 <p>The ChatQnA example uses retrieval augmented generation (RAG) architecture,
 which is quickly becoming the industry standard for chatbot development. It
 combines the benefits of a knowledge base (via a vector store) and generative
@@ -816,21 +817,17 @@ queries.</p>
 <p>The ChatQnA example is designed to be a simple, yet powerful, demonstration of
 the RAG architecture. It is a great starting point for developers looking to
 build chatbots that can provide accurate and up-to-date information to users.</p>
-<p>GMC is GenAI Microservices Connector. GMC facilitates sharing of services across
-GenAI applications/pipelines, dynamic switching between models used in any stage
-of a GenAI pipeline, for instance in the ChatQnA GenAI pipeline, it supports
-changing the model used in the embedder, re-ranker, and/or the LLM.</p>
-<p>So one can use Upstream Vanilla Kubernetes or RHOCP, and one can use them with
-and without GMC. GMC as indicated provides additional features.</p>
+<p>To facilitate sharing of individual services across multiple GenAI applications, use the GenAI Microservices Connector (GMC) to deploy your application. Apart from service sharing , it also supports specifying sequential, parallel, and alternative steps in a GenAI pipeline. In so doing, it supports dynamic switching between models used in any stage of a GenAI pipeline.  For example, within the ChatQnA pipeline, using GMC one could switch the model used in the embedder, re-ranker, and/or the LLM.
+Upstream Vanilla Kubernetes or Red Hat OpenShift Container
+Platform (RHOCP) can be used with or without GMC, while use with GMC provides additional features.</p>
 <p>The ChatQnA provides several deployment options, including single-node
 deployments on-premise or in a cloud environment using hardware such as Xeon
 Scalable Processors, Gaudi servers, NVIDIA GPUs, and even on AI PCs.  It also
 supports Kubernetes deployments with and without the GenAI Management Console
-(GMC), as well as cloud-native deployments using Red Hat OpenShift Container
-Platform (RHOCP).</p>
+(GMC), as well as cloud-native deployments using RHOCP.</p>
 </section>
 <section id="preview">
-<h3>Preview<a class="headerlink" href="#preview" title="Link to this heading">¶</a></h3>
+<h2>Preview<a class="headerlink" href="#preview" title="Link to this heading">¶</a></h2>
 <p>To get a preview of the ChatQnA example, visit the
 <a class="reference external" href="https://aiexplorer.intel.com/explore">AI Explore site</a>. The <strong>ChatQnA Solution</strong>
 provides a basic chatbot while the <strong>ChatQnA with Augmented Context</strong>
@@ -839,7 +836,7 @@ solution to see how a developer supplied corpus can provide relevant and up to
 date responses.</p>
 </section>
 <section id="key-implementation-details">
-<h3>Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Link to this heading">¶</a></h3>
+<h2>Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Embedding:</dt><dd><p>The process of transforming user queries into numerical representations called
 embeddings.</p>
@@ -858,7 +855,7 @@ example, including single-node deployments and Kubernetes deployments.</p>
 </dl>
 </section>
 <section id="how-it-works">
-<h3>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading">¶</a></h3>
+<h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading">¶</a></h2>
 <p>The ChatQnA Examples follows a basic flow of information in the chatbot system,
 starting from the user input and going through the retrieve, re-ranker, and
 generate components, ultimately resulting in the bot’s output.</p>
@@ -895,32 +892,93 @@ chatbot’s answer.</p></li>
 </ol>
 </section>
 <section id="expected-output">
-<h3>Expected Output<a class="headerlink" href="#expected-output" title="Link to this heading">¶</a></h3>
-</section>
-</section>
+<h2>Expected Output<a class="headerlink" href="#expected-output" title="Link to this heading">¶</a></h2>
 <section id="validation-matrix-and-prerequisites">
-<h2>Validation Matrix and Prerequisites<a class="headerlink" href="#validation-matrix-and-prerequisites" title="Link to this heading">¶</a></h2>
+<h3>Validation Matrix and Prerequisites<a class="headerlink" href="#validation-matrix-and-prerequisites" title="Link to this heading">¶</a></h3>
 <p>See <a class="reference internal" href="../../GenAIExamples/supported_examples.html"><span class="doc">Supported Examples</span></a></p>
 </section>
 <section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
-<p>TODO: Includes microservice level graphics.</p>
-<p>TODO: Need to include the architecture with microservices. Like the ones
-Xigui/Chun made and explain in a paragraph or 2 on the highlights of the arch
-including Gateway, UI, mega service, how models are deployed and how the
-microservices use the deployment service. The architecture can be laid out as
-general as possible, maybe  calling out “for e.g” on variable pieces. Will also
-be good to include a line or 2 on what the overall use case is. For e.g. This
-chatqna is setup to assist in answering question on OPEA. The microservices are
-set up with RAG and LLM pipeline to query on OPEA PDF documents</p>
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h3>
+<p>The ChatQnA architecture is displayed below:</p>
+<figure class="align-default">
+<img alt="ChatQnA Architecture Diagram" src="../../_images/chatqna_flow_chart.png" />
+</figure>
+<div class="mermaid">
+            graph LR
+ subgraph ChatQnA-MegaService[&quot;ChatQnA-MegaService&quot;]
+     direction LR
+     EM([Embedding 'LangChain TEI' &lt;br&gt;6000])
+     RET([Retrieval 'LangChain Redis'&lt;br&gt;7000])
+     RER([Rerank 'TEI'&lt;br&gt;8000])
+    LLM([LLM 'text-generation TGI'&lt;br&gt;9000])
+ end
+
+ direction TB
+ TEI_EM{{TEI embedding service&lt;br&gt;8090}}
+ VDB{{Vector DB&lt;br&gt;8001}}
+ %% Vector DB interaction
+ TEI_EM -.-&gt;|d|VDB
+
+ DP([OPEA Data Preparation&lt;br&gt;6007])
+ LLM_gen{{TGI/vLLM/ollama Service}}
+
+ direction TB
+ RER([OPEA Reranking&lt;br&gt;8000])
+ TEI_RER{{TEI Reranking service&lt;br&gt;8808}}
+
+ subgraph User Interface
+     direction TB
+     a[User Input Query]
+     Ingest[Ingest data]
+     UI[UI server&lt;br&gt;Port: 5173]
+ end
+
+ subgraph ChatQnA GateWay
+     direction LR
+     GW[ChatQnA GateWay&lt;br&gt;Port: 8888]
+ end
+
+ %% Data Preparation flow
+ %% Ingest data flow
+ direction LR
+ Ingest[Ingest data] --&gt;|a| UI
+ UI --&gt;|b| DP
+ DP -.-&gt;|c| TEI_EM
+
+ %% Questions interaction
+ direction LR
+ a[User Input Query] --&gt;|1| UI
+ UI --&gt;|2| GW
+ GW ==&gt;|3| ChatQnA-MegaService
+ EM ==&gt;|4| RET
+ RET ==&gt;|5| RER
+ RER ==&gt;|6| LLM
+
+
+ %% Embedding service flow
+ direction TB
+ EM -.-&gt;|3'| TEI_EM
+ RET -.-&gt;|4'| TEI_EM
+ RER -.-&gt;|5'| TEI_RER
+ LLM -.-&gt;|6'| LLM_gen
+
+ subgraph Legend
+     X([Microservice])
+     Y{{Service from industry peers}}
+     Z[Gateway]
+ end
+        </div></section>
+</section>
 <section id="microservice-outline-and-diagram">
-<h3>Microservice Outline and Diagram<a class="headerlink" href="#microservice-outline-and-diagram" title="Link to this heading">¶</a></h3>
-</section>
-</section>
+<h2>Microservice Outline and Diagram<a class="headerlink" href="#microservice-outline-and-diagram" title="Link to this heading">¶</a></h2>
+<p>A GenAI application or pipeline in OPEA  typically consists of a collection of microservices to create a megaservice, accessed via a gateway. A microservice is a component designed to perform a specific function or task. Microservices are building blocks, offering the fundamental services. Microservices promote modularity, flexibility, and scalability in the system. A megaservice is a higher-level architectural construct composed of one or more microservices, providing the capability to assemble end-to-end applications.
+The gateway serves as the interface for users to access. The gateway routes incoming requests to the appropriate microservices within the megaservice architecture. See <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAI Components</a> for more information.</p>
 <section id="deployment">
-<h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h2>
+<h3>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h3>
+</section>
+</section>
 <section id="single-node">
-<h3>Single Node<a class="headerlink" href="#single-node" title="Link to this heading">¶</a></h3>
+<h2>Single Node<a class="headerlink" href="#single-node" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="deploy/xeon.html">Xeon Scalable Processor</a></li>
@@ -931,7 +989,7 @@ set up with RAG and LLM pipeline to query on OPEA PDF documents</p>
 </div>
 </section>
 <section id="kubernetes">
-<h3>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading">¶</a></h3>
+<h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Xeon &amp; Gaudi with GMC</p></li>
 <li><p>Xeon &amp; Gaudi without GMC</p></li>
@@ -939,21 +997,145 @@ set up with RAG and LLM pipeline to query on OPEA PDF documents</p>
 </ul>
 </section>
 <section id="cloud-native">
-<h3>Cloud Native<a class="headerlink" href="#cloud-native" title="Link to this heading">¶</a></h3>
+<h2>Cloud Native<a class="headerlink" href="#cloud-native" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Red Hat OpenShift Container Platform (RHOCP)</p></li>
 </ul>
-</section>
-</section>
 <section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h3>
 </section>
 <section id="monitoring">
-<h2>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">¶</a></h2>
-<p>Evaluate performance and accuracy</p>
+<h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">¶</a></h3>
+<p>Now that you have deployed the ChatQnA example, let’s talk about monitoring the performance of the microservices in the ChatQnA pipeline.</p>
+<p>Monitoring the performance of microservices is crucial for ensuring the smooth operation of the generative AI systems. By monitoring metrics such as latency and throughput, you can identify bottlenecks, detect anomalies, and optimize the performance of individual microservices. This allows us to proactively address any issues and ensure that the ChatQnA pipeline is running efficiently.</p>
+<p>This document will help you understand how to monitor in real time the latency, throughput, and other metrics of different microservices. You will use <strong>Prometheus</strong> and <strong>Grafana</strong>, both open-source toolkits, to collect metrics and visualize them in a dashboard.</p>
 </section>
+</section>
+<section id="set-up-the-prometheus-server">
+<h2>Set Up the Prometheus Server<a class="headerlink" href="#set-up-the-prometheus-server" title="Link to this heading">¶</a></h2>
+<p>Prometheus is a tool used for recording real-time metrics and is specifically designed for monitoring microservices and alerting based on their metrics.</p>
+<p>The <cite>/metrics</cite> endpoint on the port running each microservice exposes the metrics in the Prometheus format. The Prometheus server scrapes these metrics and stores them in its time series database. For example, metrics for the Text Generation Interface (TGI) service are available at:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/metrics
+</pre></div>
+</div>
+<p>Set up the Prometheus server:</p>
+<ol class="arabic simple">
+<li><p>Download Prometheus:
+Download the Prometheus v2.52.0 from the official site, and extract the files:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/prometheus/prometheus/releases/download/v2.52.0/prometheus-2.52.0.linux-amd64.tar.gz
+tar<span class="w"> </span>-xvzf<span class="w"> </span>prometheus-2.52.0.linux-amd64.tar.gz
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Configure Prometheus:
+Change the directory to the Prometheus folder:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>prometheus-2.52.0.linux-amd64
+</pre></div>
+</div>
+<p>Edit the <cite>prometheus.yml</cite> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vim<span class="w"> </span>prometheus.yml
+</pre></div>
+</div>
+<p>Change the <code class="docutils literal notranslate"><span class="pre">job_name</span></code> to the name of the microservice you want to monitor. Also change the <code class="docutils literal notranslate"><span class="pre">targets</span></code> to the job target endpoint of that microservice. Make sure the service is running and the port is open, and that it exposes the metrics that follow Prometheus convention at the <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint.</p>
+<p>Here is an example of exporting metrics data from a TGI microservice to Prometheus:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># A scrape configuration containing exactly one endpoint to scrape:</span>
+<span class="c1"># Here it&#39;s Prometheus itself.</span>
+<span class="nt">scrape_configs</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tgi&quot;</span>
+
+<span class="w">    </span><span class="c1"># metrics_path defaults to &#39;/metrics&#39;</span>
+<span class="w">    </span><span class="c1"># scheme defaults to &#39;http&#39;.</span>
+
+<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;localhost:9009&quot;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>Here is another example of exporting metrics data from a TGI microservice (inside a Kubernetes cluster) to Prometheus:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scrape_configs</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tgi&quot;</span>
+
+<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;llm-dependency-svc.default.svc.cluster.local:9009&quot;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>3. Run the Prometheus server:
+Run the Prometheus server, without hanging-up the process:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">nohup</span> <span class="pre">./prometheus</span> <span class="pre">--config.file=./prometheus.yml</span> <span class="pre">&amp;</span>
+<span class="pre">`</span></code></p>
+<ol class="arabic simple" start="4">
+<li><p>Access the Prometheus UI
+Access the Prometheus UI at the following URL:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http://localhost:9090/targets?search<span class="o">=</span>
+</pre></div>
+</div>
+<p>&gt;Note: Before starting Prometheus, ensure that no other processes are running on the designated port (default is 9090). Otherwise, Prometheus will not be able to scrape the metrics.</p>
+<p>On the Prometheus UI, you can see the status of the targets and the metrics that are being scraped. You can search for a metrics variable by typing it in the search bar.</p>
+<p>The TGI metrics can be accessed at:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/metrics
+</pre></div>
+</div>
+</section>
+<section id="set-up-the-grafana-dashboard">
+<h2>Set Up the Grafana Dashboard<a class="headerlink" href="#set-up-the-grafana-dashboard" title="Link to this heading">¶</a></h2>
+<p>Grafana is a tool used for visualizing metrics and creating dashboards. It can be used to create custom dashboards that display the metrics collected by Prometheus.</p>
+<p>To set up the Grafana dashboard, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Download Grafana:
+Download the Grafana v8.0.6 from the official site, and extract the files:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://dl.grafana.com/oss/release/grafana-11.0.0.linux-amd64.tar.gz
+tar<span class="w"> </span>-zxvf<span class="w"> </span>grafana-11.0.0.linux-amd64.tar.gz
+</pre></div>
+</div>
+<p>For adddiitonal instructions, see the complete <a class="reference external" href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/">Grafana installation instructions</a>.</p>
+<ol class="arabic simple" start="2">
+<li><p>Run the Grafana server:
+Change the directory to the Grafana folder:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>grafana-11.0.0
+</pre></div>
+</div>
+<p>Run the Grafana server, without hanging-up the process:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nohup<span class="w"> </span>./bin/grafana-server<span class="w"> </span><span class="p">&amp;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Access the Grafana dashboard UI:
+On your browser, access the Grafana dashboard UI at the following URL:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http://localhost:3000
+</pre></div>
+</div>
+<p>&gt;Note: Before starting Grafana, ensure that no other processes are running on port 3000.</p>
+<p>Log in to Grafana using the default credentials:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">username</span><span class="p">:</span> <span class="n">admin</span>
+<span class="n">password</span><span class="p">:</span> <span class="n">admin</span>
+</pre></div>
+</div>
+<ol class="arabic" start="4">
+<li><p>Add Prometheus as a data source:
+You need to configure the data source for Grafana to scrape data from. Click on the “Data Source” button, select Prometheus, and specify the Prometheus URL <code class="docutils literal notranslate"><span class="pre">http://localhost:9090</span></code>.</p>
+<p>Then, you need to upload a JSON file for the dashboard’s configuration. You can upload it in the Grafana UI under <code class="docutils literal notranslate"><span class="pre">Home</span> <span class="pre">&gt;</span> <span class="pre">Dashboards</span> <span class="pre">&gt;</span> <span class="pre">Import</span> <span class="pre">dashboard</span></code>. A sample JSON file is supported here: <a class="reference external" href="https://github.com/huggingface/text-generation-inference/blob/main/assets/tgi_grafana.json">tgi_grafana.json</a></p>
+</li>
+<li><p>View the dashboard:
+Finally, open the dashboard in the Grafana UI, and you will see different panels displaying the metrics data.</p>
+<p>Taking the TGI microservice as an example, you can see the following metrics:
+* Time to first token
+* Decode per-token latency
+* Throughput (generated tokens/sec)
+* Number of tokens per prompt
+* Number of generated tokens per request</p>
+<p>You can also monitor the incoming requests to the microservice, the response time per token, etc., in real time.</p>
+</li>
+</ol>
 <section id="summary-and-next-steps">
-<h2>Summary and Next Steps<a class="headerlink" href="#summary-and-next-steps" title="Link to this heading">¶</a></h2>
+<h3>Summary and Next Steps<a class="headerlink" href="#summary-and-next-steps" title="Link to this heading">¶</a></h3>
+</section>
 </section>
 </section>
 

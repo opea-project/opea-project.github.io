@@ -24,10 +24,10 @@ AI application examples you can run directly on Xeon and Gaudi. You can also ref
 
 | Helm chart               | Link to GenAIExamples                                                                    | Description                                                                                     |
 | ------------------------ | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [codegen](./codegen)     | [Code Generation](https://github.com/opea-project/GenAIExamples/tree/main/CodeGen)       | An example of copilot designed for code generation in Visual Studio Code.                       |
-| [codetrans](./codetrans) | [Code Translation](https://github.com/opea-project/GenAIExamples/tree/main/CodeTrans)    | An example of programming language code translation.                                            |
-| [chatqna](./chatqna)     | [ChatQnA](https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA)               | An example of chatbot for question and answering through retrieval argumented generation (RAG). |
-| [docsum](./docsum)       | [Document Summarization](https://github.com/opea-project/GenAIExamples/tree/main/DocSum) | An example of document summarization.                                                           |
+| [codegen](./codegen)     | [Code Generation](/GenAIExamples/CodeGen/README.md)       | An example of copilot designed for code generation in Visual Studio Code.                       |
+| [codetrans](./codetrans) | [Code Translation](/GenAIExamples/CodeTrans/README.md)    | An example of programming language code translation.                                            |
+| [chatqna](./chatqna)     | [ChatQnA](/GenAIExamples/ChatQnA/README.md)               | An example of chatbot for question and answering through retrieval argumented generation (RAG). |
+| [docsum](./docsum)       | [Document Summarization](/GenAIExamples/DocSum/README.md) | An example of document summarization.                                                           |
 
 ### Components
 

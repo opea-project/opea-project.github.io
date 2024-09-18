@@ -110,7 +110,7 @@ Two ways of consuming SearchQnA Service:
 
 ## Troubleshooting
 
-1. If you get errors like "Access Denied", [validate micro service](https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/docker_compose/intel/cpu/xeon#validate-microservices) first. A simple example:
+1. If you get errors like "Access Denied", [validate micro service](/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.md#validate-microservices) first. A simple example:
 
    ```bash
    http_proxy=""

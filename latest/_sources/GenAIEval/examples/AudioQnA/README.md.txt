@@ -13,7 +13,7 @@ We evaluate the WER (Word Error Rate) metric of the ASR microservice.
 
 ### Launch ASR microservice
 
-Launch the ASR microserice with the following commands. For more details please refer to [doc](https://github.com/opea-project/GenAIComps/tree/main/comps/asr).
+Launch the ASR microserice with the following commands. For more details please refer to [doc](/GenAIComps/comps/asr/README.md).
 
 ```bash
 git clone https://github.com/opea-project/GenAIComps
