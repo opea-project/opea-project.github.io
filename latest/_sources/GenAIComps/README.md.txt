@@ -256,12 +256,12 @@ Welcome to the OPEA open-source community! We are thrilled to have you here and 
 
 Together, we can make OPEA the go-to platform for enterprise AI solutions. Let's work together to push the boundaries of what's possible and create a future where AI is accessible, efficient, and impactful for everyone.
 
-Please check the [Contributing guidelines](/community/CONTRIBUTING.md/README.md) for a detailed guide on how to contribute a GenAI example and all the ways you can contribute!
+Please check the [Contributing guidelines](/community/CONTRIBUTING.md) for a detailed guide on how to contribute a GenAI example and all the ways you can contribute!
 
 Thank you for being a part of this journey. We can't wait to see what we can achieve together!
 
 ## Additional Content
 
-- [Code of Conduct](/community/CODE_OF_CONDUCT.md/README.md)
-- [Security Policy](/community/SECURITY.md/README.md)
+- [Code of Conduct](/community/CODE_OF_CONDUCT.md)
+- [Security Policy](/community/SECURITY.md)
 - [Legal Information](/LEGAL_INFORMATION.md)

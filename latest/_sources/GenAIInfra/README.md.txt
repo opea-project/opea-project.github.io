@@ -49,7 +49,7 @@ The following steps are optional. They're only required if you want to run the w
 
 Follow [GMC README](/GenAIInfra/microservices-connector/README.md)
 to install GMC into your kubernetes cluster. [GenAIExamples](https://github.com/opea-project/GenAIExamples) contains several sample GenAI example use case pipelines such as ChatQnA, DocSum, etc.
-Once you have deployed GMC in your Kubernetes cluster, you can deploy any of the example pipelines by following its Readme file (e.g. [Docsum](/GenAIExamples/DocSum/kubernetes/README.md)).
+Once you have deployed GMC in your Kubernetes cluster, you can deploy any of the example pipelines by following its Readme file (e.g. [Docsum](/GenAIExamples/DocSum/kubernetes/intel/README_gmc.md)).
 
 ### Use helm charts to deploy
 
@@ -59,7 +59,7 @@ For a detailed version, see [Deploy GenAIExample/GenAIComps using helm charts](/
 
 ## Additional Content
 
-- [Code of Conduct](/community/CODE_OF_CONDUCT.md/README.md)
-- [Contribution](/community/CONTRIBUTING.md/README.md)
-- [Security Policy](/community/SECURITY.md/README.md)
+- [Code of Conduct](/community/CODE_OF_CONDUCT.md)
+- [Contribution](/community/CONTRIBUTING.md)
+- [Security Policy](/community/SECURITY.md)
 - [Legal Information](/LEGAL_INFORMATION.md)

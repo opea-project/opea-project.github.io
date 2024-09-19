@@ -31,7 +31,7 @@ Results will be displayed in the terminal and saved as CSV file named `1_stats.c
 
 ### Prerequisites
 
-- Install Kubernetes by following [this guide](/guide/installation/k8s_install/k8s_install_kubespray.md/README.md).
+- Install Kubernetes by following [this guide](/guide/installation/k8s_install/k8s_install_kubespray.md).
 
 - Every node has direct internet access
 - Set up kubectl on the master node with access to the Kubernetes cluster.
@@ -67,7 +67,7 @@ We have created the [BKC manifest](/GenAIExamples/ChatQnA/benchmark/README.md) f
 ```bash
 # on k8s-master node
 git clone https://github.com/opea-project/GenAIExamples.git
-cd GenAIExamples/ChatQnA/benchmark
+cd GenAIExamples/ChatQnA/benchmark/performance
 
 # replace the image tag from latest to v0.9 since we want to test with v0.9 release
 IMAGE_TAG=v0.9
@@ -144,11 +144,11 @@ kubectl label nodes k8s-worker1 node-type=chatqna-opea
 
 ##### 2. Install ChatQnA
 
-Go to [BKC manifest](/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi/README.md) and apply to K8s.
+Go to [BKC manifest](./tuned/with_rerank/single_gaudi) and apply to K8s.
 
 ```bash
 # on k8s-master node
-cd GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi
+cd GenAIExamples/ChatQnA/benchmark/performance/tuned/with_rerank/single_gaudi
 kubectl apply -f .
 ```
 
@@ -210,7 +210,7 @@ All the test results will come to this folder `/home/sdp/benchmark_output/node_1
 
 ```bash
 # on k8s-master node
-cd GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi
+cd GenAIExamples/ChatQnA/benchmark/performance/tuned/with_rerank/single_gaudi
 kubectl delete -f .
 kubectl label nodes k8s-worker1 node-type-
 ```
@@ -227,11 +227,11 @@ kubectl label nodes k8s-worker1 k8s-worker2 node-type=chatqna-opea
 
 ##### 2. Install ChatQnA
 
-Go to [BKC manifest](/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/two_gaudi/README.md) and apply to K8s.
+Go to [BKC manifest](./tuned/with_rerank/two_gaudi) and apply to K8s.
 
 ```bash
 # on k8s-master node
-cd GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/two_gaudi
+cd GenAIExamples/ChatQnA/benchmark/performance/tuned/with_rerank/two_gaudi
 kubectl apply -f .
 ```
 
@@ -276,11 +276,11 @@ kubectl label nodes k8s-master k8s-worker1 k8s-worker2 k8s-worker3 node-type=cha
 
 ##### 2. Install ChatQnA
 
-Go to [BKC manifest](/GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/four_gaudi/README.md) and apply to K8s.
+Go to [BKC manifest](./tuned/with_rerank/four_gaudi) and apply to K8s.
 
 ```bash
 # on k8s-master node
-cd GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/four_gaudi
+cd GenAIExamples/ChatQnA/benchmark/performance/tuned/with_rerank/four_gaudi
 kubectl apply -f .
 ```
 
@@ -309,11 +309,7 @@ All the test results will come to this folder `/home/sdp/benchmark_output/node_4
 
 ```bash
 # on k8s-master node
-cd GenAIExamples/ChatQnA/benchmark/tuned/with_rerank/single_gaudi
+cd GenAIExamples/ChatQnA/benchmark/performance/tuned/with_rerank/single_gaudi
 kubectl delete -f .
 kubectl label nodes k8s-master k8s-worker1 k8s-worker2 k8s-worker3 node-type-
 ```
-
-#### 6. Results
-
-Check OOB performance data [here](/opea_release_data.md#chatqna), tuned performance data will be released soon.
