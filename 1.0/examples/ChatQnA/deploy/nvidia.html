@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single node on-prem deployment with TGI on Nvidia gpu &mdash; OPEA™ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/OPEA-favicon-32x32.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/opea-custom.js?v=22d49862"></script>
+        <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Single node on-prem deployment with Ollama on AIPC" href="aipc.html" />
+    <link rel="prev" title="Single node on-prem deployment with vLLM or TGI on Gaudi AI Accelerator" href="gaudi.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            OPEA™
+              <img src="../../../_static/opea-horizontal-white-w200.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> OPEA Project</span>
+      v: 1.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Document Versions</dt>
+        
+          <dd><a href="/latest/">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>OPEA Project links</dt>
+          <dd>
+            <a href="https://opea.dev">Project Home</a>
+          </dd>
+          <dd>
+            <a href="https://github.com/opea-project/docs/wiki">Wiki</a>
+          </dd>
+      </dl>
+    </div>
+  </div>
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/index.html">OPEA Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../introduction/index.html#opea-project-architecture">OPEA Project Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../introduction/index.html#microservices-flexible-and-scalable-architecture">Microservices: Flexible and Scalable Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../introduction/index.html#megaservices-a-comprehensive-solution">Megaservices: A Comprehensive Solution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../introduction/index.html#gateways-customized-access-to-mega-and-microservices">Gateways: Customized Access to Mega- and Microservices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../introduction/index.html#next-step">Next Step</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../framework/framework.html">Open Platform for Enterprise AI (OPEA) Framework Draft Proposal</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting-started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">GenAI Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../ChatQnA_Guide.html">ChatQnA Sample Guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#key-implementation-details">Key Implementation Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#architecture">Architecture</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../ChatQnA_Guide.html#deployment">Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChatQnA_Guide.html#monitoring">Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIExamples/README.html">Generative AI Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#getting-started">Getting Started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#supported-examples">Supported Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#contributing-to-opea">Contributing to OPEA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIExamples/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIExamples/docker_images_list.html">Docker Images</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/docker_images_list.html#example-images">Example images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/docker_images_list.html#microservice-images">Microservice images</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIExamples/supported_examples.html">Supported Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/supported_examples.html#chatqna">ChatQnA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#agentqna-application">AgentQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/README.html">Agents for Question Answering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/retrieval_tool/README.html">Retrieval tool for agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#audioqna-application">AudioQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/README.html">AudioQnA Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/benchmark/accuracy/README.html">AudioQnA accuracy Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/kubernetes/intel/README.html">Deploy AudioQnA in a Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/kubernetes/intel/README_gmc.html">Deploy AudioQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/AudioQnA/ui/svelte/README.html">AudioQnA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#chatqna-application">ChatQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of ChatQnA on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/docker_compose/nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/kubernetes/intel/README.html">Deploy ChatQnA in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/kubernetes/intel/README_gmc.html">Deploy ChatQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/ui/react/README.html">ChatQnA Conversational UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ChatQnA/ui/svelte/README.html">ChatQnA Customized UI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#codegen-application">CodeGen Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/README.html">Code Generation Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/benchmark/accuracy/README.html">CodeGen accuracy Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon/README.html">Build MegaService of CodeGen on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of CodeGen on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/kubernetes/intel/README.html">Deploy CodeGen in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/kubernetes/intel/README_gmc.html">Deploy CodeGen in a Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/kubernetes/intel/cpu/xeon/manifest/README_react_ui.html">Deploy CodeGen with ReactUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/ui/react/README.html">Code Gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeGen/ui/svelte/README.html">Code Gen</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#codetrans-application">CodeTrans Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/README.html">Code Translation Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of CodeTrans on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of CodeTrans on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/kubernetes/intel/README.html">Deploy CodeTrans in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/kubernetes/intel/README_gmc.html">Deploy CodeTrans in a Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/CodeTrans/ui/svelte/README.html">Code Translation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#docindexretriever-application">DocIndexRetriever Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocIndexRetriever/README.html">DocRetriever Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/README.html">DocRetriever Application with Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocIndexRetriever/docker_compose/intel/hpu/gaudi/README.html">DocRetriever Application with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#docsum-application">DocSum Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/README.html">Document Summarization Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/kubernetes/intel/README.html">Deploy DocSum in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/kubernetes/intel/README_gmc.html">Deploy DocSum in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/kubernetes/intel/cpu/xeon/manifest/ui/README.html">Deploy DocSum with ReactUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/ui/react/README.html">Doc Summary React</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/DocSum/ui/svelte/README.html">Doc Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#faqgen-application">FaqGen Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/README.html">FAQ Generation Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/benchmark/accuracy/README.html">FaqGen Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of FAQ Generation on Intel Xeon Processor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of FAQ Generation on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/kubernetes/intel/README.html">Deploy FaqGen in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/kubernetes/intel/cpu/xeon/manifest/README_react_ui.html">Deploy FaqGen with ReactUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/ui/react/README.html">Doc Summary React</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instructiontuning-application">InstructionTuning Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/InstructionTuning/README.html">Instruction Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/InstructionTuning/docker_compose/intel/cpu/xeon/README.html">Deploy Instruction Tuning Service on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/InstructionTuning/docker_compose/intel/hpu/gaudi/README.html">Deploy Instruction Tuning Service on Gaudi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#multimodalqna-application">MultimodalQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/MultimodalQnA/README.html">MultimodalQnA Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#productivitysuite-application">ProductivitySuite Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ProductivitySuite/README.html">OPEA Productivity Suite Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ProductivitySuite/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Productivity Suite on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ProductivitySuite/docker_compose/intel/cpu/xeon/keycloak_setup_guide.html">Keycloak Configuration Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ProductivitySuite/kubernetes/intel/README.html">Deploy ProductivitySuite with ReactUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/ProductivitySuite/ui/react/README.html">Productivity Suite React UI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#rerankfinetuning-application">RerankFinetuning Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/RerankFinetuning/README.html">Rerank Model Finetuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/RerankFinetuning/docker_compose/intel/cpu/xeon/README.html">Deploy Rerank Model Finetuning Service on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/RerankFinetuning/docker_compose/intel/hpu/gaudi/README.html">Deploy Rerank Model Finetuning Service on Gaudi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#searchqna-application">SearchQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/SearchQnA/README.html">SearchQnA Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/SearchQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of SearchQnA on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/SearchQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of SearchQnA on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/SearchQnA/kubernetes/intel/README_gmc.html">Deploy SearchQnA in a Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/SearchQnA/ui/svelte/README.html">Neural Chat</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#translation-application">Translation Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/README.html">Translation Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Translation on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Translation on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/kubernetes/intel/README.html">Deploy Translation in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/kubernetes/intel/README_gmc.html">Deploy Translation in a Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/Translation/ui/svelte/README.html">Language Translation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#videoqna-application">VideoQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VideoQnA/README.html">VideoQnA Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VideoQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of VideoQnA on Xeon</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#visualqna-application">VisualQnA Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VisualQnA/README.html">Visual Question and Answering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VisualQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of VisualQnA on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VisualQnA/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of VisualQnA on Gaudi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VisualQnA/kubernetes/intel/README.html">Deploy VisualQnA in Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIExamples/VisualQnA/kubernetes/intel/README_gmc.html">Deploy VisualQnA in a Kubernetes Cluster</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../microservices/index.html">GenAI Microservices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIComps/README.html">Generative AI Components (GenAIComps)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#microservice">MicroService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#megaservice">MegaService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#gateway">Gateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#contributing-to-opea">Contributing to OPEA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIComps/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#agent-microservice">Agent Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/agent/langchain/README.html">Agent Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/agent/langchain/src/strategy/planexec/README.html">Plan Execute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/agent/langchain/src/strategy/ragagent/README.html">RAG Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#asr-microservice">Asr Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/asr/whisper/README.html">ASR Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#chathistory-microservice">Chathistory Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/chathistory/mongo/README.html">Chat History Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#cores-microservice">Cores Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/cores/telemetry/README.html">Telemetry for OPEA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#dataprep-microservice">Dataprep Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/README.html">Dataprep Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/milvus/langchain/README.html">Dataprep Microservice with Milvus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/multimodal/redis/langchain/README.html">Dataprep Microservice for Multimodal Data with Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/neo4j/langchain/README.html">Dataprep Microservice with Neo4J</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/pgvector/langchain/README.html">Dataprep Microservice with PGVector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/pinecone/langchain/README.html">Dataprep Microservice with Pinecone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/qdrant/langchain/README.html">Dataprep Microservice with Qdrant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/redis/README.html">Dataprep Microservice with Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/vdms/README.html">Dataprep Microservice with VDMS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/dataprep/vdms/multimodal_langchain/README.html">Multimodal Dataprep Microservice with VDMS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#embeddings-microservice">Embeddings Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/README.html">Embeddings Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/mosec/langchain/README.html">build Mosec endpoint docker image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/mosec/langchain/dependency/README.html">Embedding Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/multimodal/README.html">Multimodal Embeddings Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/multimodal_clip/README.html">Multimodal CLIP Embeddings Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/predictionguard/README.html">Embedding Generation Prediction Guard Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/tei/langchain/README.html">Embeddings Microservice with Langchain TEI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/embeddings/tei/llama_index/README.html">Embeddings Microservice with Llama Index TEI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#feedback-management-microservice">Feedback_management Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/feedback_management/mongo/README.html">Feedback Management Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#finetuning-microservice">Finetuning Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/finetuning/README.html">Fine-tuning Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#guardrails-microservice">Guardrails Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/guardrails/README.html">Trust and Safety with LLM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/guardrails/bias_detection/README.html">Bias Detection Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/guardrails/llama_guard/langchain/README.html">Guardrails Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/guardrails/pii_detection/README.html">PII Detection Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/guardrails/toxicity_detection/README.html">Toxicity Detection Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#intent-detection-microservice">Intent_detection Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/intent_detection/langchain/README.html">Intent Detection Microservice by TGI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#knowledgegraphs-microservice">Knowledgegraphs Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/knowledgegraphs/langchain/README.html">Knowledge Graph Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#llms-microservice">Llms Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/README.html">LLM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/native/langchain/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/native/llama_index/README.html">LLM Native Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/ollama/langchain/README.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/predictionguard/README.html">Prediction Guard Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/tgi/README.html">TGI LLM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/vllm/langchain/README.html">vLLM Endpoint Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/vllm/llama_index/README.html">vLLM Endpoint Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/text-generation/vllm/ray/README.html">VLLM-Ray Endpoint Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/llms/utils/lm-eval/README.html">LM-Eval Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#lvms-microservice">Lvms Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/lvms/llava/README.html">LVM Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/lvms/predictionguard/README.html">LVM Prediction Guard Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/lvms/video-llama/README.html">LVM Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#nginx-microservice">Nginx Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/nginx/README.html">Nginx for Microservice Forwarding</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#prompt-registry-microservice">Prompt_registry Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/prompt_registry/mongo/README.html">Prompt Registry Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#ragas-microservice">Ragas Microservice</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#reranks-microservice">Reranks Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/reranks/fastrag/README.html">Reranking Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/reranks/mosec/langchain/README.html">build reranking Mosec endpoint docker image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/reranks/tei/README.html">Reranking Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/reranks/videoqna/README.html">Rerank Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#retrievers-microservice">Retrievers Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/README.html">Retriever Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/milvus/langchain/README.html">Retriever Microservice with Milvus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/multimodal/redis/langchain/README.html">Retriever Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/neo4j/langchain/README.html">Retriever Microservice with Neo4J</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/pathway/langchain/README.html">Retriever Microservice with Pathway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/pgvector/langchain/README.html">Retriever Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/qdrant/haystack/README.html">Retriever Microservice with Qdrant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/redis/langchain/README.html">Retriever Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/redis/llama_index/README.html">Retriever Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/retrievers/vdms/langchain/README.html">Retriever Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/tts/speecht5/README.html">TTS Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#vectorstores-microservice">Vectorstores Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/README.html">Vectorstores Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/chroma/README.html">Start Chroma server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/lancedb/README.html">Start LanceDB Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/milvus/README.html">Start Milvus server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/pathway/README.html">Start the Pathway Vector DB Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/pgvector/README.html">Start PGVector server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/pinecone/README.html">Pinecone setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/qdrant/README.html">Start Qdrant server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/redis/README.html">Start Redis server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/vectorstores/vdms/README.html">Start VDMS server</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../microservices/index.html#web-retrievers-microservice">Web_retrievers Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIComps/comps/web_retrievers/chroma/langchain/README.html">Web Retriever Microservice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deploy/index.html">Deploying GenAI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIInfra/README.html">GenAIInfra</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/README.html#prerequisite">Prerequisite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/README.html#usages">Usages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIInfra/DEVELOPMENT.html">Development</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/DEVELOPMENT.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/DEVELOPMENT.html#testing">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/DEVELOPMENT.html#pre-commit-testing">pre-commit testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIInfra/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html">Release Branches</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html#create-release-candidate-branch">1. Create release candidate branch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html#create-images-with-release-tag">2. Create images with release tag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html#test-helm-charts">3. Test helm charts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html#test-gmc">4. Test GMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/RELEASE_BRANCHES.html#publish-images">5. Publish images</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#installation-guides">Installation Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../guide/installation/gmc_install/gmc_install.html">GenAI-microservices-connector(GMC) Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guide/installation/k8s_install/k8s_instal_aws_eks.html">Kubernetes Installation using AWS EKS Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guide/installation/k8s_install/k8s_install_kubeadm.html">Kubernetes installation demo using kubeadm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guide/installation/k8s_install/k8s_install_kubespray.html">Kubernetes installation using Kubespray</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#authentication-and-authorization">Authentication and Authorization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/authN-authZ/README.html">Authentication and authorization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/authN-authZ/auth-apisix/README.html">Authentication and Authorization with APISIX and OIDC based Identity provider (Keycloak)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/authN-authZ/auth-istio/README.html">Leveraging Istio to compose an OPEA Pipeline with authentication and authorization enabled</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#helm-charts">Helm Charts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/README.html">Helm charts for deploying GenAI Components and Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/HPA.html">HorizontalPodAutoscaler (HPA) support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/chatqna/README.html">ChatQnA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/chatqna/troubleshooting.html">ChatQnA Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/codegen/README.html">CodeGen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/codetrans/README.html">CodeTrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/asr/README.html">asr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/data-prep/README.html">data-prep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/embedding-usvc/README.html">embedding-usvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/guardrails-usvc/README.html">guardrails-usvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/llm-uservice/README.html">llm-uservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/redis-vector-db/README.html">redis-vector-db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/reranking-usvc/README.html">reranking-usvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/retriever-usvc/README.html">retriever-usvc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/speecht5/README.html">speecht5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/tei/README.html">tei</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/teirerank/README.html">teirerank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/tgi/README.html">tgi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/tts/README.html">tts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/vllm/README.html">vllm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/web-retriever/README.html">web-retriever</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/whisper/README.html">whisper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/docsum/README.html">DocSum</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#kubernetes-addons">Kubernetes Addons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/kubernetes-addons/README.html">Deploy Kubernetes add-ons for OPEA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/kubernetes-addons/Intel-Gaudi-Base-Operator/README.html">Intel® Gaudi® Base Operator for Kubernetes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/kubernetes-addons/Observability/README.html">How-To Setup Observability for OPEA Workload in Kubernetes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/kubernetes-addons/memory-bandwidth-exporter/README.html">memory bandwidth exporter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#microservices-connector">Microservices Connector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/microservices-connector/README.html">genai-microservices-connector(GMC)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/microservices-connector/troubleshooting_guide.html">Troubleshooting GMC Custom Resource（CR）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/microservices-connector/usage_guide.html">Usage guide for genai-microservices-connector(GMC)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/microservices-connector/config/samples/ChatQnA/use_cases.html">ChatQnA Use Cases in Kubernetes Cluster via GMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/microservices-connector/helm/README.html">Helm chart for genai-microservices-connector(GMC)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#pipeline-proxy">Pipeline Proxy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/proxy/README.html">OPEA Pipeline Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/proxy/deployments/guardrails/README.html">Guardrails</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#scripts">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/scripts/README.html">Scripts and tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/scripts/nvidia/README.html">NVIDIA GPU Quick-Start Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/scripts/ray/README.html">Deploy Autoscaling Ray Cluster with KubeRay in Kubernetes Cluster</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../eval/index.html">Evaluating GenAI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/README.html">GenAIEval</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/README.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/README.html#evaluation">Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/README.html#benchmark">Benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/README.html#additional-content">Additional Content</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/LEGAL_INFORMATION.html">Legal Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/LEGAL_INFORMATION.html#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/LEGAL_INFORMATION.html#citation">Citation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html">Kubernetes Platform Optimization with Resource Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#nri-plugins">NRI Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#validate-policy-status">Validate policy status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#configure">Configure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#validate-cpu-affinity-and-hardware-alignment-in-containers">Validate CPU affinity and hardware alignment in containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#remove-a-policy">Remove a policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/doc/platform-optimization/README.html#nri-topology-aware-resource-policy">NRI topology-aware resource policy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html">OPEA Benchmark Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/README.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html">Auto-Tuning for ChatQnA: Optimizing Resource Allocation in Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#configuration-files">Configuration Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#auto-tuning-for-chatqna-optimizing-accuracy-by-tuning-model-related-parameters">Auto-Tuning for ChatQnA: Optimizing Accuracy by Tuning Model Related Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#prepare-dataset">Prepare Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/auto_tuning/README.html#run-the-tuning-script">Run the Tuning script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/grafana/README.html">Setup Prometheus and Grafana to visualize microservice metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/grafana/README.html#setup-prometheus">1. Setup Prometheus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/grafana/README.html#setup-grafana">2. Setup Grafana</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/stresscli/README.html">StressCli</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/stresscli/README.html#stresscli-py">stresscli.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/stresscli/locust/README.html">locust scripts for OPEA ChatQnA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/stresscli/locust/README.html#configuration-file">Configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/benchmark/stresscli/locust/README.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html">CRAG Benchmark for Agent QnA systems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#getting-started">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#crag-dataset">CRAG dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#launch-agent-qna-system">Launch agent QnA system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#run-crag-benchmark">Run CRAG benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/agent_eval/crag_eval/README.html#use-llm-as-judge-to-grade-the-answers">Use LLM-as-judge to grade the answers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/autorag/evaluation/README.html">AutoRAG to evaluate the RAG system performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/autorag/evaluation/README.html#service-preparation">Service preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/autorag/evaluation/README.html#rag-evaluation">RAG evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/autorag/evaluation/README.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html">Evaluation Methodology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html#prerequisite">Prerequisite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html#multihop-english-dataset">MultiHop (English dataset)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html#crud-chinese-dataset">CRUD (Chinese dataset)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/evaluation/rag_eval/README.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html">Metric Card for BLEU</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#metric-description">Metric Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#intended-uses">Intended Uses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#how-to-use">How to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#limitations-and-bias">Limitations and Bias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#citation">Citation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIEval/evals/metrics/bleu/README.html#further-references">Further References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer-guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../developer-guides/index.html#coding-guides">Coding Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/OPEA_API.html">OPEA API Service Spec (v0.9)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../developer-guides/index.html#documentation-guides">Documentation Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/doc_guidelines.html">Documentation Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/graphviz.html">Drawings Using Graphviz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/docbuild.html">OPEA Documentation Generation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">OPEA Community</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#community-support">Community Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#contributing-guides">Contributing Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../README.html">OPEA Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/CONTRIBUTING.html">Contribution Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/codeowner.html">OPEA Project Code Owners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/SECURITY.html">Reporting a Vulnerability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/doc_guidelines.html">Documentation Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/docbuild.html">OPEA Documentation Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer-guides/graphviz.html">Drawings Using Graphviz</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#roadmaps">Roadmaps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../roadmap/2024-2025.html">OPEA 2024 - 2025 Roadmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../roadmap/CICD.html">OPEA CI/CD Roadmap</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#project-governance">Project Governance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/charter.html">Technical Charter (the “Charter”) for OPEA a Series of LF Projects, LLC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/TSC.html">Technical Steering Committee (TSC)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/CODE_OF_CONDUCT.html">Contributor Covenant Code of Conduct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/SECURITY.html">Reporting a Vulnerability</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/index.html#rfc-proposals">RFC Proposals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../community/rfcs.html">Request for Comments (RFCs)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v1.0.html">OPEA Release Notes v1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v1.0.html#whats-new-in-opea-v1-0">What’s New in OPEA v1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v1.0.html#details">Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.9.html">OPEA Release Notes v0.9</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.9.html#whats-new-in-opea-v0-9">What’s New in OPEA v0.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.9.html#details">Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.8.html">OPEA Release Notes v0.8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#whats-new-in-opea-v0-8">What’s New in OPEA v0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#details">Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.8.html#thanks-to-these-contributors">Thanks to these contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.7.html">OPEA Release Notes v0.7</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#opea-highlights">OPEA Highlights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.7.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/v0.6.html">OPEA Release Notes v0.6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#opea-highlight">OPEA Highlight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiexamples">GenAIExamples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaicomps">GenAIComps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaievals">GenAIEvals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../release_notes/v0.6.html#genaiinfra">GenAIInfra</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">OPEA Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-is-opea-s-mission">What is OPEA’s mission?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-is-opea">What is OPEA?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-problems-are-faced-by-genai-deployments-within-the-enterprise">What problems are faced by GenAI deployments within the enterprise?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-now">Why now?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-does-it-compare-to-other-options-for-deploying-gen-ai-solutions-within-the-enterprise">How does it compare to other options for deploying Gen AI solutions within the enterprise?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#will-opea-reference-implementations-work-with-proprietary-components">Will OPEA reference implementations work with proprietary components?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-does-opea-acronym-stand-for">What does OPEA acronym stand for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-do-i-pronounce-opea">How do I pronounce OPEA?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-initial-companies-and-open-source-projects-joined-opea">What initial companies and open-source projects joined OPEA?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-is-intel-contributing">What is Intel contributing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#when-you-say-technical-conceptual-framework-what-components-are-included">When you say Technical Conceptual Framework, what components are included?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#what-are-the-different-ways-partners-can-contribute-to-opea">What are the different ways partners can contribute to OPEA?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#where-can-partners-see-the-latest-draft-of-the-conceptual-framework-spec">Where can partners see the latest draft of the Conceptual Framework spec?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#is-there-a-cost-for-joining">Is there a cost for joining?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#do-i-need-to-be-a-linux-foundation-member-to-join">Do I need to be a Linux Foundation member to join?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#where-can-i-report-a-bug-or-vulnerability">Where can I report a bug or vulnerability?</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OPEA™</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!-- 1.0 -->
+  
+  
+
+  <li><a href="../../../index.html">1.0</a> &raquo;</li>
+  
+     <li><a href="../../index.html">GenAI Examples</a> &raquo;</li>
+  
+     <li><a href="../ChatQnA_Guide.html">ChatQnA Sample Guide</a> &raquo;</li>
+  
+  <li>Single node on-prem deployment with TGI on Nvidia gpu</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/examples/ChatQnA/deploy/nvidia.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+  
+           <div itemprop="articleBody">
+             
+  <section id="single-node-on-prem-deployment-with-tgi-on-nvidia-gpu">
+<h1>Single node on-prem deployment with TGI on Nvidia gpu<a class="headerlink" href="#single-node-on-prem-deployment-with-tgi-on-nvidia-gpu" title="Link to this heading">¶</a></h1>
+<p>This deployment section covers single-node on-prem deployment of the ChatQnA
+example with OPEA comps to deploy using TGI service. There are several
+slice-n-dice ways to enable RAG with vectordb and LLM models, but here we will
+be covering one option of doing it for convenience : we will be showcasing  how
+to build an e2e chatQnA with Redis VectorDB and neural-chat-7b-v3-3 model,
+deployed on on-prem. If you do not have an IDC instance you can skip
+the step and make sure that all the (<em><strong>system level validation</strong></em>) metrics are addressed such as docker versions.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>There are several ways to setup a ChatQnA use case. Here in this tutorial, we
+will walk through how to enable the below list of microservices from OPEA
+GenAIComps to deploy a single node vLLM or TGI megaservice solution.</p>
+<ol class="arabic simple">
+<li><p>Data Prep</p></li>
+<li><p>Embedding</p></li>
+<li><p>Retriever</p></li>
+<li><p>Reranking</p></li>
+<li><p>LLM with TGI</p></li>
+</ol>
+<p>The solution is aimed to show how to use Redis vectordb for RAG and
+neural-chat-7b-v3-3 model on Nvidia GPU. We will go through
+how to setup docker container to start a microservices and megaservice . The
+solution will then utilize a sample Nike dataset which is in PDF format. Users
+can then ask a question about Nike and get a chat-like response by default for
+up to 1024 tokens. The solution is deployed with a UI. There are 2 modes you can
+use:</p>
+<ol class="arabic simple">
+<li><p>Basic UI</p></li>
+<li><p>Conversational UI</p></li>
+</ol>
+<p>Conversational UI is optional, but a feature supported in this example if you
+are interested to use.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>First step is to clone the GenAIExamples and GenAIComps. GenAIComps are
+fundamental necessary components used to build examples you find in
+GenAIExamples and deploy them as microservices.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Checkout the release tag</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIComps</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+</pre></div>
+</div>
+<p>The examples utilize model weights from HuggingFace and langchain.</p>
+<p>Setup your <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and generate
+<a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+<p>Setup the HuggingFace token</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+<p>The example requires you to set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> to deploy the microservices on
+endpoint enabled with ports. Set the host_ip env variable</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
+</pre></div>
+</div>
+<p>Make sure to setup Proxies if you are behind a firewall</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export no_proxy=${your_no_proxy},$host_ip
+export http_proxy=${your_http_proxy}
+export https_proxy=${your_http_proxy}
+</pre></div>
+</div>
+</section>
+<section id="prepare-building-pulling-docker-images">
+<h2>Prepare (Building / Pulling) Docker images<a class="headerlink" href="#prepare-building-pulling-docker-images" title="Link to this heading">¶</a></h2>
+<p>This step will involve building/pulling ( maybe in future) relevant docker
+images with step-by-step process along with sanity check in the end. For
+ChatQnA, the following docker images will be needed: embedding, retriever,
+rerank, LLM and dataprep. Additionally, you will need to build docker images for
+ChatQnA megaservice, and UI (conversational React UI is optional). In total,
+there are 8 required and an optional docker images.</p>
+<p>The docker images needed to setup the example needs to be build local, however
+the images will be pushed to docker hub soon by Intel.</p>
+<section id="build-pull-microservice-images">
+<h3>Build/Pull Microservice images<a class="headerlink" href="#build-pull-microservice-images" title="Link to this heading">¶</a></h3>
+<p>From within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder</p>
+<section id="build-dataprep-image">
+<h4>Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
+</pre></div>
+</div>
+</section>
+<section id="build-embedding-image">
+<h4>Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/embedding-tei:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/embeddings/tei/langchain/Dockerfile .
+</pre></div>
+</div>
+</section>
+<section id="build-retriever-image">
+<h4>Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/retrievers/redis/langchain/Dockerfile .
+</pre></div>
+</div>
+</section>
+<section id="build-rerank-image">
+<h4>Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/reranking-tei:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/reranks/tei/Dockerfile .
+</pre></div>
+</div>
+</section>
+<section id="build-llm-image">
+<h4>Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h4>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-0">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="build-mega-service-images">
+<h3>Build Mega Service images<a class="headerlink" href="#build-mega-service-images" title="Link to this heading">¶</a></h3>
+<p>The Megaservice is a pipeline that channels data through different
+microservices, each performing varied tasks. We define the different
+microservices and the flow of data between them in the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> file, say in
+this example the output of embedding microservice will be the input of retrieval
+microservice which will in turn passes data to the reranking microservice and so
+on. You can also add newer or remove some microservices and customize the
+megaservice to suit the needs.</p>
+<p>Build the megaservice image for this use case</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/chatqna:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f Dockerfile .
+</pre></div>
+</div>
+</section>
+<section id="build-other-service-images">
+<h3>Build Other Service images<a class="headerlink" href="#build-other-service-images" title="Link to this heading">¶</a></h3>
+<section id="build-the-ui-image">
+<h4>Build the UI Image<a class="headerlink" href="#build-the-ui-image" title="Link to this heading">¶</a></h4>
+<p>As mentioned, you can build 2 modes of UI</p>
+<p><em>Basic UI</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
+docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
+</pre></div>
+</div>
+<p><em>Conversation UI</em>
+If you want a conversational experience with chatqna megaservice.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
+docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sanity-check">
+<h3>Sanity Check<a class="headerlink" href="#sanity-check" title="Link to this heading">¶</a></h3>
+<p>Check if you have the below set of docker images, before moving on to the next step:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-1">
+TGI</label><div class="sd-tab-content docutils">
+<ul class="simple">
+<li><p>opea/dataprep-redis:latest</p></li>
+<li><p>opea/embedding-tei:latest</p></li>
+<li><p>opea/retriever-redis:latest</p></li>
+<li><p>opea/reranking-tei:latest</p></li>
+<li><p>opea/chatqna:latest</p></li>
+<li><p>opea/chatqna-ui:latest</p></li>
+<li><p>opea/llm-tgi:latest</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="use-case-setup">
+<h2>Use Case Setup<a class="headerlink" href="#use-case-setup" title="Link to this heading">¶</a></h2>
+<p>As mentioned the use case will use the following combination of the GenAIComps
+with the tools</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-2">
+TGI</label><div class="sd-tab-content docutils">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>use case components</p></th>
+<th class="head"><p>Tools</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Service Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Data Prep</p></td>
+<td><p>LangChain</p></td>
+<td><p>NA</p></td>
+<td><p>OPEA Microservice</p></td>
+</tr>
+<tr class="row-odd"><td><p>VectorDB</p></td>
+<td><p>Redis</p></td>
+<td><p>NA</p></td>
+<td><p>Open source service</p></td>
+</tr>
+<tr class="row-even"><td><p>Embedding</p></td>
+<td><p>TEI</p></td>
+<td><p>BAAI/bge-base-en-v1.5</p></td>
+<td><p>OPEA Microservice</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reranking</p></td>
+<td><p>TEI</p></td>
+<td><p>BAAI/bge-reranker-base</p></td>
+<td><p>OPEA Microservice</p></td>
+</tr>
+<tr class="row-even"><td><p>LLM</p></td>
+<td><p>TGI</p></td>
+<td><p>Intel/neural-chat-7b-v3-3</p></td>
+<td><p>OPEA Microservice</p></td>
+</tr>
+<tr class="row-odd"><td><p>UI</p></td>
+<td><p></p></td>
+<td><p>NA</p></td>
+<td><p>Gateway Service</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tools and models mentioned in the table are configurable either through the
+environment variable or <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
+</div>
+</div>
+<p>Set the necessary environment variables to setup the use case case</p>
+<blockquote>
+<div><p>Note: Replace <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with your external IP address. Do <strong>NOT</strong> use localhost
+for the below set of environment variables</p>
+</div></blockquote>
+<section id="dataprep">
+<h3>Dataprep<a class="headerlink" href="#dataprep" title="Link to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export DATAPREP_SERVICE_ENDPOINT=&quot;http://${host_ip}:6007/v1/dataprep&quot;
+export DATAPREP_GET_FILE_ENDPOINT=&quot;http://${host_ip}:6007/v1/dataprep/get_file&quot;
+export DATAPREP_DELETE_FILE_ENDPOINT=&quot;http://${host_ip}:6007/v1/dataprep/delete_file&quot;
+</pre></div>
+</div>
+</section>
+<section id="vectordb">
+<h3>VectorDB<a class="headerlink" href="#vectordb" title="Link to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export REDIS_URL=&quot;redis://${host_ip}:6379&quot;
+export INDEX_NAME=&quot;rag-redis&quot;
+</pre></div>
+</div>
+</section>
+<section id="embedding-service">
+<h3>Embedding Service<a class="headerlink" href="#embedding-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;
+export EMBEDDING_SERVICE_HOST_IP=${host_ip}    
+export RETRIEVER_SERVICE_HOST_IP=${host_ip}
+export TEI_EMBEDDING_ENDPOINT=&quot;http://${host_ip}:8090&quot;
+</pre></div>
+</div>
+</section>
+<section id="reranking-service">
+<h3>Reranking Service<a class="headerlink" href="#reranking-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export RERANK_MODEL_ID=&quot;BAAI/bge-reranker-base&quot;
+export TEI_RERANKING_ENDPOINT=&quot;http://${host_ip}:8808&quot;
+export RERANK_SERVICE_HOST_IP=${host_ip}
+</pre></div>
+</div>
+</section>
+<section id="llm-service">
+<h3>LLM Service<a class="headerlink" href="#llm-service" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-3">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID=&quot;Intel/neural-chat-7b-v3-3&quot;
+export LLM_SERVICE_HOST_IP=${host_ip}
+export LLM_SERVICE_PORT=9000
+export TGI_LLM_ENDPOINT=&quot;http://${host_ip}:8008&quot;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="megaservice">
+<h3>Megaservice<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export MEGA_SERVICE_HOST_IP=${host_ip}
+export BACKEND_SERVICE_ENDPOINT=&quot;http://${host_ip}:8888/v1/chatqna&quot;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="deploy-the-use-case">
+<h2>Deploy the use case<a class="headerlink" href="#deploy-the-use-case" title="Link to this heading">¶</a></h2>
+<p>In this tutorial, we will be deploying via docker compose with the provided
+YAML file.  The docker compose instructions should be starting all the
+above mentioned services as containers.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-4">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">nvidia</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span>
+<span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="validate-microservice">
+<h3>Validate microservice<a class="headerlink" href="#validate-microservice" title="Link to this heading">¶</a></h3>
+<section id="check-env-variables">
+<h4>Check Env Variables<a class="headerlink" href="#check-env-variables" title="Link to this heading">¶</a></h4>
+<p>Check the start up log by <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">./compose.yaml</span> <span class="pre">logs</span></code>.
+The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-5">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@nvidia-vm:~/GenAIExamples/ChatQnA/docker_compose/nvidia/gpu$ docker compose -f ./compose.yaml up -d
+WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
+WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/nvidia/gpu/compose.yaml: `version` is obsolete
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="check-the-container-status">
+<h4>Check the container status<a class="headerlink" href="#check-the-container-status" title="Link to this heading">¶</a></h4>
+<p>Check if all the containers  launched via docker compose has started</p>
+<p>For example, the ChatQnA example starts 11 docker (services), check these docker
+containers are all running, i.e, all the containers  <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>  are  <code class="docutils literal notranslate"><span class="pre">Up</span></code>
+To do a quick sanity check, try <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> to see if all the containers are running</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-6">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                   <span class="n">COMMAND</span>                  <span class="n">CREATED</span>        <span class="n">STATUS</span>        <span class="n">PORTS</span>                                                                                  <span class="n">NAMES</span>
+<span class="mi">3</span><span class="n">b5fa9a722da</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="n">d3b37f3d1faa</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="p">:</span><span class="n">latest</span>                                     <span class="s2">&quot;python chatqna.py&quot;</span>      <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">b3e1388fa2ca</span>   <span class="n">opea</span><span class="o">/</span><span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python reranking_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">24</span><span class="n">a240f8ad1c</span>   <span class="n">opea</span><span class="o">/</span><span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                             <span class="s2">&quot;python retriever_re…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">9</span><span class="n">c0d2a2553e8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python embedding_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">24</span><span class="n">cae0db1a70</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">tgi</span><span class="p">:</span><span class="n">latest</span>                                    <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">llm</span><span class="o">-</span><span class="n">tgi</span><span class="o">-</span><span class="n">server</span>
+<span class="n">ea3986c3cf82</span>   <span class="n">opea</span><span class="o">/</span><span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                              <span class="s2">&quot;python prepare_doc_…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="n">e10dd14497a8</span>   <span class="n">redis</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="mf">7.2.0</span><span class="o">-</span><span class="n">v9</span>                              <span class="s2">&quot;/entrypoint.sh&quot;</span>         <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">redis</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
+<span class="mi">79276</span><span class="n">cf45a47</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8090</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8090</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">embedding</span><span class="o">-</span><span class="n">server</span>
+<span class="mf">4943e5</span><span class="n">f6cd80</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">reranking</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="interacting-with-chatqna-deployment">
+<h2>Interacting with ChatQnA deployment<a class="headerlink" href="#interacting-with-chatqna-deployment" title="Link to this heading">¶</a></h2>
+<p>This section will walk you through what are the different ways to interact with
+the microservices deployed</p>
+<section id="dataprep-microservice-optional">
+<h3>Dataprep Microservice（Optional）<a class="headerlink" href="#dataprep-microservice-optional" title="Link to this heading">¶</a></h3>
+<p>If you want to add/update the default knowledge base, you can use the following
+commands. The dataprep microservice extracts the texts from variety of data
+sources, chunks the data, embeds each chunk using embedding microservice and
+store the embedded vectors in the redis vector database.</p>
+<p>Local File <code class="docutils literal notranslate"><span class="pre">nke-10k-2023.pdf</span></code> Upload:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
+     <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
+</pre></div>
+</div>
+<p>This command updates a knowledge base by uploading a local file for processing.
+Update the file path according to your environment.</p>
+<p>Add Knowledge Base via HTTP Links:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
+     <span class="o">-</span><span class="n">F</span> <span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
+</pre></div>
+</div>
+<p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
+<p>Also, you are able to get the file list that you uploaded:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/get_file&quot;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+
+</pre></div>
+</div>
+<p>To delete the file/link you uploaded you can use the following commands:</p>
+<section id="delete-link">
+<h4>Delete link<a class="headerlink" href="#delete-link" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The dataprep service will add a .txt postfix for link file</span>
+
+<span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
+     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-file">
+<h4>Delete file<a class="headerlink" href="#delete-file" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
+     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-all-uploaded-files-and-links">
+<h4>Delete all uploaded files and links<a class="headerlink" href="#delete-all-uploaded-files-and-links" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
+     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tei-embedding-service">
+<h3>TEI Embedding Service<a class="headerlink" href="#tei-embedding-service" title="Link to this heading">¶</a></h3>
+<p>The TEI embedding service takes in a string as input, embeds the string into a
+vector of a specific length determined by the embedding model and returns this
+embedded vector.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl ${host_ip}:8090/embed \
+    -X POST \
+    -d &#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39; \
+    -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+<p>In this example the embedding model used is “BAAI/bge-base-en-v1.5”, which has a
+vector size of 768. So the output of the curl command is a embedded vector of
+length 768.</p>
+</section>
+<section id="embedding-microservice">
+<h3>Embedding Microservice<a class="headerlink" href="#embedding-microservice" title="Link to this heading">¶</a></h3>
+<p>The embedding microservice depends on the TEI embedding service. In terms of
+input parameters, it takes in a string, embeds it into a vector using the TEI
+embedding service and pads other default parameters that are required for the
+retrieval microservice and returns it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:6000/v1/embeddings\
+  -X POST \
+  -d &#39;{&quot;text&quot;:&quot;hello&quot;}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+</section>
+<section id="retriever-microservice">
+<h3>Retriever Microservice<a class="headerlink" href="#retriever-microservice" title="Link to this heading">¶</a></h3>
+<p>To consume the retriever microservice, you need to generate a mock embedding
+vector by Python script. The length of embedding vector is determined by the
+embedding model. Here we use the
+model EMBEDDING_MODEL_ID=”BAAI/bge-base-en-v1.5”, which vector size is 768.</p>
+<p>Check the vector dimension of your embedding model and set
+<code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equal to it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export your_embedding=$(python3 -c &quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;)
+
+curl http://${host_ip}:7000/v1/retrieval \
+  -X POST \
+  -d &quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:${your_embedding}}&quot; \
+  -H &#39;Content-Type: application/json&#39;
+
+</pre></div>
+</div>
+<p>The output of the retriever microservice comprises of the a unique id for the
+request, initial query or the input to the retrieval microservice, a list of top
+<code class="docutils literal notranslate"><span class="pre">n</span></code> retrieved documents relevant to the input query, and top_n where n refers to
+the number of documents to be returned.</p>
+<p>The output is retrieved text that relevant to the input data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;27210945c7c6c054fa7355bdd4cde818&quot;</span><span class="p">,</span><span class="s2">&quot;retrieved_docs&quot;</span><span class="p">:[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;0c1dd04b31ab87a5468d65f98e33a9f6&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;Company: Nike. financial instruments are subject to master netting arrangements that allow for the offset of assets and liabilities in the event of default or early termination of the contract.</span><span class="se">\n</span><span class="s2">Any amounts of cash collateral received related to these instruments associated with the Company&#39;s credit-related contingent features are recorded in Cash and</span><span class="se">\n</span><span class="s2">equivalents and Accrued liabilities, the latter of which would further offset against the Company&#39;s derivative asset balance. Any amounts of cash collateral posted related</span><span class="se">\n</span><span class="s2">to these instruments associated with the Company&#39;s credit-related contingent features are recorded in Prepaid expenses and other current assets, which would further</span><span class="se">\n</span><span class="s2">offset against the Company&#39;s derivative liability balance. Cash collateral received or posted related to the Company&#39;s credit-related contingent features is presented in the</span><span class="se">\n</span><span class="s2">Cash provided by operations component of the Consolidated Statements of Cash Flows. The Company does not recognize amounts of non-cash collateral received, such</span><span class="se">\n</span><span class="s2">as securities, on the Consolidated Balance Sheets. For further information related to credit risk, refer to Note 12 — Risk Management and Derivatives.</span><span class="se">\n</span><span class="s2">2023 FORM 10-K 68Table of Contents</span><span class="se">\n</span><span class="s2">The following tables present information about the Company&#39;s derivative assets and liabilities measured at fair value on a recurring basis and indicate the level in the fair</span><span class="se">\n</span><span class="s2">value hierarchy in which the Company classifies the fair value measurement:</span><span class="se">\n</span><span class="s2">MAY 31, 2023</span><span class="se">\n</span><span class="s2">DERIVATIVE ASSETS</span><span class="se">\n</span><span class="s2">DERIVATIVE LIABILITIES&quot;</span><span class="p">},{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;1d742199fb1a86aa8c3f7bcd580d94af&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">}</span>
+
+</pre></div>
+</div>
+</section>
+<section id="tei-reranking-service">
+<h3>TEI Reranking Service<a class="headerlink" href="#tei-reranking-service" title="Link to this heading">¶</a></h3>
+<p>The TEI Reranking Service reranks the documents returned by the retrieval
+service. It consumes the query and list of documents and returns the document
+index based on decreasing order of the similarity score. The document
+corresponding to the returned index with the highest score is the most relevant
+document for the input query.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8808/rerank \
+    -X POST \
+    -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39; \
+    -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+<p>Output is:  <code class="docutils literal notranslate"><span class="pre">[{&quot;index&quot;:1,&quot;score&quot;:0.9988041},{&quot;index&quot;:0,&quot;score&quot;:0.022948774}]</span></code></p>
+</section>
+<section id="reranking-microservice">
+<h3>Reranking Microservice<a class="headerlink" href="#reranking-microservice" title="Link to this heading">¶</a></h3>
+<p>The reranking microservice consumes the TEI Reranking service and pads the
+response with default parameters required for the llm microservice.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8000/v1/reranking\
+  -X POST \
+  -d &#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: \
+     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+<p>The input to the microservice is the <code class="docutils literal notranslate"><span class="pre">initial_query</span></code> and a list of retrieved
+documents and it outputs the most relevant document to the initial query along
+with other default parameter such as temperature, <code class="docutils literal notranslate"><span class="pre">repetition_penalty</span></code>,
+<code class="docutils literal notranslate"><span class="pre">chat_template</span></code> and so on. We can also get top n documents by setting <code class="docutils literal notranslate"><span class="pre">top_n</span></code> as one
+of the input parameters. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8000/v1/reranking\
+  -X POST \
+  -d &#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot; ,&quot;top_n&quot;:2, &quot;retrieved_docs&quot;: \
+     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+<p>Here is the output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;e1eb0e44f56059fc01aa0334b1dac313&quot;</span><span class="p">,</span><span class="s2">&quot;query&quot;</span><span class="p">:</span><span class="s2">&quot;Human: Answer the question based only on the following context:</span><span class="se">\n</span><span class="s2">    Deep learning is...</span><span class="se">\n</span><span class="s2">    Question: What is Deep Learning?&quot;</span><span class="p">,</span><span class="s2">&quot;max_new_tokens&quot;</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="s2">&quot;top_k&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s2">&quot;top_p&quot;</span><span class="p">:</span><span class="mf">0.95</span><span class="p">,</span><span class="s2">&quot;typical_p&quot;</span><span class="p">:</span><span class="mf">0.95</span><span class="p">,</span><span class="s2">&quot;temperature&quot;</span><span class="p">:</span><span class="mf">0.01</span><span class="p">,</span><span class="s2">&quot;repetition_penalty&quot;</span><span class="p">:</span><span class="mf">1.03</span><span class="p">,</span><span class="s2">&quot;streaming&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+
+</pre></div>
+</div>
+<p>You may notice reranking microservice are with state (‘ID’ and other meta data),
+while reranking service are not.</p>
+</section>
+<section id="tgi-service">
+<h3>TGI Service<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-7">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8008/generate \
+  -X POST \
+  -d &#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;, \
+     &quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+
+</pre></div>
+</div>
+<p>TGI service generates text for the input prompt. Here is the expected result from TGI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span><span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.</span><span class="se">\n\n</span><span class="s2">Deep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong>: After launch the TGI, it takes few minutes for TGI server to load LLM model and warm up.</p>
+</div>
+</div>
+<p>If you get</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span><span class="p">:</span> <span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="n">Failed</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="mf">100.81.104.168</span> <span class="n">port</span> <span class="mi">8008</span> <span class="n">after</span> <span class="mi">0</span> <span class="n">ms</span><span class="p">:</span> <span class="n">Connection</span> <span class="n">refused</span>
+
+</pre></div>
+</div>
+<p>and the log shows model warm up, please wait for a while and try it later.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>2024-06-05T05:45:27.707509646Z 2024-06-05T05:45:27.707361Z  WARN text_generation_router: router/src/main.rs:357: `--revision` is not set
+2024-06-05T05:45:27.707539740Z 2024-06-05T05:45:27.707379Z  WARN text_generation_router: router/src/main.rs:358: We strongly advise to set it to a known supported commit.
+2024-06-05T05:45:27.852525522Z 2024-06-05T05:45:27.852437Z  INFO text_generation_router: router/src/main.rs:379: Serving revision bdd31cf498d13782cc7497cba5896996ce429f91 of model Intel/neural-chat-7b-v3-3
+2024-06-05T05:45:27.867833811Z 2024-06-05T05:45:27.867759Z  INFO text_generation_router: router/src/main.rs:221: Warming up model
+
+</pre></div>
+</div>
+</section>
+<section id="llm-microservice">
+<h3>LLM Microservice<a class="headerlink" href="#llm-microservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions\
+  -X POST \
+  -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,\
+     &quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+
+</pre></div>
+</div>
+<p>You will get generated text from LLM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;Deep&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; is&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; a&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; subset&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; machine&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; that&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; uses&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; algorithms&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; to&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learn&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; from&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; data&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>MegaService<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;,
+     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;
+     }&#39;
+
+</pre></div>
+</div>
+<p>Here is the output for your reference:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;An&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;swer&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;:&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; In&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; fiscal&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; &#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;0&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;3&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; N&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;I&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;KE&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Inc&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; achieved&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; record&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Rev&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;en&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;ues&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; $&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;5&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;1&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; billion&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;&lt;/s&gt;&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="check-docker-container-log">
+<h2>Check docker container log<a class="headerlink" href="#check-docker-container-log" title="Link to this heading">¶</a></h2>
+<p>Check the log of container by:</p>
+<p><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">&lt;CONTAINER</span> <span class="pre">ID&gt;</span> <span class="pre">-t</span></code></p>
+<p>Check the log by  <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">f7a08f9867f9</span> <span class="pre">-t</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.695934928</span><span class="n">Z</span> <span class="n">error</span><span class="p">:</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">required</span> <span class="k">for</span> <span class="s1">&#39;--model-id &lt;MODEL_ID&gt;&#39;</span> <span class="n">but</span> <span class="n">none</span> <span class="n">was</span> <span class="n">supplied</span>
+<span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.697123534</span><span class="n">Z</span>
+<span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.697148330</span><span class="n">Z</span> <span class="n">For</span> <span class="n">more</span> <span class="n">information</span><span class="p">,</span> <span class="k">try</span> <span class="s1">&#39;--help&#39;</span><span class="o">.</span>
+
+</pre></div>
+</div>
+<p>The log indicates the <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is not set.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-8">
+TGI</label><div class="sd-tab-content docutils">
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/nvidia/gpu/compose.yaml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> tgi-service:
+    image: ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu
+    container_name: tgi-service
+    ports:
+      - &quot;9009:80&quot;
+    volumes:
+      - &quot;./data:/data&quot;
+    shm_size: 1g
+    environment:
+      no_proxy: ${no_proxy}
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
+      HF_HUB_DISABLE_PROGRESS_BARS: 1
+      HF_HUB_ENABLE_HF_TRANSFER: 0
+    command: --model-id ${LLM_MODEL_ID} --cuda-graphs 0
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The input <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is  <code class="docutils literal notranslate"><span class="pre">${LLM_MODEL_ID}</span></code></p>
+<p>Check environment variable  <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code>  is set correctly, spelled correctly.
+Set the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> then restart the containers.</p>
+<p>Also you can check overall logs with the following command, where the
+compose.yaml is the mega service docker-compose configuration file.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-9" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-9">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">nvidia</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="launch-ui">
+<h2>Launch UI<a class="headerlink" href="#launch-ui" title="Link to this heading">¶</a></h2>
+<section id="basic-ui">
+<h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
+<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:5173&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="conversational-ui">
+<h3>Conversational UI<a class="headerlink" href="#conversational-ui" title="Link to this heading">¶</a></h3>
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the compose.yaml file. Replace chaqna-xeon-ui-server service with the chatqna-xeon-conversation-ui-server service as per the config below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>chaqna-xeon-conversation-ui-server:
+  image: opea/chatqna-conversation-ui:latest
+  container_name: chatqna-xeon-conversation-ui-server
+  environment:
+    - APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
+    - APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
+  ports:
+    - &quot;5174:80&quot;
+  depends_on:
+    - chaqna-xeon-backend-server
+  ipc: host
+  restart: always
+</pre></div>
+</div>
+<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:80&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="stop-the-services">
+<h3>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h3>
+<p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-10">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gaudi.html" class="btn btn-neutral float-left" title="Single node on-prem deployment with vLLM or TGI on Gaudi AI Accelerator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aipc.html" class="btn btn-neutral float-right" title="Single node on-prem deployment with Ollama on AIPC" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
+
+<span class="lastupdated">Published on Sep 20, 2024.</span>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3QH5804YP8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3QH5804YP8', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
