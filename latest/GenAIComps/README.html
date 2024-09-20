@@ -68,6 +68,8 @@
         
           <dd><a href="/latest/">latest</a></dd>
         
+          <dd><a href="/1.0/">1.0</a></dd>
+        
       </dl>
       <dl>
         <dt>OPEA Project links</dt>
@@ -469,6 +471,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/README.html">Helm charts for deploying GenAI Components and Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/HPA.html">HorizontalPodAutoscaler (HPA) support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/chatqna/README.html">ChatQnA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/chatqna/troubleshooting.html">ChatQnA Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/codegen/README.html">CodeGen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/codetrans/README.html">CodeTrans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIInfra/helm-charts/common/asr/README.html">asr</a></li>
@@ -657,6 +660,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../release_notes/v1.0.html">OPEA Release Notes v1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../release_notes/v1.0.html#whats-new-in-opea-v1-0">What’s New in OPEA v1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../release_notes/v1.0.html#details">Details</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../release_notes/v0.9.html">OPEA Release Notes v0.9</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../release_notes/v0.9.html#whats-new-in-opea-v0-9">What’s New in OPEA v0.9</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../release_notes/v0.9.html#details">Details</a></li>
@@ -785,131 +793,151 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <p>Each <code class="docutils literal notranslate"><span class="pre">Microservice</span></code> is designed to perform a specific function or task within the application architecture. By breaking down the system into smaller, self-contained services, <code class="docutils literal notranslate"><span class="pre">Microservices</span></code> promote modularity, flexibility, and scalability.</p>
 <p>This modular approach allows developers to independently develop, deploy, and scale individual components of the application, making it easier to maintain and evolve over time. Additionally, <code class="docutils literal notranslate"><span class="pre">Microservices</span></code> facilitate fault isolation, as issues in one service are less likely to impact the entire system.</p>
 <p>The initially supported <code class="docutils literal notranslate"><span class="pre">Microservices</span></code> are described in the below table. More <code class="docutils literal notranslate"><span class="pre">Microservices</span></code> are on the way.</p>
-<table>
-	<tbody>
-		<tr>
-			<td>MicroService</td>
-            <td>Framework</td>
-			<td>Model</td>
-			<td>Serving</td>
-			<td>HW</td>
-			<td>Description</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="./comps/embeddings">Embedding</a></td>
-            <td rowspan="2"><a href="https://www.langchain.com">LangChain</a>/<a href="https://www.llamaindex.ai">LlamaIndex</a></td>
-			<td rowspan="2"><a href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></td>
-			<td><a href="https://github.com/huggingface/tei-gaudi">TEI-Gaudi</a></td>
-			<td>Gaudi2</td>
-			<td>Embedding on Gaudi2</td>
-		</tr>
-		<tr>
-			<td><a href="https://github.com/huggingface/text-embeddings-inference">TEI</a></td>
-			<td>Xeon</td>
-			<td>Embedding on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td><a href="./comps/retrievers">Retriever</a></td>
-			<td><a href="https://www.langchain.com">LangChain</a>/<a href="https://www.llamaindex.ai">LlamaIndex</a></td>
-			<td><a href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></td>
-			<td><a href="https://github.com/huggingface/text-embeddings-inference">TEI</a></td>
-			<td>Xeon</td>
-			<td>Retriever on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="./comps/reranks">Reranking</a></td>
-            <td rowspan="2"><a href="https://www.langchain.com">LangChain</a>/<a href="https://www.llamaindex.ai">LlamaIndex</a></td>
-			<td ><a href="https://huggingface.co/BAAI/bge-reranker-base">BAAI/bge-reranker-base</a></td>
-			<td><a href="https://github.com/huggingface/tei-gaudi">TEI-Gaudi</a></td>
-			<td>Gaudi2</td>
-			<td>Reranking on Gaudi2</td>
-		</tr>
-		<tr>
-			<td><a href="https://huggingface.co/BAAI/bge-reranker-base">BBAAI/bge-reranker-base</a></td>
-			<td><a href="https://github.com/huggingface/text-embeddings-inference">TEI</a></td>
-			<td>Xeon</td>
-			<td>Reranking on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="./comps/asr/whisper">ASR</a></td>
-            <td rowspan="2">NA</a></td>
-			<td rowspan="2"><a href="https://huggingface.co/openai/whisper-small">openai/whisper-small</a></td>
-			<td rowspan="2">NA</td>
-			<td>Gaudi2</td>
-			<td>Audio-Speech-Recognition on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>Audio-Speech-RecognitionS on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="./comps/tts/speecht5">TTS</a></td>
-            <td rowspan="2">NA</a></td>
-			<td rowspan="2"><a href="https://huggingface.co/microsoft/speecht5_tts">microsoft/speecht5_tts</a></td>
-			<td rowspan="2">NA</td>
-			<td>Gaudi2</td>
-			<td>Text-To-Speech on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>Text-To-Speech on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="4"><a href="./comps/dataprep">Dataprep</a></td>
-            <td rowspan="2"><a href="https://qdrant.tech/">Qdrant</td>
-			<td rowspan="2"><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">sentence-transformers/all-MiniLM-L6-v2</a></td>
-			<td rowspan="4">NA</td>
-			<td>Gaudi2</td>
-			<td>Dataprep on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>Dataprep on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="https://redis.io/">Redis</td>
-			<td rowspan="2"><a href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></td>
-			<td>Gaudi2</td>
-			<td>Dataprep on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>Dataprep on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="6"><a href="./comps/llms">LLM</a></td>
-            <td rowspan="6"><a href="https://www.langchain.com">LangChain</a>/<a href="https://www.llamaindex.ai">LlamaIndex</a></td>
-			<td rowspan="2"><a href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></td>
-			<td><a href="https://github.com/huggingface/tgi-gaudi">TGI Gaudi</a></td>
-			<td>Gaudi2</td>
-			<td>LLM on Gaudi2</td>
-		</tr>
-		<tr>
-			<td><a href="https://github.com/huggingface/text-generation-inference">TGI</a></td>
-			<td>Xeon</td>
-			<td>LLM on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></td>
-			<td rowspan="2"><a href="https://github.com/ray-project/ray">Ray Serve</a></td>
-			<td>Gaudi2</td>
-			<td>LLM on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>LLM on Xeon CPU</td>
-		</tr>
-		<tr>
-			<td rowspan="2"><a href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></td>
-			<td rowspan="2"><a href="https://github.com/vllm-project/vllm/">vLLM</a></td>
-			<td>Gaudi2</td>
-			<td>LLM on Gaudi2</td>
-		</tr>
-		<tr>
-			<td>Xeon</td>
-			<td>LLM on Xeon CPU</td>
-		</tr>
-	</tbody>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>MicroService</p></th>
+<th class="head"><p>Framework</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Serving</p></th>
+<th class="head"><p>HW</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/embeddings/README.html"><span class="std std-doc">Embedding</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/tei-gaudi">TEI-Gaudi</a></p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Embedding on Gaudi2</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/embeddings/README.html"><span class="std std-doc">Embedding</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-embeddings-inference">TEI</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>Embedding on Xeon CPU</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/retrievers/README.html"><span class="std std-doc">Retriever</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-embeddings-inference">TEI</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>Retriever on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/reranks/tei/README.html"><span class="std std-doc">Reranking</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-reranker-base">BAAI/bge-reranker-base</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/tei-gaudi">TEI-Gaudi</a></p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Reranking on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/reranks/tei/README.html"><span class="std std-doc">Reranking</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-reranker-base">BBAAI/bge-reranker-base</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-embeddings-inference">TEI</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>Reranking on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/asr/whisper/README.html"><span class="std std-doc">ASR</span></a></p></td>
+<td><p>NA</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/openai/whisper-small">openai/whisper-small</a></p></td>
+<td><p>NA</p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Audio-Speech-Recognition on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/asr/whisper/README.html"><span class="std std-doc">ASR</span></a></p></td>
+<td><p>NA</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/openai/whisper-small">openai/whisper-small</a></p></td>
+<td><p>NA</p></td>
+<td><p>Xeon</p></td>
+<td><p>Audio-Speech-RecognitionS on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/tts/speecht5/README.html"><span class="std std-doc">TTS</span></a></p></td>
+<td><p>NA</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/microsoft/speecht5_tts">microsoft/speecht5_tts</a></p></td>
+<td><p>NA</p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Text-To-Speech on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/tts/speecht5/README.html"><span class="std std-doc">TTS</span></a></p></td>
+<td><p>NA</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/microsoft/speecht5_tts">microsoft/speecht5_tts</a></p></td>
+<td><p>NA</p></td>
+<td><p>Xeon</p></td>
+<td><p>Text-To-Speech on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/dataprep/README.html"><span class="std std-doc">Dataprep</span></a></p></td>
+<td><p><a class="reference external" href="https://qdrant.tech/">Qdrant</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">sentence-transformers/all-MiniLM-L6-v2</a></p></td>
+<td><p>NA</p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Dataprep on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/dataprep/README.html"><span class="std std-doc">Dataprep</span></a></p></td>
+<td><p><a class="reference external" href="https://qdrant.tech/">Qdrant</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">sentence-transformers/all-MiniLM-L6-v2</a></p></td>
+<td><p>NA</p></td>
+<td><p>Xeon</p></td>
+<td><p>Dataprep on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/dataprep/README.html"><span class="std std-doc">Dataprep</span></a></p></td>
+<td><p><a class="reference external" href="https://redis.io/">Redis</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td><p>NA</p></td>
+<td><p>Gaudi2</p></td>
+<td><p>Dataprep on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/dataprep/README.html"><span class="std std-doc">Dataprep</span></a></p></td>
+<td><p><a class="reference external" href="https://redis.io/">Redis</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td><p>NA</p></td>
+<td><p>Xeon</p></td>
+<td><p>Dataprep on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/tgi-gaudi">TGI Gaudi</a></p></td>
+<td><p>Gaudi2</p></td>
+<td><p>LLM on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-generation-inference">TGI</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>LLM on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/ray-project/ray">Ray Serve</a></p></td>
+<td><p>Gaudi2</p></td>
+<td><p>LLM on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/ray-project/ray">Ray Serve</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>LLM on Xeon CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/vllm-project/vllm/">vLLM</a></p></td>
+<td><p>Gaudi2</p></td>
+<td><p>LLM on Gaudi2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="comps/llms/text-generation/README.html"><span class="std std-doc">LLM</span></a></p></td>
+<td><p><a class="reference external" href="https://www.langchain.com">LangChain</a>/<a class="reference external" href="https://www.llamaindex.ai">LlamaIndex</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p><a class="reference external" href="https://github.com/vllm-project/vllm/">vLLM</a></p></td>
+<td><p>Xeon</p></td>
+<td><p>LLM on Xeon CPU</p></td>
+</tr>
+</tbody>
 </table>
 <p>A <code class="docutils literal notranslate"><span class="pre">Microservices</span></code> can be created by using the decorator <code class="docutils literal notranslate"><span class="pre">register_microservice</span></code>. Taking the <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">microservice</span></code> as an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">HuggingFaceHubEmbeddings</span>
@@ -1016,7 +1044,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 19, 2024.</span>
+<span class="lastupdated">Published on Sep 20, 2024.</span>
 
   </div>
 

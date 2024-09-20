@@ -68,6 +68,8 @@
         
           <dd><a href="/latest/">latest</a></dd>
         
+          <dd><a href="/1.0/">1.0</a></dd>
+        
       </dl>
       <dl>
         <dt>OPEA Project links</dt>
@@ -469,6 +471,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Helm charts for deploying GenAI Components and Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="HPA.html">HorizontalPodAutoscaler (HPA) support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chatqna/README.html">ChatQnA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chatqna/troubleshooting.html">ChatQnA Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="codegen/README.html">CodeGen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="codetrans/README.html">CodeTrans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/asr/README.html">asr</a></li>
@@ -657,6 +660,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release_notes/v1.0.html">OPEA Release Notes v1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v1.0.html#whats-new-in-opea-v1-0">What’s New in OPEA v1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release_notes/v1.0.html#details">Details</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../release_notes/v0.9.html">OPEA Release Notes v0.9</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.9.html#whats-new-in-opea-v0-9">What’s New in OPEA v0.9</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../release_notes/v0.9.html#details">Details</a></li>
@@ -761,11 +769,15 @@
 <li><p><a class="reference internal" href="#components"><span class="xref myst">Components</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#deploy-with-helm-charts"><span class="xref myst">How to deploy with helm charts</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-with-helm-charts"><span class="xref myst">Deploy with helm charts</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#from-source-code"><span class="xref myst">From Source Code</span></a></p></li>
+<li><p><a class="reference internal" href="#using-helm-charts-repository"><span class="xref myst">Using Helm Charts repository</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#helm-charts-options"><span class="xref myst">Helm Charts Options</span></a></p></li>
 <li><p><a class="reference internal" href="#using-persistent-volume"><span class="xref myst">Using Persistent Volume</span></a></p></li>
 <li><p><a class="reference internal" href="#using-private-docker-hub"><span class="xref myst">Using Private Docker Hub</span></a></p></li>
-<li><p><a class="reference internal" href="#helm-chart-repository"><span class="xref myst">Helm Charts repository</span></a></p></li>
 <li><p><a class="reference internal" href="#generate-manifests-from-helm-charts"><span class="xref myst">Generate manifests from Helm Charts</span></a></p></li>
 </ul>
 </section>
@@ -809,8 +821,10 @@ All components helm charts are put in the ./common directory, and the support li
 Refer to <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a> for details of each component.</p>
 </section>
 </section>
-<section id="how-to-deploy-with-helm-charts">
-<h2>How to deploy with helm charts<a class="headerlink" href="#how-to-deploy-with-helm-charts" title="Link to this heading">¶</a></h2>
+<section id="deploy-with-helm-charts">
+<h2>Deploy with helm charts<a class="headerlink" href="#deploy-with-helm-charts" title="Link to this heading">¶</a></h2>
+<section id="from-source-code">
+<h3>From Source Code<a class="headerlink" href="#from-source-code" title="Link to this heading">¶</a></h3>
 <p>These helm charts are designed to be easy to start, which means you can deploy a workload easily without further options.<br />
 However, <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code> should be set in most cases for a workload to start up correctly.<br />
 Examples of deploy a workload:</p>
@@ -821,6 +835,21 @@ helm install $myrelease $chartname --set global.HUGGINGFACEHUB_API_TOKEN=&quot;i
 </pre></div>
 </div>
 <p>Depends on your environment, you might want to customize some of the options, see <a class="reference internal" href="#helm-charts-options"><span class="xref myst">Helm Charts Options</span></a> for further information.</p>
+</section>
+<section id="using-helm-charts-repository">
+<h3>Using Helm Charts repository<a class="headerlink" href="#using-helm-charts-repository" title="Link to this heading">¶</a></h3>
+<p>The helm charts are released in this <a class="reference external" href="https://opea-project.github.io/GenAIInfra">helm chart repository</a>, you can use it directly.</p>
+<p>Add the repo:</p>
+<p><code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">repo</span> <span class="pre">add</span> <span class="pre">opea</span> <span class="pre">https://opea-project.github.io/GenAIInfra</span></code></p>
+<p>Show all helm charts available in the repo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">helm</span> <span class="n">repo</span> <span class="n">update</span>
+<span class="n">helm</span> <span class="n">search</span> <span class="n">repo</span> <span class="n">opea</span>
+</pre></div>
+</div>
+<p>Install the chart:</p>
+<p><code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">install</span> <span class="pre">tgi</span> <span class="pre">opea/tgi</span></code></p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">--help</span></code> to see all commands for helm, and check <a class="reference internal" href="#helm-charts-options"><span class="xref myst">Helm Charts Options</span></a> for more installation options.</p>
+</section>
 </section>
 <section id="helm-charts-options">
 <h2>Helm Charts Options<a class="headerlink" href="#helm-charts-options" title="Link to this heading">¶</a></h2>
@@ -936,10 +965,6 @@ If you have private hub or would like to use different docker image versions, se
 </pre></div>
 </div>
 </section>
-<section id="helm-charts-repository-experimental">
-<h2>Helm Charts repository (Experimental)<a class="headerlink" href="#helm-charts-repository-experimental" title="Link to this heading">¶</a></h2>
-<p>https://opea-project.github.io/GenAIInfra</p>
-</section>
 <section id="generate-manifests-from-helm-charts">
 <h2>Generate manifests from Helm Charts<a class="headerlink" href="#generate-manifests-from-helm-charts" title="Link to this heading">¶</a></h2>
 <p>Some users may want to use kubernetes manifests(yaml files) for workload deployment, we do not maintain manifests itself, and will generate them using <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">template</span></code>.<br />
@@ -964,7 +989,7 @@ They are not supposed to be directly used by users.</p>
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 19, 2024.</span>
+<span class="lastupdated">Published on Sep 20, 2024.</span>
 
   </div>
 

@@ -67,7 +67,7 @@ results = evaluate(args)
 
 #### remote service usage
 
-1. setup a separate server with [GenAIComps](/GenAIComps/comps/llms/lm-eval/README.md)
+1. setup a separate server with [GenAIComps](/GenAIComps/comps/llms/utils/lm-eval/README.md)
 
    ```
    # build cpu docker
