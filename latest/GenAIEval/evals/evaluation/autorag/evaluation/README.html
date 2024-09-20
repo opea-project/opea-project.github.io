@@ -68,6 +68,8 @@
         
           <dd><a href="/latest/">latest</a></dd>
         
+          <dd><a href="/1.0/">1.0</a></dd>
+        
       </dl>
       <dl>
         <dt>OPEA Project links</dt>
@@ -469,6 +471,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/README.html">Helm charts for deploying GenAI Components and Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/HPA.html">HorizontalPodAutoscaler (HPA) support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/chatqna/README.html">ChatQnA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/chatqna/troubleshooting.html">ChatQnA Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/codegen/README.html">CodeGen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/codetrans/README.html">CodeTrans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIInfra/helm-charts/common/asr/README.html">asr</a></li>
@@ -657,6 +660,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../release_notes/v1.0.html">OPEA Release Notes v1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/v1.0.html#whats-new-in-opea-v1-0">What’s New in OPEA v1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/v1.0.html#details">Details</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../release_notes/v0.9.html">OPEA Release Notes v0.9</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/v0.9.html#whats-new-in-opea-v0-9">What’s New in OPEA v0.9</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/v0.9.html#details">Details</a></li>
@@ -751,7 +759,7 @@
              
   <section id="autorag-to-evaluate-the-rag-system-performance">
 <h1>AutoRAG to evaluate the RAG system performance<a class="headerlink" href="#autorag-to-evaluate-the-rag-system-performance" title="Link to this heading">¶</a></h1>
-<p>AutoRAG is help to end-to-end evaluate the performance of the whole system. Currently, we support to evaluate the performance from 4 perspectives, answer_relevancy, faithfulness, context_recall, context_precision. Before using this service, the use should firstly prepare the groundtruth dataset in the <a class="reference internal" href="#/GenAIEval/evals/benchmark/ground_truth.jsonl/README.md"><span class="xref myst">standard format</span></a>. We also provide a <a class="reference internal" href="#/GenAIEval/evals/evaluation/autorag/data_generation/gen_eval_dataset.py/README.md"><span class="xref myst">script</span></a> to automatically generate the groundtruth query and answer.</p>
+<p>AutoRAG is help to end-to-end evaluate the performance of the whole system. Currently, we support to evaluate the performance from 4 perspectives, answer_relevancy, faithfulness, context_recall, context_precision. Before using this service, the use should firstly prepare the groundtruth dataset in the <a class="reference internal" href="#/GenAIEval/evals/benchmark/ragas/ground_truth.jsonl/README.md"><span class="xref myst">standard format</span></a>. We also provide a <a class="reference internal" href="#/GenAIEval/evals/evaluation/autorag/data_generation/gen_eval_dataset.py/README.md"><span class="xref myst">script</span></a> to automatically generate the groundtruth query and answer.</p>
 <section id="service-preparation">
 <h2>Service preparation<a class="headerlink" href="#service-preparation" title="Link to this heading">¶</a></h2>
 <p>The evaluation for the RAG system is based on the set up of the RAG services. Please follow <a class="reference internal" href="../../../../../GenAIExamples/ChatQnA/README.html"><span class="std std-doc">the steps</span></a> to set up your RAG services.</p>
@@ -762,7 +770,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-u<span class="w"> </span>ragas_evaluation_benchmark.py<span class="w"> </span>--ground_truth_file<span class="w"> </span>ground_truth.jsonl<span class="w"> </span>--search_type<span class="w"> </span>mmr<span class="w"> </span>--k<span class="w"> </span><span class="m">1</span><span class="w"> </span>--fetch_k<span class="w"> </span><span class="m">5</span><span class="w"> </span>--score_threshold<span class="w"> </span><span class="m">0</span>.3<span class="w"> </span>--top_n<span class="w"> </span><span class="m">1</span><span class="w"> </span>--temperature<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--top_k<span class="w"> </span><span class="m">5</span><span class="w"> </span>--top_p<span class="w"> </span><span class="m">0</span>.95<span class="w"> </span>--repetition_penalty<span class="w"> </span><span class="m">1</span>.1<span class="w"> </span>--use_openai_key<span class="w"> </span>True
 </pre></div>
 </div>
-<p>For evaluating multiple groups of parameters, please use <a class="reference internal" href="#/GenAIEval/evals/benchmark/run_rag_benchmark.py/README.md"><span class="xref myst">this script</span></a>.</p>
+<p>For evaluating multiple groups of parameters, please use <a class="reference internal" href="#/GenAIEval/evals/benchmark/ragas/run_rag_benchmark.py/README.md"><span class="xref myst">this script</span></a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-u<span class="w"> </span>run_rag_benchmark.py<span class="w"> </span>--config<span class="w"> </span>config.yaml
 </pre></div>
 </div>
@@ -788,7 +796,7 @@
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 19, 2024.</span>
+<span class="lastupdated">Published on Sep 20, 2024.</span>
 
   </div>
 
