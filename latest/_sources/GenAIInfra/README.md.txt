@@ -62,4 +62,4 @@ For a detailed version, see [Deploy GenAIExample/GenAIComps using helm charts](/
 - [Code of Conduct](/community/CODE_OF_CONDUCT.md)
 - [Contribution](/community/CONTRIBUTING.md)
 - [Security Policy](/community/SECURITY.md)
-- [Legal Information](/LEGAL_INFORMATION.md)
+- [Legal Information](LEGAL_INFORMATION.md)

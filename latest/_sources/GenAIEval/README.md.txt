@@ -172,4 +172,4 @@ Prometheus metrics collected during the tests can be used to create Grafana dash
 - [Code of Conduct](/community/CODE_OF_CONDUCT.md)
 - [Contribution](/community/CONTRIBUTING.md)
 - [Security Policy](/community/SECURITY.md)
-- [Legal Information](/LEGAL_INFORMATION.md)
+- [Legal Information](LEGAL_INFORMATION.md)

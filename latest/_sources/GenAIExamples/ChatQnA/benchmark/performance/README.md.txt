@@ -62,7 +62,7 @@ k8s-work3           Ready    <none>          35d   v1.29.6
 
 ### Manifest preparation
 
-We have created the [BKC manifest](/GenAIExamples/ChatQnA/benchmark/README.md) for single node, two nodes and four nodes K8s cluster. In order to apply, we need to check out and configure some values.
+We have created the [BKC manifest](https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark) for single node, two nodes and four nodes K8s cluster. In order to apply, we need to check out and configure some values.
 
 ```bash
 # on k8s-master node

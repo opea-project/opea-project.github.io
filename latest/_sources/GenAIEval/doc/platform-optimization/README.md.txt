@@ -98,7 +98,7 @@ Let us consider isolating AI inference and reranking containers in
 application's Gaudi accelerated pipeline.
 
 In the
-[manifest](/GenAIExamples/ChatQnA/kubernetes/intel/hpu/gaudi/manifest/chatqna.yaml/README.md)
+[manifest](https://github.com/opea-project/GenAIExamples/blob/main/ChatQnA/kubernetes/intel/hpu/gaudi/manifest/chatqna.yaml)
 there are "tgi", "tei" and "teirerank" containers in "chatqna-tgi" and
 "chatqna-tei" and "chatqna-teirerank" deployments that will need a lot
 of CPUs. They implement text-generation-interface and
