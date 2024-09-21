@@ -68,4 +68,4 @@ Thank you for being a part of this journey. We can't wait to see what we can ach
 
 - [Code of Conduct](/community/CODE_OF_CONDUCT.md)
 - [Security Policy](/community/SECURITY.md)
-- [Legal Information](/LEGAL_INFORMATION.md)
+- [Legal Information](LEGAL_INFORMATION.md)

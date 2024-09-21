@@ -86,13 +86,13 @@ Thanks for considering contributing to OPEA project. The contribution process is
     ```
 
     - **File Descriptions**:
-      - `embedding_tei.py`: This file defines and registers the microservice. It serves as the entrypoint of the Docker container. Refer to [whisper ASR](/GenAIComps/comps/asr/whisper/README.md) for a simple example or [TGI](/GenAIComps/comps/llms/text-generation/tgi/llm.py/README.md) for a more complex example that required adapting to the OpenAI API.
+      - `embedding_tei.py`: This file defines and registers the microservice. It serves as the entrypoint of the Docker container. Refer to [whisper ASR](/GenAIComps/comps/asr/whisper/README.md) for a simple example or [TGI](https://github.com/opea-project/GenAIComps/blob/main/comps/llms/text-generation/tgi/llm.py) for a more complex example that required adapting to the OpenAI API.
       - `requirements.txt`: This file is used by Docker to install the necessary dependencies.
       - `Dockerfile`: Used to generate the service container image. Please follow naming conventions:
         - Dockerfile: `Dockerfile.[vendor]_[hardware]`, vendor and hardware in lower case (i,e Dockerfile.amd_gpu)
         - Docker Image: `opea/[microservice type]-[microservice sub type]-[library name]-[vendor]-[hardware]:latest` all lower case (i,e opea/llm-vllm-intel-hpu, opea/llm-faqgen-tgi-intel-hpu-svc)
 
-      - `tests/[microservices type]/` : contains end-to-end test for microservices Please refer to an example [test_asr_whisper.sh](/GenAIComps/tests/asr/test_asr_whisper.sh/README.md). Please follow naming convention:`test_[microservice type]_[microservice sub type]_[library name]_on_[vendor]_[hardware].sh`
+      - `tests/[microservices type]/` : contains end-to-end test for microservices Please refer to an example [test_asr_whisper.sh](https://github.com/opea-project/GenAIComps/blob/main/tests/asr/test_asr_whisper.sh). Please follow naming convention:`test_[microservice type]_[microservice sub type]_[library name]_on_[vendor]_[hardware].sh`
       - `tests/cores/` : contains Unit Tests (UT) for the core python components (orchestrator, gateway...). Please follow the naming convention:`test_[core component].sh`
 
       - `README.md`: at minimum it should include: microservice description, build, and start commands and a curl command with expected output.
@@ -103,9 +103,9 @@ Thanks for considering contributing to OPEA project. The contribution process is
 
 ### Contribute a GenAI Example
 
-Each of the samples in OPEA GenAIExamples are a common oft used solution. They each have scripts to ease deployment, and have been tested for performance and scalability with Docker compose and Kubernetes. When contributing an example, a Docker Compose deployment is the minimum requirement. However, since OPEA is intended for enterprise applications, supporting Kubernetes deployment is highly encouraged. You can find [examples for Kubernetes deployment](https://github.com/opea-project/GenAIExamples?tab=readme-ov-file#deploy-examples) using manifests, Helms Charts, and the [GenAI Microservices Connector (GMC)](/GenAIInfra/microservices-connector/README.md). GMC offers additional enterprise features, such as the ability to dynamically adjust pipelines on Kubernetes (e.g., switching to a different LLM on the fly, adding guardrails), composing pipeleines that include external services hosted in public cloud or on-premisees via URL, and supporting sequential, parallel and conditional flows in the pipelines.
+Each of the samples in OPEA GenAIExamples are a common oft used solution. They each have scripts to ease deployment, and have been tested for performance and scalability with Docker compose and Kubernetes. When contributing an example, a Docker Compose deployment is the minimum requirement. However, since OPEA is intended for enterprise applications, supporting Kubernetes deployment is highly encouraged. You can find [examples for Kubernetes deployment](https://github.com/opea-project/GenAIExamples/README.md#deploy-examples) using manifests, Helms Charts, and the [GenAI Microservices Connector (GMC)](/GenAIInfra/microservices-connector/README.md). GMC offers additional enterprise features, such as the ability to dynamically adjust pipelines on Kubernetes (e.g., switching to a different LLM on the fly, adding guardrails), composing pipeleines that include external services hosted in public cloud or on-premisees via URL, and supporting sequential, parallel and conditional flows in the pipelines.
 
-- Navigate to [OPEA GenAIExamples](https://github.com/opea-project/GenAIExamples/tree/main) and check the catalog of examples. If you find one that is very similar to what you are looking for, you can contribute your variation of it to that particular example folder. If you are bringing a completly new application you will need to create a separate example folder.
+- Navigate to [OPEA GenAIExamples](/GenAIExamples/README.md) and check the catalog of examples. If you find one that is very similar to what you are looking for, you can contribute your variation of it to that particular example folder. If you are bringing a completly new application you will need to create a separate example folder.
 
 - Before stitching together all the microservices to build your application, let's make sure all the required building blocks are available!. Take a look at this **ChatQnA Flow Chart**:
 
@@ -191,7 +191,7 @@ flowchart LR
 
 ```
 
-- OPEA uses gateways to handle requests and route them to the corresponding megaservices (unless you have an agent that will otherwise handle the gateway function). If you are just making small changes to the application, like swaping one DB for another, you can reuse the existing Gateway but if you are contributing a completely new application, you will need to add a Gateway class. Navigate to [OPEA GenAIComps Gateway](/GenAIComps/comps/cores/mega/gateway.py/README.md) and implement how Gateway should handle requests for your application. Note that Gateway implementation is moving to GenAIExamples in future release.
+- OPEA uses gateways to handle requests and route them to the corresponding megaservices (unless you have an agent that will otherwise handle the gateway function). If you are just making small changes to the application, like swaping one DB for another, you can reuse the existing Gateway but if you are contributing a completely new application, you will need to add a Gateway class. Navigate to [OPEA GenAIComps Gateway](https://github.com/opea-project/GenAIComps/blob/main/comps/cores/mega/gateway.py) and implement how Gateway should handle requests for your application. Note that Gateway implementation is moving to GenAIExamples in future release.
 
 - Follow the folder structure in the ChatQA example below:
 
