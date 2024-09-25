@@ -825,24 +825,26 @@ instructions to generate the OPEA documentation on your local system.</p>
 <section id="documentation-overview">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Documentation Overview</a><a class="headerlink" href="#documentation-overview" title="Link to this heading">¶</a></h2>
 <p>OPEA project content is written using combination of markdown (<code class="docutils literal notranslate"><span class="pre">.md</span></code>) and
-reStructuredText (<code class="docutils literal notranslate"><span class="pre">.rst</span></code>) markup languages (with Sphinx extensions), and
-processed using Sphinx to create a formatted stand-alone website. Developers can
-view this content either in its raw form as .rst markup files, or you can
-generate the HTML content and view it with a web browser directly on your
-workstation. The best reading experience is by viewing the generated HTML at
-<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a>.</p>
+reStructuredText (<code class="docutils literal notranslate"><span class="pre">.rst</span></code>) markup languages (with Sphinx extensions such as
+<a class="reference external" href="https://myst-parser.readthedocs.io/en/latest/index.html">Myst</a>), and
+processed using Sphinx to create a formatted stand-alone website.
+The best reading experience is by viewing the generated HTML at
+<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a>.
+While working on new content or editing existing content, developers can
+generate the HTML content locally and view it with a web browser.</p>
 <p>You can read details about <a class="reference external" href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">markdown</a>, <a class="reference external" href="https://sphinx-doc.org/rest.html">reStructuredText</a>, and <a class="reference external" href="https://sphinx-doc.org/">Sphinx</a> from
 their respective websites.</p>
-<p>The project’s documentation contains the following items:</p>
-<ul class="simple">
-<li><p>ReStructuredText and markdown source files used to generate documentation found at the
-<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a> website. All of the documentation sources
-are found in the <code class="docutils literal notranslate"><span class="pre">github.com/opea-project</span></code> repos, rooted in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> repo.
-There’s also documentation in the repos where the project’s code is
-maintained: <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code>, <code class="docutils literal notranslate"><span class="pre">GenAIEval</span></code>, <code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code>, and <code class="docutils literal notranslate"><span class="pre">GenAIInfra</span></code>.</p></li>
-</ul>
+<p>The project’s documentation is a collection of ReStructuredText and markdown
+source files used to generate documentation found at the
+<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a> website. All of the documentation sources are
+found in the <code class="docutils literal notranslate"><span class="pre">github.com/opea-project</span></code> project repos, organized and rooted in
+the <code class="docutils literal notranslate"><span class="pre">docs</span></code> repo.  Much of the detailed documentation lives in the repos where
+the project’s code is maintained: <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code>, <code class="docutils literal notranslate"><span class="pre">GenAIEval</span></code>,
+<code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code>, and <code class="docutils literal notranslate"><span class="pre">GenAIInfra</span></code>. The documentation generation process
+collects all the needed files from all these repos into one building area to
+create the final generated HTML.</p>
 <figure class="align-center" id="id1">
-<div class="graphviz"><img src="../_images/graphviz-610e90df782db1efad7efaa950d71fe85e3a7eb0.png" alt="# Doc Generation flow
+<div class="graphviz"><img src="../_images/graphviz-8ed5ee208bfc9bfd5e031d90f119d55a1266d476.png" alt="# Doc Generation flow
 # dot -Tpng -odoc-gen-flow.png doc-gen-flow.dot
 
 digraph docgen {
@@ -854,10 +856,16 @@ digraph docgen {
    conf [shape=&quot;rectangle&quot; label=&quot;conf.py\nconfiguration&quot;]
    rtd [shape=&quot;rectangle&quot; label=&quot;read-the-docs\ntheme&quot;]
    html [shape=&quot;rectangle&quot; label=&quot;HTML\nweb site&quot;]
-   sphinx[shape=&quot;ellipse&quot; label=&quot;sphinx +\ndocutils&quot;]
+   includes [shape=&quot;rectangle&quot; label=&quot;includes&quot;]
+   sphinx[shape=&quot;ellipse&quot; label=&quot;sphinx +\nMyst Parser +\ndocutils&quot;]
+   prepare[shape=&quot;ellipse&quot; label=&quot;fix\ncross-repo\nlinks&quot;]
+   scan[shape=&quot;ellipse&quot; label=&quot;scan\nrepo dirs&quot;]
    images -&gt; sphinx
+   scan -&gt; includes
+   includes -&gt; sphinx
    rst -&gt; sphinx
-   md -&gt; sphinx
+   md -&gt; prepare
+   prepare -&gt; sphinx
    conf -&gt; sphinx
    rtd -&gt; sphinx
    sphinx -&gt; html
@@ -866,10 +874,32 @@ digraph docgen {
 <p><span class="caption-number">Figure 3 </span><span class="caption-text">Documentation Generation Flow</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p>Some content is manipulated or generated during the doc build process:</p>
+<ul>
+<li><p>Because markdown doesn’t directly support cross-repo document linking, we use
+full URLs to link to the markdown files in other project repos, for example a
+link to a document in the GenAIInfra repo from a document in the GenAIExamples
+repo would look like this:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">See</span> <span class="pre">[GMC</span> <span class="pre">Install](https://github.com/opea-project/GenAIInfra/tree/main/microservices-connector/README.md).</span>
+<span class="pre">`</span></code></p>
+<p>That link works when reading the markdown file in the github.com repo, but
+should be changed to reference the generated HTML file in the github.io
+rendering.</p>
+</li>
+<li><p>When new examples appear in the GenAIExamples repo, the indexing page that
+lists all the examples is updated automatically by generating it at doc build
+time by scanning the directory structure.  The list of microservices is also
+self-updated when new microservices are added to the GenAIComps/comps
+directory.</p></li>
+<li><p>References in markdown files to markdown files (.md file extension) are
+converted to the corresponding generated HTML files by Sphinx using the Myst and
+sphinx-md extensions.</p></li>
+</ul>
 </section>
 <section id="set-up-the-documentation-working-folders">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">Set Up the Documentation Working Folders</a><a class="headerlink" href="#set-up-the-documentation-working-folders" title="Link to this heading">¶</a></h2>
-<p>You’ll need <code class="docutils literal notranslate"><span class="pre">git</span></code> installed to get the working folders set up:</p>
+<p>To begin, you’ll need <code class="docutils literal notranslate"><span class="pre">git</span></code> installed to get the working folders set up:</p>
 <ul>
 <li><p>For an Ubuntu development system use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>git
@@ -878,7 +908,7 @@ digraph docgen {
 </li>
 </ul>
 <p>Here’s the recommended folder setup for documentation contributions and
-generation, a parent folder called <code class="docutils literal notranslate"><span class="pre">opea-project</span></code> holds six locally
+generation, a parent folder called <code class="docutils literal notranslate"><span class="pre">opea-project</span></code> holds five locally
 cloned repos from the opea-project.  You can use a different name for the parent
 folder but the doc build process assumes the repo names are as shown here:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>opea-project
@@ -887,12 +917,10 @@ folder but the doc build process assumes the repo names are as shown here:</p>
 ├── GenAIEval
 ├── GenAIExamples
 ├── GenAIInfra
-├── opea-project.github.io
 </pre></div>
 </div>
 <p>The parent <code class="docutils literal notranslate"><span class="pre">opea-project</span></code> folder is there to organize the cloned repos
-from the project.  If you have repo publishing rights, we’ll also be cloning the
-publishing repo opea-project.github.io later in these steps.</p>
+from the project.</p>
 <p>In the following steps, you’ll create a fork of all the upstream OPEA project
 repos needed to build the documentation to your personal GitHub account, clone
 your personal fork to your local development computer, and then link that to the
@@ -903,8 +931,8 @@ structure:</p>
 fork of the <strong>docs</strong> repo to your personal GitHub account.)</p>
 <img alt="../_images/opea-docs-fork.png" class="drop-shadow align-center" src="../_images/opea-docs-fork.png" />
 </li>
-<li><p>At a command prompt, create a working folder on your development computer and
-clone your personal <code class="docutils literal notranslate"><span class="pre">docs</span></code> repository:</p>
+<li><p>At a command prompt, create the top working folder on your development
+computer and clone your personal <code class="docutils literal notranslate"><span class="pre">docs</span></code> repository there:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~
 mkdir<span class="w"> </span>opea-project<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>opea-project
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;github-username&gt;/docs.git
@@ -916,21 +944,22 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;g
 git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/opea-project/docs.git
 </pre></div>
 </div>
-<p>After that, you’ll have <code class="docutils literal notranslate"><span class="pre">origin</span></code> pointing to your cloned personal repo and
-<code class="docutils literal notranslate"><span class="pre">upstream</span></code> pointing to the project repo.</p>
+<p>After that, you’ll have <code class="docutils literal notranslate"><span class="pre">origin</span></code> pointing to your cloned personal <code class="docutils literal notranslate"><span class="pre">docs</span></code>
+repo and <code class="docutils literal notranslate"><span class="pre">upstream</span></code> pointing to the project <code class="docutils literal notranslate"><span class="pre">docs</span></code> repo.</p>
 </li>
-<li><p>Do the same steps (fork to your personal account, clone to your local
-computer, and setup the git upstream remote) for the other repos containing
-project documentation, replacing the docs.git repo name in the previous step
+<li><p>Return to the parent directory with <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">..</span></code></p></li>
+<li><p>Now do the same steps (fork to your personal account, clone to your local
+computer, and setup the git upstream remote) for the other four repos
+replacing the docs.git repo name in the previous step
 with the appropriate repo name in this list:</p>
 <ul class="simple">
-<li><p>GenAIComps</p></li>
-<li><p>GenAIEval</p></li>
-<li><p>GenAIExamples</p></li>
-<li><p>GenAIInfra</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GenAIEval</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GenAIInfra</span></code></p></li>
 </ul>
 </li>
-<li><p>If you haven’t done so already, be sure to configure git with your name
+<li><p>If you haven’t done so already, configure git with your name
 and email address for the <code class="docutils literal notranslate"><span class="pre">Signed-off-by</span></code> line in your commit messages:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;David Developer&quot;</span>
 git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;david.developer@company.com&quot;</span>
@@ -941,7 +970,8 @@ git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"
 </section>
 <section id="install-the-documentation-tools">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Install the Documentation Tools</a><a class="headerlink" href="#install-the-documentation-tools" title="Link to this heading">¶</a></h2>
-<p>Our documentation processing has been tested to run with Python 3.8.10 and
+<p>Our documentation processing has been tested to run on Ubuntu (both natively and
+in Windows Subsystem for Windows (wsl) with Python 3.8.10 and
 later, and these other tools:</p>
 <ul class="simple">
 <li><p>sphinx                    version: 7.3.0</p></li>
@@ -949,13 +979,17 @@ later, and these other tools:</p>
 <li><p>sphinx-rtd-theme          version: 2.0.0</p></li>
 <li><p>sphinx-tabs               version: 3.4.5</p></li>
 <li><p>myst-parser               version: 3.0.1</p></li>
+<li><p>sphinx-md                 version: 0.0.3</p></li>
 <li><p>sphinxcontrib-mermaid     version: 0.9.2</p></li>
 <li><p>pymarkdownlnt             version: 0.9.21</p></li>
 </ul>
-<p>Depending on your Linux version, install the needed tools.  You should consider
-using the <a class="reference external" href="https://https://docs.python.org/3/library/venv.html">Python virtual environment</a>
-tools to maintain your Python environment from being changed by other work on
-your computer.</p>
+<p>Depending on your Linux version, install the needed tools.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You should consider using the <a class="reference external" href="https://https://docs.python.org/3/library/venv.html">Python virtual environment</a> tools
+to maintain your Python environment from being changed by other work on your
+computer.</p>
+</div>
 <p>For Ubuntu, use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-pip<span class="w"> </span>python3-wheel<span class="w"> </span>make<span class="w"> </span>graphviz
 </pre></div>
@@ -1011,8 +1045,8 @@ known to work together:</p>
 appearance through the use of themes.  The <code class="docutils literal notranslate"><span class="pre">sphinx-rtd-theme</span></code> (Read The Docs)
 theme is installed as part of the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> list above.  Tweaks to
 the standard <code class="docutils literal notranslate"><span class="pre">read-the-docs</span></code> appearance are added by using CSS and JavaScript
-customization found in <code class="docutils literal notranslate"><span class="pre">doc/_static</span></code>, and theme template overrides found in
-<code class="docutils literal notranslate"><span class="pre">doc/_templates</span></code>. If you change to another theme, you’ll need to tweak
+customization found in <code class="docutils literal notranslate"><span class="pre">doc/sphinx/_static</span></code>, and theme template overrides found in
+<code class="docutils literal notranslate"><span class="pre">doc/sphinx/_templates</span></code>. If you change to another theme, you’ll need to tweak
 these customizations, not something for the faint of heart.</p>
 <p>The Sphinx build system creates document cache information that attempts to
 expedite documentation rebuilds, but occasionally can cause an unexpected error
@@ -1021,33 +1055,45 @@ environment and a <code class="docutils literal notranslate"><span class="pre">m
 </section>
 <section id="run-the-documentation-processors">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Run the Documentation Processors</a><a class="headerlink" href="#run-the-documentation-processors" title="Link to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder (with all cloned sibling repos) have all the doc source files,
+<p>The <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder (with all the cloned sibling repos) have all the doc source files,
 images, extra tools, and <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> for generating a local copy of the OPEA
 technical documentation. It’s best to start with a clean doc-build environment
 so use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> to remove the <code class="docutils literal notranslate"><span class="pre">_build</span></code> working folder if it exists.  The
 <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> creates the <code class="docutils literal notranslate"><span class="pre">_build</span></code> folder (if it doesn’t exist) and copies all
 needed files from these cloned repos into the <code class="docutils literal notranslate"><span class="pre">_build/rst</span></code> working folder.</p>
+<p>Normally you’d have each repo checked out at the main branch before you run the
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> step.  The doc build process uses the five repo’s contents to
+create the HTML site. If you’re working on changes to documentation in a repo
+and have those changes on a branch other than main, you can still generate the
+documentation with that branch’s changes – this is how you can verify your
+changes will not generate errors when your branch with changes is merged with
+the main branch.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/opea-project/docs
 make<span class="w"> </span>clean
 make<span class="w"> </span>html
 </pre></div>
 </div>
-<p>Depending on your development system, it will take less a minute to collect and
+<p>Depending on your development system, it will take about a minute to collect and
 generate the HTML content.  When done, you can view the HTML output in
 <code class="docutils literal notranslate"><span class="pre">~/opea-project/docs/_build/html/index.html</span></code>.</p>
 <p>As a convenience, there’s a make target that will <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the <code class="docutils literal notranslate"><span class="pre">_build/html</span></code>
-folder and run a local Python web server:</p>
+folder and run a local Python web server on port 8000:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>server
 </pre></div>
 </div>
-<p>and use your web browser to open the URL:  <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code>.  When
+<p>Use your web browser to open the URL:  <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code> and wander
+around your local site and view the results of your changes.  When
 done, press <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">ctrl</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> in your command-prompt window to stop the web server.</p>
+<p>If things look good, you’d proceed to using git (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span> <span class="pre">.</span></code>) to add and commit
+(<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-s</span></code>) your changes, push those changes to your personal forked
+repo (<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span> <span class="pre">origin</span> <span class="pre">&lt;branchname&gt;</span></code>) and submit a PR using the GitHub web
+interface.</p>
 </section>
 <section id="publish-content">
 <h2><a class="toc-backref" href="#id7" role="doc-backlink">Publish Content</a><a class="headerlink" href="#publish-content" title="Link to this heading">¶</a></h2>
-<p>If you have merge rights to the opea-project repo called
-<code class="docutils literal notranslate"><span class="pre">opea-project.github.io</span></code>, you can update the public project documentation
-found at <a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a>.</p>
+<p>If you have merge rights to the opea-project <code class="docutils literal notranslate"><span class="pre">opea-project.github.io</span></code> repo,
+you can update the public project documentation found at
+<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a>.</p>
 <p>You’ll need to do a one-time clone of the upstream repo (we publish
 directly to the upstream repo rather than to a personal forked copy):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/opea-project
@@ -1063,9 +1109,10 @@ good, you can push to the publishing site with:</p>
 already published and will delete files in the publishing repo’s
 <strong>latest</strong> folder that are no longer needed. New or changed files from
 the newly-generated HTML content are pushed to the GitHub pages
-publishing repo.  The public site at <a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a> will
-be automatically updated by the <a class="reference external" href="https://guides.github.com/features/pages/">GitHub pages system</a>, typically within a few
-minutes.</p>
+publishing repo (<code class="docutils literal notranslate"><span class="pre">opea-project.github.io.git</span></code>.  The public site at
+<a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a> will be automatically updated by the
+<a class="reference external" href="https://guides.github.com/features/pages/">GitHub pages system</a>,
+typically within a few minutes.</p>
 </section>
 <section id="document-versioning">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Document Versioning</a><a class="headerlink" href="#document-versioning" title="Link to this heading">¶</a></h2>
@@ -1078,9 +1125,8 @@ specifically something like this:</p>
    <span class="s1">&#39;docs_title&#39;</span><span class="p">:</span> <span class="n">docs_title</span><span class="p">,</span>
    <span class="s1">&#39;is_release&#39;</span><span class="p">:</span> <span class="n">is_release</span><span class="p">,</span>
 <span class="hll">   <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="p">(</span> <span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">,</span> <span class="s2">&quot;/latest/&quot;</span><span class="p">),</span>
-</span><span class="hll">                 <span class="p">(</span><span class="s2">&quot;0.8&quot;</span><span class="p">,</span> <span class="s2">&quot;/0.8/&quot;</span><span class="p">),</span>
-</span>                 <span class="p">(</span><span class="s2">&quot;0.7&quot;</span><span class="p">,</span> <span class="s2">&quot;/0.7/&quot;</span><span class="p">),</span>
-               <span class="p">)</span>
+</span><span class="hll">                 <span class="p">(</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;/1.0/&quot;</span><span class="p">),</span>
+</span>               <span class="p">)</span>
     <span class="p">}</span>
 </pre></div>
 </div>
@@ -1091,9 +1137,9 @@ version from an older one, without going to <code class="docutils literal notran
 <p>By default, documentation build and publishing both assume we’re generating
 documentation for the main branch and publishing to the <code class="docutils literal notranslate"><span class="pre">/latest/</span></code> area on
 <a class="reference external" href="https://opea-project.github.io">https://opea-project.github.io</a>. When we’re generating the documentation for a
-tagged version (e.g., 0.8), check out that version of <strong>all</strong> the component
+tagged version (e.g., 1.0), check out that version of <strong>all</strong> the component
 repos, and add some extra flags to the <code class="docutils literal notranslate"><span class="pre">make</span></code> commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">version</span><span class="o">=</span><span class="m">0</span>.8
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">version</span><span class="o">=</span><span class="m">1</span>.0
 <span class="k">for</span><span class="w"> </span>d<span class="w"> </span><span class="k">in</span><span class="w"> </span>docs<span class="w"> </span>GenAIComps<span class="w"> </span>GenAIExamples<span class="w"> </span>GenAIEval<span class="w"> </span>GenAIInfra<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/opea-project/<span class="nv">$d</span>
 <span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="nv">$version</span>
@@ -1133,7 +1179,7 @@ a heading level problem on lines 5 and 111 in
 <code class="docutils literal notranslate"><span class="pre">GenAIInfra/kubernetes-addons/Observability/README.md</span></code>.</p>
 <p>If you do a <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> without first doing a <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code>, there may be
 files left behind from a previous build that can cause some unexpected messages
-to be reported.</p>
+to be reported. If things look suspicious, do a <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean;make</span> <span class="pre">html</span></code> again.</p>
 <p>If all messages were filtered away,
 the build process will report as successful, reporting:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">No new errors/warnings.</span>
@@ -1143,8 +1189,14 @@ the build process will report as successful, reporting:</p>
 <code class="docutils literal notranslate"><span class="pre">scripts/filter-known-issues.py</span></code> together with a set of filter
 configuration files in the <code class="docutils literal notranslate"><span class="pre">.known-issues</span></code> folder.  (This
 filtering is done as part of the <code class="docutils literal notranslate"><span class="pre">Makefile</span></code>.)</p>
-<p>You can modify the filtering by adding or editing a conf file in the
+<p>The filtering tool matches and removes whole line and multi-line patterns to
+remove them.  Anything left behind is considered a message that should be
+reported.  You can modify the filtering by adding or editing a conf file in the
 <code class="docutils literal notranslate"><span class="pre">.known-issues</span></code> folder, following the examples found there.</p>
+<p>Multi-line patterns can get rather complex. We’re not using any multi-line patterns in
+the OPEA project. You can see complex examples in other open source projects
+using this filtering script, such as pattern files in
+<a class="reference external" href="https://github.com/projectacrn/acrn-hypervisor/tree/master/doc/.known-issues">Project ACRN .known-issues</a>.</p>
 </section>
 </section>
 
