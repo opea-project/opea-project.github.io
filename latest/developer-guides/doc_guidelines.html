@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../_static/opea-custom.css?v=0eef7f70" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
@@ -173,6 +173,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples/index.html#chatqna-application">ChatQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/benchmark/performance/helm_charts/README.html">ChatQnA Deployment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
@@ -389,10 +390,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/intent_detection/langchain/README.html">Intent Detection Microservice by TGI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../microservices/index.html#knowledgegraphs-microservice">Knowledgegraphs Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/knowledgegraphs/langchain/README.html">Knowledge Graph Microservice</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../microservices/index.html#llms-microservice">Llms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
@@ -444,6 +441,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/retrievers/redis/langchain/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/retrievers/redis/llama_index/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/retrievers/vdms/langchain/README.html">Retriever Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../GenAIComps/comps/texttosql/langchain/README.html">Text-to-SQL Microservice</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
@@ -832,8 +833,34 @@ it easier to find and read what you’re looking for.</p>
 with MyST and Sphinx-defined directives and roles used to create the documentation
 you’re reading. It also provides best-known-methods for working with a mixture
 of reStructuredText and markdown.</p>
+<nav class="contents local rst-columns" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#markdown-vs-restructuredtext" id="id3">Markdown vs. RestructuredText</a></p></li>
+<li><p><a class="reference internal" href="#documentation-organization" id="id4">Documentation Organization</a></p></li>
+<li><p><a class="reference internal" href="#headings" id="id5">Headings</a></p></li>
+<li><p><a class="reference internal" href="#content-highlighting" id="id6">Content Highlighting</a></p></li>
+<li><p><a class="reference internal" href="#lists" id="id7">Lists</a></p></li>
+<li><p><a class="reference internal" href="#multi-column-lists" id="id8">Multi-Column Lists</a></p></li>
+<li><p><a class="reference internal" href="#tables" id="id9">Tables</a></p></li>
+<li><p><a class="reference internal" href="#file-names-and-commands" id="id10">File Names and Commands</a></p></li>
+<li><p><a class="reference internal" href="#branch-specific-file-links" id="id11">Branch-Specific File Links</a></p></li>
+<li><p><a class="reference internal" href="#internal-cross-reference-linking" id="id12">Internal Cross-Reference Linking</a></p></li>
+<li><p><a class="reference internal" href="#non-ascii-characters" id="id13">Non-ASCII Characters</a></p></li>
+<li><p><a class="reference internal" href="#include-content-from-other-files" id="id14">Include Content from Other Files</a></p></li>
+<li><p><a class="reference internal" href="#code-and-command-examples" id="id15">Code and Command Examples</a></p></li>
+<li><p><a class="reference internal" href="#images" id="id16">Images</a></p></li>
+<li><p><a class="reference internal" href="#tabs-spaces-and-indenting" id="id17">Tabs, Spaces, and Indenting</a></p></li>
+<li><p><a class="reference internal" href="#background-colors" id="id18">Background Colors</a></p></li>
+<li><p><a class="reference internal" href="#drawings" id="id19">Drawings</a></p></li>
+<li><p><a class="reference internal" href="#alternative-tabbed-content" id="id20">Alternative Tabbed Content</a></p></li>
+<li><p><a class="reference internal" href="#instruction-steps" id="id21">Instruction Steps</a></p></li>
+<li><p><a class="reference internal" href="#first-instruction-step" id="id22">First Instruction Step</a></p></li>
+<li><p><a class="reference internal" href="#second-instruction-step" id="id23">Second Instruction Step</a></p></li>
+<li><p><a class="reference internal" href="#documentation-generation" id="id24">Documentation Generation</a></p></li>
+</ul>
+</nav>
 <section id="markdown-vs-restructuredtext">
-<h2>Markdown vs. RestructuredText<a class="headerlink" href="#markdown-vs-restructuredtext" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Markdown vs. RestructuredText</a><a class="headerlink" href="#markdown-vs-restructuredtext" title="Link to this heading">¶</a></h2>
 <p>Both markdown and ReStructureText (reST) let you create individual documentation files that
 GitHub can render when viewing them in your browser on github.com. Markdown is
 popular because of it’s familiarity with developers and is the default markup
@@ -857,7 +884,7 @@ documentation “leaves”.  We rely on reST for the documentation organization 
 branches, through the use of the reST <code class="docutils literal notranslate"><span class="pre">toctree</span></code> directives.</p>
 </section>
 <section id="documentation-organization">
-<h2>Documentation Organization<a class="headerlink" href="#documentation-organization" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Documentation Organization</a><a class="headerlink" href="#documentation-organization" title="Link to this heading">¶</a></h2>
 <p>Documentation is maintained and updated the same as the project’s code within
 the opea-project GitHub repos. There are many <code class="docutils literal notranslate"><span class="pre">README.md</span></code> and other markdown files within the various
 repos along with the other files for those components. This is good because it
@@ -876,7 +903,7 @@ in the <code class="docutils literal notranslate"><span class="pre">toctree</spa
 as not included in a toctree directive.</p>
 </section>
 <section id="headings">
-<h2>Headings<a class="headerlink" href="#headings" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Headings</a><a class="headerlink" href="#headings" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-0-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-0-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-0-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>In reST, document sections are identified through their heading titles, indicated with
 an underline below the title text.  (While reST allows use of both and
@@ -946,7 +973,7 @@ heading level.</p>
 </div></div>
 </section>
 <section id="content-highlighting">
-<h2>Content Highlighting<a class="headerlink" href="#content-highlighting" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Content Highlighting</a><a class="headerlink" href="#content-highlighting" title="Link to this heading">¶</a></h2>
 <p>Some common reST and markdown inline markup samples:</p>
 <ul class="simple">
 <li><p>one asterisk: <code class="docutils literal notranslate"><span class="pre">*text*</span></code> for emphasis (<em>italics</em>),</p></li>
@@ -973,7 +1000,7 @@ with inline markup delimiters, you can eliminate the confusion by adding a
 backslash (<code class="docutils literal notranslate"><span class="pre">\</span></code>) before it.</p>
 </section>
 <section id="lists">
-<h2>Lists<a class="headerlink" href="#lists" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Lists</a><a class="headerlink" href="#lists" title="Link to this heading">¶</a></h2>
 <p>For bullet lists, place an asterisk (<code class="docutils literal notranslate"><span class="pre">*</span></code>) or hyphen (<code class="docutils literal notranslate"><span class="pre">-</span></code>) at the start of
 a paragraph and indent continuation lines with two spaces.</p>
 <p>The first item in a list (or sublist) must have a blank line before it and
@@ -1061,7 +1088,7 @@ clean state.</p>
 </div></div>
 </section>
 <section id="multi-column-lists">
-<h2>Multi-Column Lists<a class="headerlink" href="#multi-column-lists" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Multi-Column Lists</a><a class="headerlink" href="#multi-column-lists" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-3-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-3-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-3-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-3-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>In reST, if you have a long bullet list of items, where each item is short, you can
 indicate that the list items should be rendered in multiple columns with a
@@ -1101,7 +1128,7 @@ display window, reducing to one column on narrow (phone) screens if necessary.</
 </div></div>
 </section>
 <section id="tables">
-<h2>Tables<a class="headerlink" href="#tables" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Tables</a><a class="headerlink" href="#tables" title="Link to this heading">¶</a></h2>
 <p>There are a few ways to create tables, each with their limitations or quirks.
 <a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#grid-tables">Grid tables</a>
 offer the most capability for defining merged rows and columns (where content
@@ -1239,7 +1266,7 @@ add a pipe on both ends of the row:</p>
 </div></div>
 </section>
 <section id="file-names-and-commands">
-<h2>File Names and Commands<a class="headerlink" href="#file-names-and-commands" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">File Names and Commands</a><a class="headerlink" href="#file-names-and-commands" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-5-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-5-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-5-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-5-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-5-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>Sphinx extends reST by supporting additional inline markup elements (called
 “roles”) used to tag text with special meanings and enable output formatting.
@@ -1257,7 +1284,7 @@ formatting.</p>
 </div></div>
 </section>
 <section id="branch-specific-file-links">
-<h2>Branch-Specific File Links<a class="headerlink" href="#branch-specific-file-links" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Branch-Specific File Links</a><a class="headerlink" href="#branch-specific-file-links" title="Link to this heading">¶</a></h2>
 <p>You can add a link in the documentation to a specific file in the GitHub tree.
 Be sure the link points to the branch for that version of the documentation. For
 example, links in the v0.8 release of the documentation should be to files in
@@ -1286,7 +1313,7 @@ is shown, for example, <code class="docutils literal notranslate"><span class="p
 would show up as simply <a class="reference external" href="https://github.com/opea-project/docs/blob/main/developer-guides/doc_guidelines.rst">Guidelines </a>.</p>
 </section>
 <section id="internal-cross-reference-linking">
-<span id="internal-linking"></span><h2>Internal Cross-Reference Linking<a class="headerlink" href="#internal-cross-reference-linking" title="Link to this heading">¶</a></h2>
+<span id="internal-linking"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">Internal Cross-Reference Linking</a><a class="headerlink" href="#internal-cross-reference-linking" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-6-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-6-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-6-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-6-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-6-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>Traditional reST links are supported only within the current file using the
 notation:</p>
@@ -1389,7 +1416,7 @@ reference instead of knowing the path to the document.</p>
 </div></div>
 </section>
 <section id="non-ascii-characters">
-<h2>Non-ASCII Characters<a class="headerlink" href="#non-ascii-characters" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Non-ASCII Characters</a><a class="headerlink" href="#non-ascii-characters" title="Link to this heading">¶</a></h2>
 <p>You can insert non-ASCII characters such as a Trademark symbol (™) by
 using the notation <code class="docutils literal notranslate"><span class="pre">|trade|</span></code>.  (It’s also allowed to use the UTF-8
 characters directly.) Available replacement names are defined in an include
@@ -1424,7 +1451,9 @@ special characters such as &amp;trade; and are defined in the file
 </div>
 <p>We’ve kept the substitutions list small but you can add others as needed by
 submitting a change to the <code class="docutils literal notranslate"><span class="pre">substitutions.txt</span></code> file.</p>
-<p>Include Content from Other Files</p>
+</section>
+<section id="include-content-from-other-files">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Include Content from Other Files</a><a class="headerlink" href="#include-content-from-other-files" title="Link to this heading">¶</a></h2>
 <p>You can directly incorporate a document fragment from another file into your reST or
 markdown content by using an <code class="docutils literal notranslate"><span class="pre">include</span></code> directive.</p>
 <div class="admonition important">
@@ -1467,6 +1496,17 @@ in the external file will be included.</p>
 </dl>
 <p>These and other options described in the <a class="reference external" href="https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment">docutils include directive</a>
 documentation.</p>
+<p>As a practical example, here’s how you could include markdown content into
+a reST document, and have that included content interpreted as markdown.
+Note that Sphinx will complain if it finds a .md or .rst file that’s not
+included in a toctree directive, it’s bese to us a .txt extension for
+included files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">include</span><span class="p">::</span> <span class="n">mdtable</span><span class="o">.</span><span class="n">txt</span>
+   <span class="p">:</span><span class="n">parser</span><span class="p">:</span> <span class="n">myst_parser</span><span class="o">.</span><span class="n">sphinx_</span>
+</pre></div>
+</div>
+<p>That’s how we showed how a more free-form markdown table syntax would be
+rendered in another part of this document.</p>
 </div><div aria-labelledby="tab-7-bWFya2Rvd24=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-7-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tabpanel" tabindex="0"><blockquote>
 <div><p>MyST directives can be used to incorporate content from another file
 into the current document as if it were part of the current document:</p>
@@ -1498,7 +1538,7 @@ by using the <code class="docutils literal notranslate"><span class="pre">litera
 </div></div>
 </section>
 <section id="code-and-command-examples">
-<h2>Code and Command Examples<a class="headerlink" href="#code-and-command-examples" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Code and Command Examples</a><a class="headerlink" href="#code-and-command-examples" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-8-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-8-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-8-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-8-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-8-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>Use the reST <code class="docutils literal notranslate"><span class="pre">code-block</span></code> directive to create a highlighted block of
 fixed-width text, typically used for showing formatted code or console
@@ -1591,11 +1631,14 @@ a language next to the backticks before the fenced code block:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>TODO: add the list of supported languages.</p>
+<p>Commonly used languages are: <code class="docutils literal notranslate"><span class="pre">bash</span></code>, <code class="docutils literal notranslate"><span class="pre">console</span></code>, <code class="docutils literal notranslate"><span class="pre">none</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>,
+<code class="docutils literal notranslate"><span class="pre">python</span></code>, <code class="docutils literal notranslate"><span class="pre">markdown</span></code>, and <code class="docutils literal notranslate"><span class="pre">rest</span></code>.  See this
+<a class="reference external" href="https://pygments.org/docs/lexers">complete list of Pygments lexer languages</a>
+for more (use the “Short name” shown).</p>
 </div></div>
 </section>
 <section id="images">
-<h2>Images<a class="headerlink" href="#images" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">Images</a><a class="headerlink" href="#images" title="Link to this heading">¶</a></h2>
 <p>The image file name specified is relative to the document source file. We
 recommend putting images into an <code class="docutils literal notranslate"><span class="pre">images</span></code> folder where the document source
 is found.  The usual image formats handled by a web browser are supported:
@@ -1624,7 +1667,7 @@ generally at least 500 px wide but no more than 1000 px, and no more than
 </div>
 </section>
 <section id="tabs-spaces-and-indenting">
-<h2>Tabs, Spaces, and Indenting<a class="headerlink" href="#tabs-spaces-and-indenting" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Tabs, Spaces, and Indenting</a><a class="headerlink" href="#tabs-spaces-and-indenting" title="Link to this heading">¶</a></h2>
 <p>Indenting is significant in reST file content, and using spaces is preferred.
 Extra indenting can (unintentionally) change the way content is rendered, too.
 For lists and directives, indent the content text to the first non-blank space
@@ -1646,7 +1689,7 @@ easier for reviewing in GitHub. Long lines due to URL references are an
 allowed exception.</p>
 </section>
 <section id="background-colors">
-<h2>Background Colors<a class="headerlink" href="#background-colors" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Background Colors</a><a class="headerlink" href="#background-colors" title="Link to this heading">¶</a></h2>
 <p>We’ve defined some CSS styles for use as background colors for paragraphs.
 These styles can be applied using the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">rst-class</span></code> directive using one of
 these style names.  You can also use the defined <code class="docutils literal notranslate"><span class="pre">centered</span></code> style to place the
@@ -1656,7 +1699,7 @@ or column span:</p>
 <p class="bg-opea-darkorange centered">.. rst-class:: bg-opea-darkorange centered</p>
 </section>
 <section id="drawings">
-<h2>Drawings<a class="headerlink" href="#drawings" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Drawings</a><a class="headerlink" href="#drawings" title="Link to this heading">¶</a></h2>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-10-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-10-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-10-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-10-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-10-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>In reST, we’ve included the <code class="docutils literal notranslate"><span class="pre">graphviz</span></code> Sphinx extension to enable that
 text description language to render drawings.  For more information, see
@@ -1704,8 +1747,9 @@ information.</p>
 </div></div>
 </section>
 <section id="alternative-tabbed-content">
-<h2>Alternative Tabbed Content<a class="headerlink" href="#alternative-tabbed-content" title="Link to this heading">¶</a></h2>
-<p>In reST, instead of creating multiple documents with common material except for some
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Alternative Tabbed Content</a><a class="headerlink" href="#alternative-tabbed-content" title="Link to this heading">¶</a></h2>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-cmVTVA==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-11-cmVTVA==" name="cmVTVA==" role="tab" tabindex="0">reST</button><button aria-controls="panel-11-bWFya2Rvd24=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-11-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tab" tabindex="-1">markdown</button></div><div aria-labelledby="tab-11-cmVTVA==" class="sphinx-tabs-panel group-tab" id="panel-11-cmVTVA==" name="cmVTVA==" role="tabpanel" tabindex="0"><p>In reST, instead of creating multiple documents with common material except for some
 specific sections, you can write one document and provide alternative content
 to the reader via a tabbed interface. When the reader clicks a tab, the
 content for that tab is displayed. For example:</p>
@@ -1726,30 +1770,103 @@ content for that tab is displayed. For example:</p>
 </div>
 <p>will display as:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-11-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-11-11-0" name="11-0" role="tab" tabindex="0">Apples</button><button aria-controls="panel-11-11-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-11-11-1" name="11-1" role="tab" tabindex="-1">Pears</button><button aria-controls="panel-11-11-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-11-11-2" name="11-2" role="tab" tabindex="-1">Oranges</button></div><div aria-labelledby="tab-11-11-0" class="sphinx-tabs-panel" id="panel-11-11-0" name="11-0" role="tabpanel" tabindex="0"><p>Apples are green, or sometimes red.</p>
-</div><div aria-labelledby="tab-11-11-1" class="sphinx-tabs-panel" hidden="true" id="panel-11-11-1" name="11-1" role="tabpanel" tabindex="0"><p>Pears are green.</p>
-</div><div aria-labelledby="tab-11-11-2" class="sphinx-tabs-panel" hidden="true" id="panel-11-11-2" name="11-2" role="tabpanel" tabindex="0"><p>Oranges are orange.</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-12-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-12-12-0" name="12-0" role="tab" tabindex="0">Apples</button><button aria-controls="panel-12-12-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-12-12-1" name="12-1" role="tab" tabindex="-1">Pears</button><button aria-controls="panel-12-12-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-12-12-2" name="12-2" role="tab" tabindex="-1">Oranges</button></div><div aria-labelledby="tab-12-12-0" class="sphinx-tabs-panel" id="panel-12-12-0" name="12-0" role="tabpanel" tabindex="0"><p>Apples are green, or sometimes red.</p>
+</div><div aria-labelledby="tab-12-12-1" class="sphinx-tabs-panel" hidden="true" id="panel-12-12-1" name="12-1" role="tabpanel" tabindex="0"><p>Pears are green.</p>
+</div><div aria-labelledby="tab-12-12-2" class="sphinx-tabs-panel" hidden="true" id="panel-12-12-2" name="12-2" role="tabpanel" tabindex="0"><p>Oranges are orange.</p>
 </div></div>
 <p>Tabs can also be grouped so that changing the current tab in one area
 changes all tabs with the same name throughout the page.  For example:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-TGludXg=" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-12-TGludXg=" name="TGludXg=" role="tab" tabindex="0">Linux</button><button aria-controls="panel-12-bWFjT1M=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-12-bWFjT1M=" name="bWFjT1M=" role="tab" tabindex="-1">macOS</button><button aria-controls="panel-12-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-12-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-12-TGludXg=" class="sphinx-tabs-panel group-tab" id="panel-12-TGludXg=" name="TGludXg=" role="tabpanel" tabindex="0"><p>Linux Line 1</p>
-</div><div aria-labelledby="tab-12-bWFjT1M=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-12-bWFjT1M=" name="bWFjT1M=" role="tabpanel" tabindex="0"><p>macOS Line 1</p>
-</div><div aria-labelledby="tab-12-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-12-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><p>Windows Line 1</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-TGludXg=" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-13-TGludXg=" name="TGludXg=" role="tab" tabindex="0">Linux</button><button aria-controls="panel-13-bWFjT1M=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-13-bWFjT1M=" name="bWFjT1M=" role="tab" tabindex="-1">macOS</button><button aria-controls="panel-13-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-13-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-13-TGludXg=" class="sphinx-tabs-panel group-tab" id="panel-13-TGludXg=" name="TGludXg=" role="tabpanel" tabindex="0"><p>Linux Line 1</p>
+</div><div aria-labelledby="tab-13-bWFjT1M=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-13-bWFjT1M=" name="bWFjT1M=" role="tabpanel" tabindex="0"><p>macOS Line 1</p>
+</div><div aria-labelledby="tab-13-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-13-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><p>Windows Line 1</p>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-TGludXg=" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-13-TGludXg=" name="TGludXg=" role="tab" tabindex="0">Linux</button><button aria-controls="panel-13-bWFjT1M=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-13-bWFjT1M=" name="bWFjT1M=" role="tab" tabindex="-1">macOS</button><button aria-controls="panel-13-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-13-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-13-TGludXg=" class="sphinx-tabs-panel group-tab" id="panel-13-TGludXg=" name="TGludXg=" role="tabpanel" tabindex="0"><p>Linux Line 2</p>
-</div><div aria-labelledby="tab-13-bWFjT1M=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-13-bWFjT1M=" name="bWFjT1M=" role="tabpanel" tabindex="0"><p>macOS Line 2</p>
-</div><div aria-labelledby="tab-13-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-13-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><p>Windows Line 2</p>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-TGludXg=" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-14-TGludXg=" name="TGludXg=" role="tab" tabindex="0">Linux</button><button aria-controls="panel-14-bWFjT1M=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-14-bWFjT1M=" name="bWFjT1M=" role="tab" tabindex="-1">macOS</button><button aria-controls="panel-14-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-14-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-14-TGludXg=" class="sphinx-tabs-panel group-tab" id="panel-14-TGludXg=" name="TGludXg=" role="tabpanel" tabindex="0"><p>Linux Line 2</p>
+</div><div aria-labelledby="tab-14-bWFjT1M=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-14-bWFjT1M=" name="bWFjT1M=" role="tabpanel" tabindex="0"><p>macOS Line 2</p>
+</div><div aria-labelledby="tab-14-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-14-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><p>Windows Line 2</p>
 </div></div>
 <p>In this latter case, we’re using a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">group-tab::</span></code> directive instead of
 a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">tab::</span></code> directive.  Under the hood, we’re using the <a class="reference external" href="https://github.com/djungelorm/sphinx-tabs">sphinx-tabs</a> extension that’s included
 in the OPEA docs (requirements.txt)  setup.  Within a tab, you can have most
 any content <em>other than a heading</em> (code-blocks, ordered and unordered
 lists, pictures, paragraphs, and such).</p>
+</div><div aria-labelledby="tab-11-bWFya2Rvd24=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-11-bWFya2Rvd24=" name="bWFya2Rvd24=" role="tabpanel" tabindex="0"><p>While markdown does not have native support for tabbed alternatives, we do
+support this in the OPEA markdown documentation with the Myst Parser
+extension:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">::::{</span><span class="n">tab</span><span class="o">-</span><span class="nb">set</span><span class="p">}</span>
+
+<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">Linux</span>
+<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">Linux</span>
+
+<span class="n">This</span> <span class="n">content</span> <span class="n">will</span> <span class="n">show</span> <span class="n">on</span> <span class="n">the</span> <span class="n">Linux</span> <span class="n">tab</span>
+<span class="p">:::</span>
+<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">macOS</span>
+<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">macOS</span>
+
+<span class="n">This</span> <span class="n">content</span> <span class="n">will</span> <span class="n">show</span> <span class="n">on</span> <span class="n">the</span> <span class="n">macOS</span> <span class="n">tab</span>
+<span class="p">:::</span>
+<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">Windows</span>
+<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">Windows</span>
+
+<span class="n">This</span> <span class="n">content</span> <span class="n">will</span> <span class="n">show</span> <span class="n">on</span> <span class="n">the</span> <span class="n">Windows</span> <span class="n">tab</span>
+<span class="p">:::</span>
+<span class="p">::::</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">tab-set</span></code> used a <code class="docutils literal notranslate"><span class="pre">tab-item</span></code> for each tabbed alternative. Adding
+the <code class="docutils literal notranslate"><span class="pre">:sync:</span> <span class="pre">&lt;tabname&gt;</span></code> option causes all <code class="docutils literal notranslate"><span class="pre">tab-set</span></code> that share that
+<code class="docutils literal notranslate"><span class="pre">tab-item</span></code> name to be synchronized through the document (all the tabs
+will change to the selected tab).</p>
+<p>Note the use of three colons as the fence instead of the normal use of
+three backticks.  This allows use of three backtics within a tab for
+denoting a code block.  Also note how nested colon fences are used with
+four colons for the <code class="docutils literal notranslate"><span class="pre">tab-set</span></code>, and that each colon
+fence must be terminated with a matching colon fence because indenting is
+not used for content within the fenced area (normal for markdown).</p>
+<p>Here’s what that would look like with two sets of tabbed alternative
+content:</p>
+<p>Here’s an example of markdown with two tab sets that are synchronized when
+chosen by the viewer:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Linux" for="sd-tab-item-0">
+Linux</label><div class="sd-tab-content docutils">
+<p>This content will show on the Linux tab</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="macOS" for="sd-tab-item-1">
+macOS</label><div class="sd-tab-content docutils">
+<p>This content will show on the macOS tab</p>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Windows" for="sd-tab-item-2">
+Windows</label><div class="sd-tab-content docutils">
+<p>This content will show on the Windows tab</p>
+</div>
+</div>
+<p>Some more content here followed by another tab set:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Linux" for="sd-tab-item-3">
+Linux</label><div class="sd-tab-content docutils">
+<p>This is more content that will show on this Linux tab</p>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="macOS" for="sd-tab-item-4">
+macOS</label><div class="sd-tab-content docutils">
+<p>This is more content that will show on this macOS tab</p>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Windows" for="sd-tab-item-5">
+Windows</label><div class="sd-tab-content docutils">
+<p>This is more content that will show on this Windows tab</p>
+</div>
+</div>
+</div></div>
 </section>
 <section id="instruction-steps">
-<h2>Instruction Steps<a class="headerlink" href="#instruction-steps" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Instruction Steps</a><a class="headerlink" href="#instruction-steps" title="Link to this heading">¶</a></h2>
 <p>In reST, a numbered instruction steps style makes it easy to create tutorial guides
 with clearly identified steps. Add the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">rst-class::</span> <span class="pre">numbered-step</span></code>
 directive immediately before a second-level heading (by project convention, a
@@ -1765,14 +1882,14 @@ For example:</p>
 </div>
 </section>
 <section class="numbered-step" id="first-instruction-step">
-<h2>First Instruction Step<a class="headerlink" href="#first-instruction-step" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">First Instruction Step</a><a class="headerlink" href="#first-instruction-step" title="Link to this heading">¶</a></h2>
 <p>This is the first instruction step material.  You can do the usual paragraph
 and pictures as you’d use in normal document writing. Write the heading to be
 a summary of what the step is (the step numbering is automated so you can move
 steps around easily if needed).</p>
 </section>
 <section class="numbered-step" id="second-instruction-step">
-<h2>Second Instruction Step<a class="headerlink" href="#second-instruction-step" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Second Instruction Step</a><a class="headerlink" href="#second-instruction-step" title="Link to this heading">¶</a></h2>
 <p>This is the second instruction step.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1782,7 +1899,7 @@ must be level 2 headings.</p>
 </div>
 </section>
 <section id="documentation-generation">
-<h2>Documentation Generation<a class="headerlink" href="#documentation-generation" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Documentation Generation</a><a class="headerlink" href="#documentation-generation" title="Link to this heading">¶</a></h2>
 <p>For instructions on building the documentation, see <a class="reference internal" href="docbuild.html#opea-doc-generation"><span class="std std-ref">OPEA Documentation Generation</span></a>.</p>
 </section>
 </section>
@@ -1801,7 +1918,7 @@ must be level 2 headings.</p>
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 24, 2024.</span>
+<span class="lastupdated">Published on Sep 26, 2024.</span>
 
   </div>
 

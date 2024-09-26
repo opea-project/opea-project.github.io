@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/opea-custom.css?v=0eef7f70" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
 
@@ -170,6 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#chatqna-application">ChatQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/performance/helm_charts/README.html">ChatQnA Deployment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
@@ -386,10 +387,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../intent_detection/langchain/README.html">Intent Detection Microservice by TGI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#knowledgegraphs-microservice">Knowledgegraphs Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../knowledgegraphs/langchain/README.html">Knowledge Graph Microservice</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#llms-microservice">Llms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
@@ -441,6 +438,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/redis/langchain/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/redis/llama_index/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/vdms/langchain/README.html">Retriever Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../texttosql/langchain/README.html">Text-to-SQL Microservice</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
@@ -814,19 +815,60 @@
 <h3>1.1 Supported agent types<a class="headerlink" href="#supported-agent-types" title="Link to this heading">¶</a></h3>
 <p>We currently support the following types of agents:</p>
 <ol class="arabic simple">
-<li><p>ReAct: use <code class="docutils literal notranslate"><span class="pre">react_langchain</span></code> or <code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code> as strategy. First introduced in this seminal <a class="reference external" href="https://arxiv.org/abs/2210.03629">paper</a>. The ReAct agent engages in “reason-act-observe” cycles to solve problems. Please refer to this <a class="reference external" href="https://python.langchain.com/v0.2/docs/how_to/migrate_agent/">doc</a> to understand the differences between the langchain and langgraph versions of react agents.</p></li>
-<li><p>RAG agent: <code class="docutils literal notranslate"><span class="pre">rag_agent</span></code> strategy. This agent is specifically designed for improving RAG performance. It has the capability to rephrase query, check relevancy of retrieved context, and iterate if context is not relevant.</p></li>
+<li><p>ReAct: use <code class="docutils literal notranslate"><span class="pre">react_langchain</span></code> or <code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code> or <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> as strategy. First introduced in this seminal <a class="reference external" href="https://arxiv.org/abs/2210.03629">paper</a>. The ReAct agent engages in “reason-act-observe” cycles to solve problems. Please refer to this <a class="reference external" href="https://python.langchain.com/v0.2/docs/how_to/migrate_agent/">doc</a> to understand the differences between the langchain and langgraph versions of react agents. See table below to understand the validated LLMs for each react strategy.</p></li>
+<li><p>RAG agent: use <code class="docutils literal notranslate"><span class="pre">rag_agent</span></code> or <code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> strategy. This agent is specifically designed for improving RAG performance. It has the capability to rephrase query, check relevancy of retrieved context, and iterate if context is not relevant. See table below to understand the validated LLMs for each rag agent strategy.</p></li>
 <li><p>Plan and execute: <code class="docutils literal notranslate"><span class="pre">plan_execute</span></code> strategy. This type of agent first makes a step-by-step plan given a user request, and then execute the plan sequentially (or in parallel, to be implemented in future). If the execution results can solve the problem, then the agent will output an answer; otherwise, it will replan and execute again.
-For advanced developers who want to implement their own agent strategies, please refer to <a class="reference internal" href="#5-customize-agent-strategy"><span class="xref myst">Section 5</span></a> below.</p></li>
+For advanced developers who want to implement their own agent strategies, please refer to <a class="reference internal" href="#customize-agent-strategy"><span class="xref myst">Section 5</span></a> below.</p></li>
 </ol>
 </section>
 <section id="llm-engine">
 <h3>1.2 LLM engine<a class="headerlink" href="#llm-engine" title="Link to this heading">¶</a></h3>
 <p>Agents use LLM for reasoning and planning. We support 2 options of LLM engine:</p>
 <ol class="arabic simple">
-<li><p>Open-source LLMs served with TGI-gaudi. To use open-source llms, follow the instructions in <a class="reference internal" href="#222-start-microservices"><span class="xref myst">Section 2</span></a> below. Note: we recommend using state-of-the-art LLMs, such as llama3.1-70B-instruct, to get higher success rate.</p></li>
+<li><p>Open-source LLMs served with TGI-gaudi. To use open-source llms, follow the instructions in <a class="reference internal" href="#start-microservices"><span class="xref myst">Section 2</span></a> below. Note: we recommend using state-of-the-art LLMs, such as llama3.1-70B-instruct, to get higher success rate.</p></li>
 <li><p>OpenAI LLMs via API calls. To use OpenAI llms, specify <code class="docutils literal notranslate"><span class="pre">llm_engine=openai</span></code> and <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">OPENAI_API_KEY=&lt;your-openai-key&gt;</span></code></p></li>
 </ol>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Agent type</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">strategy</span></code> arg</p></th>
+<th class="head"><p>Validated LLMs</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ReAct</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">react_langchain</span></code></p></td>
+<td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a></p></td>
+<td><p>Only allows tools with one input variable</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReAct</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code></p></td>
+<td><p>GPT-4o-mini</p></td>
+<td><p>Currently does not work for open-source LLMs served with TGI-Gaudi</p></td>
+</tr>
+<tr class="row-even"><td><p>ReAct</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">react_llama</span></code></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a></p></td>
+<td><p>Recommended for open-source LLMs served with TGI-Gaudi</p></td>
+</tr>
+<tr class="row-odd"><td><p>RAG agent</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rag_agent</span></code></p></td>
+<td><p>GPT-4o-mini</p></td>
+<td><p>Currently does not work for open-source LLMs served with TGI-Gaudi</p></td>
+</tr>
+<tr class="row-even"><td><p>RAG agent</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a></p></td>
+<td><p>Recommended for open-source LLMs served with TGI-Gaudi, only allows 1 tool with input variable to be “query”</p></td>
+</tr>
+<tr class="row-odd"><td><p>Plan and execute</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plan_execute</span></code></p></td>
+<td><p>GPT-4o-mini</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="tools">
 <h3>1.3 Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h3>
@@ -835,7 +877,7 @@ For advanced developers who want to implement their own agent strategies, please
 <li><p>Endpoint: user to provide url</p></li>
 <li><p>User-defined python functions. This is usually used to wrap endpoints with request post or simple pre/post-processing.</p></li>
 <li><p>Langchain tool modules.
-Examples of how to register tools can be found in <a class="reference internal" href="#-4-provide-your-own-tools"><span class="xref myst">Section 4</span></a> below.</p></li>
+Examples of how to register tools can be found in <a class="reference internal" href="#provide-your-own-tools"><span class="xref myst">Section 4</span></a> below.</p></li>
 </ol>
 </section>
 <section id="agent-apis">
@@ -885,7 +927,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 docker<span class="w"> </span>logs<span class="w"> </span>comps-tgi-gaudi-service
 
 <span class="c1"># Agent</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/langchain/tools:/home/user/comps/agent/langchain/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/langchain/tools:/home/user/comps/agent/langchain/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_langchain<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
 
 <span class="c1"># check status</span>
 docker<span class="w"> </span>logs<span class="w"> </span>comps-langchain-agent-endpoint
@@ -893,7 +935,7 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-langchain-agent-
 </div>
 <blockquote>
 <div><p>debug mode</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>./comps/agent/langchain/:/home/user/comps/agent/langchain/<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>./comps/agent/langchain/:/home/user/comps/agent/langchain/<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_langchain<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
 </pre></div>
 </div>
 </div></blockquote>
@@ -966,7 +1008,7 @@ vim<span class="w"> </span>my_tools/custom_tools.yaml
 <li><p>Launch Agent Microservice with your tools path</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Agent</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>my_tools:/home/user/comps/agent/langchain/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursive_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>my_tools:/home/user/comps/agent/langchain/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_langchain<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursive_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
 </pre></div>
 </div>
 <ul class="simple">
@@ -1009,7 +1051,7 @@ data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 24, 2024.</span>
+<span class="lastupdated">Published on Sep 26, 2024.</span>
 
   </div>
 
