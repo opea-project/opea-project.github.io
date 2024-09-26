@@ -32,7 +32,7 @@ export PYTHONPATH=${path_to_comps}
 
 ### 1.4 Start LVM Microservice (Optional)
 
-This is required only if you are going to consume the _generate_captions_ API of this microservice as in [Section 4.3](#43-consume-generate_captions-api).
+This is required only if you are going to consume the _generate_captions_ API of this microservice as in [Section 4.3](#consume-generate_captions-api).
 
 Please refer to this [readme](../../../../lvms/llava/README.md) to start the LVM microservice.
 After LVM is up, set up environment variables.
@@ -58,7 +58,7 @@ Please refer to this [readme](../../../../vectorstores/redis/README.md).
 
 ### 2.2 Start LVM Microservice (Optional)
 
-This is required only if you are going to consume the _generate_captions_ API of this microservice as described [here](#43-consume-generate_captions-api).
+This is required only if you are going to consume the _generate_captions_ API of this microservice as described [here](#consume-generate_captions-api).
 
 Please refer to this [readme](../../../../lvms/llava/README.md) to start the LVM microservice.
 After LVM is up, set up environment variables.

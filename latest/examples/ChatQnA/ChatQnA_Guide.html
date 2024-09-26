@@ -8,7 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../../_static/opea-custom.css?v=0eef7f70" />
       <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
 
@@ -172,6 +172,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index.html#chatqna-application">ChatQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/benchmark/performance/helm_charts/README.html">ChatQnA Deployment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
@@ -388,10 +389,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/intent_detection/langchain/README.html">Intent Detection Microservice by TGI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#knowledgegraphs-microservice">Knowledgegraphs Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/knowledgegraphs/langchain/README.html">Knowledge Graph Microservice</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#llms-microservice">Llms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
@@ -443,6 +440,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/retrievers/redis/langchain/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/retrievers/redis/llama_index/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/retrievers/vdms/langchain/README.html">Retriever Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/texttosql/langchain/README.html">Text-to-SQL Microservice</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
@@ -880,12 +881,12 @@ example, including single-node deployments and Kubernetes deployments.</p>
 <p>The ChatQnA Examples follows a basic flow of information in the chatbot system,
 starting from the user input and going through the retrieve, re-ranker, and
 generate components, ultimately resulting in the bot’s output.</p>
-<figure class="align-default" id="id2">
+<figure class="align-default" id="id1">
 <img alt="ChatQnA Architecture Diagram" src="../../_images/chatqna_architecture.png" />
 <figcaption>
 <p><span class="caption-number">Figure 1 </span><span class="caption-text">This diagram illustrates the flow of information in the chatbot system,
 starting from the user input and going through the retrieve, analyze, and
-generate components, ultimately resulting in the bot’s output.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+generate components, ultimately resulting in the bot’s output.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The architecture follows a series of steps to process user queries and generate responses:</p>
@@ -994,19 +995,23 @@ The gateway serves as the interface for users to access. The gateway routes inco
      Y{{Service from industry peers}}
      Z[Gateway]
  end
-        </div><p>A GenAI application or pipeline in OPEA  typically consists of a collection of microservices to create a megaservice, accessed via a gateway. A microservice is a component designed to perform a specific function or task. Microservices are building blocks, offering the fundamental services. Microservices promote modularity, flexibility, and scalability in the system. A megaservice is a higher-level architectural construct composed of one or more microservices, providing the capability to assemble end-to-end applications.
-The gateway serves as the interface for users to access. The gateway routes incoming requests to the appropriate microservices within the megaservice architecture. See <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAI Components</a> for more information.</p>
-</section>
+        </div></section>
 </section>
 <section id="deployment">
 <h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h2>
 <p>See the <a class="reference internal" href="deploy/index.html#chatqna-example-deployment"><span class="std std-ref">ChatQnA Example Deployment Options</span></a> that includes both single-node and
 orchestrated multi-node configurations, and choose the one that best fits your
-requirements.</p>
+requirements.  Here are quick references to the single-node deployment options:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="deploy/xeon">Xeon Scalable Processor</a></p></li>
+<li><p><a class="reference external" href="deploy/gaudi">Gaudi AI Accelerator</a></p></li>
+<li><p><a class="reference external" href="deploy/nvidia">Nvidia GPU</a></p></li>
+<li><p><a class="reference external" href="deploy/aipc">AI PC</a></p></li>
+</ul>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<p>TDB.</p>
+<p>TBD.</p>
 </section>
 <section id="monitoring">
 <h2>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">¶</a></h2>
@@ -1094,7 +1099,7 @@ Download the Grafana v8.0.6 from the official site, and extract the files:</p></
 tar<span class="w"> </span>-zxvf<span class="w"> </span>grafana-11.0.0.linux-amd64.tar.gz
 </pre></div>
 </div>
-<p>For adddiitonal instructions, see the complete <a class="reference external" href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/">Grafana installation instructions</a>.</p>
+<p>For additional instructions, see the complete <a class="reference external" href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/">Grafana installation instructions</a>.</p>
 <ol class="arabic simple" start="2">
 <li><p>Run the Grafana server:
 Change the directory to the Grafana folder:</p></li>
@@ -1157,7 +1162,7 @@ Finally, open the dashboard in the Grafana UI, and you will see different panels
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 24, 2024.</span>
+<span class="lastupdated">Published on Sep 26, 2024.</span>
 
   </div>
 

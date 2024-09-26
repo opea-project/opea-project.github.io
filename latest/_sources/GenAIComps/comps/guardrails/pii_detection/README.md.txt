@@ -23,7 +23,7 @@ Currently this strategy can detect both personal sensitive and business sensitiv
 
 Users can send a list of files, a list of text strings, or a list of urls to the microservice, and the microservice will return a list of True or False for each piece of text following the original sequence.
 
-For a concrete example of what input should look like, please refer to [Consume Microservice](#4-consume-microservice) section below.
+For a concrete example of what input should look like, please refer to [Consume Microservice](#consume-microservice) section below.
 
 The output will be a list of booleans, which can be parsed and used as conditions in a bigger application.
 

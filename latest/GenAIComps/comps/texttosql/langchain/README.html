@@ -4,11 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Knowledge Graph Microservice &mdash; OPEA™ 1.0 documentation</title>
+  <title>Text-to-SQL Microservice &mdash; OPEA™ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/opea-custom.css?v=cc31a103" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/opea-custom.css?v=0eef7f70" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
 
@@ -28,8 +28,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="TGI FAQGen LLM Microservice" href="../../llms/faq-generation/tgi/langchain/README.html" />
-    <link rel="prev" title="Intent Detection Microservice by TGI" href="../../intent_detection/langchain/README.html" /> 
+    <link rel="next" title="TTS Microservice" href="../../tts/speecht5/README.html" />
+    <link rel="prev" title="Retriever Microservice" href="../../retrievers/vdms/langchain/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -170,6 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#chatqna-application">ChatQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/performance/helm_charts/README.html">ChatQnA Deployment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
@@ -386,10 +387,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../intent_detection/langchain/README.html">Intent Detection Microservice by TGI</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../../../microservices/index.html#knowledgegraphs-microservice">Knowledgegraphs Microservice</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Knowledge Graph Microservice</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#llms-microservice">Llms Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../llms/faq-generation/tgi/langchain/README.html">TGI FAQGen LLM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../llms/summarization/tgi/langchain/README.html">Document Summary TGI Microservice</a></li>
@@ -441,6 +438,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/redis/langchain/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/redis/llama_index/README.html">Retriever Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../retrievers/vdms/langchain/README.html">Retriever Microservice</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Text-to-SQL Microservice</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
@@ -785,10 +786,10 @@
   
      <li><a href="../../../../microservices/index.html">GenAI Microservices</a> &raquo;</li>
   
-  <li>Knowledge Graph Microservice</li>
+  <li>Text-to-SQL Microservice</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/GenAIComps/comps/knowledgegraphs/langchain/README.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/GenAIComps/comps/texttosql/langchain/README.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -805,139 +806,133 @@
   
            <div itemprop="articleBody">
              
-  <section id="knowledge-graph-microservice">
-<h1>Knowledge Graph Microservice<a class="headerlink" href="#knowledge-graph-microservice" title="Link to this heading">¶</a></h1>
-<p>This microservice, designed for efficiently handling and retrieving informantion from knowledge graph. The microservice integrates text retriever, knowledge graph quick search and LLM agent, which can be combined to enhance question answering.</p>
-<p>The service contains three modes:</p>
-<ul class="simple">
-<li><p>“cypher”: Query knowledge graph directly with cypher</p></li>
-<li><p>“rag”: Apply similarity search on embeddings of knowledge graph</p></li>
-<li><p>“query”: An LLM agent will automatically choose tools (RAG or CypherChain) to enhance the question answering</p></li>
-</ul>
-<p>Here is the overall workflow:</p>
-<p><img alt="Workflow" src="../../../../_images/workflow.png" /></p>
-<p>A prerequisite for using this microservice is that users must have a knowledge gragh database already running, and currently we have support <a class="reference external" href="https://neo4j.com/">Neo4J</a> for quick deployment. Users need to set the graph service’s endpoint into an environment variable and microservie utilizes it for data injestion and retrieve. If user want to use “rag” and “query” mode, still need a LLM text generation service (etc., TGI, vLLM and Ray) already running.</p>
-<p>Overall, this microservice provides efficient support for applications related with graph dataset, especially for answering multi-part questions, or any other conditions including comples relationship between entities.</p>
-<section id="start-microservice-with-docker">
-<h2>🚀1. Start Microservice with Docker<a class="headerlink" href="#start-microservice-with-docker" title="Link to this heading">¶</a></h2>
+  <section id="text-to-sql-microservice">
+<h1>Text-to-SQL Microservice<a class="headerlink" href="#text-to-sql-microservice" title="Link to this heading">¶</a></h1>
+<p>In today’s data-driven world, the ability to efficiently extract insights from databases is crucial. However, querying databases often requires specialized knowledge of SQL and database schemas, which can be a barrier for non-technical users. This is where the Text-to-SQL microservice comes into play, leveraging the power of LLMs and agentic frameworks to bridge the gap between human language and database queries. This microservice is built on Langchain/Langgraph frameworks.</p>
+<p>The microservice enables a wide range of use cases, making it a versatile tool for businesses, researchers, and individuals alike. Users can generate queries based on natural language questions, enabling them to quickly retrieve relevant data from their databases. Additionally, the service can be integrated into chatbots, allowing for natural language interactions and providing accurate responses based on the underlying data. Furthermore, it can be utilized to build custom dashboards, enabling users to visualize and analyze insights based on their specific requirements, all through the power of natural language.</p>
+<section id="start-microservice-with-python-option-1">
+<h2>🚀1. Start Microservice with Python（Option 1）<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
+<section id="install-requirements">
+<h3>1.1 Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="start-postgresdb-service">
+<h3>1.2 Start PostgresDB Service<a class="headerlink" href="#start-postgresdb-service" title="Link to this heading">¶</a></h3>
+<p>We will use <a class="reference external" href="https://github.com/lerocha/chinook-database">Chinook</a> sample database as a default to test the Text-to-SQL microservice. Chinook database is a sample database ideal for demos and testing ORM tools targeting single and multiple database servers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>testpwd
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>chinook
+
+<span class="nb">cd</span><span class="w"> </span>comps/texttosql/langchain
+
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>postgres-db<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_HOST_AUTH_METHOD</span><span class="o">=</span>trust<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5442</span>:5432<span class="w"> </span>-d<span class="w"> </span>-v<span class="w"> </span>./chinook.sql:/docker-entrypoint-initdb.d/chinook.sql<span class="w"> </span>postgres:latest
+</pre></div>
+</div>
+</section>
+<section id="start-tgi-service">
+<h3>1.3 Start TGI Service<a class="headerlink" href="#start-tgi-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_PORT</span><span class="o">=</span><span class="m">8008</span>
+
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;texttosql-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.1.0<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL_ID</span>
+</pre></div>
+</div>
+</section>
+<section id="verify-the-tgi-service">
+<h3>1.4 Verify the TGI Service<a class="headerlink" href="#verify-the-tgi-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="setup-environment-variables">
-<h3>1.1 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;neo4j://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:7687&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span><span class="s2">&quot;neo4j&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">define_a_password</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_huggingface_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8080&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;meta-llama/Llama-2-7b-hf&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">AGENT_LLM</span><span class="o">=</span><span class="s2">&quot;HuggingFaceH4/zephyr-7b-beta&quot;</span>
+<h3>1.5 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </section>
-<section id="start-neo4j-service">
-<h3>1.2 Start Neo4j Service<a class="headerlink" href="#start-neo4j-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>neo4j
+<section id="start-text-to-sql-microservice-with-python-script">
+<h3>1.6 Start Text-to-SQL Microservice with Python Script<a class="headerlink" href="#start-text-to-sql-microservice-with-python-script" title="Link to this heading">¶</a></h3>
+<p>Start Text-to-SQL microservice with below command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-microservice-with-docker-option-2">
+<h2>🚀2. Start Microservice with Docker (Option 2)<a class="headerlink" href="#start-microservice-with-docker-option-2" title="Link to this heading">¶</a></h2>
+<section id="start-postgresql-database-service">
+<h3>2.1 Start PostGreSQL Database Service<a class="headerlink" href="#start-postgresql-database-service" title="Link to this heading">¶</a></h3>
+<p>Please refer to 1.2.</p>
+</section>
+<section id="id1">
+<h3>2.2 Start TGI Service<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<p>Please refer to 1.3.</p>
+</section>
+<section id="id2">
+<h3>2.3 Setup Environment Variables<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="build-docker-image">
+<h3>2.4 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps/<span class="w"> </span><span class="c1"># back to GenAIComps/ folder</span>
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/texttosql:latest<span class="w"> </span>-f<span class="w"> </span>comps/texttosql/langchain/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+<section id="run-docker-with-cli-option-a">
+<h4>2.5 Run Docker with CLI (Option A)<a class="headerlink" href="#run-docker-with-cli-option-a" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--publish<span class="o">=</span><span class="m">7474</span>:7474<span class="w"> </span>--publish<span class="o">=</span><span class="m">7687</span>:7687<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--env<span class="w"> </span><span class="nv">NEO4J_AUTH</span><span class="o">=</span><span class="nv">$NEO4J_USER</span>/<span class="nv">$NEO4J_PASSWORD</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--volume<span class="o">=</span><span class="nv">$PWD</span>/neo4j_data:<span class="s2">&quot;/data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--env<span class="o">=</span><span class="s1">&#39;NEO4JLABS_PLUGINS=[&quot;apoc&quot;]&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>neo4j
+docker<span class="w"> </span>run<span class="w">  </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-texttosql&quot;</span><span class="w">  </span>-p<span class="w"> </span><span class="m">9090</span>:8080<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span><span class="si">${</span><span class="nv">TGI_LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>opea/texttosql:latest
 </pre></div>
 </div>
 </section>
-<section id="start-llm-service-for-rag-query-mode">
-<h3>1.3 Start LLM Service for “rag”/”query” mode<a class="headerlink" href="#start-llm-service-for-rag-query-mode" title="Link to this heading">¶</a></h3>
-<p>You can start any LLM microserve, here we take TGI as an example.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-v<span class="w"> </span><span class="nv">$PWD</span>/llm_data:/data<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HUGGINGFACEHUB_API_TOKEN</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>ghcr.io/huggingface/tgi-gaudi:2.0.0<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--max-input-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--max-total-tokens<span class="w"> </span><span class="m">2048</span>
+<section id="run-via-docker-compose-option-b">
+<h4>2.6 Run via docker compose. (Option B)<a class="headerlink" href="#run-via-docker-compose-option-b" title="Link to this heading">¶</a></h4>
+<p>Set Environment Variables.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>testpwd
+<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>chinook
 </pre></div>
 </div>
-<p>Verify LLM service.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="nv">$LLM_ENDPOINT</span>/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:32}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="start-microservice">
-<h3>1.4 Start Microservice<a class="headerlink" href="#start-microservice" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/knowledge_graphs:latest<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-f<span class="w"> </span>comps/knowledgegraphs/langchain/Dockerfile<span class="w"> </span>.
-
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;knowledge-graph-server&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-p<span class="w"> </span><span class="m">8060</span>:8060<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_ENDPOINT</span><span class="o">=</span><span class="nv">$NEO4J_ENDPOINT</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span><span class="nv">$NEO4J_USERNAME</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span><span class="nv">$NEO4J_PASSWORD</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="nv">$HUGGINGFACEHUB_API_TOKEN</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="nv">$LLM_ENDPOINT</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>opea/knowledge_graphs:latest
+<p>Start the services.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose_texttosql.yaml<span class="w"> </span>up
 </pre></div>
 </div>
 </section>
 </section>
-<section id="consume-knowledge-graph-service">
-<h2>🚀2. Consume Knowledge Graph Service<a class="headerlink" href="#consume-knowledge-graph-service" title="Link to this heading">¶</a></h2>
-<section id="cypher-mode">
-<h3>2.1 Cypher mode<a class="headerlink" href="#cypher-mode" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8060/v1/graphs<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;MATCH (t:Task {status:&#39;open&#39;}) RETURN count(*)\&quot;,\&quot;strtype\&quot;:\&quot;cypher\&quot;}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<p>Example output:
-<img alt="Cypher Output" src="../../../../_images/output_cypher.png" /></p>
 </section>
-<section id="rag-mode">
-<h3>2.2 Rag mode<a class="headerlink" href="#rag-mode" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8060/v1/graphs<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;How many open tickets there are?\&quot;,\&quot;strtype\&quot;:\&quot;rag\&quot;, \&quot;max_new_tokens\&quot;:128}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<section id="consume-microservice">
+<h2>🚀3. Consume Microservice<a class="headerlink" href="#consume-microservice" title="Link to this heading">¶</a></h2>
+<p>Once Text-to-SQL microservice is started, user can use below command</p>
+<ul class="simple">
+<li><p>Test the Database connection</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--location<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/postgres/health<span class="w"> </span><span class="se">\</span>
+--header<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+--data<span class="w"> </span><span class="s1">&#39;{&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}&#39;</span>
 </pre></div>
 </div>
-<p>Example output:
-<img alt="Cypher Output" src="../../../../_images/output_rag.png" /></p>
-</section>
-<section id="query-mode">
-<h3>2.3 Query mode<a class="headerlink" href="#query-mode" title="Link to this heading">¶</a></h3>
-<p>First example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8060/v1/graphs<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;Which tasks have optimization in their description?\&quot;,\&quot;strtype\&quot;:\&quot;query\&quot;}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<ul class="simple">
+<li><p>Invoke the microservice.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/texttosql<span class="se">\</span>
+<span class="w">        </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<p>Example output:
-<img alt="Cypher Output" src="../../../../_images/output_query1.png" /></p>
-<p>Second example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8060/v1/graphs<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;Which team is assigned to maintain PaymentService?\&quot;,\&quot;strtype\&quot;:\&quot;query\&quot;}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<p>Example output:
-<img alt="Cypher Output" src="../../../../_images/output_query2.png" /></p>
-</section>
 </section>
 </section>
 
@@ -946,8 +941,8 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../intent_detection/langchain/README.html" class="btn btn-neutral float-left" title="Intent Detection Microservice by TGI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../llms/faq-generation/tgi/langchain/README.html" class="btn btn-neutral float-right" title="TGI FAQGen LLM Microservice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../retrievers/vdms/langchain/README.html" class="btn btn-neutral float-left" title="Retriever Microservice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../tts/speecht5/README.html" class="btn btn-neutral float-right" title="TTS Microservice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -955,7 +950,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 24, 2024.</span>
+<span class="lastupdated">Published on Sep 26, 2024.</span>
 
   </div>
 
