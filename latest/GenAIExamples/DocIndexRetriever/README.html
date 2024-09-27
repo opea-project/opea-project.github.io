@@ -808,13 +808,26 @@
              
   <section id="docretriever-application">
 <h1>DocRetriever Application<a class="headerlink" href="#docretriever-application" title="Link to this heading">¶</a></h1>
-<p>DocRetriever are the most widely adopted use case for leveraging the different methodologies to match user query against a set of free-text records. DocRetriever is essential to RAG system, which bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that responses generated remain factual and current. The core of this architecture are vector databases, which are instrumental in enabling efficient and semantic retrieval of information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
+<p>DocRetriever is the most widely adopted use case for leveraging the different methodologies to match user query against a set of free-text records. DocRetriever is essential to RAG system, which bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that responses generated remain factual and current. The core of this architecture are vector databases, which are instrumental in enabling efficient and semantic retrieval of information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
 <section id="we-provided-docretriever-with-different-deployment-infra">
 <h2>We provided DocRetriever with different deployment infra<a class="headerlink" href="#we-provided-docretriever-with-different-deployment-infra" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">docker xeon version</span></a> =&gt; minimum endpoints, easy to setup</p></li>
 <li><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">docker gaudi version</span></a> =&gt; with extra tei_gaudi endpoint, faster</p></li>
 </ul>
+</section>
+<section id="we-allow-users-to-set-retriever-reranker-hyperparams-via-requests">
+<h2>We allow users to set retriever/reranker hyperparams via requests<a class="headerlink" href="#we-allow-users-to-set-retriever-reranker-hyperparams-via-requests" title="Link to this heading">¶</a></h2>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">{host_ip}</span><span class="s2">:</span><span class="si">{port}</span><span class="s2">/v1/retrievaltool&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="o">=</span><span class="n">host_ip</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># retriever top k</span>
+    <span class="s2">&quot;top_n&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># reranker top n</span>
+<span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 
