@@ -403,6 +403,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../microservices/index.html#lvms-microservice">Lvms Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIComps/comps/lvms/llama-vision/README.html">LVM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIComps/comps/lvms/llava/README.html">LVM Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIComps/comps/lvms/predictionguard/README.html">LVM Prediction Guard Microservice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../GenAIComps/comps/lvms/video-llama/README.html">LVM Microservice</a></li>
@@ -812,32 +813,31 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/benchmark/performance/helm_charts
 
-<span class="c1"># Replace &lt;your token&gt; with your actual Hugging Face token and run the following command:</span>
-<span class="nv">HUGGINGFACE_TOKEN</span><span class="o">=</span>&lt;your<span class="w"> </span>token&gt;
-find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.yaml&#39;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s#\${HF_TOKEN}#</span><span class="si">${</span><span class="nv">HUGGINGFACE_TOKEN</span><span class="si">}</span><span class="s2">#g&quot;</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
-
-<span class="c1"># Replace the following placeholders with the desired model IDs:</span>
-<span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Intel/neural-chat-7b-v3-3
-<span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span>BAAI/bge-base-en-v1.5
-<span class="nv">RERANK_MODEL_ID</span><span class="o">=</span>BAAI/bge-reranker-base
-find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.yaml&#39;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s#\$(LLM_MODEL_ID)#</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="s2">#g&quot;</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
-find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.yaml&#39;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s#\$(EMBEDDING_MODEL_ID)#</span><span class="si">${</span><span class="nv">EMBEDDING_MODEL_ID</span><span class="si">}</span><span class="s2">#g&quot;</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
-find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.yaml&#39;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s#\$(RERANK_MODEL_ID)#</span><span class="si">${</span><span class="nv">RERANK_MODEL_ID</span><span class="si">}</span><span class="s2">#g&quot;</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+<span class="c1"># Replace the key of HUGGINGFACEHUB_API_TOKEN with your actual Hugging Face token:</span>
+<span class="c1"># vim customize.yaml</span>
+HUGGINGFACEHUB_API_TOKEN:<span class="w"> </span>hf_xxxxx
 </pre></div>
 </div>
 </section>
-<section id="chatqna-installation">
-<h3>ChatQnA Installation<a class="headerlink" href="#chatqna-installation" title="Link to this heading">¶</a></h3>
+<section id="deploy-your-chatqna">
+<h3>Deploy your ChatQnA<a class="headerlink" href="#deploy-your-chatqna" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deploy a ChatQnA pipeline using the specified YAML configuration.</span>
 <span class="c1"># To deploy with different configurations, simply provide a different YAML file.</span>
-helm<span class="w"> </span>install<span class="w"> </span>chatqna<span class="w"> </span>helm_charts/<span class="w"> </span>-f<span class="w"> </span>helm_charts/oob_single_node.yaml
-
-<span class="c1"># Tips: To display rendered manifests according to the given yaml.</span>
-helm<span class="w"> </span>template<span class="w"> </span>chatqna<span class="w"> </span>helm_charts/<span class="w"> </span>-f<span class="w"> </span>helm_charts/oob_single_node.yaml
+helm<span class="w"> </span>install<span class="w"> </span>chatqna<span class="w"> </span>helm_charts/<span class="w"> </span>-f<span class="w"> </span>customize.yaml
 </pre></div>
 </div>
 <p>Notes: The provided <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/benchmark">BKC manifests</a> for single, two, and four node Kubernetes clusters are generated using this tool.</p>
 </section>
+</section>
+<section id="customize-your-own-chatqna-pipelines-optional">
+<h2>Customize your own ChatQnA pipelines. (Optional)<a class="headerlink" href="#customize-your-own-chatqna-pipelines-optional" title="Link to this heading">¶</a></h2>
+<p>There are two yaml configs you can specify.</p>
+<ul class="simple">
+<li><p>customize.yaml
+This file can specify image names, the number of replicas and CPU cores to manage your pods.</p></li>
+<li><p>values.yaml
+This file contains the default microservice configurations for ChatQnA. Please review and understand each parameter before making any changes.</p></li>
+</ul>
 </section>
 </section>
 
@@ -855,7 +855,7 @@ helm<span class="w"> </span>template<span class="w"> </span>chatqna<span class="
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 27, 2024.</span>
+<span class="lastupdated">Published on Sep 30, 2024.</span>
 
   </div>
 
