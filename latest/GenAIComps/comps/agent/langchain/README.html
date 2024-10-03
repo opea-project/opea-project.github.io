@@ -442,7 +442,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../texttosql/langchain/README.html">Text-to-SQL Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../texttosql/README.html">🛢 Text-to-SQL Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../texttosql/langchain/README.html">🛢🔗 Text-to-SQL Microservice with Langchain</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#tts-microservice">Tts Microservice</a><ul>
@@ -841,8 +842,8 @@ For advanced developers who want to implement their own agent strategies, please
 </tr>
 <tr class="row-odd"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code></p></td>
-<td><p>GPT-4o-mini</p></td>
-<td><p>Currently does not work for open-source LLMs served with TGI-Gaudi</p></td>
+<td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3">Mistral-7B-Instruct-v0.3</a>-on-vllm,</p></td>
+<td><p>Currently does not work for open-source LLMs served with TGI-Gaudi, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct">Llama-3.1-8B-Instruct</a>-on-vllm is not synced from vllm upstream to gaudi repo yet.</p></td>
 </tr>
 <tr class="row-even"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_llama</span></code></p></td>
@@ -861,7 +862,7 @@ For advanced developers who want to implement their own agent strategies, please
 </tr>
 <tr class="row-odd"><td><p>Plan and execute</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">plan_execute</span></code></p></td>
-<td><p>GPT-4o-mini</p></td>
+<td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3">Mistral-7B-Instruct-v0.3</a>-on-vllm, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct">Llama-3.1-8B-Instruct</a>-on-vllm</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -884,34 +885,15 @@ Examples of how to register tools can be found in <a class="reference internal" 
 </section>
 <section id="start-agent-microservice">
 <h2>🚀2. Start Agent Microservice<a class="headerlink" href="#start-agent-microservice" title="Link to this heading">¶</a></h2>
-<section id="option-1-with-python">
-<h3>2.1 Option 1: with Python<a class="headerlink" href="#option-1-with-python" title="Link to this heading">¶</a></h3>
-<section id="install-requirements">
-<h4>2.1.1 Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>comps/agent/langchain/
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</pre></div>
-</div>
-</section>
-<section id="start-microservice-with-python-script">
-<h4>2.1.2 Start Microservice with Python Script<a class="headerlink" href="#start-microservice-with-python-script" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>comps/agent/langchain/
-python<span class="w"> </span>agent.py
-</pre></div>
-</div>
-</section>
-</section>
-<section id="option-2-start-microservice-with-docker">
-<h3>2.2 Option 2. Start Microservice with Docker<a class="headerlink" href="#option-2-start-microservice-with-docker" title="Link to this heading">¶</a></h3>
 <section id="build-microservices">
-<h4>2.2.1 Build Microservices<a class="headerlink" href="#build-microservices" title="Link to this heading">¶</a></h4>
+<h3>2.1 Build Microservices<a class="headerlink" href="#build-microservices" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps/<span class="w"> </span><span class="c1"># back to GenAIComps/ folder</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/agent-langchain:latest<span class="w"> </span>-f<span class="w"> </span>comps/agent/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="start-microservices">
-<h4>2.2.2 Start microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h4>
+<section id="start-agent-microservices-with-tgi">
+<h3>2.2.1 Start Agent microservices with TGI<a class="headerlink" href="#start-agent-microservices-with-tgi" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span>mistralai/Mistral-7B-Instruct-v0.3
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
@@ -930,13 +912,40 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 docker<span class="w"> </span>logs<span class="w"> </span>comps-langchain-agent-endpoint
 </pre></div>
 </div>
+</section>
+<section id="start-agent-microservices-with-vllm">
+<h3>2.2.2 Start Agent microservices with vllm<a class="headerlink" href="#start-agent-microservices-with-vllm" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span>mistralai/Mistral-7B-Instruct-v0.3
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vllm_volume</span><span class="o">=</span><span class="si">${</span><span class="nv">YOUR_LOCAL_DIR_FOR_MODELS</span><span class="si">}</span>
+
+<span class="c1"># build vLLM image</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/HabanaAI/vllm-fork.git
+<span class="nb">cd</span><span class="w"> </span>./vllm-fork<span class="p">;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>habana_main<span class="p">;</span><span class="w"> </span>git<span class="w"> </span>tag<span class="w"> </span>v0.6.2.post1<span class="p">;</span>
+cp<span class="w"> </span><span class="si">${</span><span class="nv">your_path</span><span class="si">}</span>/GenAIComps/tests/agent/Dockerfile.hpu<span class="w"> </span>./
+docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm:hpu<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
+
+<span class="c1"># TGI serving</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;comps-vllm-gaudi-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$vllm_volume</span>:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span>/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">PT_HPU_ENABLE_LAZY_COLLECTIVES</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_SKIP_WARMUP</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm:hpu<span class="w"> </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span><span class="w"> </span>--block-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--max-num-seqs<span class="w">  </span><span class="m">4096</span><span class="w"> </span>--max-seq_len-to-capture<span class="w"> </span><span class="m">8192</span><span class="w"> </span>--enable-auto-tool-choice<span class="w"> </span>--tool-call-parser<span class="w"> </span>mistral
+
+<span class="c1"># check status</span>
+docker<span class="w"> </span>logs<span class="w"> </span>comps-vllm-gaudi-service
+
+<span class="c1"># Agent</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/langchain/tools:/home/user/comps/agent/langchain/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_langgraph<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>vllm<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
+
+<span class="c1"># check status</span>
+docker<span class="w"> </span>logs<span class="w"> </span>comps-langchain-agent-endpoint
+</pre></div>
+</div>
 <blockquote>
 <div><p>debug mode</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>./comps/agent/langchain/:/home/user/comps/agent/langchain/<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_langchain<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/langchain/tools/custom_tools.yaml<span class="w"> </span>opea/agent-langchain:latest
 </pre></div>
 </div>
 </div></blockquote>
-</section>
 </section>
 </section>
 <section id="validate-microservice">
@@ -1048,7 +1057,7 @@ data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Sep 30, 2024.</span>
+<span class="lastupdated">Published on Oct 03, 2024.</span>
 
   </div>
 
