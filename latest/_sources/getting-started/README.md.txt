@@ -4,10 +4,16 @@
 
 To get started with OPEA you need the right hardware and basic software setup.
 
-- Hardware Requirements: For the hardware configuration, If you need Hardware Access visit the Intel Tiber Developer Cloud to select from options such as Xeon or Gaudi processors that meet the necessary specifications.
+- Hardware Requirements: For the hardware configuration, If you need Hardware Access visit the [Intel Tiber Developer Cloud](https://cloud.intel.com) to select from options such as Xeon or Gaudi processors that meet the necessary specifications.
 
 - Software Requirements: Refer to the [Support Matrix](/GenAIExamples/README.md#getting-started) to ensure you have the required software components in place.
 
+Note : If you are deploying it on cloud, say AWS, select a VM instance from R7iz or m7i family of instances with base OS as Ubuntu 22.04 (AWS ami id : ami-05134c8ef96964280). Use the command below to install docker on a clean machine.
+```
+wget https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/ChatQnA/docker_compose/install_docker.sh
+chmod +x install_docker.sh
+./install_docker.sh
+```
 ## Understanding OPEA's Core Components
 
 Before moving forward, it's important to familiarize yourself with two key elements of OPEA: GenAIComps and GenAIExamples.
