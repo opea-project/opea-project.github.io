@@ -1,0 +1,33 @@
+name: Publish daily
+permissions: {}
+
+on:
+  schedule:
+    - cron: "10 0 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Online Document
+      run: |
+        git config --local --get remote.origin.url
+        mkdir opea
+        cd opea
+        echo "git clone"
+        git clone -b one_click_build_doc https://github.com/opea-project/docs.git
+        cd docs
+        echo "build online doc"
+        bash scripts/build.sh f
+
+    - name: Push to github
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./opea/opea-project.github.io
+        publish_branch: main
+        exclude_assets: ''
