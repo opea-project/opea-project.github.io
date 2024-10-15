@@ -681,6 +681,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/bleu/README.html#further-references">Further References</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragaaf/README.html">RAGAAF (RAG assessment - Annotation Free)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragaaf/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragaaf/README.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragaaf/README.html#generation-configuration">Generation configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragaaf/README.html#run-using-hf-endpoint">Run using HF endpoint</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragas/README.html">OPEA adaption of ragas (LLM-as-a-judge evaluation of Retrieval Augmented Generation)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragas/README.html#user-data">User data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/evals/metrics/ragas/README.html#launch-huggingface-endpoint-on-intel-s-gaudi-machines">Launch HuggingFace endpoint on Intel’s Gaudi machines</a></li>
@@ -893,23 +900,22 @@
 </pre></div>
 </div>
 </section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>You must create a user account with <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and obtain permission to use the gated LLM models by adhering to the guidelines provided on the respective model’s webpage. The environment variables <code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code> would be the HuggingFace model id and the <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code> is your HuggugFace account’s “User Access Token”.</p>
+</section>
 <section id="start-microservice-with-python-option-1">
 <h2>🚀1. Start Microservice with Python (Option 1)<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
 <p>To start the LLM microservice, you need to install python packages first.</p>
 <section id="install-requirements">
 <h3>1.1 Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>opea-comps
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/requirements.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install opea-comps</span>
+pip<span class="w"> </span>install<span class="w"> </span>opea-comps
 
-<span class="c1"># Install requirements of your choice of microservice in the text-generation folder (tgi, vllm, vllm-ray, etc.)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MICROSERVICE_DIR</span><span class="o">=</span>your_chosen_microservice
+<span class="c1"># Install requirements from comps/llms</span>
+<span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms
 
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/<span class="si">${</span><span class="nv">MICROSERVICE_DIR</span><span class="si">}</span>/requirements.txt
-</pre></div>
-</div>
-<p>Set an environment variable <code class="docutils literal notranslate"><span class="pre">your_ip</span></code> to the IP address of the machine where you would like to consume the microservice.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For example, this command would set the IP address of your currently logged-in machine.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
@@ -917,25 +923,111 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 <h3>1.2 Start LLM Service with Python Script<a class="headerlink" href="#start-llm-service-with-python-script" title="Link to this heading">¶</a></h3>
 <section id="start-the-tgi-service">
 <h4>1.2.1 Start the TGI Service<a class="headerlink" href="#start-the-tgi-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8008&quot;</span>
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/tgi/llm.py
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/tgi/llm.py
+<p>Install the requirements for TGI Service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/tgi
+
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<p>Execute the docker run command to initiate the backend, along with the Python script that launches the microservice.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span><span class="w">  </span><span class="c1"># This sets IP of the current machine</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/data<span class="w">  </span><span class="c1"># Location to download the model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+
+<span class="c1"># Initiate the backend</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">DATA_DIR</span><span class="si">}</span>:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>tgi_service<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="w"> </span>1g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/huggingface/text-generation-inference:1.4<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-id<span class="w"> </span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span>
+
+<span class="c1"># Start the microservice with an endpoint as the above docker run command</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">TGI_HOST_IP</span><span class="si">}</span><span class="s2">:8008&quot;</span>
+
+python<span class="w"> </span>llm.py
 </pre></div>
 </div>
 </section>
 <section id="start-the-vllm-service">
 <h4>1.2.2 Start the vLLM Service<a class="headerlink" href="#start-the-vllm-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8008&quot;</span>
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/llm.py
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/llm.py
+<p>Install the requirements for vLLM Service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/langchain
+
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<p>Execute the docker run command to initiate the backend, along with the Python script that launches the microservice.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span><span class="w">  </span><span class="c1"># This sets IP of the current machine</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/data<span class="w">  </span><span class="c1"># Location to download the model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+
+<span class="c1"># Build the image first as opea/vllm:cpu</span>
+bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/langchain/dependency/build_docker_vllm.sh<span class="w"> </span>cpu
+
+<span class="c1"># Initiate the backend</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>vllm_service<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">VLLM_CPU_KVCACHE_SPACE</span><span class="o">=</span><span class="m">40</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">DATA_DIR</span><span class="si">}</span>:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>opea/vllm:cpu<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--port<span class="w"> </span><span class="m">80</span>
+
+<span class="c1"># Start the microservice with an endpoint as the above docker run command</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">vLLM_HOST_IP</span><span class="si">}</span><span class="s2">:8008&quot;</span>
+
+python<span class="w"> </span>llm.py
 </pre></div>
 </div>
 </section>
 <section id="start-the-ray-service">
 <h4>1.2.3 Start the Ray Service<a class="headerlink" href="#start-the-ray-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RAY_Serve_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8008&quot;</span>
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/ray_serve/llm.py
-python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/ray_serve/llm.py
+<p>Install the requirements for Ray Service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray
+
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<p>Execute the docker run command to initiate the backend, along with the Python script that launches the microservice.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_RAY_HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span><span class="w">  </span><span class="c1"># This sets IP of the current machine</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/data<span class="w">  </span><span class="c1"># Location to download the model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+
+<span class="c1"># Build the image first as opea/vllm:cpu</span>
+bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray/dependency/build_docker_vllmray.sh
+
+<span class="c1"># Initiate the backend</span>
+docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;vllm-ray-service&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--runtime<span class="o">=</span>habana<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8006</span>:8000<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>opea/vllm_ray:habana<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot; \</span>
+<span class="s2">    ray start --head &amp;&amp; \</span>
+<span class="s2">    python vllm_ray_openai.py \</span>
+<span class="s2">    --port_number 8000 \</span>
+<span class="s2">    --model_id_or_path </span><span class="nv">$LLM_MODEL</span><span class="s2"> \</span>
+<span class="s2">    --tensor_parallel_size 2 \</span>
+<span class="s2">    --enforce_eager False&quot;</span>
+
+<span class="c1"># Start the microservice with an endpoint as the above docker run command</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_RAY_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">vLLM_RAY_HOST_IP</span><span class="si">}</span><span class="s2">:8006&quot;</span>
+
+python<span class="w"> </span>llm.py
 </pre></div>
 </div>
 </section>
@@ -943,87 +1035,76 @@ python<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GE
 </section>
 <section id="start-microservice-with-docker-option-2">
 <h2>🚀2. Start Microservice with Docker (Option 2)<a class="headerlink" href="#start-microservice-with-docker-option-2" title="Link to this heading">¶</a></h2>
-<p>You can use either a published docker image or build your own docker image with the respective microservice Dockerfile of your choice. You must create a user account with <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and obtain permission to use the restricted LLM models by adhering to the guidelines provided on the respective model’s webpage.</p>
-<section id="start-llm-service-with-published-image">
-<h3>2.1 Start LLM Service with published image<a class="headerlink" href="#start-llm-service-with-published-image" title="Link to this heading">¶</a></h3>
-<section id="start-tgi-service">
-<h4>2.1.1 Start TGI Service<a class="headerlink" href="#start-tgi-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+<p>In order to start the microservices with docker, you need to build the docker images first for the microservice.</p>
+<section id="build-docker-image">
+<h3>2.1 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<section id="tgi">
+<h4>2.1.1 TGI<a class="headerlink" href="#tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the microservice docker</span>
+<span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
 
-docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span>./data:/data<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>tgi_service<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--shm-size<span class="w"> </span>1g<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ghcr.io/huggingface/text-generation-inference:1.4<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--model-id<span class="w"> </span><span class="si">${</span><span class="nv">HF_LLM_MODEL</span><span class="si">}</span>
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="start-vllm-service">
-<h4>2.1.2 Start vLLM Service<a class="headerlink" href="#start-vllm-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the script to build the docker image as opea/vllm:cpu</span>
-bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/build_docker_vllm.sh<span class="w"> </span>cpu
+<section id="vllm">
+<h4>2.1.2 vLLM<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build vllm docker</span>
+bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/langchain/dependency/build_docker_vllm.sh<span class="w"> </span>hpu
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+<span class="c1"># Build the microservice docker</span>
+<span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>vllm_service<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">VLLM_CPU_KVCACHE_SPACE</span><span class="o">=</span><span class="m">40</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span>./data:/data<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>opea/vllm:cpu<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">HF_LLM_MODEL</span><span class="si">}</span>
-<span class="w">  </span>--port<span class="w"> </span><span class="m">80</span>
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>opea/llm-vllm:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="start-ray-service">
-<h4>2.1.3 Start Ray Service<a class="headerlink" href="#start-ray-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_CHAT_PROCESSOR</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_chatprocessor</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TRUST_REMOTE_CODE</span><span class="o">=</span>True
+<section id="ray">
+<h4>2.1.3 Ray<a class="headerlink" href="#ray" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the Ray Serve docker</span>
+bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray/dependency/build_docker_vllmray.sh
 
-docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--runtime<span class="o">=</span>habana<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>ray_serve_service<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">TRUST_REMOTE_CODE</span><span class="o">=</span><span class="nv">$TRUST_REMOTE_CODE</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>opea/llm-ray:latest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot; \</span>
-<span class="s2">    ray start --head &amp;&amp; \</span>
-<span class="s2">    python api_server_openai.py \</span>
-<span class="s2">      --port_number 80 \</span>
-<span class="s2">      --model_id_or_path </span><span class="si">${</span><span class="nv">HF_LLM_MODEL</span><span class="si">}</span><span class="s2"> \</span>
-<span class="s2">      --chat_processor </span><span class="si">${</span><span class="nv">HF_CHAT_PROCESSOR</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># Build the microservice docker</span>
+<span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
+
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>opea/llm-vllm-ray:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/ray/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 </section>
-<section id="start-llm-service-with-image-built-from-source">
-<h3>2.2 Start LLM Service with image built from source<a class="headerlink" href="#start-llm-service-with-image-built-from-source" title="Link to this heading">¶</a></h3>
-<p>If you start an LLM microservice with docker, the <code class="docutils literal notranslate"><span class="pre">docker_compose_llm.yaml</span></code> file will automatically start a TGI/vLLM service with docker.</p>
+<section id="start-llm-service-with-the-built-image">
+<h3>2.2 Start LLM Service with the built image<a class="headerlink" href="#start-llm-service-with-the-built-image" title="Link to this heading">¶</a></h3>
+<p>To start a docker container, you have two options:</p>
+<ul class="simple">
+<li><p>A. Run Docker with CLI</p></li>
+<li><p>B. Run Docker with Docker Compose</p></li>
+</ul>
+<p>You can choose one as needed. If you start an LLM microservice with docker compose, the <code class="docutils literal notranslate"><span class="pre">docker_compose_llm.yaml</span></code> file will automatically start both endpoint and the microservice docker.</p>
 <section id="setup-environment-variables">
 <h4>2.2.1 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h4>
 <p>In order to start TGI and LLM services, you need to setup the following environment variables first.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8008&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/data
 </pre></div>
 </div>
 <p>In order to start vLLM and LLM services, you need to setup the following environment variables first.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:8008&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
 </pre></div>
 </div>
 <p>In order to start Ray serve and LLM services, you need to setup the following environment variables first.</p>
@@ -1035,65 +1116,22 @@ docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </s
 </div>
 </section>
 </section>
-<section id="build-docker-image">
-<h3>2.2 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
-<section id="tgi">
-<h4>2.2.1 TGI<a class="headerlink" href="#tgi" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
-
-docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="vllm">
-<h4>2.2.2 vLLM<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h4>
-<p>Build vllm docker.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/langchain/dependency/build_docker_vllm.sh
-</pre></div>
-</div>
-<p>Build microservice docker.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
-
-docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-t<span class="w"> </span>opea/llm-vllm:latest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/langchain/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="ray-serve">
-<h4>2.2.3 Ray Serve<a class="headerlink" href="#ray-serve" title="Link to this heading">¶</a></h4>
-<p>Build Ray Serve docker.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray/dependency/build_docker_vllmray.sh
-</pre></div>
-</div>
-<p>Build microservice docker.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>
-
-docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-t<span class="w"> </span>opea/llm-ray:latest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/ray/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p>To start a docker container, you have two options:</p>
-<ul class="simple">
-<li><p>A. Run Docker with CLI</p></li>
-<li><p>B. Run Docker with Docker Compose</p></li>
-</ul>
-<p>You can choose one as needed.</p>
-</section>
-</section>
 <section id="run-docker-with-cli-option-a">
 <h3>2.3 Run Docker with CLI (Option A)<a class="headerlink" href="#run-docker-with-cli-option-a" title="Link to this heading">¶</a></h3>
 <section id="id1">
 <h4>2.3.1 TGI<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<p>Start TGI endpoint.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">DATA_DIR</span><span class="si">}</span>:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>tgi_service<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="w"> </span>1g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/huggingface/text-generation-inference:1.4<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-id<span class="w"> </span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>Start TGI microservice</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;llm-tgi-server&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="m">9000</span>:9000<span class="w"> </span><span class="se">\</span>
@@ -1122,13 +1160,13 @@ docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</s
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">vLLM_LLM_ENDPOINT</span><span class="o">=</span><span class="nv">$vLLM_LLM_ENDPOINT</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="nv">$LLM_MODEL_ID</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="nv">$LLM_MODEL</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>opea/llm-vllm:latest
 </pre></div>
 </div>
 </section>
-<section id="id3">
-<h4>2.3.3 Ray Serve<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
+<section id="ray-serve">
+<h4>2.3.3 Ray Serve<a class="headerlink" href="#ray-serve" title="Link to this heading">¶</a></h4>
 <p>Start Ray Serve endpoint.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray/dependency/launch_vllmray.sh
 </pre></div>
@@ -1150,22 +1188,22 @@ docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</s
 </section>
 <section id="run-docker-with-docker-compose-option-b">
 <h3>2.4 Run Docker with Docker Compose (Option B)<a class="headerlink" href="#run-docker-with-docker-compose-option-b" title="Link to this heading">¶</a></h3>
-<section id="id4">
-<h4>2.4.1 TGI<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<section id="id3">
+<h4>2.4.1 TGI<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/tgi
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose_llm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
-<section id="id5">
-<h4>2.4.2 vLLM<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<section id="id4">
+<h4>2.4.2 vLLM<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/langchain
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose_llm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
-<section id="id6">
-<h4>2.4.3 Ray Serve<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<section id="id5">
+<h4>2.4.3 Ray Serve<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="si">}</span>/comps/llms/text-generation/vllm/ray
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose_llm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
@@ -1215,17 +1253,17 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="s1">  &quot;model&quot;: ${your_hf_llm_model},</span>
 <span class="s1">  &quot;messages&quot;: [</span>
 <span class="s1">        {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;},</span>
-<span class="s1">        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;},</span>
+<span class="s1">        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}</span>
 <span class="s1">    ],</span>
 <span class="s1">  &quot;max_tokens&quot;: 32,</span>
-<span class="s1">  &quot;stream&quot;: True</span>
+<span class="s1">  &quot;stream&quot;: true</span>
 <span class="s1">  }&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="id7">
-<h3>3.3 Consume LLM Service<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h3>3.3 Consume LLM Service<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <p>You can set the following model parameters according to your actual needs, such as <code class="docutils literal notranslate"><span class="pre">max_tokens</span></code>, <code class="docutils literal notranslate"><span class="pre">streaming</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">streaming</span></code> parameter determines the format of the data returned by the API. It will return text string with <code class="docutils literal notranslate"><span class="pre">streaming=false</span></code>, return text streaming flow with <code class="docutils literal notranslate"><span class="pre">streaming=true</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># non-streaming mode</span>
@@ -1279,7 +1317,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Oct 14, 2024.</span>
+<span class="lastupdated">Published on Oct 15, 2024.</span>
 
   </div>
 

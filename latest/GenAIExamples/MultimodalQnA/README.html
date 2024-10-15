@@ -683,6 +683,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/bleu/README.html#further-references">Further References</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html">RAGAAF (RAG assessment - Annotation Free)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#generation-configuration">Generation configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#run-using-hf-endpoint">Run using HF endpoint</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html">OPEA adaption of ragas (LLM-as-a-judge evaluation of Retrieval Augmented Generation)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html#user-data">User data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html#launch-huggingface-endpoint-on-intel-s-gaudi-machines">Launch HuggingFace endpoint on Intel’s Gaudi machines</a></li>
@@ -852,22 +859,11 @@
         RET([Retrieval &lt;br&gt;]):::blue
         LVM([LVM &lt;br&gt;]):::blue
     end
-    subgraph User Interface
-        direction TB
+    subgraph UserInterface[&quot; User Interface &quot;]
+        direction LR
         a([User Input Query]):::orchid
         Ingest([Ingest data]):::orchid
         UI([UI server&lt;br&gt;]):::orchid
-    end
-    subgraph MultimodalQnA GateWay
-        direction LR
-        invisible1[ ]:::invisible
-        GW([MultimodalQnA GateWay&lt;br&gt;]):::orange
-    end
-    subgraph .
-        X([OPEA Microservice]):::blue
-        Y{{Open Source Service}}
-        Z([OPEA Gateway]):::orange
-        Z1([UI]):::orchid
     end
 
     TEI_EM{{Embedding service &lt;br&gt;}}
@@ -875,34 +871,33 @@
     R_RET{{Retriever service &lt;br&gt;}}
     DP([Data Preparation&lt;br&gt;]):::blue
     LVM_gen{{LVM Service &lt;br&gt;}}
+    GW([MultimodalQnA GateWay&lt;br&gt;]):::orange
 
     %% Data Preparation flow
     %% Ingest data flow
     direction LR
-    Ingest[Ingest data] --&gt;|a| UI
-    UI --&gt;|b| DP
-    DP &lt;-.-&gt;|c| TEI_EM
+    Ingest[Ingest data] --&gt; UI
+    UI --&gt;DP
+    DP &lt;-.-&gt; TEI_EM
 
     %% Questions interaction
     direction LR
-    a[User Input Query] --&gt;|1| UI
-    UI --&gt;|2| GW
-    GW &lt;==&gt;|3| MultimodalQnA-MegaService
-    EM ==&gt;|4| RET
-    RET ==&gt;|5| LVM
-
+    a[User Input Query] --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; MultimodalQnA-MegaService
+    EM ==&gt; RET
+    RET ==&gt; LVM
 
     %% Embedding service flow
-    direction TB
-    EM &lt;-.-&gt;|3'| TEI_EM
-    RET &lt;-.-&gt;|4'| R_RET
-    LVM &lt;-.-&gt;|5'| LVM_gen
+    direction LR
+    EM &lt;-.-&gt; TEI_EM
+    RET &lt;-.-&gt; R_RET
+    LVM &lt;-.-&gt; LVM_gen
 
     direction TB
     %% Vector DB interaction
-    R_RET &lt;-.-&gt;|d|VDB
-    DP &lt;-.-&gt;|e|VDB
-
+    R_RET &lt;-.-&gt;VDB
+    DP &lt;-.-&gt;VDB
 
 
         </div><p>This MultimodalQnA use case performs Multimodal-RAG using LangChain, Redis VectorDB and Text Generation Inference on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand the example.</p>
@@ -1046,7 +1041,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Oct 14, 2024.</span>
+<span class="lastupdated">Published on Oct 15, 2024.</span>
 
   </div>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edge Craft RAG &mdash; OPEA™ 1.0 documentation</title>
+  <title>24-08-21-GenAIExample-002-Edge Craft RAG &mdash; OPEA™ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Release Notes" href="../../release_notes/index.html" />
-    <link rel="prev" title="RFC Title" href="24-08-20-OPEA-001-AI_Gateway_API.html" /> 
+    <link rel="prev" title="24-08-20-OPEA-001-AI Gateway API" href="24-08-20-OPEA-001-AI_Gateway_API.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -681,6 +681,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/bleu/README.html#further-references">Further References</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html">RAGAAF (RAG assessment - Annotation Free)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#generation-configuration">Generation configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragaaf/README.html#run-using-hf-endpoint">Run using HF endpoint</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html">OPEA adaption of ragas (LLM-as-a-judge evaluation of Retrieval Augmented Generation)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html#user-data">User data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIEval/evals/metrics/ragas/README.html#launch-huggingface-endpoint-on-intel-s-gaudi-machines">Launch HuggingFace endpoint on Intel’s Gaudi machines</a></li>
@@ -810,7 +817,7 @@
   
      <li><a href="../rfcs.html">Request for Comments (RFCs)</a> &raquo;</li>
   
-  <li>Edge Craft RAG</li>
+  <li>24-08-21-GenAIExample-002-Edge Craft RAG</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/community/rfcs/24-08-21-GenAIExample-002-Edge_Craft_RAG.md.txt" rel="nofollow"> View page source</a>
@@ -830,27 +837,25 @@
   
            <div itemprop="articleBody">
              
-  <section id="edge-craft-rag">
-<h1>Edge Craft RAG<a class="headerlink" href="#edge-craft-rag" title="Link to this heading">¶</a></h1>
+  <section id="genaiexample-002-edge-craft-rag">
+<h1>24-08-21-GenAIExample-002-Edge Craft RAG<a class="headerlink" href="#genaiexample-002-edge-craft-rag" title="Link to this heading">¶</a></h1>
 <p>This RFC describes a solution of a tunable RAG for edge scenarios.</p>
-<section id="rfc-content">
-<h2>RFC Content<a class="headerlink" href="#rfc-content" title="Link to this heading">¶</a></h2>
 <section id="author">
-<h3>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h3>
+<h2>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/myqi">myqi</a></p>
 </section>
 <section id="status">
-<h3>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h3>
+<h2>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h2>
 <p>Under Review</p>
 </section>
 <section id="objective">
-<h3>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h3>
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
 <p>Edge industry users are facing obstacles to build an “out-of-the-box” RAG
 application to meet both quality and performance requirements. Total Cost of
 Ownership(TCO) and pipeline optimization techniques are the two main reasons
 to block this process.</p>
 <section id="total-cost-of-ownership">
-<h4>Total Cost of Ownership<a class="headerlink" href="#total-cost-of-ownership" title="Link to this heading">¶</a></h4>
+<h3>Total Cost of Ownership<a class="headerlink" href="#total-cost-of-ownership" title="Link to this heading">¶</a></h3>
 <p>The HW requirement of a typical edge use case is a single host with one of the
 following combinations:</p>
 <ul class="simple">
@@ -865,7 +870,7 @@ Thus, the RAG pipeline at edge needs to be highly curated for underlying hardwar
 and suitable models accordingly.</p>
 </section>
 <section id="rag-pipeline-optimization-techniques">
-<h4>RAG Pipeline Optimization Techniques<a class="headerlink" href="#rag-pipeline-optimization-techniques" title="Link to this heading">¶</a></h4>
+<h3>RAG Pipeline Optimization Techniques<a class="headerlink" href="#rag-pipeline-optimization-techniques" title="Link to this heading">¶</a></h3>
 <p>Tuning RAG pipeline is a systematic problem. First, the quality depends on the
 result of each stage in the pipeline as well as the end-to-end outcome. Second,
 optimization could be a trade-off among the metrics. It is difficult to decide one
@@ -876,7 +881,7 @@ improving the recall and context relevancy, or may not.</p>
 </section>
 </section>
 <section id="motivation">
-<h3>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h3>
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
 <p>Edge Craft RAG (EC-RAG) is a customizable, tunable and production-ready
 Retrieval-Augmented Generation system for edge solutions. It is designed to
 curate the RAG pipeline to meet hardware requirements at edge with garanteed
@@ -889,7 +894,7 @@ stages like embedding, reranking and generation are optimized for Intel(R) Iris(
 Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
 </section>
 <section id="design-proposal">
-<h3>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h3>
+<h2>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h2>
 <p>EC-RAG is composed of the following components:</p>
 <ul class="simple">
 <li><p>UI for doc loading and interactive chatbot.</p></li>
@@ -914,7 +919,7 @@ a separate doc</p>
 <li><p><strong>/v1/chatqna</strong> for inferencing</p></li>
 </ul>
 <section id="v1-data">
-<h4>/v1/data<a class="headerlink" href="#v1-data" title="Link to this heading">¶</a></h4>
+<h3>/v1/data<a class="headerlink" href="#v1-data" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Description</p></th>
@@ -943,7 +948,7 @@ a separate doc</p>
 </table>
 </section>
 <section id="v1-settings-pipelines">
-<h4>/v1/settings/pipelines<a class="headerlink" href="#v1-settings-pipelines" title="Link to this heading">¶</a></h4>
+<h3>/v1/settings/pipelines<a class="headerlink" href="#v1-settings-pipelines" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Description</p></th>
@@ -975,7 +980,6 @@ a separate doc</p>
 </tr>
 </tbody>
 </table>
-</section>
 </section>
 <section id="v1-settings-models">
 <h3>/v1/settings/models<a class="headerlink" href="#v1-settings-models" title="Link to this heading">¶</a></h3>
@@ -1011,8 +1015,9 @@ a separate doc</p>
 </tbody>
 </table>
 </section>
+</section>
 <section id="pipeline-configuration-example">
-<h3>Pipeline configuration example<a class="headerlink" href="#pipeline-configuration-example" title="Link to this heading">¶</a></h3>
+<h2>Pipeline configuration example<a class="headerlink" href="#pipeline-configuration-example" title="Link to this heading">¶</a></h2>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rag_demo&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;node_parser&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1056,7 +1061,7 @@ a separate doc</p>
 </pre></div>
 </div>
 <section id="ui">
-<h4>UI<a class="headerlink" href="#ui" title="Link to this heading">¶</a></h4>
+<h3>UI<a class="headerlink" href="#ui" title="Link to this heading">¶</a></h3>
 <p>The EC-RAG UI is gradio. The user is able to select the models as well as input
 parameters in different stages for the pipeline. The chatbox is also integrated
 in the UI.</p>
@@ -1067,16 +1072,16 @@ in the UI.</p>
 </section>
 </section>
 <section id="compatibility">
-<h3>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h3>
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h2>
 <p>EC-RAG megaservice and microservice are compatible with the existing OPEA
 GenAIExamples and GenAIComps repos. The EC-RAG leverages the LLM microservice
 and the VectorDB microservice from GenAIComps.</p>
 </section>
 <section id="miscellaneous">
-<h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">¶</a></h3>
+<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">¶</a></h2>
 <p>The EC-RAG will be developed in 2 phases.</p>
 <section id="phase-1">
-<h4>Phase 1<a class="headerlink" href="#phase-1" title="Link to this heading">¶</a></h4>
+<h3>Phase 1<a class="headerlink" href="#phase-1" title="Link to this heading">¶</a></h3>
 <p>The UI, gateway, and EC-RAG pipeline will be finished without Vector DB as
 persistent DB. Instead, FAISS will be used for vector search and keep vector
 store in memory.</p>
@@ -1085,10 +1090,9 @@ serving microservice supports Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM)
 A-Series Graphics.</p>
 </section>
 <section id="phase-2">
-<h4>Phase 2<a class="headerlink" href="#phase-2" title="Link to this heading">¶</a></h4>
+<h3>Phase 2<a class="headerlink" href="#phase-2" title="Link to this heading">¶</a></h3>
 <p>The vector DB will be enabled in this phase as well as LLM inferencing on
 Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
-</section>
 </section>
 </section>
 </section>
@@ -1098,7 +1102,7 @@ Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="24-08-20-OPEA-001-AI_Gateway_API.html" class="btn btn-neutral float-left" title="RFC Title" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="24-08-20-OPEA-001-AI_Gateway_API.html" class="btn btn-neutral float-left" title="24-08-20-OPEA-001-AI Gateway API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../release_notes/index.html" class="btn btn-neutral float-right" title="Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
@@ -1107,7 +1111,7 @@ Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Oct 14, 2024.</span>
+<span class="lastupdated">Published on Oct 15, 2024.</span>
 
   </div>
 
