@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -838,7 +840,138 @@
   <section id="productivity-suite-application">
 <h1>Productivity Suite Application<a class="headerlink" href="#productivity-suite-application" title="Link to this heading">¶</a></h1>
 <p>Productivity Suite, a tool designed to streamline your workflow and boost productivity! Our application leverages the power of OPEA microservices to deliver a comprehensive suite of features tailored to meet the diverse needs of modern enterprises.</p>
-<hr class="docutils" />
+<p>The ProductivitySuite example is implemented using both megaservices and the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different megaservices and microservices for this example. Prompt Registry and Chat History microservices save prompt and chat history from the ChatQnA MegaService only into the database.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style ChatQnA-MegaService stroke:#000000
+
+    %% Subgraphs %%
+    subgraph ChatQnA-MegaService[&quot;ChatQnA MegaService &quot;]
+        direction LR
+        EM([Embedding MicroService]):::blue
+        RET([Retrieval MicroService]):::blue
+        RER([Rerank MicroService]):::blue
+        LLM([LLM MicroService]):::blue
+    end
+    subgraph DocSum-MegaService[&quot;DocSum MegaService &quot;]
+        direction LR
+        LLM_D([LLM MicroService]):::blue
+    end
+    subgraph CodeGen-MegaService[&quot;CodeGen MegaService &quot;]
+        direction LR
+        LLM_CG([LLM MicroService]):::blue
+    end
+    subgraph FaqGen-MegaService[&quot;FaqGen MegaService &quot;]
+        direction LR
+        LLM_F([LLM MicroService]):::blue
+    end
+    subgraph UserInterface[&quot; User Interface &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        Ingest([Ingest data]):::orchid
+        UI([UI server&lt;br&gt;]):::orchid
+    end
+
+
+
+    TEI_RER{{Reranking service&lt;br&gt;}}
+    TEI_EM{{Embedding service &lt;br&gt;}}
+    VDB{{Vector DB&lt;br&gt;&lt;br&gt;}}
+    R_RET{{Retriever service &lt;br&gt;}}
+    DP([Data Preparation MicroService]):::blue
+    LLM_gen_C{{LLM Service &lt;br&gt;}}
+    GW_C([ChatQnA GateWay&lt;br&gt;]):::orange
+    LLM_gen_D{{LLM Service &lt;br&gt;}}
+    GW_D([DocSum GateWay&lt;br&gt;]):::orange
+    LLM_gen_CG{{LLM Service &lt;br&gt;}}
+    GW_CG([CodeGen GateWay&lt;br&gt;]):::orange
+    LLM_gen_F{{LLM Service &lt;br&gt;}}
+    GW_F([FaqGen GateWay&lt;br&gt;]):::orange
+    PR([Prompt Registry MicroService]):::blue
+    CH([Chat History MicroService]):::blue
+    MDB{{Mongo DB&lt;br&gt;&lt;br&gt;}}
+
+
+    %% Data Preparation flow
+    %% Ingest data flow
+    direction LR
+    Ingest[Ingest data] --&gt; UI
+    UI --&gt; DP
+    DP &lt;-.-&gt; TEI_EM
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] --&gt; UI
+    UI &lt;--&gt; GW_C
+    GW_C &lt;==&gt; ChatQnA-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+    RER ==&gt; LLM
+
+
+    %% Embedding service flow
+    direction LR
+    EM &lt;-.-&gt; TEI_EM
+    RET &lt;-.-&gt; R_RET
+    RER &lt;-.-&gt; TEI_RER
+    LLM &lt;-.-&gt; LLM_gen_C
+
+    direction LR
+    %% Vector DB interaction
+    R_RET &lt;-.-&gt; VDB
+    DP &lt;-.-&gt; VDB
+
+    %% Questions interaction
+    direction LR
+    UI --&gt; GW_D
+    GW_D &lt;==&gt; DocSum-MegaService
+
+
+    %% Embedding service flow
+    direction LR
+    LLM_D &lt;-.-&gt; LLM_gen_D
+
+    %% Questions interaction
+    direction LR
+    UI --&gt; GW_CG
+    GW_CG &lt;==&gt; CodeGen-MegaService
+
+
+    %% Embedding service flow
+    direction LR
+    LLM_CG &lt;-.-&gt; LLM_gen_CG
+
+    %% Questions interaction
+    direction LR
+    UI --&gt; GW_F
+    GW_F &lt;==&gt; FaqGen-MegaService
+
+
+    %% Embedding service flow
+    direction LR
+    LLM_F &lt;-.-&gt; LLM_gen_F
+
+    %% Questions interaction
+    direction LR
+    UI --&gt; PR
+
+    %% Embedding service flow
+    direction LR
+    PR &lt;-.-&gt; MDB
+
+    %% Questions interaction
+    direction LR
+    UI --&gt; CH
+
+    %% Embedding service flow
+    direction LR
+    CH &lt;-.-&gt; MDB
+        </div><hr class="docutils" />
 <section id="key-features">
 <h2>🛠️ Key Features<a class="headerlink" href="#key-features" title="Link to this heading">¶</a></h2>
 <section id="chat-with-documents">
