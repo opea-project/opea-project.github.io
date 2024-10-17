@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>24-08-21-GenAIExample-002-Edge Craft RAG &mdash; OPEA™ 1.0 documentation</title>
+  <title>24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA &mdash; OPEA™ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -28,8 +28,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA" href="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.html" />
-    <link rel="prev" title="24-08-20-OPEA-001-AI Gateway API" href="24-08-20-OPEA-001-AI_Gateway_API.html" /> 
+    <link rel="next" title="Release Notes" href="../../release_notes/index.html" />
+    <link rel="prev" title="24-08-21-GenAIExample-002-Edge Craft RAG" href="24-08-21-GenAIExample-002-Edge_Craft_RAG.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -821,10 +821,10 @@
   
      <li><a href="../rfcs.html">Request for Comments (RFCs)</a> &raquo;</li>
   
-  <li>24-08-21-GenAIExample-002-Edge Craft RAG</li>
+  <li>24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/community/rfcs/24-08-21-GenAIExample-002-Edge_Craft_RAG.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/community/rfcs/24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -841,262 +841,330 @@
   
            <div itemprop="articleBody">
              
-  <section id="genaiexample-002-edge-craft-rag">
-<h1>24-08-21-GenAIExample-002-Edge Craft RAG<a class="headerlink" href="#genaiexample-002-edge-craft-rag" title="Link to this heading">¶</a></h1>
-<p>This RFC describes a solution of a tunable RAG for edge scenarios.</p>
-<section id="author">
-<h2>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="https://github.com/myqi">myqi</a></p>
+  <section id="genaiexamples-001-image-and-audio-support-in-multimodalqna">
+<h1>24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA<a class="headerlink" href="#genaiexamples-001-image-and-audio-support-in-multimodalqna" title="Link to this heading">¶</a></h1>
+<section id="author-s">
+<h2>Author(s)<a class="headerlink" href="#author-s" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/mhbuehler">Melanie Buehler</a>, <a class="reference external" href="https://github.com/MSCetin37">Mustafa Cetin</a>, <a class="reference external" href="https://github.com/dmsuehir">Dina Jones</a>, <a class="reference external" href="https://github.com/okhleif-IL">Omar Khleif</a></p>
 </section>
 <section id="status">
 <h2>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h2>
-<p>Under Review</p>
+<p>Under review</p>
 </section>
 <section id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
-<p>Edge industry users are facing obstacles to build an “out-of-the-box” RAG
-application to meet both quality and performance requirements. Total Cost of
-Ownership(TCO) and pipeline optimization techniques are the two main reasons
-to block this process.</p>
-<section id="total-cost-of-ownership">
-<h3>Total Cost of Ownership<a class="headerlink" href="#total-cost-of-ownership" title="Link to this heading">¶</a></h3>
-<p>The HW requirement of a typical edge use case is a single host with one of the
-following combinations:</p>
-<ul class="simple">
-<li><p>Intel(R) Core(TM) Ultra Processor</p></li>
-<li><p>Intel(R) Core(TM) Processor + Intel(R) Iris(R) Xe Graphics</p></li>
-<li><p>Intel(R) Core(TM) Processor + Intel(R) Arc(TM) A-Series Graphics</p></li>
-<li><p>Intel(R) Xeon(R) Processor + Intel(R) Arc(TM) A-Series Graphics</p></li>
-</ul>
-<p>The scenarios with these hardware options block the edge users from using large
-parameter size LLMs on-prem as well as sophisticated RAG pipeline for their data.
-Thus, the RAG pipeline at edge needs to be highly curated for underlying hardwares
-and suitable models accordingly.</p>
-</section>
-<section id="rag-pipeline-optimization-techniques">
-<h3>RAG Pipeline Optimization Techniques<a class="headerlink" href="#rag-pipeline-optimization-techniques" title="Link to this heading">¶</a></h3>
-<p>Tuning RAG pipeline is a systematic problem. First, the quality depends on the
-result of each stage in the pipeline as well as the end-to-end outcome. Second,
-optimization could be a trade-off among the metrics. It is difficult to decide one
-answer is better than another if it is slightly not accurate in number but more
-relevant to the query. Third, the optimization techniques may not intuitively
-reflect to metrics improvements. E.g., recrusive retrieval may contribute to
-improving the recall and context relevancy, or may not.</p>
-</section>
+<p>The <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/MultimodalQnA">MultimodalQnA</a> megaservice in
+<a class="reference external" href="https://github.com/opea-project/GenAIExamples">GenAIExamples</a> currently supports text queries with a response based on
+the context derived from a collection of videos. This RFC expands upon that and proposes the addition of images, images
+with text, and audio data types for both the ingested data and the user query.</p>
 </section>
 <section id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
-<p>Edge Craft RAG (EC-RAG) is a customizable, tunable and production-ready
-Retrieval-Augmented Generation system for edge solutions. It is designed to
-curate the RAG pipeline to meet hardware requirements at edge with garanteed
-quality and performance.</p>
-<p>From quality perspective, EC-RAG is tunable in the indexing, retrieving,
-reranking and generation stages for particular edge use cases. From performance
-perspective, the pipeline is consolidated in a single service to eliminate the
-overhead of inter-service communication on a single host. Meanwhile, the inferencing
-stages like embedding, reranking and generation are optimized for Intel(R) Iris(R)
-Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
+<p>As the <a class="reference external" href="https://github.com/opea-project/docs/blob/01597aabeaf4c5d171bdc8cd9f7bccdd9e64f697/community/rfcs/MM-RAG-RFG.md">Multimodal RAG RFC</a>
+explains, enterprises use multimodal data and the proposed enhancement will increase the variety of use cases that the
+MultimodalQnA example will be able to support.</p>
+<p>Expanding on the types of supported data types will enable use cases such as:</p>
+<ol class="arabic simple">
+<li><p><strong>Voice Query and Response</strong>: A user wants to query and chat with a multimodal data store using speech as input and get responses returned as speech audio output. Supporting this use case would make the application more accessible to those who cannot see or read and safer for those who are driving a vehicle.</p></li>
+<li><p><strong>QnA with Speech Audio Files</strong>: A user wants to query and chat with a collection of audio files, such as a podcast library.</p></li>
+<li><p><strong>QnA with Captioned/Labeled Images</strong>: A user would like to populate the database with images that have labels, such as “normal” and “abnormal” radiology images, or user-provided captions, like radiologist’s notes, and then query with a new image to find similar ones. After retrieving the most similar image, the system could predict the new image’s label (i.e. assist with diagnosis).</p></li>
+<li><p><strong>QnA with Multimodal PDFs</strong>: A user wants to query and chat with the contents of one or more PDF files, like books, journal articles, business reports, or travel brochures. The PDFs could contain images with or without captions and charts that include titles and descriptions.</p></li>
+</ol>
 </section>
 <section id="design-proposal">
 <h2>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h2>
-<p>EC-RAG is composed of the following components:</p>
+<p>There are two phases in the MultimodalQnA example that need to be considered:</p>
 <ul class="simple">
-<li><p>UI for doc loading and interactive chatbot.</p></li>
-<li><p>Gateway</p></li>
-<li><p>Mega-service with a single micro-services for the tunable* EC-RAG pipeline.</p></li>
-<li><p>LLM serving microservice optimized for Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series
-Graphics</p></li>
-<li><p>VectorDB microservice optimized for Intel(R) Iris(R) Xe Graphics and/or Intel(R) Arc(TM) A-Series</p></li>
-<li><p>Docker compose file to launch the UI, Mega/Micro-services</p></li>
+<li><p>Data ingestion and prep</p></li>
+<li><p>User query</p></li>
 </ul>
-<blockquote>
-<div><p>[!NOTE]
-*Advanced tuning EC-RAG will need a tool co-piloting with the pipeline which will be described in
-a separate doc</p>
-</div></blockquote>
-<p>Below diagram illustrates the overall components of EC-RAG:
-<img alt="EC-RAG Diagram" src="../../_images/Edge_Craft_RAG.png" /></p>
-<p>The EC-RAG pipeline will expose 3 types of REST API endpoint:</p>
+<p>Both of these phases are affected by the enhancements in this RFC. The design for expanding the types of multimodal data
+for <a class="reference internal" href="#data-ingestion-and-prep"><span class="xref myst">data ingestion</span></a> and <a class="reference internal" href="#user-query"><span class="xref myst">user queries</span></a> are outlined in the next couple of
+sections.</p>
+<p>There is also a Gradio user interface (UI) that allows the user to both upload data for ingestion and submit queries
+based on the context in the database. The introduction of different data types will affect the UI design, and the
+proposed changes are discussed in the <a class="reference internal" href="#ui"><span class="xref myst">UI section</span></a>.</p>
+<p><img alt="MultimodalQnA diagram with proposed enhancement" src="../../_images/multimodal_enhanced_diagram.png" /></p>
+<section id="data-ingestion-and-prep">
+<h3>Data Ingestion and Prep<a class="headerlink" href="#data-ingestion-and-prep" title="Link to this heading">¶</a></h3>
+<p>In the data ingestion and prep phase, a collection of multimodal data is uploaded to a vector database to be retrieved
+and used as context for the subsequent queries. From a user’s perspective, they will be able to upload:</p>
 <ul class="simple">
-<li><p><strong>/v1/data</strong> for indexing</p></li>
-<li><p><strong>/v1/settings</strong> for configuration</p></li>
-<li><p><strong>/v1/chatqna</strong> for inferencing</p></li>
+<li><p>Videos with spoken audio (already supported)</p></li>
+<li><p>Videos without spoken audio (already supported)</p></li>
+<li><p>Videos with transcriptions (already supported)</p></li>
+<li><p>Images with text (proposed)</p></li>
+<li><p>Images without text (proposed)</p></li>
+<li><p>Spoken audio files (proposed)</p></li>
+<li><p>PDF files (proposed)</p></li>
 </ul>
-<section id="v1-data">
-<h3>/v1/data<a class="headerlink" href="#v1-data" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower model</a> which is already utilized
+by MultimodalQnA merges visual and text data into a unified semantic space. As it works today, the videos being ingested
+are preprocessed into a list of frames with their corresponding transcript or captions that were generated based on the
+video. Those frames and their metadata are stored in the vector store, which is used in a RAG pipeline as context for
+the user’s queries. The addition of image and text are analogous to the video frames and transcripts, and the
+<a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a949d90b766ba42a6a93fe23a67785951">CV2 VideoCapture</a>
+library, which is already used by the multimodal data prep code works for both video and images files. The existing video
+ingestion endpoints can be updated to also handle image ingestion. Similarly, PDF files can be thought of as another form of images
+and text which can be processed with a library such as <a class="reference external" href="https://pymupdf.readthedocs.io/">PyMuPDF (fitz)</a>. There is already
+an example of such PDF processing in <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/dataprep/milvus/langchain">this dataprep microservice</a>
+which may be reusable. Spoken audio files can be translated to text using the whisper model, similar to how videos with spoken
+audio use the whisper model to generate transcripts for the video. This means that although the user will be able to
+upload several different forms of media, once it gets to the embedding model it is all images and text.</p>
+<p>The table below lists the endpoints for the multimodal redis langchain data prep microservice that will be changing with
+this proposal.</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Description</p></th>
-<th class="head"><p>Action</p></th>
-<th class="head"><p>Endpoint</p></th>
-<th class="head"><p>Data Schema</p></th>
+<tr class="row-odd"><th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Data type</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Upload a file</p></td>
-<td><p>POST</p></td>
-<td><p>/v1/data</p></td>
-<td><p>FastAPI.UploadFile</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/videos_with_transcripts</span></code> becomes <code class="docutils literal notranslate"><span class="pre">6007:/v1/ingest_with_text</span></code></p></td>
+<td><p>Videos with transcripts and images with text</p></td>
+<td><p>For video with transcripts, gets the video file with their corresponding transcript file (.vtt), and then extracts frames and saves annotations. The image with text would be treated like a single frame with transcript. The data and metadata are prepared for ingestion and then added to the Redis vector store.</p></td>
 </tr>
-<tr class="row-odd"><td><p>List files</p></td>
-<td><p>GET</p></td>
-<td><p>/v1/data</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/generate_transcripts</span></code></p></td>
+<td><p>Videos with spoken audio and audio only</p></td>
+<td><p>For videos with spoken audio, data prep extracts the audio from the video and then generates a transcript (.vtt) using the whisper model. For audio only, the transcript would also be generated using the whisper model. The data and metadata are prepared for ingestion and then added to the Redis vector store.</p></td>
 </tr>
-<tr class="row-even"><td><p>Remove</p></td>
-<td><p>DELETE</p></td>
-<td><p>/v1/data/{id}</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/generate_captions</span></code></p></td>
+<td><p>Videos without spoken audio (i.e. background music, silent movie) and images without text</p></td>
+<td><p>For videos, data prep extracts frames from the video and uses the LVM microservice to generate captions for the frames. An image will be treated similarly to a video frame, and the LVM will be used to generate a caption for the image. The data and metadata are prepared for ingestion and then added to the Redis vector store.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/ingest_pdf</span></code></p></td>
+<td><p>PDF files</p></td>
+<td><p>Ingests a PDF and then uses these <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/dataprep/utils.py">utils</a> to extract chunks of text, images, and tables. The data and metadata are prepared for ingestion and then added to the Redis vector store.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/dataprep/get_videos</span></code> becomes <code class="docutils literal notranslate"><span class="pre">6007:/v1/dataprep/get_files</span></code></p></td>
+<td><p>Multimodal</p></td>
+<td><p>Lists names of uploaded files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">6007:/v1/dataprep/delete_videos</span></code> becomes <code class="docutils literal notranslate"><span class="pre">6007:/v1/dataprep/delete_files</span></code></p></td>
+<td><p>Multimodal</p></td>
+<td><p>Deletes all the uploaded files.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="v1-settings-pipelines">
-<h3>/v1/settings/pipelines<a class="headerlink" href="#v1-settings-pipelines" title="Link to this heading">¶</a></h3>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Description</p></th>
-<th class="head"><p>Action</p></th>
-<th class="head"><p>Endpoint</p></th>
-<th class="head"><p>Data Schema</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Setup a pipeline</p></td>
-<td><p>POST</p></td>
-<td><p>/v1/settings/pipelines</p></td>
-<td><p>Pipeline object</p></td>
-</tr>
-<tr class="row-odd"><td><p>Get/list pipelines</p></td>
-<td><p>GET</p></td>
-<td><p>/v1/settings/pipelines(/{id})</p></td>
-<td><p>Pipeline object(s)</p></td>
-</tr>
-<tr class="row-even"><td><p>Update pipelines</p></td>
-<td><p>PATCH</p></td>
-<td><p>/v1/settings/pipelines/{id}</p></td>
-<td><p>Pipeline object</p></td>
-</tr>
-<tr class="row-odd"><td><p>Remove a pipeline</p></td>
-<td><p>DELETE</p></td>
-<td><p>/v1/settings/pipelines/{id}</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+<section id="user-query">
+<h3>User Query<a class="headerlink" href="#user-query" title="Link to this heading">¶</a></h3>
+<p>After the vector database has been populated, the user can then submit a query to the MultimodalQnA megaservice. From
+the user’s perspective, the query can be:</p>
+<ul class="simple">
+<li><p>Text (already supported)</p></li>
+<li><p>Spoken audio files (proposed)</p></li>
+<li><p>Image and text (proposed)</p></li>
+</ul>
+<p>The response from the query is:</p>
+<ul class="simple">
+<li><p>Text (already supported)</p></li>
+<li><p>Video clip (already supported)</p></li>
+<li><p>Single image frame (proposed)</p></li>
+<li><p>Spoken audio file (proposed)</p></li>
+</ul>
+<p>The <a class="reference internal" href="../../GenAIComps/comps/asr/whisper/README.html"><span class="std std-doc">ASR microservice</span></a> which uses the
+whisper model, converts speech to text and provides a clear line of sight for adding support for spoken audio queries. Once the
+audio has been converted to text, submitting the query would be no different than how the text queries work today.</p>
+<p>The <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/tts/speecht5">TTS microservice</a> provides the capability
+to translate text to speech, which would allow the megaservice to return a spoken audio file response.</p>
+<p>Changes to the user query flow will involve the following components:</p>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="#multimodalqnagateway"><span class="xref myst">MultimodalQnA gateway</span></a></p></li>
+<li><p>The <a class="reference internal" href="#embedding-microservice"><span class="xref myst">embedding microservice</span></a></p></li>
+</ul>
+<p>The details explaining the specific changes to these components are given in the sections below.</p>
+<p>The option for providing a spoken response could be provided as a flag when starting the megaservice, simliar to how
+ChatQnA is able to start with or without reranking, or with or without guardrails. If the MultimodalQnA megaservice is
+started with the spoken responses feature, then an additional node for TTS would be added to the DAG. To enable this
+option, we would be adding a boolean python argument to the <a class="reference external" href="https://github.com/opea-project/GenAIExamples/blob/main/MultimodalQnA/multimodalqna.py#L18"><code class="docutils literal notranslate"><span class="pre">MultimodalQnaService</span></code> class</a>,
+a second Dockerfile that uses that speech response flag in its entrypoint, and another docker compose yaml file that
+starts the <code class="docutils literal notranslate"><span class="pre">tts-service</span></code> and <code class="docutils literal notranslate"><span class="pre">speecht5-service</span></code> containers.</p>
+<section id="multimodalqnagateway">
+<h4>MultimodalQnAGateway<a class="headerlink" href="#multimodalqnagateway" title="Link to this heading">¶</a></h4>
+<p>Currently, the <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/cores/mega/gateway.py#L688">MultimodalQnAGateway</a>
+class analyzes the input message from the request coming in to determine if it’s a first query or a follow up query.
+Initial queries have a single prompt string, whereas follow up queries have a list of prompts and images.</p>
+<p>When introducing different types of data for user queries, we will need to change the inital query from a string to a
+dictionary in order to comprehend data type and handle multiple items (image, text, audio).</p>
 </section>
-<section id="v1-settings-models">
-<h3>/v1/settings/models<a class="headerlink" href="#v1-settings-models" title="Link to this heading">¶</a></h3>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Description</p></th>
-<th class="head"><p>Action</p></th>
-<th class="head"><p>Endpoint</p></th>
-<th class="head"><p>Data Schema</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Load models</p></td>
-<td><p>POST</p></td>
-<td><p>/v1/settings/models</p></td>
-<td><p>Model object</p></td>
-</tr>
-<tr class="row-odd"><td><p>Get/list models</p></td>
-<td><p>GET</p></td>
-<td><p>/v1/settings/models(/{id})</p></td>
-<td><p>Model object(s)</p></td>
-</tr>
-<tr class="row-even"><td><p>Update models</p></td>
-<td><p>PATCH</p></td>
-<td><p>/v1/settings/models/{id}</p></td>
-<td><p>Model object</p></td>
-</tr>
-<tr class="row-odd"><td><p>Remove a model</p></td>
-<td><p>DELETE</p></td>
-<td><p>/v1/settings/models/{id}</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+<section id="embedding-microservice">
+<h4>Embedding Microservice<a class="headerlink" href="#embedding-microservice" title="Link to this heading">¶</a></h4>
+<p>The <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/embeddings/multimodal/multimodal_langchain/mm_embedding_mmei.py#L41">embedding microservice endpoint</a>
+gets input as a <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/cores/proto/docarray.py#L66-L70"><code class="docutils literal notranslate"><span class="pre">MultimodalDoc</span></code></a>.
+The <code class="docutils literal notranslate"><span class="pre">MultimodalDoc</span></code> is a union of: <code class="docutils literal notranslate"><span class="pre">TextDoc</span></code>, <code class="docutils literal notranslate"><span class="pre">ImageDoc</span></code>, and <code class="docutils literal notranslate"><span class="pre">TextImageDoc</span></code>. In order to accomodate audio input, we
+will add <code class="docutils literal notranslate"><span class="pre">Base64ByteStrDoc</span></code> to the union.</p>
+<p>If the embedding service gets a <code class="docutils literal notranslate"><span class="pre">Base64ByteStrDoc</span></code> as input, it will assume that this is audio only input, and then use
+the <a class="reference internal" href="../../GenAIComps/comps/asr/whisper/README.html"><span class="std std-doc">ASR microservice</span></a> to
+convert the audio to text using the whisper model. After getting the text, the rest of the embedding microservice flow
+would work the same as it would for a text query.</p>
 </section>
 </section>
-<section id="pipeline-configuration-example">
-<h2>Pipeline configuration example<a class="headerlink" href="#pipeline-configuration-example" title="Link to this heading">¶</a></h2>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rag_demo&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;node_parser&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;chunk_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;chunk_overlap&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;simple&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;indexer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;faiss_vector&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;model_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BAAI/bge-small-en-v1.5&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;model_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./bge_ov_embedding&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;retriever&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vectorsimilarity&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;top_k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;postprocessors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reranker&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;rerank_top_n&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;model_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BAAI/bge-reranker-large&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;model_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./bge_ov_reranker&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;model_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qwen2-7b-instruct&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;model_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./qwen2-7b-instruct/INT4_compressed_weights&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;prompt_path&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./data/default_prompt.txt&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;True&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 <section id="ui">
 <h3>UI<a class="headerlink" href="#ui" title="Link to this heading">¶</a></h3>
-<p>The EC-RAG UI is gradio. The user is able to select the models as well as input
-parameters in different stages for the pipeline. The chatbox is also integrated
-in the UI.</p>
-<p>EC-RAG UI - Model Condiguration
-<img alt="EC-RAG UI Model Configuration" src="../../_images/Edge_Craft_RAG_screenshot_1.png" /></p>
-<p>EC-RAG UI - Chatbot with settings
-<img alt="EC-RAG UI Chatbot" src="../../_images/Edge_Craft_RAG_screenshot_2.png" /></p>
+<p>The existing UI shows two modes of video upload capability - with transcripts and with captions, on different interface
+tabs - and a main chat tab holding the text QnA conversation, a video clip area populated from the first response of a
+chat session, a small text box for queries, a submit button, and a clear button. Our proposed changes to the UI aim to
+achieve three goals:</p>
+<ul class="simple">
+<li><p>Change the existing design as little as possible</p></li>
+<li><p>Visually organize and emphasize the enhanced multimodal options for file upload, query input, and query response</p></li>
+<li><p>Streamline some of the titles and text headings</p></li>
+</ul>
+<p>We list each proposed change in detail below and then provide mockups of the new screens.</p>
+<section id="ui-changes">
+<h4>UI Changes<a class="headerlink" href="#ui-changes" title="Link to this heading">¶</a></h4>
+<ol class="arabic simple">
+<li><p>Modify the main chat screen with a dynamic media display area capable of supporting video, image, or audio results
+and adjusting automatically when a new type is returned by the gateway.</p></li>
+<li><p>Modify the query text box to allow multimodal file uploads in addition to text (likely with the Gradio
+MultimodalTextBox element), expanding the query input to accept images and audio in addition to text.</p></li>
+<li><p>Simplify the tab titles and screen headings for improved clarity.</p></li>
+<li><p>Combine the two modes of video upload into one tab with radio buttons that enable users to choose the correct
+ingestion endpoint for their videos.</p></li>
+<li><p>Add a new tab for image uploads with radio buttons allowing users to choose between caption generation and custom
+label or caption, as well as a text box for uploading a custom label or caption.</p></li>
+<li><p>Add a new audio upload tab allowing the user to post audio files. The system will assume that the audio contains
+speech and generate a transcript by default, but this could be expanded to accommodate non-speech audio and/or optional
+custom labels or captions in the future.</p></li>
+<li><p>Add a new tab for PDF uploads, which currently is envisioned as one endpoint without any input options.</p></li>
+</ol>
 </section>
+<section id="ui-mockups">
+<h4>UI Mockups<a class="headerlink" href="#ui-mockups" title="Link to this heading">¶</a></h4>
+<p><img alt="Proposed Chat Screen" src="../../_images/multimodal_enhanced_chat_ui.png" />
+<img alt="Proposed Video Upload Screen" src="../../_images/multimodal_enhanced_video_ui.png" />
+<img alt="Proposed Image Upload Screen" src="../../_images/multimodal_enhanced_image_ui.png" />
+<img alt="Proposed Audio Upload Screen" src="../../_images/multimodal_enhanced_audio_ui.png" />
+<img alt="Proposed PDF Upload Screen" src="../../_images/multimodal_enhanced_pdf_ui.png" /></p>
+</section>
+</section>
+<section id="other-enhancements">
+<h3>Other Enhancements<a class="headerlink" href="#other-enhancements" title="Link to this heading">¶</a></h3>
+<section id="model-selection">
+<h4>Model Selection<a class="headerlink" href="#model-selection" title="Link to this heading">¶</a></h4>
+<p>We are proposing an enhancement that allows the user to select the LVM model and embedding model. To do this,
+we will enable the functionality for users to specify the container’s entry point in such a way that enables a
+user to pass in and change values of default script arguments for the respective python script. Users can change
+and interact with these arguments in the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> with environment variables such as <code class="docutils literal notranslate"><span class="pre">LVM_MODEL</span></code> before being
+officially passed in and overwritten into the <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/lvms/llava/dependency/Dockerfile#L22">dockerfile</a>
+entry point when building compose.yaml. The purpose of this change is to allow users to utilize more script arguments
+that currently are hard set to their default values when a container is built.</p>
+</section>
+</section>
+</section>
+<section id="alternatives-considered">
+<h2>Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Link to this heading">¶</a></h2>
+<p>The following alternatives can be considered:</p>
+<ul class="simple">
+<li><p>We are proposing to use the ASR microservice, which would add two more containers (<code class="docutils literal notranslate"><span class="pre">opea/asr</span></code> and <code class="docutils literal notranslate"><span class="pre">opea/whisper</span></code>/<code class="docutils literal notranslate"><span class="pre">opea/whisper-gaudi</span></code>)
+to the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file, and when using Gaudi, the whisper service container would use one HPU. Instead of having the
+embedding microservice use ASR, it could directly use the whisper model (similar to how the multimodal data prep uses
+the whisper model to transcribe video audio). However, using the whisper model directly from a container running on
+CPU (like the embedding service or data prep) means that we aren’t getting the performance benefits of Gaudi when
+converting speech-to-text with the whisper model.</p></li>
+<li><p>In data prep, we could have separate endpoints for different types of media. For example, instead of having
+<code class="docutils literal notranslate"><span class="pre">/v1/ingest_with_text</span></code>, we could break that out into <code class="docutils literal notranslate"><span class="pre">/v1/videos_with_transcript</span></code> and <code class="docutils literal notranslate"><span class="pre">/v1/images_with_text</span></code>
+separately.</p></li>
+<li><p>Instead of renaming endpoints in the multimodal redis langchain data prep (like <code class="docutils literal notranslate"><span class="pre">/v1/dataprep/get_videos</span></code> renamed to
+<code class="docutils literal notranslate"><span class="pre">/v1/dataprep/get_files</span></code> and<code class="docutils literal notranslate"><span class="pre">/v1/dataprep/delete_videos</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">/v1/dataprep/delete_files</span></code>), we could leave the
+existing endpoint paths as is, and then add on <code class="docutils literal notranslate"><span class="pre">get_files</span></code> and <code class="docutils literal notranslate"><span class="pre">delete_files</span></code>. This would help to preserve some
+backwards compatibility for any applications outside of GenAIExamples who may be using those endpoints. If we decide
+to do it this way, we could add comments in the code and documentation about the eventual deprecation of
+<code class="docutils literal notranslate"><span class="pre">delete_videos</span></code> and <code class="docutils literal notranslate"><span class="pre">get_videos</span></code> if the end goals is to keep only the more general <code class="docutils literal notranslate"><span class="pre">get_files</span></code> and <code class="docutils literal notranslate"><span class="pre">delete_files</span></code>
+endpoint paths.</p></li>
+<li><p>Instead of different UI screens for the different types of data ingestion (video, image, audio, etc.), there could be one
+unified “Upload Documents” screen. This would result in a longer page with multiple sections for the different file types
+and would benefit users who prefer having to scroll over having to click.</p></li>
+</ul>
 </section>
 <section id="compatibility">
 <h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h2>
-<p>EC-RAG megaservice and microservice are compatible with the existing OPEA
-GenAIExamples and GenAIComps repos. The EC-RAG leverages the LLM microservice
-and the VectorDB microservice from GenAIComps.</p>
+<p>Interface changes are being made to the following components:</p>
+<ul class="simple">
+<li><p>MultimodalQnA gateway</p></li>
+<li><p>Embeddings multimodal langchain</p></li>
+<li><p>Dataprep multimodal redis langchain</p></li>
+</ul>
+<p>At the time that this RFC is written, there aren’t any other megaservices in GenAIExamples that are using the
+<a class="reference internal" href="../../GenAIComps/comps/embeddings/multimodal/README.html"><span class="std std-doc">Embeddings multimodal langchain</span></a>
+or the <a class="reference internal" href="../../GenAIComps/comps/dataprep/multimodal/redis/langchain/README.html"><span class="std std-doc">Dataprep multimodal redis langchain</span></a>
+microservices. During implementation, we will do another search of the repo to make sure that other megaservices are not
+affected by our changes, and if they are we will make changes accordingly.</p>
 </section>
 <section id="miscellaneous">
 <h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">¶</a></h2>
-<p>The EC-RAG will be developed in 2 phases.</p>
-<section id="phase-1">
-<h3>Phase 1<a class="headerlink" href="#phase-1" title="Link to this heading">¶</a></h3>
-<p>The UI, gateway, and EC-RAG pipeline will be finished without Vector DB as
-persistent DB. Instead, FAISS will be used for vector search and keep vector
-store in memory.</p>
-<p>In this phase, the LLM inferencing will happen in the pipeline until the LLM
-serving microservice supports Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM)
-A-Series Graphics.</p>
-</section>
-<section id="phase-2">
-<h3>Phase 2<a class="headerlink" href="#phase-2" title="Link to this heading">¶</a></h3>
-<p>The vector DB will be enabled in this phase as well as LLM inferencing on
-Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
+<section id="development-phases">
+<h3>Development Phases<a class="headerlink" href="#development-phases" title="Link to this heading">¶</a></h3>
+<p>We have planned the following development phases based on the priority of the features and their development effort:</p>
+<ul class="simple">
+<li><p>Phase 1</p>
+<ul>
+<li><p>Data prep and ingestion:</p>
+<ul>
+<li><p>Accept image only</p></li>
+<li><p>Accept image and text</p></li>
+<li><p>Accept speech audio only</p></li>
+</ul>
+</li>
+<li><p>Query enhancements:</p>
+<ul>
+<li><p>Accept speech audio only</p></li>
+</ul>
+</li>
+<li><p>Other enhancements:</p>
+<ul>
+<li><p>Allow the user to choose the embedding model and LVM when starting the services</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Phase 2</p>
+<ul>
+<li><p>Data prep and ingestion:</p>
+<ul>
+<li><p>Accept image and text as a PDF</p></li>
+</ul>
+</li>
+<li><p>Query enhancements:</p>
+<ul>
+<li><p>Accept image and text</p></li>
+<li><p>Accept image and speech audio</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Phase 3</p>
+<ul>
+<li><p>Data prep and ingestion:</p>
+<ul>
+<li><p>Accept image and speech audio</p></li>
+</ul>
+</li>
+<li><p>Other enhancements:</p>
+<ul>
+<li><p>Support for spoken audio responses (text-to-speech)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Future ideas:</p>
+<ul>
+<li><p>Data prep and ingestion:</p>
+<ul>
+<li><p>Accept non-speech audio</p></li>
+<li><p>Accept Powerpoint slides and other file types</p></li>
+</ul>
+</li>
+<li><p>Query enhancements:</p>
+<ul>
+<li><p>Accept speech audio and non-speech audio</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 </section>
@@ -1106,8 +1174,8 @@ Intel(R) Iris(R) Xe Graphics and Intel(R) Arc(TM) A-Series Graphics.</p>
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="24-08-20-OPEA-001-AI_Gateway_API.html" class="btn btn-neutral float-left" title="24-08-20-OPEA-001-AI Gateway API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.html" class="btn btn-neutral float-right" title="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="24-08-21-GenAIExample-002-Edge_Craft_RAG.html" class="btn btn-neutral float-left" title="24-08-21-GenAIExample-002-Edge Craft RAG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../release_notes/index.html" class="btn btn-neutral float-right" title="Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
