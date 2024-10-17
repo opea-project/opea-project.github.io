@@ -1489,271 +1489,246 @@ TGI</label><div class="sd-tab-content docutils">
 <p><strong>NOTE</strong>: After launch the TGI, it takes few minutes for TGI server to load LLM model and warm up.</p>
 </div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="c1">### LLM Microservice</span>
-
-<span class="n">This</span> <span class="n">service</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">above</span> <span class="n">LLM</span> <span class="n">backend</span> <span class="n">service</span> <span class="n">startup</span><span class="o">.</span> <span class="n">It</span> <span class="n">will</span> <span class="n">be</span> <span class="n">ready</span> <span class="n">after</span> <span class="n">long</span> <span class="n">time</span><span class="p">,</span> 
-<span class="n">to</span> <span class="n">wait</span> <span class="k">for</span> <span class="n">them</span> <span class="n">being</span> <span class="n">ready</span> <span class="ow">in</span> <span class="n">first</span> <span class="n">startup</span><span class="o">.</span>
-
-<span class="p">::::{</span><span class="n">tab</span><span class="o">-</span><span class="nb">set</span><span class="p">}</span>
-
-<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">vllm</span>
-<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">vllm</span>
+</section>
+<section id="llm-microservice">
+<h3>LLM Microservice<a class="headerlink" href="#llm-microservice" title="Link to this heading">¶</a></h3>
+<p>This service depends on above LLM backend service startup. It will be ready after long time,
+to wait for them being ready in first startup.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-16" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-16">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions \
+ -X POST \
+ -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_p&quot;:1,&quot;temperature&quot;:0.7,\
+ &quot;frequency_penalty&quot;:0,&quot;presence_penalty&quot;:0, &quot;streaming&quot;:true}&#39; \
+ -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+<p>For parameters in vLLM modes, can refer to <a class="reference external" href="https://huggingface.co/docs/huggingface_hub/package_reference/inference_client#huggingface_hub.InferenceClient.text_generation">LangChain VLLMOpenAI API</a></p>
+</div>
+<input id="sd-tab-item-17" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-17">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions\
+  -X POST \
+  -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,\
+     &quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39; \
+  -H &#39;Content-Type: application/json&#39;
 
 </pre></div>
 </div>
-<p>curl http://${host_ip}:9000/v1/chat/completions <br />
--X POST <br />
--d ‘{“query”:”What is Deep Learning?”,”max_tokens”:17,”top_p”:1,”temperature”:0.7,<br />
-“frequency_penalty”:0,”presence_penalty”:0, “streaming”:true}’ <br />
--H ‘Content-Type: application/json’</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">For</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">vLLM</span> <span class="n">modes</span><span class="p">,</span> <span class="n">can</span> <span class="n">refer</span> <span class="n">to</span> <span class="p">[</span><span class="n">LangChain</span> <span class="n">VLLMOpenAI</span> <span class="n">API</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">huggingface</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">huggingface_hub</span><span class="o">/</span><span class="n">package_reference</span><span class="o">/</span><span class="n">inference_client</span><span class="c1">#huggingface_hub.InferenceClient.text_generation)</span>
-
-<span class="p">:::</span>
-<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">TGI</span>
-<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">TGI</span>
+<p>For parameters in TGI modes, please refer to <a class="reference external" href="https://huggingface.co/docs/huggingface_hub/package_reference/inference_client#huggingface_hub.InferenceClient.text_generation">HuggingFace InferenceClient API</a> (except we rename “max_new_tokens” to “max_tokens”.)</p>
+</div>
+</div>
+<p>You will get generated text from LLM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;Deep&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; is&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; a&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; subset&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; machine&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; that&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; uses&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; algorithms&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; to&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learn&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; from&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; data&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="megaservice">
+<h3>MegaService<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;
+     }&#39;
 
 </pre></div>
 </div>
-<p>curl http://${host_ip}:9000/v1/chat/completions<br />
--X POST <br />
--d ‘{“query”:”What is Deep Learning?”,”max_new_tokens”:17,”top_k”:10,”top_p”:0.95,<br />
-“typical_p”:0.95,”temperature”:0.01,”repetition_penalty”:1.03,”streaming”:true}’ <br />
--H ‘Content-Type: application/json’</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">For</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">TGI</span> <span class="n">modes</span><span class="p">,</span> <span class="n">please</span> <span class="n">refer</span> <span class="n">to</span> <span class="p">[</span><span class="n">HuggingFace</span> <span class="n">InferenceClient</span> <span class="n">API</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">huggingface</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">huggingface_hub</span><span class="o">/</span><span class="n">package_reference</span><span class="o">/</span><span class="n">inference_client</span><span class="c1">#huggingface_hub.InferenceClient.text_generation) (except we rename &quot;max_new_tokens&quot; to &quot;max_tokens&quot;.)</span>
-<span class="p">:::</span>
-<span class="p">::::</span>
-
-
-
-
-<span class="n">You</span> <span class="n">will</span> <span class="n">get</span> <span class="n">generated</span> <span class="n">text</span> <span class="kn">from</span> <span class="nn">LLM</span><span class="p">:</span>
+<p>Here is the output for your reference:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;An&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;swer&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;:&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; In&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; fiscal&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; &#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;0&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;3&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; N&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;I&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;KE&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Inc&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; achieved&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; record&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Rev&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;en&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;ues&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; $&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;5&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;1&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; billion&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;&lt;/s&gt;&#39;</span>
+<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="check-docker-container-log">
+<h2>Check docker container log<a class="headerlink" href="#check-docker-container-log" title="Link to this heading">¶</a></h2>
+<p>Check the log of container by:</p>
+<p><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">&lt;CONTAINER</span> <span class="pre">ID&gt;</span> <span class="pre">-t</span></code></p>
+<p>Check the log by  <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">f7a08f9867f9</span> <span class="pre">-t</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.695934928</span><span class="n">Z</span> <span class="n">error</span><span class="p">:</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">required</span> <span class="k">for</span> <span class="s1">&#39;--model-id &lt;MODEL_ID&gt;&#39;</span> <span class="n">but</span> <span class="n">none</span> <span class="n">was</span> <span class="n">supplied</span>
+<span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.697123534</span><span class="n">Z</span>
+<span class="mi">2024</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">05</span><span class="n">T01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mf">30.697148330</span><span class="n">Z</span> <span class="n">For</span> <span class="n">more</span> <span class="n">information</span><span class="p">,</span> <span class="k">try</span> <span class="s1">&#39;--help&#39;</span><span class="o">.</span>
 
 </pre></div>
 </div>
-<p>data: b’\n’
-data: b’\n’
-data: b’Deep’
-data: b’ learning’
-data: b’ is’
-data: b’ a’
-data: b’ subset’
-data: b’ of’
-data: b’ machine’
-data: b’ learning’
-data: b’ that’
-data: b’ uses’
-data: b’ algorithms’
-data: b’ to’
-data: b’ learn’
-data: b’ from’
-data: b’ data’
-data: [DONE]</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="c1">### MegaService</span>
+<p>The log indicates the <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is not set.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-18">
+vllm</label><div class="sd-tab-content docutils">
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>vllm_service:
+    image: ${REGISTRY:-opea}/vllm:${TAG:-latest}
+    container_name: vllm-service
+    ports:
+      - &quot;9009:80&quot;
+    volumes:
+      - &quot;./data:/data&quot;
+    shm_size: 128g
+    environment:
+      no_proxy: ${no_proxy}
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
+      LLM_MODEL_ID: ${LLM_MODEL_ID}
+    command: --model $LLM_MODEL_ID --host 0.0.0.0 --port 80
 
 </pre></div>
 </div>
-<p>curl http://${host_ip}:8888/v1/chatqna -H “Content-Type: application/json” -d ‘{
-“messages”: “What is the revenue of Nike in 2023?”
-}’</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="n">Here</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">output</span> <span class="k">for</span> <span class="n">your</span> <span class="n">reference</span><span class="p">:</span>
+</div>
+<input id="sd-tab-item-19" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-19">
+TGI</label><div class="sd-tab-content docutils">
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> tgi-service:
+    image: ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu
+    container_name: tgi-service
+    ports:
+      - &quot;9009:80&quot;
+    volumes:
+      - &quot;./data:/data&quot;
+    shm_size: 1g
+    environment:
+      no_proxy: ${no_proxy}
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
+      HF_HUB_DISABLE_PROGRESS_BARS: 1
+      HF_HUB_ENABLE_HF_TRANSFER: 0
+    command: --model-id ${LLM_MODEL_ID} --cuda-graphs 0
 
 </pre></div>
 </div>
-<p>data: b’\n’
-data: b’An’
-data: b’swer’
-data: b’:’
-data: b’ In’
-data: b’ fiscal’
-data: b’ ‘
-data: b’2’
-data: b’0’
-data: b’2’
-data: b’3’
-data: b’,’
-data: b’ N’
-data: b’I’
-data: b’KE’
-data: b’,’
-data: b’ Inc’
-data: b’.’
-data: b’ achieved’
-data: b’ record’
-data: b’ Rev’
-data: b’en’
-data: b’ues’
-data: b’ of’
-data: b’ $’
-data: b’5’
-data: b’1’
-data: b’.’
-data: b’2’
-data: b’ billion’
-data: b’.’
-data: b’</s>’
-data: [DONE]</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-## Check docker container log
-
-Check the log of container by:
-
-`docker logs &lt;CONTAINER ID&gt; -t`
-
-
-Check the log by  `docker logs f7a08f9867f9 -t`.
-
+</div>
+</div>
+<p>The input <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is  <code class="docutils literal notranslate"><span class="pre">${LLM_MODEL_ID}</span></code></p>
+<p>Check environment variable  <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code>  is set correctly, spelled correctly.
+Set the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> then restart the containers.</p>
+<p>Also you can check overall logs with the following command, where the
+compose.yaml is the mega service docker-compose configuration file.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-20" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-20">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
 </pre></div>
 </div>
-<p>2024-06-05T01:30:30.695934928Z error: a value is required for ‘–model-id &lt;MODEL_ID&gt;’ but none was supplied
-2024-06-05T01:30:30.697123534Z
-2024-06-05T01:30:30.697148330Z For more information, try ‘–help’.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-The log indicates the `MODEL_ID` is not set.
-
-
-::::{tab-set}
-
-:::{tab-item} vllm
-:sync: vllm
-
-View the docker input parameters in  `./ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml`
-
+</div>
+<input id="sd-tab-item-21" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-21">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
 </pre></div>
 </div>
-<p>vllm_service:
-image: ${REGISTRY:-opea}/vllm:${TAG:-latest}
-container_name: vllm-service
-ports:
-- “9009:80”
-volumes:
-- “./data:/data”
-shm_size: 128g
-environment:
-no_proxy: ${no_proxy}
-http_proxy: ${http_proxy}
-https_proxy: ${https_proxy}
-HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
-LLM_MODEL_ID: ${LLM_MODEL_ID}
-command: –model $LLM_MODEL_ID –host 0.0.0.0 –port 80</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>:::
-:::{tab-item} TGI
-:sync: TGI
-
-View the docker input parameters in  `./ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml`
-
+</div>
+</div>
+</section>
+<section id="launch-ui">
+<h2>Launch UI<a class="headerlink" href="#launch-ui" title="Link to this heading">¶</a></h2>
+<section id="basic-ui">
+<h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
+<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:5173&quot;</span>
 </pre></div>
 </div>
-<p>tgi-service:
-image: ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu
-container_name: tgi-service
-ports:
-- “9009:80”
-volumes:
-- “./data:/data”
-shm_size: 1g
-environment:
-no_proxy: ${no_proxy}
-http_proxy: ${http_proxy}
-https_proxy: ${https_proxy}
-HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
-HF_HUB_DISABLE_PROGRESS_BARS: 1
-HF_HUB_ENABLE_HF_TRANSFER: 0
-command: –model-id ${LLM_MODEL_ID} –cuda-graphs 0</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>:::
-::::
-
-
-The input `MODEL_ID` is  `${LLM_MODEL_ID}`
-
-Check environment variable  `LLM_MODEL_ID`  is set correctly, spelled correctly.
-Set the `LLM_MODEL_ID` then restart the containers.
-
-Also you can check overall logs with the following command, where the
-compose.yaml is the mega service docker-compose configuration file.
-
-::::{tab-set}
-
-:::{tab-item} vllm
-:sync: vllm
-
+</section>
+<section id="conversational-ui">
+<h3>Conversational UI<a class="headerlink" href="#conversational-ui" title="Link to this heading">¶</a></h3>
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the compose.yaml file. Replace chaqna-xeon-ui-server service with the chatqna-xeon-conversation-ui-server service as per the config below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>chaqna-xeon-conversation-ui-server:
+  image: opea/chatqna-conversation-ui:latest
+  container_name: chatqna-xeon-conversation-ui-server
+  environment:
+    - APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
+    - APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
+  ports:
+    - &quot;5174:80&quot;
+  depends_on:
+    - chaqna-xeon-backend-server
+  ipc: host
+  restart: always
 </pre></div>
 </div>
-<p>docker compose -f ./docker_compose/intel/cpu/xeon/compose_vllm.yaml logs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:::</span>
-<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">TGI</span>
-<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">TGI</span>
-
+<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
+    <span class="o">...</span>
+    <span class="n">ports</span><span class="p">:</span>
+      <span class="o">-</span> <span class="s2">&quot;80:80&quot;</span>
 </pre></div>
 </div>
-<p>docker compose -f ./docker_compose/intel/cpu/xeon/compose.yaml logs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:::</span>
-<span class="p">::::</span>
-
-<span class="c1">## Launch UI</span>
-
-<span class="c1">### Basic UI</span>
-
-<span class="n">To</span> <span class="n">access</span> <span class="n">the</span> <span class="n">frontend</span><span class="p">,</span> <span class="nb">open</span> <span class="n">the</span> <span class="n">following</span> <span class="n">URL</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">browser</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">{</span><span class="n">host_ip</span><span class="p">}:</span><span class="mf">5173.</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">the</span> <span class="n">UI</span> <span class="n">runs</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">5173</span> <span class="n">internally</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">prefer</span> <span class="n">to</span> <span class="n">use</span> <span class="n">a</span> <span class="n">different</span> <span class="n">host</span> <span class="n">port</span> <span class="n">to</span> <span class="n">access</span> <span class="n">the</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">modify</span> <span class="n">the</span> <span class="n">port</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">file</span> <span class="k">as</span> <span class="n">shown</span> <span class="n">below</span><span class="p">:</span>
+</section>
+<section id="stop-the-services">
+<h3>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h3>
+<p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-22">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
-<p>chaqna-xeon-ui-server:
-image: opea/chatqna-ui:latest
-…
-ports:
-- “80:5173”</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="c1">### Conversational UI</span>
-
-<span class="n">To</span> <span class="n">access</span> <span class="n">the</span> <span class="n">Conversational</span> <span class="n">UI</span> <span class="p">(</span><span class="n">react</span> <span class="n">based</span><span class="p">)</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">modify</span> <span class="n">the</span> <span class="n">UI</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">file</span><span class="o">.</span> <span class="n">Replace</span> <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span> <span class="n">service</span> <span class="k">with</span> <span class="n">the</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span> <span class="n">service</span> <span class="k">as</span> <span class="n">per</span> <span class="n">the</span> <span class="n">config</span> <span class="n">below</span><span class="p">:</span>
+</div>
+<input id="sd-tab-item-23" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-23">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
-<p>chaqna-xeon-conversation-ui-server:
-image: opea/chatqna-conversation-ui:latest
-container_name: chatqna-xeon-conversation-ui-server
-environment:
-- APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
-- APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
-ports:
-- “5174:80”
-depends_on:
-- chaqna-xeon-backend-server
-ipc: host
-restart: always</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="n">Once</span> <span class="n">the</span> <span class="n">services</span> <span class="n">are</span> <span class="n">up</span><span class="p">,</span> <span class="nb">open</span> <span class="n">the</span> <span class="n">following</span> <span class="n">URL</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">browser</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">{</span><span class="n">host_ip</span><span class="p">}:</span><span class="mf">5174.</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">the</span> <span class="n">UI</span> <span class="n">runs</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">80</span> <span class="n">internally</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">prefer</span> <span class="n">to</span> <span class="n">use</span> <span class="n">a</span> <span class="n">different</span> <span class="n">host</span> <span class="n">port</span> <span class="n">to</span> <span class="n">access</span> <span class="n">the</span> <span class="n">frontend</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">modify</span> <span class="n">the</span> <span class="n">port</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">file</span> <span class="k">as</span> <span class="n">shown</span> <span class="n">below</span><span class="p">:</span>
-
-</pre></div>
 </div>
-<p>chaqna-xeon-conversation-ui-server:
-image: opea/chatqna-conversation-ui:latest
-…
-ports:
-- “80:80”</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="c1">### Stop the services</span>
-
-<span class="n">Once</span> <span class="n">you</span> <span class="n">are</span> <span class="n">done</span> <span class="k">with</span> <span class="n">the</span> <span class="n">entire</span> <span class="n">pipeline</span> <span class="ow">and</span> <span class="n">wish</span> <span class="n">to</span> <span class="n">stop</span> <span class="ow">and</span> <span class="n">remove</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">containers</span><span class="p">,</span> <span class="n">use</span> <span class="n">the</span> <span class="n">command</span> <span class="n">below</span><span class="p">:</span>
-<span class="p">::::{</span><span class="n">tab</span><span class="o">-</span><span class="nb">set</span><span class="p">}</span>
-
-<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">vllm</span>
-<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">vllm</span>
-
-</pre></div>
-</div>
-<p>docker compose -f compose_vllm.yaml down</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:::</span>
-<span class="p">:::{</span><span class="n">tab</span><span class="o">-</span><span class="n">item</span><span class="p">}</span> <span class="n">TGI</span>
-<span class="p">:</span><span class="n">sync</span><span class="p">:</span> <span class="n">TGI</span>
-
-</pre></div>
-</div>
-<p>docker compose -f compose.yaml down</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:::</span>
-<span class="p">::::</span>
-</pre></div>
 </div>
 </section>
 </section>
