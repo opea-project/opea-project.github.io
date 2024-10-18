@@ -703,7 +703,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer-guides/index.html">Developer Guides</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../developer-guides/index.html#coding-guides">Coding Guides</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer-guides/OPEA_API.html">OPEA API Service Spec (v0.9)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer-guides/OPEA_API.html">OPEA API Service Spec (v1.0)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer-guides/index.html#documentation-guides">Documentation Guides</a><ul>
@@ -929,6 +929,16 @@ list and verify that the docker image you’re downloading exists on dockerhub.)
 </section>
 <section id="interact-with-chatqna-megaservice-and-microservice">
 <h2>Interact with ChatQnA Megaservice and Microservice<a class="headerlink" href="#interact-with-chatqna-megaservice-and-microservice" title="Link to this heading">¶</a></h2>
+<p>Before interact ChatQnA Service, make sure the TGI service is ready (which takes up to 2 minutes to start).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span>
+<span class="c1"># expected: all images&#39;s status are up</span>
+<span class="c1"># TGI example on on Xeon and Nvidia GPU</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">tgi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">Connected</span>
+<span class="c1"># TGI example on on Gaudi</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">tgi</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">Connected</span>
+<span class="c1"># execpted output: ... INFO text_generation_router::server: router/src/server.rs:2311: Connected</span>
+</pre></div>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna \
     -H &quot;Content-Type: application/json&quot; \
     -d &#39;{
