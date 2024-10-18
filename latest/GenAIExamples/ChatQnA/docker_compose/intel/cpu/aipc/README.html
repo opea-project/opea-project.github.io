@@ -892,13 +892,13 @@ $ sudo systemctl restart ollama.service
 <p>Run the command to download LLM models. The &lt;host_ip&gt; is the one set in <a class="reference internal" href="#Set-Ollama-Service-Configuration"><span class="xref myst">Ollama Service Configuration</span></a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=&lt;host_ip&gt;
 export OLLAMA_HOST=http://${host_ip}:11434
-ollama pull llama3
+ollama pull llama3.2
 </pre></div>
 </div>
 <p>After downloaded the models, you can list the models by <code class="docutils literal notranslate"><span class="pre">ollama</span> <span class="pre">list</span></code>.</p>
 <p>The output should be similar to the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span>            <span class="n">ID</span>              <span class="n">SIZE</span>    <span class="n">MODIFIED</span>
-<span class="n">llama3</span><span class="p">:</span><span class="n">latest</span>   <span class="mi">365</span><span class="n">c0bd3c000</span>    <span class="mf">4.7</span> <span class="n">GB</span>  <span class="mi">5</span> <span class="n">days</span> <span class="n">ago</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span>            <span class="n">ID</span>                <span class="n">SIZE</span>      <span class="n">MODIFIED</span>
+<span class="n">llama3</span><span class="mf">.2</span><span class="p">:</span><span class="n">latest</span>   <span class="n">a80c4f17acd5</span>    <span class="mf">2.0</span> <span class="n">GB</span>    <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>
 </pre></div>
 </div>
 </section>
@@ -906,23 +906,23 @@ ollama pull llama3
 <section id="consume-ollama-llm-service">
 <h3>Consume Ollama LLM Service<a class="headerlink" href="#consume-ollama-llm-service" title="Link to this heading">¶</a></h3>
 <p>Access ollama service to verify that the ollama is functioning correctly.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/api/generate<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;llama3&quot;, &quot;prompt&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/api/generate<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;llama3.2&quot;, &quot;prompt&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
 </pre></div>
 </div>
 <p>The outputs are similar to these:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:38.949268562Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot;Deep&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.017625351Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.102848076Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; is&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.171037991Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; a&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.243757952Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; subset&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.328708084Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.413844974Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; machine&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.486239329Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.555960842Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; that&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.642418238Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; involves&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.714137478Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; the&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.798776679Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; use&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
-<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-11T07:58:39.883747938Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.098813868Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot;Deep&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.124514468Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.149754216Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; is&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.180420784Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; a&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.229185873Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; subset&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.263956118Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.289097354Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; machine&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.316838918Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.342309506Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; that&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.367221264Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; involves&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.39205893Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; the&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.417933974Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; use&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.443110388Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
 <span class="o">...</span>
 </pre></div>
 </div>
@@ -976,13 +976,21 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
+</section>
+<section id="build-nginx-docker-image">
+<h3>6. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/nginx/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 6 Docker Images:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-ollama:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/nginx:latest</span></code></p></li>
 </ol>
 </section>
 </section>
@@ -1018,27 +1026,10 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6006&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;rag-redis&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/chatqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get_file&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FRONTEND_SERVICE_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FRONTEND_SERVICE_PORT</span><span class="o">=</span><span class="m">5173</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_NAME</span><span class="o">=</span>chatqna
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
-
 <span class="nb">export</span><span class="w"> </span><span class="nv">OLLAMA_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434
-<span class="nb">export</span><span class="w"> </span><span class="nv">OLLAMA_MODEL</span><span class="o">=</span><span class="s2">&quot;llama3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OLLAMA_MODEL</span><span class="o">=</span><span class="s2">&quot;llama3.2&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1046,27 +1037,10 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span>BAAI/bge-base-en-v1.5
 <span class="nb">set</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span>BAAI/bge-reranker-base
-<span class="nb">set</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span>http://%host_ip%:6006
-<span class="nb">set</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span>redis://%host_ip%:6379
 <span class="nb">set</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span>rag-redis
 <span class="nb">set</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>%your_hf_api_token%
-<span class="nb">set</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">EMBEDDING_SERVER_HOST_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">RERANK_SERVER_HOST_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">LLM_SERVER_HOST_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span>http://%host_ip%:8888/v1/chatqna
-<span class="nb">set</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span>http://%host_ip%:6007/v1/dataprep
-<span class="nb">set</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://%host_ip%:6007/v1/dataprep/get_file&quot;</span>
-<span class="nb">set</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://%host_ip%:6007/v1/dataprep/delete_file&quot;</span>
-<span class="nb">set</span><span class="w"> </span><span class="nv">FRONTEND_SERVICE_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">FRONTEND_SERVICE_PORT</span><span class="o">=</span><span class="m">5173</span>
-<span class="nb">set</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_NAME</span><span class="o">=</span>chatqna
-<span class="nb">set</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_IP</span><span class="o">=</span>%host_ip%
-<span class="nb">set</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
-
 <span class="nb">set</span><span class="w"> </span><span class="nv">OLLAMA_ENDPOINT</span><span class="o">=</span>http://host.docker.internal:11434
-<span class="nb">set</span><span class="w"> </span><span class="nv">OLLAMA_MODEL</span><span class="o">=</span><span class="s2">&quot;llama3&quot;</span>
+<span class="nb">set</span><span class="w"> </span><span class="nv">OLLAMA_MODEL</span><span class="o">=</span><span class="s2">&quot;llama3.2&quot;</span>
 </pre></div>
 </div>
 <p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
@@ -1078,13 +1052,6 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/OPEA/GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Let ollama service runs (if you have started ollama service in <a class="reference internal" href="#Prerequisites"><span class="xref myst">Prerequisites</span></a>, skip this step)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g. ollama run llama3</span>
-<span class="nv">OLLAMA_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434<span class="w"> </span>ollama<span class="w"> </span>run<span class="w"> </span><span class="nv">$OLLAMA_MODEL</span>
-<span class="c1"># for windows</span>
-<span class="c1"># ollama run %OLLAMA_MODEL%</span>
 </pre></div>
 </div>
 </section>
@@ -1120,7 +1087,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div>
 </li>
 <li><p>Ollama Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/api/generate<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;llama3&quot;, &quot;prompt&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/api/generate<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;llama3.2&quot;, &quot;prompt&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
 </pre></div>
 </div>
 </li>
@@ -1134,7 +1101,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </li>
 <li><p>MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;, &quot;model&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OLLAMA_MODEL</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;</span>
+<span class="s1">     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
