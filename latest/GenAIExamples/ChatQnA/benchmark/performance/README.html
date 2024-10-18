@@ -926,21 +926,9 @@ find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </spa
 </pre></div>
 </div>
 </section>
-<section id="benchmark-tool-preparation">
-<h3>Benchmark tool preparation<a class="headerlink" href="#benchmark-tool-preparation" title="Link to this heading">¶</a></h3>
-<p>The test uses the <a class="reference internal" href="../../../../GenAIEval/evals/benchmark/README.html"><span class="std std-doc">benchmark tool</span></a> to do performance test. We need to set up benchmark tool at the master node of Kubernetes which is k8s-master.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on k8s-master node</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIEval.git
-<span class="nb">cd</span><span class="w"> </span>GenAIEval
-python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>stress_venv
-<span class="nb">source</span><span class="w"> </span>stress_venv/bin/activate
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</pre></div>
-</div>
-</section>
 <section id="test-configurations">
 <h3>Test Configurations<a class="headerlink" href="#test-configurations" title="Link to this heading">¶</a></h3>
-<p>Workload configuration:</p>
+<p>By default, the workload and benchmark configuration is as below:</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Key</p></th>
@@ -1065,20 +1053,16 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 <section id="run-benchmark-test">
 <h6>3.2 Run Benchmark Test<a class="headerlink" href="#run-benchmark-test" title="Link to this heading">¶</a></h6>
-<p>We copy the configuration file <a class="reference internal" href="#./benchmark.yaml"><span class="xref myst">benchmark.yaml</span></a> to <code class="docutils literal notranslate"><span class="pre">GenAIEval/evals/benchmark/benchmark.yaml</span></code> and config <code class="docutils literal notranslate"><span class="pre">test_suite_config.deployment_type</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_ip</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_port</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.user_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">test_suite_config.test_output_dir</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_TYPE</span><span class="o">=</span><span class="s2">&quot;k8s&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[640, 640, 640, 640]&quot;</span>
+<p>Before the benchmark, we can configure the number of test queries and test output directory by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[640, 640, 640, 640]&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEST_OUTPUT_DIR</span><span class="o">=</span><span class="s2">&quot;/home/sdp/benchmark_output/node_1&quot;</span>
-envsubst<span class="w"> </span>&lt;<span class="w"> </span>./benchmark.yaml<span class="w"> </span>&gt;<span class="w"> </span>GenAIEval/evals/benchmark/benchmark.yaml
 </pre></div>
 </div>
-<p>And then run the benchmark tool by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark
-python<span class="w"> </span>benchmark.py
+<p>And then run the benchmark by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>benchmark.sh<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">-n</span></code> refers to the number of test nodes. Note that necessary dependencies will be automatically installed when running benchmark for the first time.</p>
 </section>
 </section>
 <section id="data-collection">
@@ -1115,21 +1099,16 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </section>
 <section id="id3">
 <h5>3. Run tests<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h5>
-<p>We copy the configuration file <a class="reference internal" href="#./benchmark.yaml"><span class="xref myst">benchmark.yaml</span></a> to <code class="docutils literal notranslate"><span class="pre">GenAIEval/evals/benchmark/benchmark.yaml</span></code> and config <code class="docutils literal notranslate"><span class="pre">test_suite_config.deployment_type</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_ip</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_port</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.user_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">test_suite_config.test_output_dir</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_TYPE</span><span class="o">=</span><span class="s2">&quot;k8s&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[1280, 1280, 1280, 1280]&quot;</span>
+<p>Before the benchmark, we can configure the number of test queries and test output directory by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[1280, 1280, 1280, 1280]&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEST_OUTPUT_DIR</span><span class="o">=</span><span class="s2">&quot;/home/sdp/benchmark_output/node_2&quot;</span>
-envsubst<span class="w"> </span>&lt;<span class="w"> </span>./benchmark.yaml<span class="w"> </span>&gt;<span class="w"> </span>GenAIEval/evals/benchmark/benchmark.yaml
-
-And<span class="w"> </span><span class="k">then</span><span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>benchmark<span class="w"> </span>tool<span class="w"> </span>by:
-
-<span class="sb">```</span>bash
-<span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark
-python<span class="w"> </span>benchmark.py
 </pre></div>
 </div>
+<p>And then run the benchmark by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>benchmark.sh<span class="w"> </span>-n<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">-n</span></code> refers to the number of test nodes. Note that necessary dependencies will be automatically installed when running benchmark for the first time.</p>
 </section>
 <section id="id4">
 <h5>4. Data collection<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h5>
@@ -1164,20 +1143,16 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </section>
 <section id="id8">
 <h5>3. Run tests<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
-<p>We copy the configuration file <a class="reference internal" href="#./benchmark.yaml"><span class="xref myst">benchmark.yaml</span></a> to <code class="docutils literal notranslate"><span class="pre">GenAIEval/evals/benchmark/benchmark.yaml</span></code> and config <code class="docutils literal notranslate"><span class="pre">test_suite_config.deployment_type</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_ip</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_port</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.user_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">test_suite_config.test_output_dir</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_TYPE</span><span class="o">=</span><span class="s2">&quot;k8s&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
-<span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[2560, 2560, 2560, 2560]&quot;</span>
+<p>Before the benchmark, we can configure the number of test queries and test output directory by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[2560, 2560, 2560, 2560]&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEST_OUTPUT_DIR</span><span class="o">=</span><span class="s2">&quot;/home/sdp/benchmark_output/node_4&quot;</span>
-envsubst<span class="w"> </span>&lt;<span class="w"> </span>./benchmark.yaml<span class="w"> </span>&gt;<span class="w"> </span>GenAIEval/evals/benchmark/benchmark.yaml
 </pre></div>
 </div>
-<p>And then run the benchmark tool by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark
-python<span class="w"> </span>benchmark.py
+<p>And then run the benchmark by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>benchmark.sh<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span>
 </pre></div>
 </div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">-n</span></code> refers to the number of test nodes. Note that necessary dependencies will be automatically installed when running benchmark for the first time.</p>
 </section>
 <section id="id9">
 <h5>4. Data collection<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
@@ -1236,21 +1211,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </section>
 <section id="id11">
 <h3>Run tests<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
-<p>We copy the configuration file <a class="reference internal" href="#./benchmark.yaml"><span class="xref myst">benchmark.yaml</span></a> to <code class="docutils literal notranslate"><span class="pre">GenAIEval/evals/benchmark/benchmark.yaml</span></code> and config <code class="docutils literal notranslate"><span class="pre">test_suite_config.deployment_type</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_ip</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.service_port</span></code>, <code class="docutils literal notranslate"><span class="pre">test_suite_config.user_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">test_suite_config.test_output_dir</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_TYPE</span><span class="o">=</span><span class="s2">&quot;docker&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ChatQnA Service IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVICE_PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ChatQnA Service Port&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[640, 640, 640, 640]&quot;</span>
+<p>Before the benchmark, we can configure the number of test queries and test output directory by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">USER_QUERIES</span><span class="o">=</span><span class="s2">&quot;[640, 640, 640, 640]&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEST_OUTPUT_DIR</span><span class="o">=</span><span class="s2">&quot;/home/sdp/benchmark_output/docker&quot;</span>
-envsubst<span class="w"> </span>&lt;<span class="w"> </span>./benchmark.yaml<span class="w"> </span>&gt;<span class="w"> </span>GenAIEval/evals/benchmark/benchmark.yaml
 </pre></div>
 </div>
-<p>And then run the benchmark tool by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>../../requirements.txt
-python<span class="w"> </span>benchmark.py
+<p>And then run the benchmark by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>benchmark.sh<span class="w"> </span>-d<span class="w"> </span>docker<span class="w"> </span>-i<span class="w"> </span>&lt;service-ip&gt;<span class="w"> </span>-p<span class="w"> </span>&lt;service-port&gt;
 </pre></div>
 </div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">-i</span></code> and <code class="docutils literal notranslate"><span class="pre">-p</span></code> refer to the deployed ChatQnA service IP and port, respectively. Note that necessary dependencies will be automatically installed when running benchmark for the first time.</p>
 </section>
 <section id="id12">
 <h3>Data collection<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
