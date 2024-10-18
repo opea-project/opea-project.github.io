@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -845,7 +847,61 @@
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram is shown below. The supervisor agent interfaces with the user and dispatch tasks to the worker agent and other tools to gather information and come up with answers. The worker agent uses the retrieval tool to generate answers to the queries posted by the supervisor agent. Other tools used by the supervisor agent may include APIs to interface knowledge graphs, SQL databases, external knowledge bases, etc.
 <img alt="Architecture Overview" src="../../_images/agent_qna_arch.png" /></p>
-<section id="why-agent-for-question-answering">
+<p>The AgentQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+
+    %% Subgraphs %%
+    subgraph DocIndexRetriever-MegaService[&quot;DocIndexRetriever MegaService &quot;]
+        direction LR
+        EM([Embedding MicroService]):::blue
+        RET([Retrieval MicroService]):::blue
+        RER([Rerank MicroService]):::blue
+    end
+    subgraph UserInput[&quot; User Input &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        Ingest([Ingest data]):::orchid
+    end
+    AG_REACT([Agent MicroService - react]):::blue
+    AG_RAG([Agent MicroService - rag]):::blue
+    LLM_gen{{LLM Service &lt;br&gt;}}
+    DP([Data Preparation MicroService]):::blue
+    TEI_RER{{Reranking service&lt;br&gt;}}
+    TEI_EM{{Embedding service &lt;br&gt;}}
+    VDB{{Vector DB&lt;br&gt;&lt;br&gt;}}
+    R_RET{{Retriever service &lt;br&gt;}}
+
+
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] --&gt; AG_REACT
+    AG_REACT --&gt; AG_RAG
+    AG_RAG --&gt; DocIndexRetriever-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+    Ingest[Ingest data] --&gt; DP
+
+    %% Embedding service flow
+    direction LR
+    AG_RAG &lt;-.-&gt; LLM_gen
+    AG_REACT &lt;-.-&gt; LLM_gen
+    EM &lt;-.-&gt; TEI_EM
+    RET &lt;-.-&gt; R_RET
+    RER &lt;-.-&gt; TEI_RER
+
+    direction TB
+    %% Vector DB interaction
+    R_RET &lt;-.-&gt; VDB
+    DP &lt;-.-&gt; VDB
+
+        </div><section id="why-agent-for-question-answering">
 <h3>Why Agent for question answering?<a class="headerlink" href="#why-agent-for-question-answering" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Improve relevancy of retrieved context.
