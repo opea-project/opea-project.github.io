@@ -878,16 +878,17 @@ up to 1024 tokens. The solution is deployed with a UI. There are 2 modes you can
 <p>First step is to clone the GenAIExamples and GenAIComps. GenAIComps are
 fundamental necessary components used to build examples you find in
 GenAIExamples and deploy them as microservices.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">~/</span><span class="n">OPEA</span> <span class="o">-</span><span class="n">p</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">OPEA</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
 <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
 <p>Checkout the release tag</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIComps</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">OPEA</span><span class="o">/</span><span class="n">GenAIComps</span>
 <span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
 </pre></div>
 </div>
-<p>The examples utilize model weights from Ollama and langchain.</p>
 <p>Setup your <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and generate
 <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
 <p>Setup the HuggingFace token</p>
@@ -905,6 +906,90 @@ export http_proxy=${your_http_proxy}
 export https_proxy=${your_http_proxy}
 </pre></div>
 </div>
+<p>The examples utilize model weights from Ollama and langchain.</p>
+<section id="set-up-ollama-llm-service">
+<h3>Set Up Ollama LLM Service<a class="headerlink" href="#set-up-ollama-llm-service" title="Link to this heading">¶</a></h3>
+<p>We use <a class="reference external" href="https://ollama.com/">Ollama</a> as our LLM service for AIPC.</p>
+<p>Please follow the instructions to set up Ollama on your PC. This will set the entrypoint needed for the Ollama to suit the ChatQnA examples.</p>
+<section id="install-ollama-service">
+<h4>Install Ollama Service<a class="headerlink" href="#install-ollama-service" title="Link to this heading">¶</a></h4>
+<p>Install Ollama service with one command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">fsSL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ollama</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">sh</span>
+</pre></div>
+</div>
+</section>
+<section id="set-ollama-service-configuration">
+<h4>Set Ollama Service Configuration<a class="headerlink" href="#set-ollama-service-configuration" title="Link to this heading">¶</a></h4>
+<p>Ollama Service Configuration file is /etc/systemd/system/ollama.service. Edit the file to set OLLAMA_HOST environment.
+Replace <strong>&lt;host_ip&gt;</strong> with your host IPV4 (please use external public IP). For example the host_ip is 10.132.x.y, then `Environment=”OLLAMA_HOST=10.132.x.y:11434”’.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;OLLAMA_HOST=host_ip:11434&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-https-proxy-environment-for-ollama">
+<h4>Set https_proxy environment for Ollama<a class="headerlink" href="#set-https-proxy-environment-for-ollama" title="Link to this heading">¶</a></h4>
+<p>If your system access network through proxy, add https_proxy in Ollama Service Configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;https_proxy=Your_HTTPS_Proxy&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="restart-ollama-services">
+<h4>Restart Ollama services<a class="headerlink" href="#restart-ollama-services" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl daemon-reload
+$ sudo systemctl restart ollama.service
+</pre></div>
+</div>
+</section>
+<section id="check-the-service-started">
+<h4>Check the service started<a class="headerlink" href="#check-the-service-started" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netstat</span> <span class="o">-</span><span class="n">tuln</span> <span class="o">|</span> <span class="n">grep</span>  <span class="mi">11434</span>
+</pre></div>
+</div>
+<p>The output are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcp</span>        <span class="mi">0</span>      <span class="mi">0</span> <span class="mf">10.132</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="p">:</span><span class="mi">11434</span>      <span class="mf">0.0.0.0</span><span class="p">:</span><span class="o">*</span>               <span class="n">LISTEN</span>
+</pre></div>
+</div>
+</section>
+<section id="pull-ollama-llm-model">
+<h4>Pull Ollama LLM model<a class="headerlink" href="#pull-ollama-llm-model" title="Link to this heading">¶</a></h4>
+<p>Run the command to download LLM models. The &lt;host_ip&gt; is the one set in <a class="reference internal" href="#Set-Ollama-Service-Configuration"><span class="xref myst">Ollama Service Configuration</span></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=&lt;host_ip&gt;
+export OLLAMA_HOST=http://${host_ip}:11434
+ollama pull llama3.2
+</pre></div>
+</div>
+<p>After downloaded the models, you can list the models by <code class="docutils literal notranslate"><span class="pre">ollama</span> <span class="pre">list</span></code>.</p>
+<p>The output should be similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span>            <span class="n">ID</span>                <span class="n">SIZE</span>      <span class="n">MODIFIED</span>
+<span class="n">llama3</span><span class="mf">.2</span><span class="p">:</span><span class="n">latest</span>   <span class="n">a80c4f17acd5</span>    <span class="mf">2.0</span> <span class="n">GB</span>    <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="consume-ollama-llm-service">
+<h3>Consume Ollama LLM Service<a class="headerlink" href="#consume-ollama-llm-service" title="Link to this heading">¶</a></h3>
+<p>Access ollama service to verify that the ollama is functioning correctly.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/api/generate<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;llama3.2&quot;, &quot;prompt&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>The outputs are similar to these:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.098813868Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot;Deep&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.124514468Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.149754216Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; is&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.180420784Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; a&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.229185873Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; subset&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.263956118Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.289097354Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; machine&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.316838918Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; learning&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.342309506Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; that&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.367221264Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; involves&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.39205893Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; the&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.417933974Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; use&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;created_at&quot;</span><span class="p">:</span><span class="s2">&quot;2024-10-12T12:55:28.443110388Z&quot;</span><span class="p">,</span><span class="s2">&quot;response&quot;</span><span class="p">:</span><span class="s2">&quot; of&quot;</span><span class="p">,</span><span class="s2">&quot;done&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">}</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="prepare-building-pulling-docker-images">
 <h2>Prepare (Building / Pulling) Docker images<a class="headerlink" href="#prepare-building-pulling-docker-images" title="Link to this heading">¶</a></h2>
@@ -921,7 +1006,8 @@ the images will be pushed to docker hub soon by Intel.</p>
 <p>From within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder</p>
 <section id="build-dataprep-image">
 <h4>Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd ~/OPEA/GenAIComps
+docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy \
   --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
 </pre></div>
 </div>
@@ -953,38 +1039,10 @@ the images will be pushed to docker hub soon by Intel.</p>
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Ollama" for="sd-tab-item-0">
 Ollama</label><div class="sd-tab-content docutils">
-<p>We set up the Ollama LLM service with one command</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://ollama.com/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
-</pre></div>
-</div>
 <p>Next, we’ll build the Ollama microservice docker. This will set the entry point
 needed for Ollama to suit the ChatQnA examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-ollama:latest --build-arg https_proxy=$https_proxy \
    --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/ollama/langchain/Dockerfile .
-</pre></div>
-</div>
-<p>Set Ollama Service Configuration</p>
-<p>Ollama Service Configuration file is <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/ollama.service</span></code>.
-Edit the file to set OLLAMA_HOST environment (Replace <strong>${host_ip}</strong> with your host IPV4).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;OLLAMA_HOST=$</span><span class="si">{host_ip}</span><span class="s2">:11434&quot;</span>
-</pre></div>
-</div>
-<p>Set https_proxy environment for Ollama if your system access network through proxy.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;https_proxy=http://proxy.example.com:8080&quot;</span>
-</pre></div>
-</div>
-<p>Restart Ollama services</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
-<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">ollama</span><span class="o">.</span><span class="n">service</span>
-</pre></div>
-</div>
-<p>Pull LLM model</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OLLAMA_HOST</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434
-ollama<span class="w"> </span>pull<span class="w"> </span>llama3
-ollama<span class="w"> </span>list
-
-NAME<span class="w">            </span>ID<span class="w">              </span>SIZE<span class="w">    </span>MODIFIED
-llama3:latest<span class="w">   </span>365c0bd3c000<span class="w">    </span><span class="m">4</span>.7<span class="w"> </span>GB<span class="w">  </span><span class="m">5</span><span class="w"> </span>days<span class="w"> </span>ago
 </pre></div>
 </div>
 </div>
@@ -1001,8 +1059,7 @@ microservice which will in turn passes data to the reranking microservice and so
 on. You can also add newer or remove some microservices and customize the
 megaservice to suit the needs.</p>
 <p>Build the megaservice image for this use case</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">OPEA</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
 <span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
 </pre></div>
 </div>
@@ -1017,14 +1074,14 @@ megaservice to suit the needs.</p>
 <h4>Build the UI Image<a class="headerlink" href="#build-the-ui-image" title="Link to this heading">¶</a></h4>
 <p>As mentioned, you can build 2 modes of UI</p>
 <p><em>Basic UI</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd ~/OPEA/GenAIExamples/ChatQnA/ui/
 docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy \
   --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
 </pre></div>
 </div>
 <p><em>Conversation UI</em>
 If you want a conversational experience with chatqna megaservice.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd ~/OPEA/GenAIExamples/ChatQnA/ui/
 docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy \
   --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
 </pre></div>
@@ -1241,15 +1298,18 @@ the microservices deployed</p>
 commands. The dataprep microservice extracts the texts from variety of data
 sources, chunks the data, embeds each chunk using embedding microservice and
 store the embedded vectors in the redis vector database.</p>
-<p>Local File <code class="docutils literal notranslate"><span class="pre">nke-10k-2023.pdf</span></code> Upload:</p>
+<p>Download pdf file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">comps</span><span class="o">/</span><span class="n">retrievers</span><span class="o">/</span><span class="n">redis</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">nke</span><span class="o">-</span><span class="mi">10</span><span class="n">k</span><span class="o">-</span><span class="mf">2023.</span><span class="n">pdf</span>
+</pre></div>
+</div>
+<p>Local File <code class="docutils literal notranslate"><span class="pre">nke-10k-2023.pdf</span></code> Upload with dataprep:
+This command updates a knowledge base by uploading a local file for processing.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
      <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
      <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
 </pre></div>
 </div>
-<p>This command updates a knowledge base by uploading a local file for processing.
-Update the file path according to your environment.</p>
-<p>Add Knowledge Base via HTTP Links:</p>
+<p>Alternatively, you can add knowledge base via HTTP Links:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
      <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
      <span class="o">-</span><span class="n">F</span> <span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
