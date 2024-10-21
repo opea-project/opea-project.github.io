@@ -870,27 +870,16 @@
     %% Subgraphs %%
     subgraph VideoQnA-MegaService[&quot;VideoQnA-MegaService&quot;]
         direction LR
-        EM([Embedding &lt;br&gt;]):::blue
-        RET([Retrieval &lt;br&gt;]):::blue
-        RER([Rerank &lt;br&gt;]):::blue
-        LLM([LLM &lt;br&gt;]):::blue
+        EM([Embedding MicroService]):::blue
+        RET([Retrieval MicroService]):::blue
+        RER([Rerank MicroService]):::blue
+        LVM([LVM MicroService]):::blue
     end
     subgraph User Interface
-        direction TB
+        direction LR
         a([User Input Query]):::orchid
         UI([UI server&lt;br&gt;]):::orchid
         Ingest([Ingest&lt;br&gt;]):::orchid
-    end
-    subgraph VideoQnA GateWay
-        direction LR
-        invisible1[ ]:::invisible
-        GW([VideoQnA GateWay&lt;br&gt;]):::orange
-    end
-    subgraph .
-        X([OPEA Micsrservice]):::blue
-        Y{{Open Source Service}}
-        Z([OPEA Gateway]):::orange
-        Z1([UI]):::orchid
     end
 
     LOCAL_RER{{Reranking service&lt;br&gt;}}
@@ -899,35 +888,37 @@
     V_RET{{Retriever service &lt;br&gt;}}
     Ingest{{Ingest data &lt;br&gt;}}
     DP([Data Preparation&lt;br&gt;]):::blue
-    LVM_gen{{LLM Service &lt;br&gt;}}
+    LVM_gen{{LVM Service &lt;br&gt;}}
+    GW([VideoQnA GateWay&lt;br&gt;]):::orange
 
     %% Data Preparation flow
     %% Ingest data flow
     direction LR
-    Ingest[Ingest data] --&gt;|a| DP
-    DP &lt;-.-&gt;|b| CLIP_EM
+    Ingest[Ingest data] --&gt; UI
+    UI --&gt; DP
+    DP &lt;-.-&gt; CLIP_EM
 
     %% Questions interaction
     direction LR
-    a[User Input Query] --&gt;|1| UI
-    UI --&gt;|2| GW
-    GW &lt;==&gt;|3| VideoQnA-MegaService
-    EM ==&gt;|4| RET
-    RET ==&gt;|5| RER
-    RER ==&gt;|6| LLM
+    a[User Input Query] --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; VideoQnA-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+    RER ==&gt; LVM
 
 
     %% Embedding service flow
-    direction TB
-    EM &lt;-.-&gt;|3'| CLIP_EM
-    RET &lt;-.-&gt;|4'| V_RET
-    RER &lt;-.-&gt;|5'| LOCAL_RER
-    LLM &lt;-.-&gt;|6'| LVM_gen
+    direction LR
+    EM &lt;-.-&gt; CLIP_EM
+    RET &lt;-.-&gt; V_RET
+    RER &lt;-.-&gt; LOCAL_RER
+    LVM &lt;-.-&gt; LVM_gen
 
     direction TB
     %% Vector DB interaction
-    V_RET &lt;-.-&gt;|d|VDB
-    DP &lt;-.-&gt;|d|VDB
+    V_RET &lt;-.-&gt;VDB
+    DP &lt;-.-&gt;VDB
         </div><ul class="simple">
 <li><p>This project implements a Retrieval-Augmented Generation (RAG) workflow using LangChain, Intel VDMS VectorDB, and Text Generation Inference, optimized for Intel Xeon Scalable Processors.</p></li>
 <li><p>Video Processing: Videos are converted into feature vectors using mean aggregation and stored in the VDMS vector store.</p></li>
