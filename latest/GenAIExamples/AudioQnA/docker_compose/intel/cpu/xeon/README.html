@@ -965,10 +965,13 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </section>
 <section id="test-megaservice">
 <h2>🚀 Test MegaService<a class="headerlink" href="#test-megaservice" title="Link to this heading">¶</a></h2>
+<p>Test the AudioQnA megaservice by recording a .wav file, encoding the file into the base64 format, and then sending the
+base64 string to the megaservice endpoint. The megaservice will return a spoken response as a base64 string. To listen
+to the response, decode the base64 string and save it as a .wav file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/audioqna<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;, &quot;max_tokens&quot;:64}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^&quot;//;s/&quot;$//&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>output.wav
 </pre></div>
 </div>
 </section>
