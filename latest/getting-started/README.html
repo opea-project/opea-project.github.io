@@ -99,15 +99,13 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started with OPEA</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-opea-s-core-components">Understanding OPEA’s Core Components</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#visual-guide-to-deployment">Visual Guide to Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setup-chatqna-parameters">Setup ChatQnA Parameters</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#set-the-required-environment-variables">Set the required environment variables:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-and-configure-a-virtual-server">Create and Configure a Virtual Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploy-the-chatqna-solution">Deploy the ChatQnA Solution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interact-with-chatqna">Interact with ChatQnA</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#deploy-chatqna-megaservice-and-microservices">Deploy ChatQnA Megaservice and Microservices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#interact-with-chatqna-megaservice-and-microservice">Interact with ChatQnA Megaservice and Microservice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#whats-next">What’s Next</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#get-involved">Get Involved</a></li>
 </ul>
@@ -853,114 +851,115 @@
              
   <section id="getting-started-with-opea">
 <h1>Getting Started with OPEA<a class="headerlink" href="#getting-started-with-opea" title="Link to this heading">¶</a></h1>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>To get started with OPEA you need the right hardware and basic software setup.</p>
-<ul class="simple">
-<li><p>Hardware Requirements: For the hardware configuration, If you need Hardware Access visit the <a class="reference external" href="https://cloud.intel.com">Intel Tiber Developer Cloud</a> to select from options such as Xeon or Gaudi processors that meet the necessary specifications.</p></li>
-<li><p>Software Requirements: Refer to the <a class="reference internal" href="../GenAIExamples/README.html#getting-started"><span class="std std-ref">Support Matrix</span></a> to ensure you have the required software components in place.</p></li>
-</ul>
-<p>Note : If you are deploying it on cloud, say AWS, select a VM instance from R7iz or m7i family of instances with base OS as Ubuntu 22.04 (AWS ami id : ami-05134c8ef96964280). Use the command below to install docker on a clean machine.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">install_docker</span><span class="o">.</span><span class="n">sh</span>
-<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">install_docker</span><span class="o">.</span><span class="n">sh</span>
-<span class="o">./</span><span class="n">install_docker</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</section>
+<p>This document specifically details the steps for deploying services on IBM Cloud, providing a tailored guide to help you leverage IBM’s cloud infrastructure to deploy the ChatQnA application from OPEA GenAI Examples. For additional deployment targets, see the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a></p>
 <section id="understanding-opea-s-core-components">
 <h2>Understanding OPEA’s Core Components<a class="headerlink" href="#understanding-opea-s-core-components" title="Link to this heading">¶</a></h2>
 <p>Before moving forward, it’s important to familiarize yourself with two key elements of OPEA: GenAIComps and GenAIExamples.</p>
 <ul class="simple">
-<li><p>GenAIComps is a collection of microservice components that form a service-based toolkit. This includes a variety of services such as llm (language learning models), embedding, and reranking, among others.</p></li>
+<li><p>GenAIComps is a collection of microservice components that form a service-based toolkit. This includes a variety of services such as llm (large language models), embedding, and reranking, among others.</p></li>
 <li><p>While GenAIComps offers a range of microservices, GenAIExamples provides practical, deployable solutions to help users implement these services effectively. Examples include ChatQnA and DocSum, which leverage the microservices for specific applications.</p></li>
 </ul>
 </section>
-<section id="visual-guide-to-deployment">
-<h2>Visual Guide to Deployment<a class="headerlink" href="#visual-guide-to-deployment" title="Link to this heading">¶</a></h2>
-<p>To illustrate, here’s a simplified visual guide on deploying a ChatQnA GenAIExample, showcasing how you can set up this solution in just a few steps.</p>
-<p><img alt="Getting started with OPEA" src="../_images/getting_started.gif" /></p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 </section>
-<section id="setup-chatqna-parameters">
-<h2>Setup ChatQnA Parameters<a class="headerlink" href="#setup-chatqna-parameters" title="Link to this heading">¶</a></h2>
-<p>To deploy ChatQnA services, follow these steps:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
-</pre></div>
-</div>
-<section id="set-the-required-environment-variables">
-<h3>Set the required environment variables:<a class="headerlink" href="#set-the-required-environment-variables" title="Link to this heading">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-<span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-<p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-<p>Set up other specific use-case environment variables by choosing one of these options, according to your hardware:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Xeon</span>
-<span class="n">source</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
-<span class="c1"># on Gaudi</span>
-<span class="n">source</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
-<span class="c1"># on Nvidia GPU</span>
-<span class="n">source</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">nvidia</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
+<section id="create-and-configure-a-virtual-server">
+<h2>Create and Configure a Virtual Server<a class="headerlink" href="#create-and-configure-a-virtual-server" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://cloud.ibm.com">IBM Cloud</a>. - Click the <strong>Create resource</strong> button at the top right of the screen. Select <strong>Compute</strong> from the options available and select <code class="docutils literal notranslate"><span class="pre">Virtual</span> <span class="pre">Server</span> <span class="pre">for</span> <span class="pre">VPC</span></code></p></li>
+<li><p>Select a location for the instance. Assign a name to it.</p></li>
+<li><p>Under Stock Images, select Ubuntu 24.04 (<code class="docutils literal notranslate"><span class="pre">ibm-ubuntu-24-04-6-minimal-amd64-1</span></code>)</p></li>
+<li><p>Select a virtual server.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note:</strong> We recommend selecting a 3-series instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, such as <code class="docutils literal notranslate"><span class="pre">bx3d-16x80</span></code> or above. For more information on virtual servers on IBM cloud visit <a class="reference external" href="https://www.ibm.com/cloud/intel">Intel® solutions on IBM Cloud®</a>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Add an SSH key to the instance, if necessary, create one first.</p></li>
+<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">virtual</span> <span class="pre">server</span></code>.</p></li>
+<li><p>Once the instance is running, create and attach a <code class="docutils literal notranslate"><span class="pre">Floating</span> <span class="pre">IP</span></code> to the instance. For more information visit <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-fip-working&amp;amp;interface=ui">this</a> site</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ssh</span></code> into the instance using the floating IP (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;key&gt;</span> <span class="pre">ubuntu&#64;&lt;floating-ip&gt;</span></code>)</p></li>
+</ol>
 </section>
-</section>
-<section id="deploy-chatqna-megaservice-and-microservices">
-<h2>Deploy ChatQnA Megaservice and Microservices<a class="headerlink" href="#deploy-chatqna-megaservice-and-microservices" title="Link to this heading">¶</a></h2>
-<p>Select the directory containing the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file that matches your hardware.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#xeon</span>
-<span class="n">cd</span> <span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
-<span class="c1">#gaudi</span>
-<span class="n">cd</span> <span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span>
-<span class="c1">#nvidia</span>
-<span class="n">cd</span> <span class="n">docker_compose</span><span class="o">/</span><span class="n">nvidia</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span>
+<section id="deploy-the-chatqna-solution">
+<h2>Deploy the ChatQnA Solution<a class="headerlink" href="#deploy-the-chatqna-solution" title="Link to this heading">¶</a></h2>
+<p>Use the command below to install docker on a clean virtual machine</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/ChatQnA/docker_compose/install_docker.sh
+chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
+./install_docker.sh
+</pre></div>
+</div>
+<p>Configure Docker to run as a non-root user by following these <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">instructions</a></p>
+<p>Clone the repo and navigate to ChatQnA</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
+</pre></div>
+</div>
+<p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+<p>Set up other specific use-case environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/intel/cpu/xeon/
+<span class="nb">source</span><span class="w"> </span>set_env.sh
 </pre></div>
 </div>
 <p>Now we can start the services</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>It will automatically download the needed docker images from docker hub:</p>
+<p>It takes a few minutes for the services to start. Check the logs for the services to ensure that ChatQnA is running.
+For example to check the logs for the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+</pre></div>
+</div>
+<p>The output shows <code class="docutils literal notranslate"><span class="pre">Connected</span></code> as shown:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="mi">2024</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">18</span><span class="n">T22</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mf">18.973042</span><span class="n">Z</span> <span class="n">INFO</span> <span class="n">text_generation_router</span><span class="p">::</span><span class="n">server</span><span class="p">:</span> <span class="n">router</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">rs</span><span class="p">:</span><span class="mi">2311</span><span class="p">:</span> <span class="n">Connected</span>
+</pre></div>
+</div>
+<p>Run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> as an additional check to verify that all the services are running as shown:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>| CONTAINER ID | IMAGE                                                                  | COMMAND                | CREATED      | STATUS      | PORTS                                                                                    | NAMES                        |
+|--------------|------------------------------------------------------------------------|------------------------|--------------|-------------|------------------------------------------------------------------------------------------|------------------------------|
+| 3a65ff9e16bd | opea/nginx:latest                                                      | `/docker-entrypoint.\…`| 14 hours ago | Up 14 hours | 0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp                                                        | chatqna-xeon-nginx-server    |
+| 7563b2ee1cd9 | opea/chatqna-ui:latest                                                 | `docker-entrypoint.s\…`| 14 hours ago | Up 14 hours | 0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                                | chatqna-xeon-ui-server       |
+| 9ea57a660cd6 | opea/chatqna:latest                                                    | `python chatqna.py`    | 14 hours ago | Up 14 hours | 0.0.0.0:8888-&gt;8888/tcp, :::8888-&gt;8888/tcp                                                | chatqna-xeon-backend-server  |
+| 451bacaac3e6 | opea/retriever-redis:latest                                            | `python retriever_re\…`| 14 hours ago | Up 14 hours | 0.0.0.0:7000-&gt;7000/tcp, :::7000-&gt;7000/tcp                                                | retriever-redis-server       |
+| c1f952ef5c08 | opea/dataprep-redis:latest                                             | `python prepare_doc_\…`| 14 hours ago | Up 14 hours | 0.0.0.0:6007-&gt;6007/tcp, :::6007-&gt;6007/tcp                                                | dataprep-redis-server        |
+| 2a874ed8ce6f | redis/redis-stack:7.2.0-v9                                             | `/entrypoint.sh`       | 14 hours ago | Up 14 hours | 0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp     | redis-vector-db              |
+| ac7b62306eb8 | ghcr.io/huggingface/text-embeddings-inference:cpu-1.5                  | `text-embeddings-rou\…`| 14 hours ago | Up 14 hours | 0.0.0.0:8808-&gt;80/tcp, [::]:8808-&gt;80/tcp                                                  | tei-reranking-server         |
+| 521cc7faa00e | ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu    | `text-generation-lau\…`| 14 hours ago | Up 14 hours | 0.0.0.0:9009-&gt;80/tcp, [::]:9009-&gt;80/tcp                                                  | tgi-service                  |
+| 9faf553d3939 | ghcr.io/huggingface/text-embeddings-inference:cpu-1.5                  | `text-embeddings-rou\…`| 14 hours ago | Up 14 hours | 0.0.0.0:6006-&gt;80/tcp, [::]:6006-&gt;80/tcp                                                  | tei-embedding-server         |
+
+</pre></div>
+</div>
+<section id="interact-with-chatqna">
+<h3>Interact with ChatQnA<a class="headerlink" href="#interact-with-chatqna" title="Link to this heading">¶</a></h3>
+<p>You can interact with ChatQnA via a browser interface:</p>
 <ul class="simple">
-<li><p>docker pull opea/chatqna:latest</p></li>
-<li><p>docker pull opea/chatqna-ui:latest</p></li>
+<li><p>Under <code class="docutils literal notranslate"><span class="pre">Infrastructure</span></code> in the left pane, go to <code class="docutils literal notranslate"><span class="pre">Network/Security</span> <span class="pre">groups/&lt;Your</span> <span class="pre">Security</span> <span class="pre">Group&gt;/Rules</span></code></p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">Create</span></code></p></li>
+<li><p>Enable inbound traffic for port 80</p></li>
+<li><p>To view the ChatQnA interface, open a browser and navigate to the UI by inserting your externally facing IP address in the following: `http://{external_public_ip}:80’.</p></li>
 </ul>
-<p>In the following cases, you will need to build the docker image from source by yourself.</p>
-<ul class="simple">
-<li><p>The docker image failed to download. (You may want to first check the
-<a class="reference internal" href="../GenAIExamples/docker_images_list.html"><span class="std std-doc">Docker Images</span></a>
-list and verify that the docker image you’re downloading exists on dockerhub.)</p></li>
-<li><p>You want to use a different version than latest.</p></li>
-</ul>
-<p>Refer to the <a class="reference internal" href="../examples/ChatQnA/deploy/index.html#chatqna-example-deployment"><span class="std std-ref">ChatQnA Example Deployment Options</span></a> section for building from source instructions matching your hardware.</p>
+<p>For more information on editing inbound/outbound rules, click <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-updating-the-default-security-group&amp;amp;interface=ui">here</a></p>
+<p>A snapshot of the interface looks as follows:</p>
+<p><img alt="Chat Interface" src="../_images/chat_ui_response1.png" /></p>
+<blockquote>
+<div><p><strong>Note:</strong> this example leverages the Nike 2023 Annual report for its RAG based content. See the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a>
+to learn how you can customize the example with your own content.</p>
+</div></blockquote>
+<p>To interact with the ChatQnA application via a <code class="docutils literal notranslate"><span class="pre">curl</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">    }&#39;</span>
+</pre></div>
+</div>
+<p>ChatQnA provides the answer to your query as a text stream.</p>
+<p>Modify the <code class="docutils literal notranslate"><span class="pre">message</span></code> parameter in the <code class="docutils literal notranslate"><span class="pre">curl</span></code> command to continue interacting with ChatQnA.</p>
 </section>
-<section id="interact-with-chatqna-megaservice-and-microservice">
-<h2>Interact with ChatQnA Megaservice and Microservice<a class="headerlink" href="#interact-with-chatqna-megaservice-and-microservice" title="Link to this heading">¶</a></h2>
-<p>Before interact ChatQnA Service, make sure the TGI service is ready (which takes up to 2 minutes to start).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span>
-<span class="c1"># expected: all images&#39;s status are up</span>
-<span class="c1"># TGI example on on Xeon and Nvidia GPU</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">tgi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">Connected</span>
-<span class="c1"># TGI example on on Gaudi</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">tgi</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">Connected</span>
-<span class="c1"># execpted output: ... INFO text_generation_router::server: router/src/server.rs:2311: Connected</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna \
-    -H &quot;Content-Type: application/json&quot; \
-    -d &#39;{
-        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;
-    }&#39;
-</pre></div>
-</div>
-<p>This command will provide the response as a stream of text. You can modify the <code class="docutils literal notranslate"><span class="pre">message</span></code> parameter in the <code class="docutils literal notranslate"><span class="pre">curl</span></code> command and interact with the ChatQnA service.</p>
 </section>
 <section id="whats-next">
 <h2>What’s Next<a class="headerlink" href="#whats-next" title="Link to this heading">¶</a></h2>
@@ -1019,7 +1018,7 @@ list and verify that the docker image you’re downloading exists on dockerhub.)
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Oct 21, 2024.</span>
+<span class="lastupdated">Published on Oct 22, 2024.</span>
 
   </div>
 
