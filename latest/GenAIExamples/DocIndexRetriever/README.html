@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -854,7 +856,60 @@
   <section id="docretriever-application">
 <h1>DocRetriever Application<a class="headerlink" href="#docretriever-application" title="Link to this heading">¶</a></h1>
 <p>DocRetriever is the most widely adopted use case for leveraging the different methodologies to match user query against a set of free-text records. DocRetriever is essential to RAG system, which bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that responses generated remain factual and current. The core of this architecture are vector databases, which are instrumental in enabling efficient and semantic retrieval of information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
-<section id="we-provided-docretriever-with-different-deployment-infra">
+<p>The DocIndexRetriever example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style DocIndexRetriever-MegaService stroke:#000000
+
+    %% Subgraphs %%
+    subgraph DocIndexRetriever-MegaService[&quot;DocIndexRetriever MegaService &quot;]
+        direction LR
+        EM([Embedding MicroService]):::blue
+        RET([Retrieval MicroService]):::blue
+        RER([Rerank MicroService]):::blue
+    end
+    subgraph UserInput[&quot; User Input &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        Ingest([Ingest data]):::orchid
+    end
+
+    DP([Data Preparation MicroService]):::blue
+    TEI_RER{{Reranking service&lt;br&gt;}}
+    TEI_EM{{Embedding service &lt;br&gt;}}
+    VDB{{Vector DB&lt;br&gt;&lt;br&gt;}}
+    R_RET{{Retriever service &lt;br&gt;}}
+    GW([DocIndexRetriever GateWay&lt;br&gt;]):::orange
+
+    %% Data Preparation flow
+    %% Ingest data flow
+    direction LR
+    Ingest[Ingest data] --&gt; DP
+    DP &lt;-.-&gt; TEI_EM
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] --&gt; GW
+    GW &lt;==&gt; DocIndexRetriever-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+
+    %% Embedding service flow
+    direction LR
+    EM &lt;-.-&gt; TEI_EM
+    RET &lt;-.-&gt; R_RET
+    RER &lt;-.-&gt; TEI_RER
+
+    direction TB
+    %% Vector DB interaction
+    R_RET &lt;-.-&gt; VDB
+    DP &lt;-.-&gt; VDB
+        </div><section id="we-provided-docretriever-with-different-deployment-infra">
 <h2>We provided DocRetriever with different deployment infra<a class="headerlink" href="#we-provided-docretriever-with-different-deployment-infra" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">docker xeon version</span></a> =&gt; minimum endpoints, easy to setup</p></li>
