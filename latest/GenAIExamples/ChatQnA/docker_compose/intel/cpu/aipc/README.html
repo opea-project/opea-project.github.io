@@ -168,6 +168,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../AudioQnA/ui/svelte/README.html">AudioQnA</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../examples/index.html#avatarchatbot-application">AvatarChatbot Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../AvatarChatbot/README.html">AvatarChatbot Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../AvatarChatbot/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AvatarChatbot on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../AvatarChatbot/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AvatarChatbot on Gaudi</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../../examples/index.html#chatqna-application">ChatQnA Application</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../../../../README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
@@ -861,93 +867,6 @@
   <section id="build-mega-service-of-chatqna-on-aipc">
 <h1>Build Mega Service of ChatQnA on AIPC<a class="headerlink" href="#build-mega-service-of-chatqna-on-aipc" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on AIPC. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>We use <a class="reference external" href="https://ollama.com/">Ollama</a> as our LLM service for AIPC.</p>
-<p>Please follow the instructions to set up Ollama on your PC. This will set the entrypoint needed for the Ollama to suit the ChatQnA examples.</p>
-<section id="set-up-ollama-llm-service">
-<h3>Set Up Ollama LLM Service<a class="headerlink" href="#set-up-ollama-llm-service" title="Link to this heading">¶</a></h3>
-<section id="install-ollama-service">
-<h4>Install Ollama Service<a class="headerlink" href="#install-ollama-service" title="Link to this heading">¶</a></h4>
-<p>Install Ollama service with one command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">fsSL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ollama</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">sh</span>
-</pre></div>
-</div>
-</section>
-<section id="set-ollama-service-configuration">
-<h4>Set Ollama Service Configuration<a class="headerlink" href="#set-ollama-service-configuration" title="Link to this heading">¶</a></h4>
-<p>Ollama Service Configuration file is /etc/systemd/system/ollama.service. Edit the file to set OLLAMA_HOST environment.
-Replace <strong>&lt;host_ip&gt;</strong> with your host IPV4 (please use external public IP). For example the host_ip is 10.132.x.y, then `Environment=”OLLAMA_HOST=10.132.x.y:11434”’.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;OLLAMA_HOST=host_ip:11434&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="set-https-proxy-environment-for-ollama">
-<h4>Set https_proxy environment for Ollama<a class="headerlink" href="#set-https-proxy-environment-for-ollama" title="Link to this heading">¶</a></h4>
-<p>If your system access network through proxy, add https_proxy in Ollama Service Configuration file</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;https_proxy=Your_HTTPS_Proxy&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="restart-ollama-services">
-<h4>Restart Ollama services<a class="headerlink" href="#restart-ollama-services" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl daemon-reload
-$ sudo systemctl restart ollama.service
-</pre></div>
-</div>
-</section>
-<section id="check-the-service-started">
-<h4>Check the service started<a class="headerlink" href="#check-the-service-started" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netstat</span> <span class="o">-</span><span class="n">tuln</span> <span class="o">|</span> <span class="n">grep</span>  <span class="mi">11434</span>
-</pre></div>
-</div>
-<p>The output are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcp</span>        <span class="mi">0</span>      <span class="mi">0</span> <span class="mf">10.132</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="p">:</span><span class="mi">11434</span>      <span class="mf">0.0.0.0</span><span class="p">:</span><span class="o">*</span>               <span class="n">LISTEN</span>
-</pre></div>
-</div>
-</section>
-<section id="pull-ollama-llm-model">
-<h4>Pull Ollama LLM model<a class="headerlink" href="#pull-ollama-llm-model" title="Link to this heading">¶</a></h4>
-<p>Run the command to download LLM models. The &lt;host_ip&gt; is the one set in <a class="reference internal" href="#Set-Ollama-Service-Configuration"><span class="xref myst">Ollama Service Configuration</span></a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=&lt;host_ip&gt;
-export OLLAMA_HOST=http://${host_ip}:11434
-ollama pull llama3.2
-</pre></div>
-</div>
-<p>After downloaded the models, you can list the models by <code class="docutils literal notranslate"><span class="pre">ollama</span> <span class="pre">list</span></code>.</p>
-<p>The output should be similar to the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAME</span>            <span class="n">ID</span>                <span class="n">SIZE</span>      <span class="n">MODIFIED</span>
-<span class="n">llama3</span><span class="mf">.2</span><span class="p">:</span><span class="n">latest</span>   <span class="n">a80c4f17acd5</span>    <span class="mf">2.0</span> <span class="n">GB</span>    <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="consume-ollama-llm-service">
-<h3>Consume Ollama LLM Service<a class="headerlink" href="#consume-ollama-llm-service" title="Link to this heading">¶</a></h3>
-<p>Access ollama service to verify that the ollama is functioning correctly.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:11434/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;model&quot;: &quot;llama3.2&quot;,</span>
-<span class="s1">        &quot;messages&quot;: [</span>
-<span class="s1">            {</span>
-<span class="s1">                &quot;role&quot;: &quot;system&quot;,</span>
-<span class="s1">                &quot;content&quot;: &quot;You are a helpful assistant.&quot;</span>
-<span class="s1">            },</span>
-<span class="s1">            {</span>
-<span class="s1">                &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">                &quot;content&quot;: &quot;Hello!&quot;</span>
-<span class="s1">            }</span>
-<span class="s1">        ]</span>
-<span class="s1">    }&#39;</span>
-</pre></div>
-</div>
-<p>The outputs are similar to these:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;chatcmpl-4&quot;</span><span class="p">,</span><span class="s2">&quot;object&quot;</span><span class="p">:</span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span><span class="s2">&quot;created&quot;</span><span class="p">:</span><span class="mi">1729232496</span><span class="p">,</span><span class="s2">&quot;model&quot;</span><span class="p">:</span><span class="s2">&quot;llama3.2&quot;</span><span class="p">,</span><span class="s2">&quot;system_fingerprint&quot;</span><span class="p">:</span><span class="s2">&quot;fp_ollama&quot;</span><span class="p">,</span><span class="s2">&quot;choices&quot;</span><span class="p">:[{</span><span class="s2">&quot;index&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;message&quot;</span><span class="p">:{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span><span class="s2">&quot;content&quot;</span><span class="p">:</span><span class="s2">&quot;How can I assist you today? Are you looking for information, answers to a question, or just need someone to chat with? I&#39;m here to help in any way I can.&quot;</span><span class="p">},</span><span class="s2">&quot;finish_reason&quot;</span><span class="p">:</span><span class="s2">&quot;stop&quot;</span><span class="p">}],</span><span class="s2">&quot;usage&quot;</span><span class="p">:{</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="s2">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span><span class="s2">&quot;total_tokens&quot;</span><span class="p">:</span><span class="mi">71</span><span class="p">}}</span>
-</pre></div>
-</div>
-</section>
-</section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it.</p>

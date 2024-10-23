@@ -168,6 +168,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AudioQnA/ui/svelte/README.html">AudioQnA</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#avatarchatbot-application">AvatarChatbot Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AvatarChatbot/README.html">AvatarChatbot Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AvatarChatbot/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AvatarChatbot on Xeon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/AvatarChatbot/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AvatarChatbot on Gaudi</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/index.html#chatqna-application">ChatQnA Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/README.html">ChatQnA Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
@@ -886,6 +892,25 @@
 </div>
 <p>Next, run Prometheus server <code class="docutils literal notranslate"><span class="pre">nohup</span> <span class="pre">./prometheus</span> <span class="pre">--config.file=./prometheus.yml</span> <span class="pre">&amp;</span></code>.</p>
 <p>You should now access <code class="docutils literal notranslate"><span class="pre">localhost:9090/targets?search=</span></code> to open the Prometheus UI.</p>
+<section id="cpu-metrics-optional">
+<h3>1.1 CPU Metrics (optional)<a class="headerlink" href="#cpu-metrics-optional" title="Link to this heading">¶</a></h3>
+<p>The Prometheus Node Exporter is required for collecting CPU metrics. Install and run the Node Exporter via tarball by the <a class="reference external" href="https://prometheus.io/docs/guides/node-exporter/#installing-and-running-the-node-exporter">guide</a>.</p>
+<p>Or install it in a K8S cluster by the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIEval.git
+<span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark/grafana/
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>grafana_node_exporter.yaml
+</pre></div>
+</div>
+<p>Add the following configuration to <code class="docutils literal notranslate"><span class="pre">prometheus.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scrape_configs</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;prometheus-node-exporter&quot;</span>
+<span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/metrics</span>
+<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;&lt;NODE1_IP&gt;:9100&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;&lt;NODE2_IP&gt;:9100&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>Restart Prometheus after saving the changes.</p>
+</section>
 </section>
 <section id="setup-grafana">
 <h2>2. Setup Grafana<a class="headerlink" href="#setup-grafana" title="Link to this heading">¶</a></h2>
@@ -918,6 +943,7 @@ Open the dashboard, and you will see different panels displaying the metrics dat
 <li><p><code class="docutils literal notranslate"><span class="pre">tgi_grafana.json</span></code>: A sample Grafana dashboard JSON file for visualizing TGI metrics.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">redis_grafana.json</span></code>: A sample Grafana dashboard JSON file for visualizing the Redis metrics. For importing the redis metrics, you need to add the new connection and Redis data source in Grafana. Please refer this <a class="reference external" href="https://grafana.com/grafana/plugins/redis-datasource/?tab=installation">link</a> for more details.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gaudi_grafana.json</span></code>: A sample Grafana dashboard JSON file for visualizing the Intel® Gaudi® AI accelerator metrics in a container cluster for compute workload.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cpu_grafana.json</span></code>: A sample Grafana dashboard JSON file for visualizing the CPU metrics.</p></li>
 </ul>
 </section>
 </section>
