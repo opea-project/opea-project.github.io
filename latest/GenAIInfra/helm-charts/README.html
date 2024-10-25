@@ -559,6 +559,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Helm charts for deploying GenAI Components and Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="CI.html">CI guidelines for helm charts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="HPA.html">HorizontalPodAutoscaler (HPA) support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html">Monitoring support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/asr/README.html">asr</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/chathistory-usvc/README.html">chathistory-usvc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/data-prep/README.html">data-prep</a></li>
@@ -886,6 +887,7 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#helm-charts-options"><span class="xref myst">Helm Charts Options</span></a></p></li>
+<li><p><a class="reference internal" href="#using-hpa-autoscaling"><span class="xref myst">Using HPA (autoscaling)</span></a></p></li>
 <li><p><a class="reference internal" href="#using-persistent-volume"><span class="xref myst">Using Persistent Volume</span></a></p></li>
 <li><p><a class="reference internal" href="#using-private-docker-hub"><span class="xref myst">Using Private Docker Hub</span></a></p></li>
 <li><p><a class="reference internal" href="#generate-manifests-from-helm-charts"><span class="xref myst">Generate manifests from Helm Charts</span></a></p></li>
@@ -990,9 +992,9 @@ helm install $myrelease $chartname --set global.HUGGINGFACEHUB_API_TOKEN=&quot;i
 <td><p>modelUseHostPath</p></td>
 <td><p>If you don’t have Persistent Volume in your k8s cluster and want to use local directory as HuggingFace hub cache, set modelUseHostPath to your local directory name. Note that this can’t share across nodes. Default “”. Only one of modelUsePVC/modelUseHostPath can be set.</p></td>
 </tr>
-<tr class="row-even"><td><p>chatqna</p></td>
-<td><p>horizontalPodAutoscaler.enabled</p></td>
-<td><p>Enable HPA autoscaling for TGI and TEI service deployments based on metrics they provide. See <a class="reference internal" href="HPA.html#pre-conditions"><span class="std std-ref">Pre-conditions</span></a> and <a class="reference internal" href="HPA.html#gotchas"><span class="std std-ref">Gotchas</span></a> before enabling!</p></td>
+<tr class="row-even"><td><p>global</p></td>
+<td><p>monitoring</p></td>
+<td><p>Enable monitoring for (ChatQnA) service components. See <a class="reference internal" href="monitoring.html#pre-conditions"><span class="std std-ref">Pre-conditions</span></a> before enabling!</p></td>
 </tr>
 <tr class="row-odd"><td><p>tgi</p></td>
 <td><p>LLM_MODEL_ID</p></td>
@@ -1000,6 +1002,10 @@ helm install $myrelease $chartname --set global.HUGGINGFACEHUB_API_TOKEN=&quot;i
 </tr>
 </tbody>
 </table>
+</section>
+<section id="using-hpa-autoscaling">
+<h2>Using HPA (autoscaling)<a class="headerlink" href="#using-hpa-autoscaling" title="Link to this heading">¶</a></h2>
+<p>See <a class="reference internal" href="HPA.html"><span class="std std-doc">HPA instructions</span></a> on how to enable horizontal pod autoscaling for service components, based on their usage metrics.</p>
 </section>
 <section id="using-persistent-volume">
 <h2>Using Persistent Volume<a class="headerlink" href="#using-persistent-volume" title="Link to this heading">¶</a></h2>
