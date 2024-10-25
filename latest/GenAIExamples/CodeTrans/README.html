@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -873,7 +875,45 @@
 <p>Code translation is the process of converting code written in one programming language to another programming language while maintaining the same functionality. This process is also known as code conversion, source-to-source translation, or transpilation. Code translation is often performed when developers want to take advantage of new programming languages, improve code performance, or maintain legacy systems. Some common examples include translating code from Python to Java, or from JavaScript to TypeScript.</p>
 <p>The workflow falls into the following architecture:</p>
 <p><img alt="architecture" src="../../_images/code_trans_architecture.png" /></p>
-<p>This Code Translation use case demonstrates Text Generation Inference across multiple platforms. Currently, we provide examples for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
+<p>The CodeTrans example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style CodeTrans-MegaService stroke:#000000
+
+    %% Subgraphs %%
+    subgraph CodeTrans-MegaService[&quot;CodeTrans MegaService &quot;]
+        direction LR
+        LLM([LLM MicroService]):::blue
+    end
+    subgraph UserInterface[&quot; User Interface &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        UI([UI server&lt;br&gt;]):::orchid
+    end
+
+
+    LLM_gen{{LLM Service &lt;br&gt;}}
+    GW([CodeTrans GateWay&lt;br&gt;]):::orange
+    NG([Nginx MicroService]):::blue
+
+
+    %% Questions interaction
+    direction LR
+    NG &lt;==&gt; UserInterface
+    a[User Input Query] --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; CodeTrans-MegaService
+
+
+    %% Embedding service flow
+    direction LR
+    LLM &lt;-.-&gt; LLM_gen
+        </div><p>This Code Translation use case demonstrates Text Generation Inference across multiple platforms. Currently, we provide examples for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
 <section id="deploy-code-translation-service">
 <h2>Deploy Code Translation Service<a class="headerlink" href="#deploy-code-translation-service" title="Link to this heading">¶</a></h2>
 <p>The Code Translation service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processor.</p>
