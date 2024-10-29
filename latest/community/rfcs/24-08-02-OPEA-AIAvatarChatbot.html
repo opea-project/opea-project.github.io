@@ -881,8 +881,12 @@
              
   <section id="opea-aiavatarchatbot">
 <h1>24-08-02-OPEA-AIAvatarChatbot<a class="headerlink" href="#opea-aiavatarchatbot" title="Link to this heading">¶</a></h1>
-<p>A RAG-Powered Human-Like AI Avatar Audio Chatbot integrated with OPEA AudioQnA</p>
-<!-- The short description of the feature you want to contribute -->
+<p>A Human-Like AI Avatar Audio Chatbot integrated with OPEA AudioQnA</p>
+<p>Code contributions:<br />
+“animation” component: https://github.com/opea-project/GenAIComps/tree/main/comps/animation/wav2lip<br />
+“AvatarChatbot” examples: https://github.com/opea-project/GenAIExamples/tree/main/AvatarChatbot</p>
+<p>Intel Developer Zone Article “Create an AI Avatar Talking Bot with PyTorch* and Open Platform for Enterprise AI (OPEA)”: https://www.intel.com/content/www/us/en/developer/articles/technical/ai-avatar-talking-bot-with-pytorch-and-opea.html</p>
+<p>YouTube tech-talk video: https://youtu.be/OjaElyUB8Z0?si=6-IdxwTg0YFMraFl</p>
 <section id="author">
 <h2>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h2>
 <!-- List all contributors of this RFC. -->
@@ -891,9 +895,11 @@
 <section id="status">
 <h2>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h2>
 <!-- Change the PR status to Under Review | Rejected | Accepted. -->
-<p>v0.1 - ASMO Team sharing on Fri 6/28/2024<br />
-<a class="reference external" href="https://github.com/opea-project/GenAIComps/pull/400">GenAIComps pr #400</a> (Under Review)<br />
-<a class="reference external" href="https://github.com/opea-project/GenAIExamples/pull/523">GenAIExamples pr #523</a> (Under Review)</p>
+<p>v0.1 - ASMO Team sharing on Thursday 10/24/2024</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/pull/775">GenAIComps pr #775</a> | <span style="color: green;">Merged</span></p></li>
+<li><p><a class="reference external" href="https://github.com/opea-project/GenAIExamples/pull/923">GenAIExamples pr #923</a> | <span style="color: green;">Merged</span></p></li>
+</ul>
 </section>
 <section id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
@@ -921,11 +927,11 @@
 </ul>
 <p>New microservices include:</p>
 <ul class="simple">
-<li><p>animation</p></li>
+<li><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/animation/wav2lip">animation</a></p></li>
 </ul>
 <p>New megaservices include:</p>
 <ul class="simple">
-<li><p>AvatarChatbot</p></li>
+<li><p><a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/AvatarChatbot">AvatarChatbot</a></p></li>
 </ul>
 </section>
 <section id="motivation">
@@ -945,8 +951,8 @@
 <section id="avatar-chatbot-design">
 <h3>Avatar Chatbot design<a class="headerlink" href="#avatar-chatbot-design" title="Link to this heading">¶</a></h3>
 <!-- Removed PPT slides -->
-<p><img alt="avatar chatbot design" src="../../_images/design.png" /></p>
-<p>Currently, the RAG feature using the <code class="docutils literal notranslate"><span class="pre">embedding</span></code> and <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservices is missing in the above design, including uploading relevant documents/weblinks, storing them in the database, and retrieving them for the LLM model. These features will be added in v0.2.</p>
+<p><img alt="avatar chatbot design" src="../../_images/avatar_design.png" /></p>
+<p>Currently, the RAG feature using the <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retrieval</span></code>, <code class="docutils literal notranslate"><span class="pre">reranking</span></code> and <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservices and VectorDB is missing in the above design, including uploading relevant documents/weblinks, storing them in the database, and retrieving them for the LLM model. These features will be added in v0.2.</p>
 <p>Flowchart: AvatarChatbot Megaservice</p>
 <!-- Insert Mermaid flowchart here -->
 <div class="mermaid">
@@ -1086,16 +1092,17 @@ asr -&gt; llm -&gt; tts -&gt; animation</p>
 <p>End-to-End Inference Time for AvatarChatbot Megaservice (asr -&gt; llm -&gt; tts -&gt; animation):</p>
 <p>On SPR:<br />
 ~30 seconds for AudioQnA on SPR,<br />
-~40-200 seconds for AvatarAnimation on SPR</p>
+~30-200 seconds for AvatarAnimation on SPR</p>
 <p>On Gaudi 2:<br />
 ~5 seconds for AudioQnA on Gaudi,
-~10-50 seconds for AvatarAnimation on Gaudi, depending on:</p>
+~10-40 seconds for AvatarAnimation on Gaudi, depending on:</p>
 <ol class="arabic simple">
 <li><p>Whether the input is an image or a multi-frame, fixed-fps video</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">max_tokens</span></code> parameter used in LLM text generation</p></li>
 <li><p>LipSync Animation DL model used: Wav2Lip_only or Wav2Lip+GFPGAN or SadTalker</p></li>
 <li><p>Resolution and FPS rate of the resulting mp4 video</p></li>
 </ol>
-<p>All latency reportings are as of 8/2/2024.</p>
+<p>All latency reportings are as of 10/24/2024.</p>
 </section>
 </section>
 
