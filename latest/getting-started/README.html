@@ -868,7 +868,7 @@
              
   <section id="getting-started-with-opea">
 <h1>Getting Started with OPEA<a class="headerlink" href="#getting-started-with-opea" title="Link to this heading">¶</a></h1>
-<p>This document specifically details the steps for deploying services on IBM Cloud, providing a tailored guide to help you leverage IBM’s cloud infrastructure to deploy the ChatQnA application from OPEA GenAI Examples. For additional deployment targets, see the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a></p>
+<p>In this document, we provide a tailored guide to deploying the ChatQnA application in OPEA GenAI Examples across multiple cloud platforms, including IBM Cloud, Amazon Web Services (AWS), and others,  enabling you to choose the best fit for your specific needs and requirements. For additional deployment targets, see the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a>.</p>
 <section id="understanding-opea-s-core-components">
 <h2>Understanding OPEA’s Core Components<a class="headerlink" href="#understanding-opea-s-core-components" title="Link to this heading">¶</a></h2>
 <p>Before moving forward, it’s important to familiarize yourself with two key elements of OPEA: GenAIComps and GenAIExamples.</p>
@@ -882,6 +882,29 @@
 </section>
 <section id="create-and-configure-a-virtual-server">
 <h2>Create and Configure a Virtual Server<a class="headerlink" href="#create-and-configure-a-virtual-server" title="Link to this heading">¶</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="AWS" for="sd-tab-item-0">
+AWS</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://console.aws.amazon.com/console/home">AWS console</a> – Search EC2 in the search bar and select it. Click the <code class="docutils literal notranslate"><span class="pre">Launch</span> <span class="pre">Instance</span></code> button highlighted in orange.</p></li>
+<li><p>Provide a name to the VM.</p></li>
+<li><p>In Quick Start, select the base OS as Ubuntu (ami-id : ami-04dd23e62ed049936).</p></li>
+<li><p>Select an Instance type that is based on Intel hardware.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note</strong>: We recommend selecting a m7i.4xlarge or larger instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor. For more information on virtual servers on AWS visit <a class="reference external" href="https://aws.amazon.com/intel/">here</a>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Next, create a new key pair, give it a name or select one from the existing key pairs.</p></li>
+<li><p>Under Network settings select an existing security group. If there is none, create a new one by selecting the Create security group radio button and select the Allow SSH traffic and Allow HTTP traffic check box.</p></li>
+<li><p>Configure the storage to 100 GiB and click <code class="docutils literal notranslate"><span class="pre">Launch</span> <span class="pre">Instance</span></code>.</p></li>
+<li><p>Click on the connect button on the top right and connect using your preferred method.</p></li>
+</ol>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="IBM Cloud" for="sd-tab-item-1">
+IBM Cloud</label><div class="sd-tab-content docutils">
 <ol class="arabic simple">
 <li><p>Navigate to <a class="reference external" href="https://cloud.ibm.com">IBM Cloud</a>. - Click the <strong>Create resource</strong> button at the top right of the screen. Select <strong>Compute</strong> from the options available and select <code class="docutils literal notranslate"><span class="pre">Virtual</span> <span class="pre">Server</span> <span class="pre">for</span> <span class="pre">VPC</span></code></p></li>
 <li><p>Select a location for the instance. Assign a name to it.</p></li>
@@ -897,6 +920,26 @@
 <li><p>Once the instance is running, create and attach a <code class="docutils literal notranslate"><span class="pre">Floating</span> <span class="pre">IP</span></code> to the instance. For more information visit <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-fip-working&amp;amp;interface=ui">this</a> site</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ssh</span></code> into the instance using the floating IP (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;key&gt;</span> <span class="pre">ubuntu&#64;&lt;floating-ip&gt;</span></code>)</p></li>
 </ol>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="GCP" for="sd-tab-item-2">
+GCP</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://console.cloud.google.com/">GCP console</a> – Click the <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">a</span> <span class="pre">VM</span></code> button.</p></li>
+<li><p>Provide a name to the VM.</p></li>
+<li><p>Select the base OS as Ubuntu 24.04 LTS from Marketplace .</p></li>
+<li><p>Select an Instance type that is based on Intel hardware.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note:</strong>  We recommend selecting a c3-standard-22 or larger instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, and the minimum supported c3 instance type is c3-standard-8 with 32GB memory. For more information on virtual servers on GCP visit <a class="reference external" href="https://cloud.google.com/intel">here</a>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Under Firewall settings select “Allow HTTP traffic” to access ChatQnA UI web portal.</p></li>
+<li><p>Change the Boot disk to 100 GiB and click Create.</p></li>
+<li><p>Use any preferred SSH method such as ”Open in browser window” to connect to the instance</p></li>
+</ol>
+</div>
+</div>
 </section>
 <section id="deploy-the-chatqna-solution">
 <h2>Deploy the ChatQnA Solution<a class="headerlink" href="#deploy-the-chatqna-solution" title="Link to this heading">¶</a></h2>
@@ -926,9 +969,11 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>It takes a few minutes for the services to start. Check the logs for the services to ensure that ChatQnA is running.
-For example to check the logs for the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<blockquote>
+<div><p><strong>Note</strong>: It takes a few minutes for the services to start. Check the logs for the services to ensure that ChatQnA is running before proceeding further.</p>
+</div></blockquote>
+<p>For example to check the logs for the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
 </pre></div>
 </div>
 <p>The output shows <code class="docutils literal notranslate"><span class="pre">Connected</span></code> as shown:</p>
@@ -952,6 +997,27 @@ For example to check the logs for the <code class="docutils literal notranslate"
 </div>
 <section id="interact-with-chatqna">
 <h3>Interact with ChatQnA<a class="headerlink" href="#interact-with-chatqna" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="AWS" for="sd-tab-item-3">
+AWS</label><div class="sd-tab-content docutils">
+<p>You can interact with ChatQnA via a browser interface:</p>
+<ul class="simple">
+<li><p>To view the ChatQnA interface, open a browser and navigate to the UI by inserting your public facing IP address in the following: `http://{public_ip}:80’.</p></li>
+</ul>
+<blockquote>
+<div><p><strong>Note</strong>: If you are having issue accessing the UI, you need to add an inbound rule in the security group.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Look up Security Groups in the search bar and select the security group used when creating the instance.</p></li>
+<li><p>Click on the Edit inbound rules on the right side of the window.</p></li>
+<li><p>Select Add rule at the bottom, and create a rule with type as Custom TCP , port range as 80 and source as 0.0.0.0/0</p></li>
+</ul>
+<p>For more information on editing inbound/outbound rules, click <a class="reference external" href="https://docs.aws.amazon.com/finspace/latest/userguide/step5-config-inbound-rule.html">here</a></p>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="IBM Cloud" for="sd-tab-item-4">
+IBM Cloud</label><div class="sd-tab-content docutils">
 <p>You can interact with ChatQnA via a browser interface:</p>
 <ul class="simple">
 <li><p>Under <code class="docutils literal notranslate"><span class="pre">Infrastructure</span></code> in the left pane, go to <code class="docutils literal notranslate"><span class="pre">Network/Security</span> <span class="pre">groups/&lt;Your</span> <span class="pre">Security</span> <span class="pre">Group&gt;/Rules</span></code></p></li>
@@ -960,6 +1026,16 @@ For example to check the logs for the <code class="docutils literal notranslate"
 <li><p>To view the ChatQnA interface, open a browser and navigate to the UI by inserting your externally facing IP address in the following: `http://{external_public_ip}:80’.</p></li>
 </ul>
 <p>For more information on editing inbound/outbound rules, click <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-updating-the-default-security-group&amp;amp;interface=ui">here</a></p>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="GCP" for="sd-tab-item-5">
+GCP</label><div class="sd-tab-content docutils">
+<p>You can interact with ChatQnA via a browser interface:</p>
+<ul class="simple">
+<li><p>To view the ChatQnA interface, open a browser and navigate to the UI by inserting your public facing IP address in the following: `http://{external_ip}:80’.</p></li>
+</ul>
+</div>
+</div>
 <p>A snapshot of the interface looks as follows:</p>
 <p><img alt="Chat Interface" src="../_images/chat_ui_response1.png" /></p>
 <blockquote>
