@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=22d49862"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -887,7 +889,48 @@
 </ul>
 <p>General architecture of VQA shows below:</p>
 <p><img alt="VQA" src="../../_images/vqa.png" /></p>
-<p>This example guides you through how to deploy a <a class="reference external" href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-NeXT</a> (Open Large Multimodal Models) model on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>. We invite contributions from other hardware vendors to expand the OPEA ecosystem.</p>
+<p>The VisualQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style VisualQnA-MegaService stroke:#000000
+
+    %% Subgraphs %%
+    subgraph VisualQnA-MegaService[&quot;VisualQnA MegaService &quot;]
+        direction LR
+        LVM([LVM MicroService]):::blue
+    end
+    subgraph UserInterface[&quot; User Interface &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        Ingest([Ingest data]):::orchid
+        UI([UI server&lt;br&gt;]):::orchid
+    end
+
+
+    LVM_gen{{LVM Service &lt;br&gt;}}
+    GW([VisualQnA GateWay&lt;br&gt;]):::orange
+    NG([Nginx MicroService]):::blue
+
+
+    %% Questions interaction
+    direction LR
+    Ingest[Ingest data] --&gt; UI
+    a[User Input Query] --&gt; |Need Proxy Server|NG
+    a[User Input Query] --&gt; UI
+    NG --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; VisualQnA-MegaService
+
+
+    %% Embedding service flow
+    direction LR
+    LVM &lt;-.-&gt; LVM_gen
+        </div><p>This example guides you through how to deploy a <a class="reference external" href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-NeXT</a> (Open Large Multimodal Models) model on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>. We invite contributions from other hardware vendors to expand the OPEA ecosystem.</p>
 <p><img alt="llava screenshot" src="../../_images/llava_screenshot1.png" />
 <img alt="llava-screenshot" src="../../_images/llava_screenshot2.png" /></p>
 <section id="required-models">
