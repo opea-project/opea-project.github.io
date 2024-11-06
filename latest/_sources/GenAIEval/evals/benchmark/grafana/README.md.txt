@@ -36,16 +36,18 @@ Next, run Prometheus server `nohup ./prometheus --config.file=./prometheus.yml &
 
 You should now access `localhost:9090/targets?search=` to open the Prometheus UI.
 
-### 1.1 CPU Metrics (optional)
+### 1.1 Node Metrics (optional)
 
-The Prometheus Node Exporter is required for collecting CPU metrics. Install and run the Node Exporter via tarball by the [guide](https://prometheus.io/docs/guides/node-exporter/#installing-and-running-the-node-exporter). 
+The Prometheus Node Exporter is required for collecting CPU/memory/network/storage metrics metrics. Deploy the Node Exporter via tarball by the [guide](https://prometheus.io/docs/guides/node-exporter/#installing-and-running-the-node-exporter). 
 
 Or install it in a K8S cluster by the following commands:
+
+Ensure namespace `monitoring` was created in your K8S environment.
 
 ```bash
 git clone https://github.com/opea-project/GenAIEval.git
 cd GenAIEval/evals/benchmark/grafana/
-kubectl apply -f grafana_node_exporter.yaml
+kubectl apply -f prometheus_node_exporter.yaml
 ```
 
 Add the following configuration to `prometheus.yml`:
@@ -57,6 +59,46 @@ scrape_configs:
     static_configs:
       - targets: ["<NODE1_IP>:9100", "<NODE2_IP>:9100", ...]
 ```
+
+The following Grafana dashboards rely on Prometheus Node Exporter:
+- cpu_grafana.json
+- node_grafana.json
+
+Tested on the Prometheus Node Exporter `0.16.0`.
+
+
+### 1.2 Intel® Gaudi® Metrics (optional)
+
+The Intel Gaudi Prometheus Metrics Exporter is required for collecting Intel® Gaudi® AI accelerator metrics. 
+
+Follow the [guide](https://docs.habana.ai/en/latest/Orchestration/Prometheus_Metric_Exporter.html#deploying-prometheus-metric-exporter-in-docker) to deploy the metrics exporter in Docker.
+
+Or install it in a K8S cluster by the following commands:
+
+Ensure namespace `monitoring` was created in your K8S environment.
+
+```bash
+git clone https://github.com/opea-project/GenAIEval.git
+cd GenAIEval/evals/benchmark/grafana/
+kubectl apply -f prometheus_gaudi_exporter.yaml
+```
+
+Add the following configuration to `prometheus.yml`:
+
+```yaml
+scrape_configs:
+  - job_name: "prometheus-gaudi-exporter"
+    scrape_interval: 15s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["<NODE1_IP>:41611", "<NODE2_IP>:41611", ...]
+```
+
+The following Grafana dashboard rely on Intel Gaudi Prometheus Metrics Exporter:
+- gaudi_grafana.json
+
+Tested on the Intel Gaudi Prometheus Metrics Exporter `1.17.0`.
+
 
 Restart Prometheus after saving the changes.
 
@@ -100,3 +142,4 @@ In this folder, we also provides some Grafana dashboard JSON files for your refe
 - `redis_grafana.json`: A sample Grafana dashboard JSON file for visualizing the Redis metrics. For importing the redis metrics, you need to add the new connection and Redis data source in Grafana. Please refer this [link](https://grafana.com/grafana/plugins/redis-datasource/?tab=installation) for more details.
 - `gaudi_grafana.json`: A sample Grafana dashboard JSON file for visualizing the Intel® Gaudi® AI accelerator metrics in a container cluster for compute workload.
 - `cpu_grafana.json`: A sample Grafana dashboard JSON file for visualizing the CPU metrics.
+- `node_grafana.json`: A sample Grafana dashboard JSON file for visualizing the node metrics.
