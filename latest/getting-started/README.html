@@ -1929,13 +1929,13 @@
              
   <section id="getting-started-with-opea">
 <h1>Getting Started with OPEA<a class="headerlink" href="#getting-started-with-opea" title="Link to this heading">¶</a></h1>
-<p>In this document, we provide a tailored guide to deploying the ChatQnA application in OPEA GenAI Examples across multiple cloud platforms, including IBM Cloud, Amazon Web Services (AWS), and others,  enabling you to choose the best fit for your specific needs and requirements. For additional deployment targets, see the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a>.</p>
+<p>In this document, we provide a tailored guide to deploying the ChatQnA application in OPEA GenAI Examples across multiple cloud platforms, including Amazon Web Services (AWS), Google Cloud Platform (GCP), IBM Cloud, Microsoft Azure and Oracle Cloud Infrastructure, enabling you to choose the best fit for your specific needs and requirements. For additional deployment targets, see the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a>.</p>
 <section id="understanding-opea-s-core-components">
 <h2>Understanding OPEA’s Core Components<a class="headerlink" href="#understanding-opea-s-core-components" title="Link to this heading">¶</a></h2>
 <p>Before moving forward, it’s important to familiarize yourself with two key elements of OPEA: GenAIComps and GenAIExamples.</p>
 <ul class="simple">
 <li><p>GenAIComps is a collection of microservice components that form a service-based toolkit. This includes a variety of services such as llm (large language models), embedding, and reranking, among others.</p></li>
-<li><p>While GenAIComps offers a range of microservices, GenAIExamples provides practical, deployable solutions to help users implement these services effectively. Examples include ChatQnA and DocSum, which leverage the microservices for specific applications.</p></li>
+<li><p>GenAIExamples provides practical and deployable solutions to help users implement these services effectively. Examples include ChatQnA and DocSum, which leverage the microservices for specific applications.</p></li>
 </ul>
 </section>
 <section id="prerequisites">
@@ -1946,7 +1946,7 @@
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="AWS" for="sd-tab-item-0">
-AWS</label><div class="sd-tab-content docutils">
+Amazon Web Services</label><div class="sd-tab-content docutils">
 <ol class="arabic simple">
 <li><p>Navigate to <a class="reference external" href="https://console.aws.amazon.com/console/home">AWS console</a> – Search EC2 in the search bar and select it. Click the “Launch Instance” button highlighted in orange.</p></li>
 <li><p>Provide a name to the VM.</p></li>
@@ -1967,8 +1967,48 @@ AWS</label><div class="sd-tab-content docutils">
 </ol>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Azure" for="sd-tab-item-1">
-Azure</label><div class="sd-tab-content docutils">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="GCP" for="sd-tab-item-1">
+Google Cloud Platform</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://console.cloud.google.com/">GCP console</a> – Click the “Create a VM” button.</p></li>
+<li><p>Provide a name to the VM.</p></li>
+<li><p>Select the base OS as <code class="docutils literal notranslate"><span class="pre">Ubuntu</span> <span class="pre">24.04</span> <span class="pre">LTS</span></code> from Marketplace .</p></li>
+<li><p>Select an Instance type that is based on Intel hardware.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note:</strong>   We recommend selecting a <code class="docutils literal notranslate"><span class="pre">c4-standard-32</span></code> or larger instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, and the minimum supported c3 instance type is c3-standard-8 with 32GB memory. For more information, visit <a class="reference external" href="https://cloud.google.com/intel">virtual servers on GCP</a>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Under Firewall settings select “Allow HTTP traffic” to access ChatQnA UI web portal.</p></li>
+<li><p>Change the Boot disk to 100 GiB and click “Create”.</p></li>
+<li><p>Use any preferred SSH method such as “Open in browser window” to connect to the instance.</p></li>
+</ol>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="IBM Cloud" for="sd-tab-item-2">
+IBM Cloud</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Navigate to <a class="reference external" href="https://cloud.ibm.com">IBM Cloud</a>. - Click the “Create resource” button at the top right of the screen. Select “Compute” from the options available and select “Virtual Server for VPC”</p></li>
+<li><p>Select a location for the instance. Assign a name to it.</p></li>
+<li><p>Under Stock Images, select Ubuntu 24.04 (<code class="docutils literal notranslate"><span class="pre">ibm-ubuntu-24-04-6-minimal-amd64-1</span></code>)</p></li>
+<li><p>Select a virtual server.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note:</strong> We recommend selecting a 3-series instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, such as <code class="docutils literal notranslate"><span class="pre">bx3d-16x80</span></code> or above. For more information on virtual servers on IBM cloud visit <a class="reference external" href="https://www.ibm.com/cloud/intel">Intel® solutions on IBM Cloud®</a>.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Add an SSH key to the instance, if necessary, create one first.</p></li>
+<li><p>Click on “Create virtual server”.</p></li>
+<li><p>Once the instance is running, create and attach a “Floating IP” to the instance. For more information visit <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-fip-working&amp;amp;interface=ui">this</a> site</p></li>
+<li><p>Under “Infrastructure” in the left pane, go to Network/Security groups/<Your Security Group>/Rules</p></li>
+<li><p>Select “Create”</p></li>
+<li><p>Enable inbound traffic for port 80. For more information on editing inbound/outbound rules, click <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-updating-the-default-security-group&amp;amp;interface=ui">here</a></p></li>
+<li><p>ssh into the instance using the floating IP (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;key&gt;</span> <span class="pre">ubuntu&#64;&lt;floating-ip&gt;</span></code>)</p></li>
+</ol>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Azure" for="sd-tab-item-3">
+Microsoft Azure</label><div class="sd-tab-content docutils">
 <ol class="arabic simple">
 <li><p>Navigate to <a class="reference internal" href="#portal.azure.com"><span class="xref myst">Microsoft Azure</span></a> – Select the “Skip” button on the bottom right to land on the service offerings page. Search for “Virtual Machines” in the search bar and select it. Click the “Create” button and select “Azure Virtual Machine”.</p></li>
 <li><p>Select an existing “Resource group” from the drop down or click “Create” for a new Resource group and give it a name. If you have issues refer to <a class="reference external" href="https://learn.microsoft.com/en-us/answers/questions/1520133/cannot-create-resource-groups">cannot create resource groups</a>.</p></li>
@@ -1990,51 +2030,11 @@ Azure</label><div class="sd-tab-content docutils">
 <div><p><strong>Note</strong>: If you have issues connecting to the instance with SSH, you could use instead Bastion with your username and password.</p>
 </div></blockquote>
 </div>
-<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="GCP" for="sd-tab-item-2">
-GCP</label><div class="sd-tab-content docutils">
-<ol class="arabic simple">
-<li><p>Navigate to <a class="reference external" href="https://console.cloud.google.com/">GCP console</a> – Click the “Create a VM” button.</p></li>
-<li><p>Provide a name to the VM.</p></li>
-<li><p>Select the base OS as <code class="docutils literal notranslate"><span class="pre">Ubuntu</span> <span class="pre">24.04</span> <span class="pre">LTS</span></code> from Marketplace .</p></li>
-<li><p>Select an Instance type that is based on Intel hardware.</p></li>
-</ol>
-<blockquote>
-<div><p><strong>Note:</strong>   We recommend selecting a <code class="docutils literal notranslate"><span class="pre">c4-standard-32</span></code> or larger instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, and the minimum supported c3 instance type is c3-standard-8 with 32GB memory. For more information, visit <a class="reference external" href="https://cloud.google.com/intel">virtual servers on GCP</a>.</p>
-</div></blockquote>
-<ol class="arabic simple" start="5">
-<li><p>Under Firewall settings select “Allow HTTP traffic” to access ChatQnA UI web portal.</p></li>
-<li><p>Change the Boot disk to 100 GiB and click “Create”.</p></li>
-<li><p>Use any preferred SSH method such as “Open in browser window” to connect to the instance.</p></li>
-</ol>
-</div>
-<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="IBM Cloud" for="sd-tab-item-3">
-IBM Cloud</label><div class="sd-tab-content docutils">
-<ol class="arabic simple">
-<li><p>Navigate to <a class="reference external" href="https://cloud.ibm.com">IBM Cloud</a>. - Click the “Create resource” button at the top right of the screen. Select “Compute” from the options available and select “Virtual Server for VPC”</p></li>
-<li><p>Select a location for the instance. Assign a name to it.</p></li>
-<li><p>Under Stock Images, select Ubuntu 24.04 (<code class="docutils literal notranslate"><span class="pre">ibm-ubuntu-24-04-6-minimal-amd64-1</span></code>)</p></li>
-<li><p>Select a virtual server.</p></li>
-</ol>
-<blockquote>
-<div><p><strong>Note:</strong> We recommend selecting a 3-series instance with an Intel(R) 4th Gen Xeon(C) Scalable Processor, such as <code class="docutils literal notranslate"><span class="pre">bx3d-16x80</span></code> or above. For more information on virtual servers on IBM cloud visit <a class="reference external" href="https://www.ibm.com/cloud/intel">Intel® solutions on IBM Cloud®</a>.</p>
-</div></blockquote>
-<ol class="arabic simple" start="5">
-<li><p>Add an SSH key to the instance, if necessary, create one first.</p></li>
-<li><p>Click on “Create virtual server”.</p></li>
-<li><p>Once the instance is running, create and attach a “Floating IP” to the instance. For more information visit <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-fip-working&amp;amp;interface=ui">this</a> site</p></li>
-<li><p>Under “Infrastructure” in the left pane, go to Network/Security groups/<Your Security Group>/Rules</p></li>
-<li><p>Select “Create”</p></li>
-<li><p>Enable inbound traffic for port 80. For more information on editing inbound/outbound rules, click <a class="reference external" href="https://cloud.ibm.com/docs/vpc?topic=vpc-updating-the-default-security-group&amp;amp;interface=ui">here</a></p></li>
-<li><p>ssh into the instance using the floating IP (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;key&gt;</span> <span class="pre">ubuntu&#64;&lt;floating-ip&gt;</span></code>)</p></li>
-</ol>
-</div>
 <input id="sd-tab-item-4" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="OCI" for="sd-tab-item-4">
-OCI</label><div class="sd-tab-content docutils">
+Oracle Cloud Infrastructure</label><div class="sd-tab-content docutils">
 <ol class="arabic simple">
-<li><p>Navigate to <a class="reference external" href="https://www.oracle.com/cloud/sign-in.html?redirect_uri=https%3A%2F%2Fcloud.oracle.com%2F">Oracle Cloud Console</a> – Then navigate to <a class="reference external" href="https://cloud.oracle.com/compute/instances">Compute Instances</a>. Click the “Create Instance” button.</p></li>
+<li><p>Login to <a class="reference external" href="https://www.oracle.com/cloud/sign-in.html?redirect_uri=https%3A%2F%2Fcloud.oracle.com%2F">Oracle Cloud Console</a> – Then navigate to <a class="reference external" href="https://cloud.oracle.com/compute/instances">Compute Instances</a>. Click the “Create Instance” button.</p></li>
 <li><p>Provide a name to the VM and select the placement in the availability domains.</p></li>
 <li><p>In Image and Shape section click “Change Image” &gt; “Ubuntu” and then select <code class="docutils literal notranslate"><span class="pre">Canonical</span>&#160; <span class="pre">Ubuntu</span> <span class="pre">24.04</span></code>. Submit using the “Select  Image”  button at the bottom.</p></li>
 <li><p>Click the “Change Shape”   &gt;  “Bare Metal Machine”  then select the <code class="docutils literal notranslate"><span class="pre">BM.Standard3.64</span></code>. Submit using the “Select Shape” button at the bottom.</p></li>
@@ -2055,7 +2055,7 @@ Click on “Save”</p></li>
 </section>
 <section id="deploy-the-chatqna-solution">
 <h2>Deploy the ChatQnA Solution<a class="headerlink" href="#deploy-the-chatqna-solution" title="Link to this heading">¶</a></h2>
-<p>Use the command below to install docker on a clean virtual machine</p>
+<p>Use the command below to install docker:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/ChatQnA/docker_compose/install_docker.sh
 chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 ./install_docker.sh
@@ -2088,7 +2088,7 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
 </pre></div>
 </div>
-<p>The output shows <code class="docutils literal notranslate"><span class="pre">Connected</span></code> as shown:</p>
+<p>Proceed further <strong>only after</strong> the output shows <code class="docutils literal notranslate"><span class="pre">Connected</span></code> as shown:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="mi">2024</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">18</span><span class="n">T22</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mf">18.973042</span><span class="n">Z</span> <span class="n">INFO</span> <span class="n">text_generation_router</span><span class="p">::</span><span class="n">server</span><span class="p">:</span> <span class="n">router</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">rs</span><span class="p">:</span><span class="mi">2311</span><span class="p">:</span> <span class="n">Connected</span>
 </pre></div>
 </div>
@@ -2118,21 +2118,11 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 <p><img alt="Chat Interface" src="../_images/chat_ui_response2.png" /></p>
 <p>Given that any information about OPEA was not in the training data for the model, we see the model hallucinating and coming up with a response. We can upload a document (PDF) with information and observe how the response changes.</p>
 <blockquote>
-<div><p><strong>Note:</strong> this example leverages the <a class="reference download internal" download="" href="../_downloads/41c91aec1d47f20ca22350daa8c2cadc/what_is_opea.pdf"><span class="xref download myst">OPEA document</span></a> for its RAG based content. You can download the <a class="reference download internal" download="" href="../_downloads/41c91aec1d47f20ca22350daa8c2cadc/what_is_opea.pdf"><span class="xref download myst">OPEA document</span></a> and upload it using the UI.</p>
+<div><p><strong>Note:</strong> this example leverages the OPEA document for its RAG based content. You can download the <a class="reference download internal" download="" href="../_downloads/41c91aec1d47f20ca22350daa8c2cadc/what_is_opea.pdf"><span class="xref download myst">OPEA document</span></a> and upload it using the UI.</p>
 </div></blockquote>
 <p><img alt="Chat Interface with RAG" src="../_images/chat_ui_response_rag.png" /></p>
 <p>We observe that the response is relevant and is based on the PDF uploaded. See the <a class="reference external" href="https://opea-project.github.io/latest/examples/ChatQnA/ChatQnA_Guide.html">ChatQnA Sample Guide</a>
 to learn how you can customize the example with your own content.</p>
-<p>To interact with the ChatQnA application via a <code class="docutils literal notranslate"><span class="pre">curl</span></code> command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">    }&#39;</span>
-</pre></div>
-</div>
-<p>ChatQnA provides the answer to your query as a text stream.</p>
-<p>Modify the <code class="docutils literal notranslate"><span class="pre">message</span></code> parameter in the <code class="docutils literal notranslate"><span class="pre">curl</span></code> command to continue interacting with ChatQnA.</p>
 </section>
 </section>
 <section id="whats-next">
