@@ -1931,7 +1931,12 @@
              
   <section id="dataprep-microservice-for-multimodal-data-with-redis">
 <h1>Dataprep Microservice for Multimodal Data with Redis<a class="headerlink" href="#dataprep-microservice-for-multimodal-data-with-redis" title="Link to this heading">¶</a></h1>
-<p>This <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice accepts videos (mp4 files) and their transcripts (optional) from the user and ingests them into Redis vectorstore.</p>
+<p>This <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice accepts the following from the user and ingests them into a Redis vector store:</p>
+<ul class="simple">
+<li><p>Videos (mp4 files) and their transcripts (optional)</p></li>
+<li><p>Images (gif, jpg, jpeg, and png files) and their captions (optional)</p></li>
+<li><p>Audio (wav files)</p></li>
+</ul>
 <section id="start-microservice-with-python-option-1">
 <h2>🚀1. Start Microservice with Python（Option 1）<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
 <section id="install-requirements">
@@ -2034,15 +2039,15 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="consume-microservice">
 <h2>🚀4. Consume Microservice<a class="headerlink" href="#consume-microservice" title="Link to this heading">¶</a></h2>
-<p>Once this dataprep microservice is started, user can use the below commands to invoke the microservice to convert videos and their transcripts (optional) to embeddings and save to the Redis vector store.</p>
-<p>This mircroservice has provided 3 different ways for users to ingest videos into Redis vector store corresponding to the 3 use cases.</p>
-<section id="consume-videos-with-transcripts-api">
-<h3>4.1 Consume <em>videos_with_transcripts</em> API<a class="headerlink" href="#consume-videos-with-transcripts-api" title="Link to this heading">¶</a></h3>
-<p><strong>Use case:</strong> This API is used when a transcript file (under <code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format) is available for each video.</p>
+<p>Once this dataprep microservice is started, user can use the below commands to invoke the microservice to convert images and videos and their transcripts (optional) to embeddings and save to the Redis vector store.</p>
+<p>This microservice provides 3 different ways for users to ingest files into Redis vector store corresponding to the 3 use cases.</p>
+<section id="consume-ingest-with-text-api">
+<h3>4.1 Consume <em>ingest_with_text</em> API<a class="headerlink" href="#consume-ingest-with-text-api" title="Link to this heading">¶</a></h3>
+<p><strong>Use case:</strong> This API is used when videos are accompanied by transcript files (<code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format) or images are accompanied by text caption files (<code class="docutils literal notranslate"><span class="pre">.txt</span></code> format).</p>
 <p><strong>Important notes:</strong></p>
 <ul class="simple">
 <li><p>Make sure the file paths after <code class="docutils literal notranslate"><span class="pre">files=&#64;</span></code> are correct.</p></li>
-<li><p>Every transcript file’s name must be identical with its corresponding video file’s name (except their extension .vtt and .mp4). For example, <code class="docutils literal notranslate"><span class="pre">video1.mp4</span></code> and <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code>. Otherwise, if <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code> is not included correctly in this API call, this microservice will return error <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">captions</span> <span class="pre">file</span> <span class="pre">video1.vtt</span> <span class="pre">found</span> <span class="pre">for</span> <span class="pre">video1.mp4</span></code>.</p></li>
+<li><p>Every transcript or caption file’s name must be identical to its corresponding video or image file’s name (except their extension - .vtt goes with .mp4 and .txt goes with .jpg, .jpeg, .png, or .gif). For example, <code class="docutils literal notranslate"><span class="pre">video1.mp4</span></code> and <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code>. Otherwise, if <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code> is not included correctly in the API call, the microservice will return an error <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">captions</span> <span class="pre">file</span> <span class="pre">video1.vtt</span> <span class="pre">found</span> <span class="pre">for</span> <span class="pre">video1.mp4</span></code>.</p></li>
 </ul>
 <section id="single-video-transcript-pair-upload">
 <h4>Single video-transcript pair upload<a class="headerlink" href="#single-video-transcript-pair-upload" title="Link to this heading">¶</a></h4>
@@ -2050,29 +2055,43 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.vtt&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://localhost:6007/v1/videos_with_transcripts
+<span class="w">    </span>http://localhost:6007/v1/ingest_with_text
 </pre></div>
 </div>
 </section>
-<section id="multiple-video-transcript-pair-upload">
-<h4>Multiple video-transcript pair upload<a class="headerlink" href="#multiple-video-transcript-pair-upload" title="Link to this heading">¶</a></h4>
+<section id="single-image-caption-pair-upload">
+<h4>Single image-caption pair upload<a class="headerlink" href="#single-image-caption-pair-upload" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>http://localhost:6007/v1/ingest_with_text
+</pre></div>
+</div>
+</section>
+<section id="multiple-file-pair-upload">
+<h4>Multiple file pair upload<a class="headerlink" href="#multiple-file-pair-upload" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.vtt&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video2.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video2.vtt&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://localhost:6007/v1/videos_with_transcripts
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image1.png&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image2.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image2.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>http://localhost:6007/v1/ingest_with_text
 </pre></div>
 </div>
 </section>
 </section>
 <section id="consume-generate-transcripts-api">
 <h3>4.2 Consume <em>generate_transcripts</em> API<a class="headerlink" href="#consume-generate-transcripts-api" title="Link to this heading">¶</a></h3>
-<p><strong>Use case:</strong> This API should be used when a video has meaningful audio or recognizable speech but its transcript file is not available.</p>
-<p>In this use case, this microservice will use <a class="reference external" href="https://openai.com/index/whisper/"><code class="docutils literal notranslate"><span class="pre">whisper</span></code></a> model to generate the <code class="docutils literal notranslate"><span class="pre">.vtt</span></code> transcript for the video.</p>
-<section id="single-video-upload">
-<h4>Single video upload<a class="headerlink" href="#single-video-upload" title="Link to this heading">¶</a></h4>
+<p><strong>Use case:</strong> This API should be used when a video has meaningful audio or recognizable speech but its transcript file is not available, or for audio files with speech.</p>
+<p>In this use case, this microservice will use <a class="reference external" href="https://openai.com/index/whisper/"><code class="docutils literal notranslate"><span class="pre">whisper</span></code></a> model to generate the <code class="docutils literal notranslate"><span class="pre">.vtt</span></code> transcript for the video or audio files.</p>
+<section id="single-file-upload">
+<h4>Single file upload<a class="headerlink" href="#single-file-upload" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2080,12 +2099,13 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </pre></div>
 </div>
 </section>
-<section id="multiple-video-upload">
-<h4>Multiple video upload<a class="headerlink" href="#multiple-video-upload" title="Link to this heading">¶</a></h4>
+<section id="multiple-file-upload">
+<h4>Multiple file upload<a class="headerlink" href="#multiple-file-upload" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video1.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./video2.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./audio1.wav&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/generate_transcripts
 </pre></div>
 </div>
@@ -2093,8 +2113,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="consume-generate-captions-api">
 <h3>4.3 Consume <em>generate_captions</em> API<a class="headerlink" href="#consume-generate-captions-api" title="Link to this heading">¶</a></h3>
-<p><strong>Use case:</strong> This API should be used when a video does not have meaningful audio or does not have audio.</p>
-<p>In this use case, transcript either does not provide any meaningful information or does not exist. Thus, it is preferred to leverage a LVM microservice to summarize the video frames.</p>
+<p><strong>Use case:</strong> This API should be used when uploading an image, or when uploading a video that does not have meaningful audio or does not have audio.</p>
+<p>In this use case, there is no meaningful language transcription. Thus, it is preferred to leverage a LVM microservice to summarize the frames.</p>
 <ul class="simple">
 <li><p>Single video upload</p></li>
 </ul>
@@ -2114,22 +2134,31 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>http://localhost:6007/v1/generate_captions
 </pre></div>
 </div>
-</section>
-<section id="consume-get-videos-api">
-<h3>4.4 Consume get_videos API<a class="headerlink" href="#consume-get-videos-api" title="Link to this heading">¶</a></h3>
-<p>To get names of uploaded videos, use the following command.</p>
+<ul class="simple">
+<li><p>Single image upload</p></li>
+</ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://localhost:6007/v1/dataprep/get_videos
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>http://localhost:6007/v1/generate_captions
 </pre></div>
 </div>
 </section>
-<section id="consume-delete-videos-api">
-<h3>4.5 Consume delete_videos API<a class="headerlink" href="#consume-delete-videos-api" title="Link to this heading">¶</a></h3>
-<p>To delete uploaded videos and clear the database, use the following command.</p>
+<section id="consume-get-files-api">
+<h3>4.4 Consume get_files API<a class="headerlink" href="#consume-get-files-api" title="Link to this heading">¶</a></h3>
+<p>To get names of uploaded files, use the following command.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://localhost:6007/v1/dataprep/delete_videos
+<span class="w">    </span>http://localhost:6007/v1/dataprep/get_files
+</pre></div>
+</div>
+</section>
+<section id="consume-delete-files-api">
+<h3>4.5 Consume delete_files API<a class="headerlink" href="#consume-delete-files-api" title="Link to this heading">¶</a></h3>
+<p>To delete uploaded files and clear the database, use the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>http://localhost:6007/v1/dataprep/delete_files
 </pre></div>
 </div>
 </section>
