@@ -2007,20 +2007,25 @@
 </div>
 </section>
 </section>
-<section id="vllm-with-openvino">
-<h3>2.3 vLLM with OpenVINO<a class="headerlink" href="#vllm-with-openvino" title="Link to this heading">¶</a></h3>
-<p>vLLM powered by OpenVINO supports all LLM models from <a class="reference external" href="https://github.com/vllm-project/vllm/blob/main/docs/source/models/supported_models.rst">vLLM supported models list</a> and can perform optimal model serving on all x86-64 CPUs with, at least, AVX2 support. OpenVINO vLLM backend supports the following advanced vLLM features:</p>
+<section id="vllm-with-openvino-on-intel-gpu-and-cpu">
+<h3>2.3 vLLM with OpenVINO (on Intel GPU and CPU)<a class="headerlink" href="#vllm-with-openvino-on-intel-gpu-and-cpu" title="Link to this heading">¶</a></h3>
+<p>vLLM powered by OpenVINO supports all LLM models from <a class="reference external" href="https://github.com/vllm-project/vllm/blob/main/docs/source/models/supported_models.rst">vLLM supported models list</a> and can perform optimal model serving on Intel GPU and all x86-64 CPUs with, at least, AVX2 support, as well as on both integrated and discrete Intel® GPUs (starting from Intel® UHD Graphics generation). OpenVINO vLLM backend supports the following advanced vLLM features:</p>
 <ul class="simple">
 <li><p>Prefix caching (<code class="docutils literal notranslate"><span class="pre">--enable-prefix-caching</span></code>)</p></li>
 <li><p>Chunked prefill (<code class="docutils literal notranslate"><span class="pre">--enable-chunked-prefill</span></code>)</p></li>
 </ul>
 <section id="build-docker-image">
 <h4>Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h4>
-<p>To build the docker image, run the command</p>
+<p>To build the docker image for Intel CPU, run the command</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>./build_docker_vllm_openvino.sh
 </pre></div>
 </div>
 <p>Once it successfully builds, you will have the <code class="docutils literal notranslate"><span class="pre">vllm:openvino</span></code> image. It can be used to spawn a serving container with OpenAI API endpoint or you can work with it interactively via bash shell.</p>
+<p>To build the docker image for Intel GPU, run the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>./build_docker_vllm_openvino.sh<span class="w"> </span>gpu
+</pre></div>
+</div>
+<p>Once it successfully builds, you will have the <code class="docutils literal notranslate"><span class="pre">opea/vllm-arc:latest</span></code> image. It can be used to spawn a serving container with OpenAI API endpoint or you can work with it interactively via bash shell.</p>
 </section>
 <section id="id2">
 <h4>Launch vLLM service<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
@@ -2029,13 +2034,24 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;token&gt;
 </pre></div>
 </div>
-<p>To start the model server:</p>
+<p>To start the model server for Intel CPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>launch_vllm_service_openvino.sh
+</pre></div>
+</div>
+<p>To start the model server for Intel GPU:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>launch_vllm_service_openvino.sh<span class="w"> </span>-d<span class="w"> </span>gpu
 </pre></div>
 </div>
 </section>
 <section id="performance-tips">
 <h4>Performance tips<a class="headerlink" href="#performance-tips" title="Link to this heading">¶</a></h4>
+<p>vLLM OpenVINO backend environment variables</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_DEVICE</span></code> to specify which device utilize for the inference. If there are multiple GPUs in the system, additional indexes can be used to choose the proper one (e.g, <code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_DEVICE=GPU.1</span></code>). If the value is not specified, CPU device is used by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS=ON</span></code> enables U8 weights compression during model loading stage. By default, compression is turned off. You can also export model with different compression techniques using <code class="docutils literal notranslate"><span class="pre">optimum-cli</span></code> and pass exported folder as <code class="docutils literal notranslate"><span class="pre">&lt;model_id&gt;</span></code></p></li>
+</ul>
+<section id="cpu-performance-tips">
+<h5>CPU performance tips<a class="headerlink" href="#cpu-performance-tips" title="Link to this heading">¶</a></h5>
 <p>vLLM OpenVINO backend uses the following environment variables to control behavior:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_KVCACHE_SPACE</span></code> to specify the KV Cache size (e.g, <code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_KVCACHE_SPACE=40</span></code> means 40 GB space for KV cache), larger setting will allow vLLM running more requests in parallel. This parameter should be set based on the hardware configuration and memory management pattern of users.</p></li>
@@ -2048,6 +2064,17 @@
     python3 vllm/benchmarks/benchmark_throughput.py --model meta-llama/Llama-2-7b-chat-hf --dataset vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json --enable-chunked-prefill --max-num-batched-tokens 256
 </pre></div>
 </div>
+</section>
+<section id="gpu-performance-tips">
+<h5>GPU performance tips<a class="headerlink" href="#gpu-performance-tips" title="Link to this heading">¶</a></h5>
+<p>GPU device implements the logic for automatic detection of available GPU memory and, by default, tries to reserve as much memory as possible for the KV cache (taking into account <code class="docutils literal notranslate"><span class="pre">gpu_memory_utilization</span></code> option). However, this behavior can be overridden by explicitly specifying the desired amount of memory for the KV cache using <code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_KVCACHE_SPACE</span></code> environment variable (e.g, <code class="docutils literal notranslate"><span class="pre">VLLM_OPENVINO_KVCACHE_SPACE=8</span></code> means 8 GB space for KV cache).</p>
+<p>Currently, the best performance using GPU can be achieved with the default vLLM execution parameters for models with quantized weights (8 and 4-bit integer data types are supported) and <code class="docutils literal notranslate"><span class="pre">preemption-mode=swap</span></code>.</p>
+<p>OpenVINO best known configuration for GPU is:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ VLLM_OPENVINO_DEVICE=GPU VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS=ON \
+    python3 vllm/benchmarks/benchmark_throughput.py --model meta-llama/Llama-2-7b-chat-hf --dataset vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 <section id="query-the-service">
