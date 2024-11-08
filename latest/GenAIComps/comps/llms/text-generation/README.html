@@ -2212,23 +2212,19 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>3.2 Verify the LLM Service<a class="headerlink" href="#verify-the-llm-service" title="Link to this heading">¶</a></h3>
 <section id="verify-the-tgi-service">
 <h4>3.2.1 Verify the TGI Service<a class="headerlink" href="#verify-the-tgi-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${your_hf_llm_model}, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="verify-the-vllm-service">
 <h4>3.2.2 Verify the vLLM Service<a class="headerlink" href="#verify-the-vllm-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8008/v1/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;model&quot;: ${your_hf_llm_model},</span>
-<span class="s1">  &quot;prompt&quot;: &quot;What is Deep Learning?&quot;,</span>
-<span class="s1">  &quot;max_tokens&quot;: 32,</span>
-<span class="s1">  &quot;temperature&quot;: 0</span>
-<span class="s1">  }&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${your_hf_llm_model}, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}]}&#39;</span>
 </pre></div>
 </div>
 </section>
