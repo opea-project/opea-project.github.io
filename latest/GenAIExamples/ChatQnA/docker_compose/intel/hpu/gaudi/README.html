@@ -788,12 +788,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/vllm/llama_index/README.html#set-up-llm-microservice">🚀3. Set up LLM microservice</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/vllm/ray/README.html">VLLM-Ray Endpoint Service</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/vllm/ray/README.html#set-up-environment">Set up environment</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/vllm/ray/README.html#set-up-vllm-ray-gaudi-service">Set up VLLM Ray Gaudi Service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/text-generation/vllm/ray/README.html#set-up-opea-microservice">Set up OPEA microservice</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/utils/lm-eval/README.html">LM-Eval Microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIComps/comps/llms/utils/lm-eval/README.html#cpu-service">CPU service</a></li>
 </ul>
@@ -1955,7 +1949,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
 <span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm_service,vllm-ray-service,guardrails
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm_service,guardrails
 </pre></div>
 </div>
 </li>
@@ -2154,7 +2148,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
 <span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm_service,vllm-ray-service,guardrails
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm_service,guardrails
 </pre></div>
 </div>
 </li>
@@ -2179,10 +2173,6 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </div>
 <p>If use vllm for llm backend.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>If use vllm-on-ray for llm backend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm_ray.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>If you want to enable guardrails microservice in the pipeline, please follow the below command instead:</p>
@@ -2258,12 +2248,6 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="s1">  &quot;max_tokens&quot;: 32,</span>
 <span class="s1">  &quot;temperature&quot;: 0</span>
 <span class="s1">  }&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#vLLM-on-Ray Service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8006/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}]}&#39;</span>
 </pre></div>
 </div>
 </li>
