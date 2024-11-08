@@ -1930,7 +1930,7 @@
   <section id="multimodalqna-application">
 <h1>MultimodalQnA Application<a class="headerlink" href="#multimodalqna-application" title="Link to this heading">¶</a></h1>
 <p>Suppose you possess a set of videos and wish to perform question-answering to extract insights from these videos. To respond to your questions, it typically necessitates comprehension of visual cues within the videos, knowledge derived from the audio content, or often a mix of both these visual elements and auditory facts. The MultimodalQnA framework offers an optimal solution for this purpose.</p>
-<p><code class="docutils literal notranslate"><span class="pre">MultimodalQnA</span></code> addresses your questions by dynamically fetching the most pertinent multimodal information (frames, transcripts, and/or captions) from your collection of videos. For this purpose, MultimodalQnA utilizes <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower model</a>, a multimodal encoding transformer model which merges visual and textual data into a unified semantic space. During the video ingestion phase, the BridgeTower model embeds both visual cues and auditory facts as texts, and those embeddings are then stored in a vector database. When it comes to answering a question, the MultimodalQnA will fetch its most relevant multimodal content from the vector store and feed it into a downstream Large Vision-Language Model (LVM) as input context to generate a response for the user.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MultimodalQnA</span></code> addresses your questions by dynamically fetching the most pertinent multimodal information (frames, transcripts, and/or captions) from your collection of videos, images, and audio files. For this purpose, MultimodalQnA utilizes <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower model</a>, a multimodal encoding transformer model which merges visual and textual data into a unified semantic space. During the ingestion phase, the BridgeTower model embeds both visual cues and auditory facts as texts, and those embeddings are then stored in a vector database. When it comes to answering a question, the MultimodalQnA will fetch its most relevant multimodal content from the vector store and feed it into a downstream Large Vision-Language Model (LVM) as input context to generate a response for the user.</p>
 <p>The MultimodalQnA architecture shows below:</p>
 <p><img alt="architecture" src="../../_images/MultimodalQnA.png" /></p>
 <p>MultimodalQnA is implemented on top of <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>, the MultimodalQnA Flow Chart shows below:</p>
@@ -2038,14 +2038,25 @@
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Service</p></th>
+<th class="head"><p>HW</p></th>
 <th class="head"><p>Model</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>embedding-multimodal</p></td>
-<td><p>BridgeTower/bridgetower-large-itm-mlm-gaudi</p></td>
+<td><p>Xeon</p></td>
+<td><p>BridgeTower/bridgetower-large-itm-mlm-itc</p></td>
 </tr>
 <tr class="row-odd"><td><p>LVM</p></td>
+<td><p>Xeon</p></td>
+<td><p>llava-hf/llava-1.5-7b-hf</p></td>
+</tr>
+<tr class="row-even"><td><p>embedding-multimodal</p></td>
+<td><p>Gaudi</p></td>
+<td><p>BridgeTower/bridgetower-large-itm-mlm-itc</p></td>
+</tr>
+<tr class="row-odd"><td><p>LVM</p></td>
+<td><p>Gaudi</p></td>
 <td><p>llava-hf/llava-v1.6-vicuna-13b-hf</p></td>
 </tr>
 </tbody>

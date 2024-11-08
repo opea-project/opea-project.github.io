@@ -1961,10 +1961,11 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/multimodalqna&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/ingest_with_text&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/generate_transcripts&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/generate_captions&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_VIDEO_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get_videos&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_VIDEO_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_videos&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get_files&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_files&quot;</span>
 </pre></div>
 </div>
 <p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
@@ -2144,43 +2145,62 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple" start="6">
 <li><p>Multimodal Dataprep Microservice</p></li>
 </ol>
-<p>Download a sample video</p>
+<p>Download a sample video, image, and audio file and create a caption</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">video_fn</span><span class="o">=</span><span class="s2">&quot;WeAreGoingOnBullrun.mp4&quot;</span>
 wget<span class="w"> </span>http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">image_fn</span><span class="o">=</span><span class="s2">&quot;apple.png&quot;</span>
+wget<span class="w"> </span>https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">caption_fn</span><span class="o">=</span><span class="s2">&quot;apple.txt&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This is an apple.&quot;</span><span class="w">  </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">audio_fn</span><span class="o">=</span><span class="s2">&quot;AudioSample.wav&quot;</span>
+wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>Test dataprep microservice. This command updates a knowledge base by uploading a local video .mp4.</p>
-<p>Test dataprep microservice with generating transcript using whisper model</p>
+<p>Test dataprep microservice with generating transcript. This command updates a knowledge base by uploading a local video .mp4 and an audio .wav file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Also, test dataprep microservice with generating caption using lvm-tgi</p>
+<p>Also, test dataprep microservice with generating an image caption using lvm-tgi</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Also, you are able to get the list of all videos that you uploaded:</p>
+<p>Now, test the microservice with posting a custom caption along with an image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Also, you are able to get the list of all files that you uploaded:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GET_VIDEO_ENDPOINT</span><span class="si">}</span>
+<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>Then you will get the response python-style LIST like this. Notice the name of each uploaded video e.g., <code class="docutils literal notranslate"><span class="pre">videoname.mp4</span></code> will become <code class="docutils literal notranslate"><span class="pre">videoname_uuid.mp4</span></code> where <code class="docutils literal notranslate"><span class="pre">uuid</span></code> is a unique ID for each uploaded video. The same video that are uploaded twice will have different <code class="docutils literal notranslate"><span class="pre">uuid</span></code>.</p>
+<p>Then you will get the response python-style LIST like this. Notice the name of each uploaded file e.g., <code class="docutils literal notranslate"><span class="pre">videoname.mp4</span></code> will become <code class="docutils literal notranslate"><span class="pre">videoname_uuid.mp4</span></code> where <code class="docutils literal notranslate"><span class="pre">uuid</span></code> is a unique ID for each uploaded file. The same files that are uploaded twice will have different <code class="docutils literal notranslate"><span class="pre">uuid</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>
 <span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_7ac553a1-116c-40a2-9fc5-deccbb89b507.mp4&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_6d13cf26-8ba2-4026-a3a9-ab2e5eb73a29.mp4&quot;</span>
-<span class="o">]</span>
+<span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_6d13cf26-8ba2-4026-a3a9-ab2e5eb73a29.mp4&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;apple_fcade6e6-11a5-44a2-833a-3e534cbe4419.png&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;AudioSample_976a85a6-dc3e-43ab-966c-9d81beef780c.wav</span>
+<span class="s2">]</span>
 </pre></div>
 </div>
-<p>To delete all uploaded videos along with data indexed with <code class="docutils literal notranslate"><span class="pre">$INDEX_NAME</span></code> in REDIS.</p>
+<p>To delete all uploaded files along with data indexed with <code class="docutils literal notranslate"><span class="pre">$INDEX_NAME</span></code> in REDIS.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_DELETE_VIDEO_ENDPOINT</span><span class="si">}</span>
+<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="si">}</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
