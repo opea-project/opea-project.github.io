@@ -195,8 +195,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#chatqna-application">ChatQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">ChatQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/README.html">ChatQnA Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/helm_charts/README.html">ChatQnA Deployment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance-deprecated/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance-deprecated/helm_charts/README.html">ChatQnA Deployment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/kubernetes/intel/gaudi/README.html">ChatQnA Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
@@ -1953,7 +1954,6 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
 <span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm_service
 </pre></div>
 </div>
@@ -2239,16 +2239,16 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div>
 <p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/generate<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM Service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/completions<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}]}&#39;</span>
 </pre></div>
 </div>
 </li>
