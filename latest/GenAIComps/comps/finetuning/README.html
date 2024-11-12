@@ -1199,6 +1199,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/monitoring.html#verify">Verify</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/agent/README.html">agent</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/agent/README.html#deploy">Deploy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/agent/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/agent/README.html#options">Options</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/asr/README.html">asr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/asr/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/asr/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
@@ -1337,6 +1343,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/whisper/README.html#installing-the-chart">Installing the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/whisper/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/common/whisper/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/agentqna/README.html">AgentQnA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/agentqna/README.html#deploy">Deploy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIInfra/helm-charts/agentqna/README.html#verify">Verify</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../GenAIInfra/helm-charts/audioqna/README.html">AudioQnA</a><ul>
@@ -2018,7 +2029,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--runtime<span class="o
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@./alpaca_data.json&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
 </pre></div>
 </div>
-<p>For reranking and embedding models finetuning, the training file <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/finetune/toy_finetune_data.jsonl">toy_finetune_data.jsonl</a> is an toy example.</p>
+<p>For reranking and embedding models finetuning, the training file <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/blob/1.1/examples/finetune/toy_finetune_data.jsonl">toy_finetune_data.jsonl</a> is an toy example.</p>
 </section>
 <section id="create-fine-tuning-job">
 <h3>3.2 Create fine-tuning job<a class="headerlink" href="#create-fine-tuning-job" title="Link to this heading">¶</a></h3>
@@ -2111,6 +2122,28 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <p>Below is an example for the format of the pretraining dataset:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A girl with a blue tank top sitting watching three dogs.&quot;</span><span class="p">}</span>
 <span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A boy with a blue tank top sitting watching three dogs.&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="direct-preference-optimization-dpo">
+<h4>3.2.5 Direct Preference Optimization (DPO)<a class="headerlink" href="#direct-preference-optimization-dpo" title="Link to this heading">¶</a></h4>
+<p>Use the following command to launch a job for LLM Direct Preference Optimization, such as <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-2-7b-hf</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">    &quot;training_file&quot;: &quot;test_data.jsonl&quot;,</span>
+<span class="s1">    &quot;model&quot;: &quot;meta-llama/Llama-2-7b-hf&quot;,</span>
+<span class="s1">    &quot;General&quot;:{</span>
+<span class="s1">      &quot;task&quot;:&quot;dpo&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  }&#39;</span>
+</pre></div>
+</div>
+<p>Below is an example for the format of the DPO dataset:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You will be given a definition of a task first, then some input of the task.\nThis task is about using the specified sentence and converting the sentence to Resource Description Framework (RDF) triplets of the form (subject, predicate object). The RDF triplets generated must be such that the triplets accurately capture the structure and semantics of the input sentence. The input is a sentence and the output is a list of triplets of the form [subject, predicate, object] that capture the relationships present in the sentence. When a sentence has more than 1 RDF triplet possible, the output must contain all of them.\n\nAFC Ajax (amateurs)&#39;s ground is Sportpark De Toekomst where Ajax Youth Academy also play.\nOutput:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\n  [\&quot;AFC Ajax (amateurs)\&quot;, \&quot;has ground\&quot;, \&quot;Sportpark De Toekomst\&quot;],\n  [\&quot;Ajax Youth Academy\&quot;, \&quot;plays at\&quot;, \&quot;Sportpark De Toekomst\&quot;]\n]&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Sure, I&#39;d be happy to help! Here are the RDF triplets for the input sentence:\n\n[AFC Ajax (amateurs), hasGround, Sportpark De Toekomst]\n[Ajax Youth Academy, playsAt, Sportpark De Toekomst]\n\nExplanation:\n\n* AFC Ajax (amateurs) is the subject of the first triplet, and hasGround is the predicate that describes the relationship between AFC Ajax (amateurs) and Sportpark De Toekomst.\n* Ajax Youth Academy is the subject of the second triplet, and playsAt is the predicate that describes the relationship between Ajax Youth Academy and Sportpark De Toekomst.\n\nNote that there may be other possible RDF triplets that could be derived from the input sentence, but the above triplets capture the main relationships present in the sentence.&quot;</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You are an AI assistant. You will be given a task. You must generate a detailed and long answer.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Generate an approximately fifteen-word sentence that describes all this data: Midsummer House eatType restaurant; Midsummer House food Chinese; Midsummer House priceRange moderate; Midsummer House customer rating 3 out of 5; Midsummer House near All Bar One&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Midsummer House is a moderately priced Chinese restaurant with a 3/5 customer rating, located near All Bar One.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Sure! Here&#39;s a sentence that describes all the data you provided:\n\n\&quot;Midsummer House is a moderately priced Chinese restaurant with a customer rating of 3 out of 5, located near All Bar One, offering a variety of delicious dishes.\&quot;&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
