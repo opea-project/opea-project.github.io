@@ -200,6 +200,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/benchmark/performance/kubernetes/intel/gaudi/README.html">ChatQnA Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_pinecone.html">Build Mega Service of ChatQnA (with Pinecone) on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of ChatQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
@@ -1945,16 +1946,20 @@
 <p><img alt="opea telemetry" src="https://raw.githubusercontent.com/Spycsh/assets/main/OPEA%20Telemetry.jpg" /></p>
 <section id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Link to this heading">¶</a></h2>
-<p>OPEA microservice metrics are exported in Prometheus format and are divided into two categories: general metrics and specific metrics.</p>
-<p>General metrics, such as <code class="docutils literal notranslate"><span class="pre">http_requests_total</span></code>, <code class="docutils literal notranslate"><span class="pre">http_request_size_bytes</span></code>, are exposed by every microservice endpoint using the <a class="reference external" href="https://github.com/trallnag/prometheus-fastapi-instrumentator">prometheus-fastapi-instrumentator</a>.</p>
-<p>Specific metrics are the built-in metrics exposed under <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> by each specific microservices such as TGI, vLLM, TEI and others. Both types of the metrics adhere to the Prometheus format.</p>
-<section id="general-metrics">
-<h3>General Metrics<a class="headerlink" href="#general-metrics" title="Link to this heading">¶</a></h3>
-<p>To access the general metrics of each microservice, you can use <code class="docutils literal notranslate"><span class="pre">curl</span></code> as follows:</p>
+<p>OPEA microservice metrics are exported in Prometheus format under <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint.</p>
+<p>They come in several categories:</p>
+<ul class="simple">
+<li><p>HTTP request metrics are exposed by every OPEA microservice using the <a class="reference external" href="https://github.com/trallnag/prometheus-fastapi-instrumentator">prometheus-fastapi-instrumentator</a></p></li>
+<li><p>Megaservices export additional metrics for application end-to-end load / performance</p></li>
+<li><p>Inferencing microservices such as TGI, vLLM, TEI provide their own metrics</p></li>
+</ul>
+<p>They can be fetched e.g. with <code class="docutils literal notranslate"><span class="pre">curl</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="o">{</span>port<span class="w"> </span>of<span class="w"> </span>your<span class="w"> </span>service<span class="o">}</span>/metrics
 </pre></div>
 </div>
-<p>Then you will see Prometheus format metrics printed out as follows:</p>
+<section id="http-metrics">
+<h3>HTTP Metrics<a class="headerlink" href="#http-metrics" title="Link to this heading">¶</a></h3>
+<p>Metrics output looks following:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">HELP http_requests_total Total number of requests by method, status and handler.</span>
 <span class="l l-Scalar l-Scalar-Plain"># TYPE http_requests_total counter</span>
 <span class="l l-Scalar l-Scalar-Plain">http_requests_total{handler=&quot;/metrics&quot;,method=&quot;GET&quot;,status=&quot;2xx&quot;} 3.0</span>
@@ -1969,10 +1974,22 @@
 <span class="nn">...</span>
 </pre></div>
 </div>
+<p>Most of them are histogram metrics.</p>
 </section>
-<section id="specific-metrics">
-<h3>Specific Metrics<a class="headerlink" href="#specific-metrics" title="Link to this heading">¶</a></h3>
-<p>To access the metrics exposed by each specific microservice, ensure that you check the specific port and your port mapping to reach the <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint correctly.</p>
+<section id="megaservice-e2e-metrics">
+<h3>Megaservice E2E metrics<a class="headerlink" href="#megaservice-e2e-metrics" title="Link to this heading">¶</a></h3>
+<p>Applications’ megaservice <code class="docutils literal notranslate"><span class="pre">ServiceOrchectrator</span></code> provides following metrics:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">megaservice_first_token_latency</span></code>: time to first token (TTFT)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">megaservice_inter_token_latency</span></code>: inter-token latency (ITL ~ TPOT)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">megaservice_request_latency</span></code>: whole request E2E latency = TTFT + ITL * tokens</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">megaservice_request_pending</span></code>: how many LLM requests are still in progress</p></li>
+</ul>
+<p>Latency ones are histogram metrics i.e. include count, total value and set of value buckets for each item.</p>
+<p>They are available only for <em>streaming</em> requests using LLM. Pending count accounts for all requests.</p>
+</section>
+<section id="inferencing-metrics">
+<h3>Inferencing Metrics<a class="headerlink" href="#inferencing-metrics" title="Link to this heading">¶</a></h3>
 <p>For example, you can <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">localhost:6006/metrics</span></code> to retrieve the TEI embedding metrics, and the output should look like follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># TYPE te_embed_count counter</span>
 <span class="l l-Scalar l-Scalar-Plain">te_embed_count 7</span>
@@ -1996,6 +2013,9 @@
 <span class="l l-Scalar l-Scalar-Plain">te_request_inference_duration_bucket{le=&quot;0.00003375000000000001&quot;} 0</span>
 </pre></div>
 </div>
+</section>
+<section id="metrics-collection">
+<h3>Metrics collection<a class="headerlink" href="#metrics-collection" title="Link to this heading">¶</a></h3>
 <p>These metrics can be scraped by the Prometheus server into a time-series database and further visualized using Grafana.</p>
 <p>Below are some default metrics endpoints for specific microservices:</p>
 <table class="docutils align-default">
