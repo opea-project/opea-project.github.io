@@ -1216,7 +1216,6 @@
 <li class="toctree-l4"><a class="reference internal" href="monitoring.html#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="monitoring.html#introduction">Introduction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="monitoring.html#pre-conditions">Pre-conditions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="monitoring.html#gotchas">Gotchas</a></li>
 <li class="toctree-l4"><a class="reference internal" href="monitoring.html#install">Install</a></li>
 <li class="toctree-l4"><a class="reference internal" href="monitoring.html#verify">Verify</a></li>
 </ul>
@@ -1995,7 +1994,7 @@ https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/</p>
 <p>Read <a class="reference internal" href="#post-install"><span class="xref myst">post-install</span></a> steps before installation!</p>
 <section id="resource-requests">
 <h3>Resource requests<a class="headerlink" href="#resource-requests" title="Link to this heading">¶</a></h3>
-<p>HPA controlled CPU pods SHOULD have appropriate resource requests or affinity rules (enabled in their
+<p>HPA controlled <em>CPU</em> pods SHOULD have appropriate resource requests or affinity rules (enabled in their
 subcharts and tested to work) so that k8s scheduler does not schedule too many of them on the same
 node(s). Otherwise they never reach ready state.</p>
 <p>If you use different models than the default ones, update TGI and TEI resource requests to match
@@ -2044,7 +2043,7 @@ Prometheus-operator and -adapter are missing support needed to automate that</p>
 <li><p>Top level chart name needs to conform to Prometheus metric naming conventions,
 as it is also used as a metric name prefix (with dashes converted to underscores)</p></li>
 <li><p>Unless pod resource requests, affinity rules, scheduling topology constraints and/or cluster NRI
-policies are used to better isolate service inferencing pods from each other, instances
+policies are used to better isolate <em>CPU</em> inferencing pods from each other, service instances
 scaled up on same node may never get to ready state</p></li>
 <li><p>Current HPA rules are just examples, for efficient scaling they need to be fine-tuned for given setup
 performance (underlying HW, used models and data types, OPEA version etc)</p></li>
@@ -2058,8 +2057,9 @@ performance (underlying HW, used models and data types, OPEA version etc)</p></l
 <p>ChatQnA includes pre-configured values files for scaling the services.</p>
 <p>To enable HPA, add <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">chatqna/hpa-values.yaml</span></code> option to your <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">install</span></code> command line.</p>
 <p>If <strong>CPU</strong> versions of TGI (and TEI) services are being scaled, resource requests and probe timings
-suitable for CPU usage need to be used. Add <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">chatqna/cpu-values.yaml</span></code> option to your <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">install</span></code>
-line. If you need to change model specified there, update the resource requests accordingly.</p>
+suitable for CPU usage need to be used. <code class="docutils literal notranslate"><span class="pre">chatqna/cpu-values.yaml</span></code> provides example of such constraints
+which can be added (with <code class="docutils literal notranslate"><span class="pre">-f</span></code> option) to your Helm install. As those values depend on the underlying HW,
+used model, data type and image versions, the specified resource values may need to be updated.</p>
 </section>
 <section id="post-install">
 <h3>Post-install<a class="headerlink" href="#post-install" title="Link to this heading">¶</a></h3>
