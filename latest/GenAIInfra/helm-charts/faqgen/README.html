@@ -1993,8 +1993,10 @@
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/faqgen</span> <span class="pre">8888:8888</span></code> to expose the service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:8888/v1/faqgen \</span>
-<span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
+<span class="go">      -H &quot;Content-Type: multipart/form-data&quot; \</span>
+<span class="go">      -F &quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot; \</span>
+<span class="go">      -F &quot;max_tokens=32&quot; \</span>
+<span class="go">      -F &quot;stream=false&quot;</span>
 </pre></div>
 </div>
 </section>
