@@ -157,6 +157,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../examples/ChatQnA/deploy/index.html#cloud-native">Cloud Native</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/AgentQnA/AgentQnA_Guide.html">AgentQnA Sample Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/AgentQnA/AgentQnA_Guide.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/AgentQnA/AgentQnA_Guide.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/AgentQnA/AgentQnA_Guide.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/AgentQnA/AgentQnA_Guide.html#deployment">Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/AgentQnA/deploy/index.html">AgentQnA Example Deployment Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../examples/AgentQnA/deploy/index.html#single-node">Single Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../examples/AgentQnA/deploy/xeon.html">Xeon Scalable Processor</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../GenAIExamples/README.html">Generative AI Examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#introduction">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIExamples/README.html#architecture">Architecture</a></li>
@@ -1996,10 +2010,32 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="consume-embeddings-service">
 <h2>🚀 Consume Embeddings Service<a class="headerlink" href="#consume-embeddings-service" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:6000/v1/embeddings<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Hello, world!&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<p>Use our basic API.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## query with single text</span>
+curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Hello, world!&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1">## query with multiple texts</span>
+curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:[&quot;Hello, world!&quot;,&quot;How are you?&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>We are also compatible with <a class="reference external" href="https://platform.openai.com/docs/api-reference/embeddings">OpenAI API</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## Input single text</span>
+curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:&quot;Hello, world!&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1">## Input multiple texts with parameters</span>
+curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:[&quot;Hello, world!&quot;,&quot;How are you?&quot;], &quot;dimensions&quot;:100}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 </section>
