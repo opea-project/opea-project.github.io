@@ -2059,9 +2059,13 @@ Expert worker agents, such as retrieval agent, knowledge graph agent, SQL agent,
 </section>
 <section id="deployment-with-docker">
 <h2>Deployment with docker<a class="headerlink" href="#deployment-with-docker" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>Build agent docker image</p>
-<p>Note: this is optional. The docker images will be automatically pulled when running the docker compose commands. This step is only needed if pulling images failed.</p>
+<ol class="arabic simple">
+<li><p>Build agent docker image [Optional]</p></li>
+</ol>
+<blockquote>
+<div><p>[!NOTE]
+the step is optional. The docker images will be automatically pulled when running the docker compose commands. This step is only needed if pulling images failed.</p>
+</div></blockquote>
 <p>First, clone the opea GenAIComps repo.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
 cd $WORKDIR
@@ -2073,15 +2077,24 @@ git clone https://github.com/opea-project/GenAIComps.git
 docker build -t opea/agent-langchain:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/agent/langchain/Dockerfile .
 </pre></div>
 </div>
-</li>
-<li><p>Set up environment for this example </br>
-First, clone this repo.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR
+<ol class="arabic" start="2">
+<li><p>Set up environment for this example </br></p>
+<p>First, clone this repo.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
+cd $WORKDIR
 git clone https://github.com/opea-project/GenAIExamples.git
 </pre></div>
 </div>
 <p>Second, set up env vars.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export TOOLSET_PATH=$WORKDIR/GenAIExamples/AgentQnA/tools/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Example: host_ip=&quot;192.168.1.1&quot; or export host_ip=&quot;External_Public_IP&quot;
+export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
+# if you are in a proxy environment, also set the proxy-related environment variables
+export http_proxy=&quot;Your_HTTP_Proxy&quot;
+export https_proxy=&quot;Your_HTTPs_Proxy&quot;
+# Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;
+export no_proxy=&quot;Your_No_Proxy&quot;
+
+export TOOLSET_PATH=$WORKDIR/GenAIExamples/AgentQnA/tools/
 # for using open-source llms
 export HUGGINGFACEHUB_API_TOKEN=&lt;your-HF-token&gt;
 export HF_CACHE_DIR=&lt;directory-where-llms-are-downloaded&gt; #so that no need to redownload every time
@@ -2110,16 +2123,27 @@ In this example, we will use some of the mock APIs provided in the Meta CRAG KDD
 </li>
 <li><p>Launch agent services</br>
 We provide two options for <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs, 2. OpenAI models via API calls.</p>
+<p>Deploy it on Gaudi or Xeon respectively</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Gaudi" for="sd-tab-item-0">
+Gaudi</label><div class="sd-tab-content docutils">
 <p>To use open-source LLMs on Gaudi2, run commands below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi
 bash launch_tgi_gaudi.sh
 bash launch_agent_service_tgi_gaudi.sh
 </pre></div>
 </div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Xeon" for="sd-tab-item-1">
+Xeon</label><div class="sd-tab-content docutils">
 <p>To use OpenAI models, run commands below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
 bash launch_agent_service_openai.sh
 </pre></div>
+</div>
+</div>
 </div>
 </li>
 </ol>
@@ -2137,13 +2161,13 @@ bash launch_agent_service_openai.sh
 </div>
 <p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
 <p>Second, validate worker agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${ip_address}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
      &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
     }&#39;
 </pre></div>
 </div>
 <p>Third, validate supervisor agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${ip_address}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
      &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
     }&#39;
 </pre></div>
