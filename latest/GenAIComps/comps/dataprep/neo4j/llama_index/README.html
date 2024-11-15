@@ -193,6 +193,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../examples/examples.html#audioqna-application">AudioQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/README.html">AudioQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/benchmark/accuracy/README.html">AudioQnA Accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/benchmark/performance/README.html">AudioQnA Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GenAIExamples/AudioQnA/kubernetes/intel/README.html">Deploy AudioQnA in a Kubernetes Cluster</a></li>
@@ -1982,6 +1983,14 @@
              
   <section id="dataprep-microservice-with-neo4j">
 <h1>Dataprep Microservice with Neo4J<a class="headerlink" href="#dataprep-microservice-with-neo4j" title="Link to this heading">¶</a></h1>
+<p>This Dataprep microservice performs:</p>
+<ul class="simple">
+<li><p>Graph extraction (entities, relationships and descripttions) using LLM</p></li>
+<li><p>Performs hierarchical_leiden clustering to identify communities in the knowledge graph</p></li>
+<li><p>Generates a community symmary for each community</p></li>
+<li><p>Stores all of the above in Neo4j Graph DB</p></li>
+</ul>
+<p>This microservice follows the graphRAG approached defined by Microsoft paper <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/from-local-to-global-a-graph-rag-approach-to-query-focused-summarization/">“From Local to Global: A Graph RAG Approach to Query-Focused Summarization”</a> with some differences such as: 1) only level zero cluster summaries are leveraged, 2) The input context to the final answer generation is trimmed to fit maximum context length.</p>
 <p>This dataprep microservice ingests the input files and uses LLM (TGI or OpenAI model when OPENAI_API_KEY is set) to extract entities, relationships and descriptions of those to build a graph-based text index.</p>
 <section id="setup-environment-variables">
 <h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
@@ -2055,6 +2064,11 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6004/v1/dataprep
 </pre></div>
 </div>
+<p>Please note that clustering of extracted entities and summarization happens in this data preparation step. The result of this is:</p>
+<ul class="simple">
+<li><p>Large processing time for large dataset. An LLM call is done to summarize each cluster which may result in large volume of LLM calls</p></li>
+<li><p>Need to clean graph GB entity_info and Cluster if dataprep is run multiple times since the resulting cluster numbering will differ between consecutive calls and will corrupt the results.</p></li>
+</ul>
 <p>We support table extraction from pdf documents. You can specify process_table and table_strategy by the following commands. “table_strategy” refers to the strategies to understand tables for table retrieval. As the setting progresses from “fast” to “hq” to “llm,” the focus shifts towards deeper table understanding at the expense of processing speed. The default strategy is “fast”.</p>
 <p>Note: If you specify “table_strategy=llm” TGI service will be used.</p>
 <p>For ensure the quality and comprehensiveness of the extracted entities, we recommend to use <code class="docutils literal notranslate"><span class="pre">gpt-4o</span></code> as the default model for parsing the document. To enable the openai service, please <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">OPENAI_KEY=xxxx</span></code> before using this services.</p>
@@ -2083,7 +2097,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Nov 14, 2024.</span>
+<span class="lastupdated">Published on Nov 15, 2024.</span>
 
   </div>
 

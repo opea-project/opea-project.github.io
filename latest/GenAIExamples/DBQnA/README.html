@@ -25,6 +25,8 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=32c45995"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -193,6 +195,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#audioqna-application">AudioQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/README.html">AudioQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/benchmark/accuracy/README.html">AudioQnA Accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AudioQnA/benchmark/performance/README.html">AudioQnA Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/kubernetes/intel/README.html">Deploy AudioQnA in a Kubernetes Cluster</a></li>
@@ -1986,6 +1989,45 @@
 <h1>DBQnA Application<a class="headerlink" href="#dbqna-application" title="Link to this heading">¶</a></h1>
 <p>Experience a revolutionary way to interact with your database using our DBQnA app! Harnessing the power of OPEA microservices, our application seamlessly translates natural language queries into SQL and delivers real-time database results, all designed to optimize workflows and enhance productivity for modern enterprises.</p>
 <hr class="docutils" />
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.7
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.7
+    classDef orchid fill:#DA70D6,stroke:#1E90FF,stroke-width:2px,fill-opacity:0.7
+    classDef invisible fill:transparent,stroke:transparent;
+    style Text2SQL-MegaService stroke:#000000
+
+    %% Subgraphs %%
+    subgraph Text2SQL-MegaService[&quot;Text-to-SQL MegaService &quot;]
+        direction LR
+        LLM([LLM MicroService]):::invisible
+    end
+    subgraph UserInterface[&quot; User Interface &quot;]
+        direction LR
+        a([User Input Query]):::orchid
+        UI([UI server&lt;br&gt;]):::orchid
+    end
+
+    LLM_gen{{LLM Service &lt;br&gt;}}
+    POSTGRES_DB{{POSGRES DATABASE &lt;br&gt;}}
+    GW([Text-to-SQL GateWay&lt;br&gt;]):::orange
+
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; Text2SQL-MegaService
+
+
+    %% Text-to-SQL service flow
+    direction TB
+    LLM &lt;-.-&gt; POSTGRES_DB
+    direction LR
+    LLM &lt;-.-&gt; LLM_gen
+
+        </div><hr class="docutils" />
 <section id="key-features">
 <h2>🛠️ Key Features<a class="headerlink" href="#key-features" title="Link to this heading">¶</a></h2>
 <section id="sql-query-generation">
@@ -2016,7 +2058,7 @@
   <div role="contentinfo">
     <p>&#169; Copyright 2024 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Nov 14, 2024.</span>
+<span class="lastupdated">Published on Nov 15, 2024.</span>
 
   </div>
 
