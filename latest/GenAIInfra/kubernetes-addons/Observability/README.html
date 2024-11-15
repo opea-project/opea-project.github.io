@@ -186,7 +186,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/examples.html">Examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#agentqna-application">AgentQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/README.html">Agents for Question Answering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/README.html">Deployment on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/README.html">Single node on-prem deployment with Docker Compose on Xeon Scalable processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/README.html">Single node on-prem deployment AgentQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/AgentQnA/retrieval_tool/README.html">Retrieval tool for agent</a></li>
 </ul>
 </li>
@@ -1452,9 +1453,10 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">How-To Setup Observability for OPEA Workload in Kubernetes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#prepare">Prepare</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#setup-prometheus-grafana">1. Setup Prometheus &amp; Grafana</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#metric-for-gaudi-hardware-v1-16-2">2. Metric for Gaudi Hardware(v1.16.2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#metric-for-opea-chatqna">3. Metric for OPEA/chatqna</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#metric-for-pcm-intel-performance-counter-monitor">4. Metric for PCM(Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metrics-for-gaudi-hardware-v1-16-2">2. Metrics for Gaudi Hardware (v1.16.2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metrics-for-opea-applications">3. Metrics for OPEA applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metrics-for-pcm-intel-performance-counter-monitor">4. Metrics for PCM (Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#more-dashboards">More dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../memory-bandwidth-exporter/README.html">memory bandwidth exporter</a><ul>
@@ -2021,8 +2023,8 @@
 <p>Open your browser and navigate to http://localhost:3000. Use “admin/prom-operator” as the username and the password to login.</p>
 </section>
 </section>
-<section id="metric-for-gaudi-hardware-v1-16-2">
-<h2>2. Metric for Gaudi Hardware(v1.16.2)<a class="headerlink" href="#metric-for-gaudi-hardware-v1-16-2" title="Link to this heading">¶</a></h2>
+<section id="metrics-for-gaudi-hardware-v1-16-2">
+<h2>2. Metrics for Gaudi Hardware (v1.16.2)<a class="headerlink" href="#metrics-for-gaudi-hardware-v1-16-2" title="Link to this heading">¶</a></h2>
 <p>To monitor Gaudi hardware metrics, you can use the following steps:</p>
 <section id="step-1-install-daemonset">
 <h3>Step 1: Install daemonset<a class="headerlink" href="#step-1-install-daemonset" title="Link to this heading">¶</a></h3>
@@ -2044,7 +2046,6 @@
 </section>
 <section id="step-4-verify-the-metrics">
 <h3>Step 4: Verify the metrics<a class="headerlink" href="#step-4-verify-the-metrics" title="Link to this heading">¶</a></h3>
-<p>The metric endpoints for habana will be a headless service, so we need to get endpoint to verify</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># To get the metric endpoints, e.g. to get first endpoint to test
 habana_metric_url=`kubectl -n monitoring get ep metric-exporter -o jsonpath=&quot;{.subsets[].addresses[0].ip}:{..subsets[].ports[0].port}&quot;`
 # Fetch the metrics
@@ -2074,63 +2075,72 @@ promhttp_metric_handler_requests_total{code=&quot;503&quot;} 0
 </section>
 <section id="step-5-import-the-dashboard-into-grafana">
 <h3>Step 5: Import the dashboard into Grafana<a class="headerlink" href="#step-5-import-the-dashboard-into-grafana" title="Link to this heading">¶</a></h3>
-<p>Manually import ./habana/Dashboard-Gaudi-HW.json into Grafana
-<img alt="alt text" src="../../../_images/image-1.png" /></p>
+<p>Manually import the <a class="reference internal" href="#./habana/Dashboard-Gaudi-HW.json"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Dashboard-Gaudi-HW.json</span></code></span></a> file into Grafana
+<img alt="Gaudi HW dashboard" src="../../../_images/habana.png" /></p>
 </section>
 </section>
-<section id="metric-for-opea-chatqna">
-<h2>3. Metric for OPEA/chatqna<a class="headerlink" href="#metric-for-opea-chatqna" title="Link to this heading">¶</a></h2>
-<p>To monitor ChatQnA metrics including TGI-gaudi,TEI,TEI-Reranking and other micro services, you can use the following steps:</p>
-<section id="step-1-install-chatqna-by-helm">
-<h3>Step 1: Install ChatQnA by Helm<a class="headerlink" href="#step-1-install-chatqna-by-helm" title="Link to this heading">¶</a></h3>
+<section id="metrics-for-opea-applications">
+<h2>3. Metrics for OPEA applications<a class="headerlink" href="#metrics-for-opea-applications" title="Link to this heading">¶</a></h2>
+<p>To monitor OPEA application metrics including TGI-gaudi, TEI, TEI-Reranking and other micro services, you can use the following steps:</p>
+<section id="step-1-install-application-with-helm">
+<h3>Step 1: Install application with Helm<a class="headerlink" href="#step-1-install-application-with-helm" title="Link to this heading">¶</a></h3>
 <p>Install Helm (version &gt;= 3.15) first. Refer to the <a class="reference external" href="https://helm.sh/docs/intro/install/">Helm Installation Guide</a> for more information.</p>
-<p>Refer to the <a class="reference internal" href="../../helm-charts/chatqna/README.html"><span class="std std-doc">ChatQnA helm chart</span></a> for instructions on deploying ChatQnA into Kubernetes on Xeon &amp; Gaudi.</p>
+<p>Install OPEA application as described in <a class="reference internal" href="../../helm-charts/README.html"><span class="std std-doc">Helm charts README</span></a>.</p>
+<p>For example, to install ChatQnA, follow <a class="reference internal" href="../../helm-charts/chatqna/README.html"><span class="std std-doc">ChatQnA helm chart</span></a> for instructions on deploying it to Kubernetes.</p>
+<p>Make sure to enable <a class="reference internal" href="../../helm-charts/monitoring.html"><span class="std std-doc">Helm monitoring option</span></a>.</p>
 </section>
-<section id="step-2-install-all-the-servicemonitor">
-<h3>Step 2: Install all the serviceMonitor<a class="headerlink" href="#step-2-install-all-the-servicemonitor" title="Link to this heading">¶</a></h3>
-<blockquote>
-<div><p>NOTE:
-If the chatQnA installed into another instance instead of chatqna(Default instance name),you should modify the
-matchLabels app.kubernetes.io/instance:${instanceName} with proper instanceName</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">chatqna</span><span class="o">/</span>
-</pre></div>
-</div>
-</section>
-<section id="step-3-install-the-dashboard">
-<h3>Step 3: Install the dashboard<a class="headerlink" href="#step-3-install-the-dashboard" title="Link to this heading">¶</a></h3>
+<section id="step-2-install-dashboards">
+<h3>Step 2: Install dashboards<a class="headerlink" href="#step-2-install-dashboards" title="Link to this heading">¶</a></h3>
+<p>Here are few Grafana dashboards for monitoring different aspects of OPEA applications:</p>
 <ul class="simple">
-<li><p>manually import tgi_grafana.json into the Grafana to monitor the tgi-gaudi utilization</p></li>
-<li><p>manually import queue_size_embedding_rerank_tgi.json into the Grafana to monitor the queue size of TGI-gaudi,TEI-Embedding,TEI-reranking</p></li>
-<li><p>OR you could create dashboard to monitor all the services in ChatQnA by yourself</p></li>
+<li><p><a class="reference internal" href="#./chatqna/dashboard/queue_size_embedding_rerank_tgi.json"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">queue_size_embedding_rerank_tgi.json</span></code></span></a>: queue size of TGI-gaudi, TEI-Embedding, TEI-reranking</p></li>
+<li><p><a class="reference internal" href="#./chatqna/dashboard/tgi_grafana.json"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">tgi_grafana.json</span></code></span></a>: <code class="docutils literal notranslate"><span class="pre">tgi-gaudi</span></code> text generation inferencing service utilization</p></li>
+<li><p><a class="reference internal" href="#./opea-apps/opea-scaling.json"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">opea-scaling.json</span></code></span></a>: scaling, request rates and failures for OPEA application megaservice, TEI-reranking, TEI-embedding, and TGI</p></li>
 </ul>
-<p><img alt="alt text" src="../../../_images/image-2.png" /></p>
+<p>You can either:</p>
+<ul class="simple">
+<li><p>Import them manually to Grafana,</p></li>
+<li><p>Use <a class="reference internal" href="#./update-dashboards.sh"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">update-dashboards.sh</span></code></span></a> script to add them to Kubernetes as Grafana dashboard configMaps</p>
+<ul>
+<li><p>(Script assumes Prometheus / Grafana to be installed according to above instructions)</p></li>
+</ul>
+</li>
+<li><p>Or create your own dashboards based on them</p></li>
+</ul>
+<p>Note: when dashboard is imported to Grafana, you can directly save changes to it, but those dashboards go away if Grafana is removed / re-installed.</p>
+<p>Whereas with dashboard configMaps, Grafana saves changes to a selected file, but you need to remember to re-apply them to Kubernetes / Grafana, for your changes to be there when that dashboard is reloaded.</p>
+<p><img alt="TGI dashboard" src="../../../_images/tgi.png" />
+<img alt="Scaling dashboard" src="../../../_images/opea-scaling.png" /></p>
 </section>
 </section>
-<section id="metric-for-pcm-intel-performance-counter-monitor">
-<h2>4. Metric for PCM(Intel® Performance Counter Monitor)<a class="headerlink" href="#metric-for-pcm-intel-performance-counter-monitor" title="Link to this heading">¶</a></h2>
+<section id="metrics-for-pcm-intel-performance-counter-monitor">
+<h2>4. Metrics for PCM (Intel® Performance Counter Monitor)<a class="headerlink" href="#metrics-for-pcm-intel-performance-counter-monitor" title="Link to this heading">¶</a></h2>
 <section id="step-1-install-pcm">
 <h3>Step 1: Install PCM<a class="headerlink" href="#step-1-install-pcm" title="Link to this heading">¶</a></h3>
-<p>Please refer this repo to install <a class="reference external" href="https://github.com/intel/pcm">Intel® PCM</a></p>
+<p>Please refer to this repo to install <a class="reference external" href="https://github.com/intel/pcm">Intel® PCM</a></p>
 </section>
 <section id="step-2-modify-install-pcm-service">
 <h3>Step 2: Modify &amp; Install pcm-service<a class="headerlink" href="#step-2-modify-install-pcm-service" title="Link to this heading">¶</a></h3>
-<p>modify the pcm/pcm-service.yaml to set the addresses</p>
+<p>modify the <code class="docutils literal notranslate"><span class="pre">pcm/pcm-service.yaml</span></code> file to set the addresses</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">pcm</span><span class="o">/</span><span class="n">pcm</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
 </section>
 <section id="step-3-install-pcm-servicemonitor">
-<h3>Step 3: Install pcm serviceMonitor<a class="headerlink" href="#step-3-install-pcm-servicemonitor" title="Link to this heading">¶</a></h3>
+<h3>Step 3: Install PCM serviceMonitor<a class="headerlink" href="#step-3-install-pcm-servicemonitor" title="Link to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">pcm</span><span class="o">/</span><span class="n">pcm</span><span class="o">-</span><span class="n">serviceMonitor</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
 </section>
 <section id="step-4-install-the-pcm-dashboard">
-<h3>Step 4: Install the pcm dashboard<a class="headerlink" href="#step-4-install-the-pcm-dashboard" title="Link to this heading">¶</a></h3>
-<p>manually import the pcm/pcm-dashboard.json into the Grafana
-<img alt="alt text" src="../../../_images/image.png" /></p>
+<h3>Step 4: Install the PCM dashboard<a class="headerlink" href="#step-4-install-the-pcm-dashboard" title="Link to this heading">¶</a></h3>
+<p>manually import the <a class="reference internal" href="#./pcm/pcm-dashboard.json"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">pcm-dashboard.json</span></code></span></a> file into the Grafana
+<img alt="PCM dashboard" src="../../../_images/pcm.png" /></p>
 </section>
+</section>
+<section id="more-dashboards">
+<h2>More dashboards<a class="headerlink" href="#more-dashboards" title="Link to this heading">¶</a></h2>
+<p>GenAIEval repository includes additional <a class="reference external" href="https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark/grafana">dashboards</a>.</p>
 </section>
 </section>
 

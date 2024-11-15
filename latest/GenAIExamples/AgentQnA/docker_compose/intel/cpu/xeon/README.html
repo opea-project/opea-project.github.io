@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deployment on Xeon &mdash; OPEA™ 1.0 documentation</title>
+  <title>Single node on-prem deployment with Docker Compose on Xeon Scalable processors &mdash; OPEA™ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,7 +28,7 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Retrieval tool for agent" href="../../../../retrieval_tool/README.html" />
+    <link rel="next" title="Single node on-prem deployment AgentQnA on Gaudi" href="../../hpu/gaudi/README.html" />
     <link rel="prev" title="Agents for Question Answering" href="../../../../README.html" /> 
 </head>
 
@@ -186,7 +186,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../../examples/examples.html">Examples</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#agentqna-application">AgentQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Agents for Question Answering</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Deployment on Xeon</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Single node on-prem deployment with Docker Compose on Xeon Scalable processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Single node on-prem deployment AgentQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../retrieval_tool/README.html">Retrieval tool for agent</a></li>
 </ul>
 </li>
@@ -1452,9 +1453,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html">How-To Setup Observability for OPEA Workload in Kubernetes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#prepare">Prepare</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#setup-prometheus-grafana">1. Setup Prometheus &amp; Grafana</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metric-for-gaudi-hardware-v1-16-2">2. Metric for Gaudi Hardware(v1.16.2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metric-for-opea-chatqna">3. Metric for OPEA/chatqna</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metric-for-pcm-intel-performance-counter-monitor">4. Metric for PCM(Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metrics-for-gaudi-hardware-v1-16-2">2. Metrics for Gaudi Hardware (v1.16.2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metrics-for-opea-applications">3. Metrics for OPEA applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#metrics-for-pcm-intel-performance-counter-monitor">4. Metrics for PCM (Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/Observability/README.html#more-dashboards">More dashboards</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIInfra/kubernetes-addons/memory-bandwidth-exporter/README.html">memory bandwidth exporter</a><ul>
@@ -1963,7 +1965,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Deployment on Xeon</li>
+  <li>Single node on-prem deployment with Docker Compose on Xeon Scalable processors</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/README.md.txt" rel="nofollow"> View page source</a>
@@ -1983,9 +1985,96 @@
   
            <div itemprop="articleBody">
              
-  <section id="deployment-on-xeon">
-<h1>Deployment on Xeon<a class="headerlink" href="#deployment-on-xeon" title="Link to this heading">¶</a></h1>
-<p>We deploy the retrieval tool on Xeon. For LLMs, we support OpenAI models via API calls. For instructions on using open-source LLMs, please refer to the deployment guide <a class="reference internal" href="../../../../README.html"><span class="std std-doc">here</span></a>.</p>
+  <section id="single-node-on-prem-deployment-with-docker-compose-on-xeon-scalable-processors">
+<h1>Single node on-prem deployment with Docker Compose on Xeon Scalable processors<a class="headerlink" href="#single-node-on-prem-deployment-with-docker-compose-on-xeon-scalable-processors" title="Link to this heading">¶</a></h1>
+<p>This example showcases a hierarchical multi-agent system for question-answering applications. We deploy the example on Xeon. For LLMs, we use OpenAI models via API calls. For instructions on using open-source LLMs, please refer to the deployment guide <a class="reference internal" href="../../../../README.html"><span class="std std-doc">here</span></a>.</p>
+<section id="deployment-with-docker">
+<h2>Deployment with docker<a class="headerlink" href="#deployment-with-docker" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>First, clone this repo.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
+cd $WORKDIR
+git clone https://github.com/opea-project/GenAIExamples.git
+</pre></div>
+</div>
+</li>
+<li><p>Set up environment for this example </br></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Example: host_ip=&quot;192.168.1.1&quot; or export host_ip=&quot;External_Public_IP&quot;
+export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
+# if you are in a proxy environment, also set the proxy-related environment variables
+export http_proxy=&quot;Your_HTTP_Proxy&quot;
+export https_proxy=&quot;Your_HTTPs_Proxy&quot;
+# Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;
+export no_proxy=&quot;Your_No_Proxy&quot;
+
+export TOOLSET_PATH=$WORKDIR/GenAIExamples/AgentQnA/tools/
+#OPANAI_API_KEY if you want to use OpenAI models
+export OPENAI_API_KEY=&lt;your-openai-key&gt;
+</pre></div>
+</div>
+</li>
+<li><p>Deploy the retrieval tool (i.e., DocIndexRetriever mega-service)</p>
+<p>First, launch the mega-service.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/retrieval_tool
+bash launch_retrieval_tool.sh
+</pre></div>
+</div>
+<p>Then, ingest data into the vector database. Here we provide an example. You can ingest your own data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">run_ingest_data</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>Launch Tool service
+In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
+</pre></div>
+</div>
+</li>
+<li><p>Launch <code class="docutils literal notranslate"><span class="pre">Agent</span></code> service</p>
+<p>The configurations of the supervisor agent and the worker agent are defined in the docker-compose yaml file. We currently use openAI GPT-4o-mini as LLM, and llama3.1-70B-instruct (served by TGI-Gaudi) in Gaudi example. To use openai llm, run command below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
+bash launch_agent_service_openai.sh
+</pre></div>
+</div>
+</li>
+<li><p>[Optional] Build <code class="docutils literal notranslate"><span class="pre">Agent</span></code> docker image if pulling images failed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIComps</span>
+<span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">opea</span><span class="o">/</span><span class="n">agent</span><span class="o">-</span><span class="n">langchain</span><span class="p">:</span><span class="n">latest</span> <span class="o">-</span><span class="n">f</span> <span class="n">comps</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">langchain</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">.</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="validate-services">
+<h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
+<p>First look at logs of the agent docker containers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker agent</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">react</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+</pre></div>
+</div>
+<p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
+<p>Second, validate worker agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+    }&#39;
+</pre></div>
+</div>
+<p>Third, validate supervisor agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+    }&#39;
+</pre></div>
+</div>
+</section>
+<section id="how-to-register-your-own-tools-with-agent">
+<h2>How to register your own tools with agent<a class="headerlink" href="#how-to-register-your-own-tools-with-agent" title="Link to this heading">¶</a></h2>
+<p>You can take a look at the tools yaml and python files in this example. For more details, please refer to the “Provide your own tools” section in the instructions <a class="reference internal" href="../../../../../../GenAIComps/comps/agent/langchain/README.html"><span class="std std-doc">here</span></a>.</p>
+</section>
 </section>
 
 
@@ -1994,7 +2083,7 @@
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../../../../README.html" class="btn btn-neutral float-left" title="Agents for Question Answering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../../../retrieval_tool/README.html" class="btn btn-neutral float-right" title="Retrieval tool for agent" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../hpu/gaudi/README.html" class="btn btn-neutral float-right" title="Single node on-prem deployment AgentQnA on Gaudi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
