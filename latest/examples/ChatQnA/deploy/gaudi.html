@@ -2034,9 +2034,11 @@ are interested to use.</p>
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <p>First step is to clone the GenAIExamples and GenAIComps. GenAIComps are
 fundamental necessary components used to build examples you find in
-GenAIExamples and deploy them as microservices.</p>
+GenAIExamples and deploy them as microservices. Also set the <code class="docutils literal notranslate"><span class="pre">TAG</span></code>
+environment variable with the version.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
 <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">export</span> <span class="n">TAG</span><span class="o">=</span><span class="mf">1.1</span>
 </pre></div>
 </div>
 <p>The examples utilize model weights from HuggingFace and langchain.</p>
@@ -2072,56 +2074,45 @@ there are 8 required and an optional docker images.</p>
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Pull" for="sd-tab-item-0">
 Pull</label><div class="sd-tab-content docutils">
-<p>To pull pre-built docker images on Docker Hub, proceed to the next step. To customize
-your application, you can choose to build individual docker images for the microservices
-before proceeding.</p>
+<p>If you decide to pull the docker containers and not build them locally,
+you can proceed to the next step where all the necessary containers will
+be pulled in from dockerhub.</p>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Build" for="sd-tab-item-1">
 Build</label><div class="sd-tab-content docutils">
 <p>From within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder, checkout the release tag.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIComps</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIComps
+git checkout tags/v${TAG}
 </pre></div>
 </div>
-</div>
-</div>
-<section id="build-dataprep-image">
-<h4>Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/redis/langchain/Dockerfile<span class="w"> </span>.
+<h4 class="rubric" id="build-dataprep-image">Build Dataprep Image</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-</section>
-<section id="build-embedding-image">
-<h4>Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
+<h4 class="rubric" id="build-embedding-image">Build Embedding Image</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-</section>
-<section id="build-retriever-image">
-<h4>Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever-redis:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/redis/langchain/Dockerfile<span class="w"> </span>.
+<h4 class="rubric" id="build-retriever-image">Build Retriever Image</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-</section>
-<section id="build-rerank-image">
-<h4>Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/reranks/tei/Dockerfile<span class="w"> </span>.
+<h4 class="rubric" id="build-rerank-image">Build Rerank Image</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/reranks/tei/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-</section>
-<section id="build-docker">
-<h4>Build docker<a class="headerlink" href="#build-docker" title="Link to this heading">¶</a></h4>
+<h4 class="rubric" id="build-llm-image">Build LLM Image</h4>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-2">
 vllm</label><div class="sd-tab-content docutils">
 <p>Build vLLM docker image with hpu support</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-vllm-hpu:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm/langchain/dependency/Dockerfile.intel_hpu .
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="o">./</span><span class="n">comps</span><span class="o">/</span><span class="n">llms</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">/</span><span class="n">vllm</span><span class="o">/</span><span class="n">langchain</span><span class="o">/</span><span class="n">dependency</span><span class="o">/</span><span class="n">build_docker_vllm</span><span class="o">.</span><span class="n">sh</span> <span class="n">hpu</span>
 </pre></div>
 </div>
 <p>Build vLLM Microservice image</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-vllm:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm/langchain/Dockerfile .
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-vllm:${TAG} --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/vllm/langchain/Dockerfile .
 cd ..
 </pre></div>
 </div>
@@ -2129,25 +2120,20 @@ cd ..
 <input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-3">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="build-tei-gaudi-image">
-<h3>Build TEI Gaudi Image<a class="headerlink" href="#build-tei-gaudi-image" title="Link to this heading">¶</a></h3>
+<h3 class="rubric" id="build-tei-gaudi-image">Build TEI Gaudi Image</h3>
 <p>Since a TEI Gaudi Docker image hasn’t been published, we’ll need to build it from the <a class="reference external" href="https://github.com/huggingface/tei-gaudi">tei-gaudi</a> repository.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/huggingface/tei-gaudi
 <span class="nb">cd</span><span class="w"> </span>tei-gaudi/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile-hpu<span class="w"> </span>-t<span class="w"> </span>opea/tei-gaudi:latest<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile-hpu<span class="w"> </span>-t<span class="w"> </span>opea/tei-gaudi:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
-</section>
-<section id="build-mega-service-images">
-<h3>Build Mega Service images<a class="headerlink" href="#build-mega-service-images" title="Link to this heading">¶</a></h3>
+<h3 class="rubric" id="build-mega-service-images">Build Mega Service images</h3>
 <p>The Megaservice is a pipeline that channels data through different
 microservices, each performing varied tasks. We define the different
 microservices and the flow of data between them in the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> file, say in
@@ -2158,74 +2144,71 @@ megaservice to suit the needs.</p>
 <p>Build the megaservice image for this use case</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
 <span class="n">cd</span> <span class="n">GenAIExamples</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.1</span>
 <span class="n">cd</span> <span class="n">ChatQnA</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
-</section>
-<section id="build-other-service-images">
-<h3>Build Other Service images<a class="headerlink" href="#build-other-service-images" title="Link to this heading">¶</a></h3>
+<h3 class="rubric" id="build-other-service-images">Build Other Service images</h3>
 <p>If you want to enable guardrails microservice in the pipeline, please use the below command instead:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-guardrails:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.guardrails<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-guardrails:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.guardrails<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
-</section>
-<section id="build-the-ui-image">
-<h3>Build the UI Image<a class="headerlink" href="#build-the-ui-image" title="Link to this heading">¶</a></h3>
+<h3 class="rubric" id="build-the-ui-image">Build the UI Image</h3>
 <p>As mentioned, you can build 2 modes of UI</p>
 <p><em>Basic UI</em></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 <p><em>Conversation UI</em>
 If you want a conversational experience with chatqna megaservice.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
-</section>
-<section id="sanity-check">
-<h3>Sanity Check<a class="headerlink" href="#sanity-check" title="Link to this heading">¶</a></h3>
-<p>Check if you have the below set of docker images, before moving on to the next step:</p>
+<h3 class="rubric" id="sanity-check">Sanity Check</h3>
+<p>Check if you have the below set of docker images before moving on to the next step. The tags are
+based on what you set the environment variable <code class="docutils literal notranslate"><span class="pre">TAG</span></code> to.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-4">
 vllm</label><div class="sd-tab-content docutils">
 <ul class="simple">
-<li><p>opea/dataprep-redis:latest</p></li>
-<li><p>opea/embedding-tei:latest</p></li>
-<li><p>opea/retriever-redis:latest</p></li>
-<li><p>opea/reranking-tei:latest</p></li>
-<li><p>opea/tei-gaudi:latest</p></li>
-<li><p>opea/chatqna:latest or opea/chatqna-guardrails:latest</p></li>
-<li><p>opea/chatqna:latest</p></li>
-<li><p>opea/chatqna-ui:latest</p></li>
-<li><p>opea/vllm:latest</p></li>
-<li><p>opea/llm-vllm:latest</p></li>
+<li><p>opea/dataprep-redis:${TAG}</p></li>
+<li><p>opea/embedding-tei:${TAG}</p></li>
+<li><p>opea/retriever-redis:${TAG}</p></li>
+<li><p>opea/reranking-tei:${TAG}</p></li>
+<li><p>opea/tei-gaudi:${TAG}</p></li>
+<li><p>opea/chatqna:${TAG} or opea/chatqna-guardrails:${TAG}</p></li>
+<li><p>opea/chatqna:${TAG}</p></li>
+<li><p>opea/chatqna-ui:${TAG}</p></li>
+<li><p>opea/vllm:${TAG}</p></li>
+<li><p>opea/llm-vllm:${TAG}</p></li>
 </ul>
 </div>
 <input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-5">
 TGI</label><div class="sd-tab-content docutils">
 <ul class="simple">
-<li><p>opea/dataprep-redis:latest</p></li>
-<li><p>opea/embedding-tei:latest</p></li>
-<li><p>opea/retriever-redis:latest</p></li>
-<li><p>opea/reranking-tei:latest</p></li>
-<li><p>opea/tei-gaudi:latest</p></li>
-<li><p>opea/chatqna:latest or opea/chatqna-guardrails:latest</p></li>
-<li><p>opea/chatqna-ui:latest</p></li>
-<li><p>opea/llm-tgi:latest</p></li>
+<li><p>opea/dataprep-redis:${TAG}</p></li>
+<li><p>opea/embedding-tei:${TAG}</p></li>
+<li><p>opea/retriever-redis:${TAG}</p></li>
+<li><p>opea/reranking-tei:${TAG}</p></li>
+<li><p>opea/tei-gaudi:${TAG}</p></li>
+<li><p>opea/chatqna:${TAG} or opea/chatqna-guardrails:${TAG}</p></li>
+<li><p>opea/chatqna-ui:${TAG}</p></li>
+<li><p>opea/llm-tgi:${TAG}</p></li>
 </ul>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -2425,21 +2408,22 @@ TGI</label><div class="sd-tab-content docutils">
 <p>Check if all the containers  launched via docker compose has started</p>
 <p>For example, the ChatQnA example starts 11 docker (services), check these docker
 containers are all running, i.e, all the containers  <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>  are  <code class="docutils literal notranslate"><span class="pre">Up</span></code>
-To do a quick sanity check, try <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> to see if all the containers are running</p>
+To do a quick sanity check, try <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> to see if all the containers are running.
+Note that <code class="docutils literal notranslate"><span class="pre">TAG</span></code> will be the value you set earlier.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-12" name="sd-tab-set-6" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-12">
 vllm</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                   </span>COMMAND<span class="w">                  </span>CREATED<span class="w">              </span>STATUS<span class="w">              </span>PORTS<span class="w">                                                                                  </span>NAMES
-42c8d5ec67e9<span class="w">   </span>opea/chatqna-ui:latest<span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-gaudi-ui-server
-7f7037a75f8b<span class="w">   </span>opea/chatqna:latest<span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-gaudi-backend-server
-4049c181da93<span class="w">   </span>opea/embedding-tei:latest<span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
-171816f0a789<span class="w">   </span>opea/dataprep-redis:latest<span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
-10ee6dec7d37<span class="w">   </span>opea/llm-vllm:latest<span class="w">                                    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-vllm-gaudi-server
-ce4e7802a371<span class="w">   </span>opea/retriever-redis:latest<span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
-be6cd2d0ea38<span class="w">   </span>opea/reranking-tei:latest<span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-gaudi-server
-cc45ff032e8c<span class="w">   </span>opea/tei-gaudi:latest<span class="w">                                   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8090-&gt;80/tcp,<span class="w"> </span>:::8090-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-gaudi-server
-4969ec3aea02<span class="w">   </span>opea/llm-vllm-hpu:latest<span class="w">                                </span><span class="s2">&quot;/bin/bash -c &#39;expor…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8007-&gt;80/tcp,<span class="w"> </span>:::8007-&gt;80/tcp<span class="w">                                                  </span>vllm-gaudi-server
+42c8d5ec67e9<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-gaudi-ui-server
+7f7037a75f8b<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-gaudi-backend-server
+4049c181da93<span class="w">   </span>opea/embedding-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
+171816f0a789<span class="w">   </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
+10ee6dec7d37<span class="w">   </span>opea/llm-vllm:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-vllm-gaudi-server
+ce4e7802a371<span class="w">   </span>opea/retriever-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
+be6cd2d0ea38<span class="w">   </span>opea/reranking-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-gaudi-server
+cc45ff032e8c<span class="w">   </span>opea/tei-gaudi:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8090-&gt;80/tcp,<span class="w"> </span>:::8090-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-gaudi-server
+4969ec3aea02<span class="w">   </span>opea/llm-vllm-hpu:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                </span><span class="s2">&quot;/bin/bash -c &#39;expor…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8007-&gt;80/tcp,<span class="w"> </span>:::8007-&gt;80/tcp<span class="w">                                                  </span>vllm-gaudi-server
 0657cb66df78<span class="w">   </span>redis/redis-stack:7.2.0-v9<span class="w">                              </span><span class="s2">&quot;/entrypoint.sh&quot;</span><span class="w">         </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:6379-&gt;6379/tcp,<span class="w"> </span>:::6379-&gt;6379/tcp,<span class="w"> </span><span class="m">0</span>.0.0.0:8001-&gt;8001/tcp,<span class="w"> </span>:::8001-&gt;8001/tcp<span class="w">   </span>redis-vector-db
 684d3e9d204a<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.2<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">   </span><span class="m">0</span>.0.0.0:8808-&gt;80/tcp,<span class="w"> </span>:::8808-&gt;80/tcp<span class="w">                                                  </span>tei-reranking-gaudi-server
 </pre></div>
@@ -2449,15 +2433,15 @@ cc45ff032e8c<span class="w">   </span>opea/tei-gaudi:latest<span class="w">     
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-13">
 TGI</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                   </span>COMMAND<span class="w">                  </span>CREATED<span class="w">         </span>STATUS<span class="w">         </span>PORTS<span class="w">                                                                                  </span>NAMES
-0355d705484a<span class="w">   </span>opea/chatqna-ui:latest<span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-gaudi-ui-server
-29a7a43abcef<span class="w">   </span>opea/chatqna:latest<span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-gaudi-backend-server
-1eb6f5ad6f85<span class="w">   </span>opea/llm-tgi:latest<span class="w">                                     </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-tgi-gaudi-server
-ad27729caf68<span class="w">   </span>opea/reranking-tei:latest<span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-gaudi-server
-84f02cf2a904<span class="w">   </span>opea/dataprep-redis:latest<span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
-367459f6e65b<span class="w">   </span>opea/embedding-tei:latest<span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
-8c78cde9f588<span class="w">   </span>opea/retriever-redis:latest<span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
+0355d705484a<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-gaudi-ui-server
+29a7a43abcef<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-gaudi-backend-server
+1eb6f5ad6f85<span class="w">   </span>opea/llm-tgi:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                     </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-tgi-gaudi-server
+ad27729caf68<span class="w">   </span>opea/reranking-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-gaudi-server
+84f02cf2a904<span class="w">   </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
+367459f6e65b<span class="w">   </span>opea/embedding-tei:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
+8c78cde9f588<span class="w">   </span>opea/retriever-redis:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
 fa80772de92c<span class="w">   </span>ghcr.io/huggingface/tgi-gaudi:2.0.1<span class="w">                     </span><span class="s2">&quot;text-generation-lau…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8005-&gt;80/tcp,<span class="w"> </span>:::8005-&gt;80/tcp<span class="w">                                                  </span>tgi-gaudi-server
-581687a2cc1a<span class="w">   </span>opea/tei-gaudi:latest<span class="w">                                   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8090-&gt;80/tcp,<span class="w"> </span>:::8090-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-gaudi-server
+581687a2cc1a<span class="w">   </span>opea/tei-gaudi:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w">                                   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8090-&gt;80/tcp,<span class="w"> </span>:::8090-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-gaudi-server
 c59178629901<span class="w">   </span>redis/redis-stack:7.2.0-v9<span class="w">                              </span><span class="s2">&quot;/entrypoint.sh&quot;</span><span class="w">         </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:6379-&gt;6379/tcp,<span class="w"> </span>:::6379-&gt;6379/tcp,<span class="w"> </span><span class="m">0</span>.0.0.0:8001-&gt;8001/tcp,<span class="w"> </span>:::8001-&gt;8001/tcp<span class="w">   </span>redis-vector-db
 5c3a78144498<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">   </span><span class="m">0</span>.0.0.0:8808-&gt;80/tcp,<span class="w"> </span>:::8808-&gt;80/tcp<span class="w">                                                  </span>tei-reranking-gaudi-server
 </pre></div>
@@ -2790,7 +2774,7 @@ TGI</label><div class="sd-tab-content docutils">
 <h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>chaqna-gaudi-ui-server:
-<span class="w">    </span>image:<span class="w"> </span>opea/chatqna-ui:latest
+<span class="w">    </span>image:<span class="w"> </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span>
 <span class="w">    </span>...
 <span class="w">    </span>ports:
 <span class="w">      </span>-<span class="w"> </span><span class="s2">&quot;80:5173&quot;</span>
@@ -2801,7 +2785,7 @@ TGI</label><div class="sd-tab-content docutils">
 <h3>Conversational UI<a class="headerlink" href="#conversational-ui" title="Link to this heading">¶</a></h3>
 <p>To access the Conversational UI (react based) frontend, modify the UI service in the compose.yaml file. Replace chaqna-gaudi-ui-server service with the chatqna-gaudi-conversation-ui-server service as per the config below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chaqna-gaudi-conversation-ui-server:
-<span class="w">  </span>image:<span class="w"> </span>opea/chatqna-conversation-ui:latest
+<span class="w">  </span>image:<span class="w"> </span>opea/chatqna-conversation-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span>
 <span class="w">  </span>container_name:<span class="w"> </span>chatqna-gaudi-conversation-ui-server
 <span class="w">  </span>environment:
 <span class="w">    </span>-<span class="w"> </span><span class="nv">APP_BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="si">}</span>
@@ -2815,11 +2799,11 @@ TGI</label><div class="sd-tab-content docutils">
 </pre></div>
 </div>
 <p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
-    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
-    <span class="o">...</span>
-    <span class="n">ports</span><span class="p">:</span>
-      <span class="o">-</span> <span class="s2">&quot;80:80&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  chaqna-gaudi-conversation-ui-server:
+    image: opea/chatqna-conversation-ui:${TAG}
+    ...
+    ports:
+      - &quot;80:80&quot;
 </pre></div>
 </div>
 </section>
