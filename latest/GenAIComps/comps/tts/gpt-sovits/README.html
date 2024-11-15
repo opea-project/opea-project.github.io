@@ -2029,10 +2029,15 @@
 <ul class="simple">
 <li><p>Change reference audio</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/change_refer<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;refer_wav_path&quot;: &quot;path_to_your_audio.wav&quot;,</span>
-<span class="s1">    &quot;prompt_text&quot;: &quot;transcription_of_your_audio&quot;,</span>
-<span class="s1">    &quot;prompt_language&quot;: &quot;language_of_your_audio&quot;</span>
+<p>This microservice allows you to use the zero-shot voice cloning feature. For example, you can change the reference audio from the default female to a male voice:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/OpenTalker/SadTalker/blob/main/examples/driven_audio/chinese_poem1.wav
+
+docker<span class="w"> </span>cp<span class="w"> </span>chinese_poem1.wav<span class="w"> </span>gpt-sovits-service:/home/user/chinese_poem1.wav
+
+<span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span>localhost:9880/change_refer<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">    &quot;refer_wav_path&quot;: &quot;/home/user/chinese_poem1.wav&quot;,</span>
+<span class="s1">    &quot;prompt_text&quot;: &quot;窗前明月光，疑是地上霜，举头望明月，低头思故乡。&quot;,</span>
+<span class="s1">    &quot;prompt_language&quot;: &quot;zh&quot;</span>
 <span class="s1">}&#39;</span>
 </pre></div>
 </div>
