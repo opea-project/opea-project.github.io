@@ -2007,7 +2007,7 @@ HUGGINGFACEHUB_API_TOKEN</p>
 <h2>Deploy On Xeon<a class="headerlink" href="#deploy-on-xeon" title="Link to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">manifest</span>
 <span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;YourOwnToken&quot;</span>
-<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/insert-your-huggingface-token-here/$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">/g&quot;</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-huggingface-token-here|$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
 <span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
@@ -2025,10 +2025,55 @@ HUGGINGFACEHUB_API_TOKEN</p>
 <h2>Deploy On Gaudi<a class="headerlink" href="#deploy-on-gaudi" title="Link to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span><span class="n">manifest</span>
 <span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;YourOwnToken&quot;</span>
-<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/insert-your-huggingface-token-here/$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">/g&quot;</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-huggingface-token-here|$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
 <span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">chatqna</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
+</section>
+<section id="deploy-on-xeon-with-remote-llm-model">
+<h2>Deploy on Xeon with Remote LLM Model<a class="headerlink" href="#deploy-on-xeon-with-remote-llm-model" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">manifest</span>
+<span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;YourOwnToken&quot;</span>
+<span class="n">export</span> <span class="n">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;Your Remote Inference Endpoint&quot;</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-huggingface-token-here|$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-remote-inference-endpoint|$</span><span class="si">{vLLM_ENDPOINT}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<section id="additional-steps-for-remote-endpoints-with-authentication-if-no-authentication-skip-this-step">
+<h3>Additional Steps for Remote Endpoints with Authentication (If No Authentication Skip This Step)<a class="headerlink" href="#additional-steps-for-remote-endpoints-with-authentication-if-no-authentication-skip-this-step" title="Link to this heading">¶</a></h3>
+<p>If your remote inference endpoint is protected with OAuth Client Credentials authentication, update CLIENTID, CLIENT_SECRET and TOKEN_URL with the correct values in “chatqna-llm-uservice-config” ConfigMap</p>
+</section>
+<section id="deploy">
+<h3>Deploy<a class="headerlink" href="#deploy" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="deploy-on-gaudi-with-tei-rerank-and-vllm-models-running-remotely">
+<h2>Deploy on Gaudi with TEI, Rerank, and vLLM Models Running Remotely<a class="headerlink" href="#deploy-on-gaudi-with-tei-rerank-and-vllm-models-running-remotely" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span><span class="n">manifest</span>
+<span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;YourOwnToken&quot;</span>
+<span class="n">export</span> <span class="n">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;Your Remote Inference Endpoint&quot;</span>
+<span class="n">export</span> <span class="n">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;Your Remote TEI Embedding Endpoint&quot;</span>
+<span class="n">export</span> <span class="n">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;Your Remote Reranking Endpoint&quot;</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-huggingface-token-here|$</span><span class="si">{HUGGINGFACEHUB_API_TOKEN}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-remote-vllm-inference-endpoint|$</span><span class="si">{vLLM_ENDPOINT}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-remote-embedding-endpoint|$</span><span class="si">{TEI_EMBEDDING_ENDPOINT}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s|insert-your-remote-reranking-endpoint|$</span><span class="si">{TEI_RERANKING_ENDPOINT}</span><span class="s2">|g&quot;</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<section id="id1">
+<h3>Additional Steps for Remote Endpoints with Authentication (If No Authentication Skip This Step)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<p>If your remote inference endpoint is protected with OAuth Client Credentials authentication, update CLIENTID, CLIENT_SECRET and TOKEN_URL with the correct values in “chatqna-llm-uservice-config”, “chatqna-data-prep-config”, “chatqna-embedding-usvc-config”, “chatqna-reranking-usvc-config”, “chatqna-retriever-usvc-config” ConfigMaps</p>
+</section>
+<section id="id2">
+<h3>Deploy<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">chatqna</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">inference</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="verify-services">
 <h2>Verify Services<a class="headerlink" href="#verify-services" title="Link to this heading">¶</a></h2>
