@@ -2013,18 +2013,17 @@
 <span class="go">./update_dependency.sh</span>
 <span class="go">helm dependency update audioqna</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
-<span class="go">export MODELNAME=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
 <span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Xeon
-<span class="go">helm install audioqna audioqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR} --set tgi.LLM_MODEL_ID=${MODELNAME}</span>
+<span class="go">helm install audioqna audioqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN}</span>
 <span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Gaudi
-<span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>tgi.LLM_MODEL_ID<span class="o">=</span><span class="si">${</span><span class="nv">MODELNAME</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/gaudi-values.yaml
+<span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/gaudi-values.yaml
 </pre></div>
 </div>
 <section id="important-note">
 <h3>IMPORTANT NOTE<a class="headerlink" href="#important-note" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Make sure your <code class="docutils literal notranslate"><span class="pre">MODELDIR</span></code> exists on the node where your workload is schedueled so you can cache the downloaded model for next time use. Otherwise, set <code class="docutils literal notranslate"><span class="pre">global.modelUseHostPath</span></code> to ‘null’ if you don’t want to cache the model.</p></li>
+<li><p>If you want to cache the downloaded model for later reuse, please set the bash environment variable <code class="docutils literal notranslate"><span class="pre">MODELDIR</span></code> to an existing directory on the node, then append <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">global.modelUseHostPath=${MODELDIR}</span></code> to the <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">install</span></code> commands.</p></li>
+<li><p>Make sure your <code class="docutils literal notranslate"><span class="pre">${MODELDIR}/.locks</span></code> is writable to all the users if you want to use the cached downloaded models, i.e. <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">sudo</span> <span class="pre">chmod</span> <span class="pre">+w</span> <span class="pre">${MODELDIR}/.locks</span></code>.</p></li>
 </ol>
 </section>
 </section>
