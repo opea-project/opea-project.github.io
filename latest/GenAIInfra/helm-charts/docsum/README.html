@@ -2022,8 +2022,10 @@
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/docsum</span> <span class="pre">8888:8888</span></code> to expose the DocSum service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:8888/v1/docsum \</span>
-<span class="go">    -H &#39;Content-Type: application/json&#39; \</span>
-<span class="go">    -d &#39;{&quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
+<span class="go">    -H &#39;Content-Type: multipart/form-data&#39; \</span>
+<span class="go">    -F &quot;type=text&quot; \</span>
+<span class="go">    -F &quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot; \</span>
+<span class="go">    -F &quot;max_tokens=32&quot;</span>
 </pre></div>
 </div>
 </section>
