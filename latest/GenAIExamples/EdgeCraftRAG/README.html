@@ -194,7 +194,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/README.html">AudioQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/benchmark/accuracy/README.html">AudioQnA Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/benchmark/performance/README.html">AudioQnA Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../AudioQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of AudioQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AudioQnA/kubernetes/intel/README.html">Deploy AudioQnA in a Kubernetes Cluster</a></li>
@@ -1805,11 +1804,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../community/codeowner.html">OPEA Project Code Owners</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#docs-repository-code-owners">docs Repository Code Owners</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#genaicomps-repository-code-owners">GenAIComps Repository Code Owners</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#genaieval-repository-code-owners">GenAIEval Repository Code Owners</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#genaiexamples-repository-code-owners">GenAIExamples Repository Code Owners</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#genaiinfra-repository-code-owners">GenAIInfra Repository Code Owners</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#docs-repository-code-owners">docs Repository Code Owners</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/codeowner.html#continuous-integration-cicd-owners">Continuous Integration (CICD) owners</a></li>
 </ul>
 </li>
@@ -2040,13 +2039,12 @@ Please follow this link <a class="reference external" href="https://github.com/o
 </section>
 <section id="start-edge-craft-rag-services-with-docker-compose">
 <h3>Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#start-edge-craft-rag-services-with-docker-compose" title="Link to this heading">¶</a></h3>
+<p>If you want to enable vLLM with OpenVINO service, please finish the steps in <a class="reference internal" href="#optional-launch-vllm-with-openvino-service"><span class="xref myst">Launch vLLM with OpenVINO service</span></a> first.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG/docker_compose/intel/gpu/arc
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;your model path for all your models&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="s2">&quot;your doc path for uploading a dir of files&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">GRADIO_PATH</span><span class="o">=</span><span class="s2">&quot;your gradio cache path for transferring files&quot;</span>
-<span class="c1"># If you have a specific prompt template, please uncomment the following line</span>
-<span class="c1"># export PROMPT_PATH=&quot;your prompt path for prompt templates&quot;</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
 <span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${GRADIO_PATH}</span>
@@ -2076,23 +2074,49 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>Qwen/Qwen2-7B-Instruct<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/Qwen/Qwen2-7B-Instruct/INT4_compressed_weights<span class="w"> </span>--weight-format<span class="w"> </span>int4
+
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<section id="launch-services-with-local-inference">
-<h4>Launch services with local inference<a class="headerlink" href="#launch-services-with-local-inference" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-<section id="launch-services-with-vllm-openvino-inference-service">
-<h4>Launch services with vLLM + OpenVINO inference service<a class="headerlink" href="#launch-services-with-vllm-openvino-inference-service" title="Link to this heading">¶</a></h4>
-<p>Set up Additional Environment Variables and start with compose_vllm.yaml</p>
+<section id="optional-launch-vllm-with-openvino-service">
+<h4>(Optional) Launch vLLM with OpenVINO service<a class="headerlink" href="#optional-launch-vllm-with-openvino-service" title="Link to this heading">¶</a></h4>
+<ol class="arabic simple">
+<li><p>Set up Environment Variables</p></li>
+</ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT</span><span class="o">=</span><span class="m">8008</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VLLM_SERVICE_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="c1">#your HF token</span>
-
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Uncomment below code in ‘GenAIExamples/EdgeCraftRAG/docker_compose/intel/gpu/arc/compose.yaml’</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># vllm-openvino-server:</span>
+<span class="w">  </span><span class="c1">#   container_name: vllm-openvino-server</span>
+<span class="w">  </span><span class="c1">#   image: opea/vllm-arc:latest</span>
+<span class="w">  </span><span class="c1">#   ports:</span>
+<span class="w">  </span><span class="c1">#     - ${VLLM_SERVICE_PORT:-8008}:80</span>
+<span class="w">  </span><span class="c1">#   environment:</span>
+<span class="w">  </span><span class="c1">#     HTTPS_PROXY: ${https_proxy}</span>
+<span class="w">  </span><span class="c1">#     HTTP_PROXY: ${https_proxy}</span>
+<span class="w">  </span><span class="c1">#     VLLM_OPENVINO_DEVICE: GPU</span>
+<span class="w">  </span><span class="c1">#     HF_ENDPOINT: ${HF_ENDPOINT}</span>
+<span class="w">  </span><span class="c1">#     HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}</span>
+<span class="w">  </span><span class="c1">#   volumes:</span>
+<span class="w">  </span><span class="c1">#     - /dev/dri/by-path:/dev/dri/by-path</span>
+<span class="w">  </span><span class="c1">#     - $HOME/.cache/huggingface:/root/.cache/huggingface</span>
+<span class="w">  </span><span class="c1">#   devices:</span>
+<span class="w">  </span><span class="c1">#     - /dev/dri</span>
+<span class="w">  </span><span class="c1">#   entrypoint: /bin/bash -c &quot;\</span>
+<span class="w">  </span><span class="c1">#     cd / &amp;&amp; \</span>
+<span class="w">  </span><span class="c1">#     export VLLM_CPU_KVCACHE_SPACE=50 &amp;&amp; \</span>
+<span class="w">  </span><span class="c1">#     export VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS=ON &amp;&amp; \</span>
+<span class="w">  </span><span class="c1">#     python3 -m vllm.entrypoints.openai.api_server \</span>
+<span class="w">  </span><span class="c1">#       --model &#39;${LLM_MODEL}&#39; \</span>
+<span class="w">  </span><span class="c1">#       --max_model_len=1024 \</span>
+<span class="w">  </span><span class="c1">#       --host 0.0.0.0 \</span>
+<span class="w">  </span><span class="c1">#       --port 80&quot;</span>
 </pre></div>
 </div>
 </section>
