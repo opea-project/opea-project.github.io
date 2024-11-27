@@ -2122,15 +2122,24 @@ promhttp_metric_handler_requests_total{code=&quot;503&quot;} 0
 <p>You can either:</p>
 <ul class="simple">
 <li><p>Import them manually to Grafana,</p></li>
-<li><p>Use <a class="reference internal" href="#./update-dashboards.sh"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">update-dashboards.sh</span></code></span></a> script to add them to Kubernetes as Grafana dashboard configMaps</p>
+<li><p>Use <a class="reference internal" href="#./update-dashboards.sh"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">update-dashboards.sh</span></code></span></a> script to add them to Kubernetes as (more persistent) Grafana dashboard <code class="docutils literal notranslate"><span class="pre">configMap</span></code>s</p>
 <ul>
-<li><p>(Script assumes Prometheus / Grafana to be installed according to above instructions)</p></li>
+<li><p>Script uses <code class="docutils literal notranslate"><span class="pre">$USER-&lt;file</span> <span class="pre">name&gt;</span></code> as dashboard <code class="docutils literal notranslate"><span class="pre">configMap</span></code> names, overwrites any pre-existing <code class="docutils literal notranslate"><span class="pre">configMap</span></code> with the same name, and <em>restarts Grafana</em> so that it notices <code class="docutils literal notranslate"><span class="pre">configMap</span></code> updates</p></li>
 </ul>
 </li>
 <li><p>Or create your own dashboards based on them</p></li>
 </ul>
-<p>Note: when dashboard is imported to Grafana, you can directly save changes to it, but those dashboards go away if Grafana is removed / re-installed.</p>
-<p>Whereas with dashboard configMaps, Grafana saves changes to a selected file, but you need to remember to re-apply them to Kubernetes / Grafana, for your changes to be there when that dashboard is reloaded.</p>
+<p>When dashboard is imported to Grafana, you can directly save changes to it, but such dashboards go away if Grafana is removed / re-installed. When dashboard is in <code class="docutils literal notranslate"><span class="pre">configMap</span></code>, Grafana saves its changes to a (selected) file, but you need to re-apply those files to Kubernetes with the script, for your changes to be there when that Grafana dashboard page is reloaded in browser.</p>
+<p>Gotchas for dashboard <code class="docutils literal notranslate"><span class="pre">configMap</span></code> script usage:</p>
+<ul class="simple">
+<li><p>If you change dashboard file name, you need to change also its ‘uid’ field (at end of the file), otherwise Grafana will see multiple <code class="docutils literal notranslate"><span class="pre">configMap</span></code>s for the same dashboard ID</p>
+<ul>
+<li><p>If there’s no <code class="docutils literal notranslate"><span class="pre">uid</span></code> specified for the dashboard, Grafana will generate one on <code class="docutils literal notranslate"><span class="pre">configMap</span></code> load. Meaning that dashboard ID, and Grafana URL to it, will change on every reload</p></li>
+</ul>
+</li>
+<li><p>Script assumes Prometheus / Grafana to be installed according to above instructions. If not, list of <code class="docutils literal notranslate"><span class="pre">labels</span></code> within script need to be updated to match Prometheus / Grafana installation</p></li>
+</ul>
+<p>NOTE: Services provide metrics only after they have processed at least one query, before that dashboards can be empty!</p>
 <p><img alt="TGI dashboard" src="../../../_images/tgi.png" />
 <img alt="Scaling dashboard" src="../../../_images/opea-scaling.png" /></p>
 </section>
