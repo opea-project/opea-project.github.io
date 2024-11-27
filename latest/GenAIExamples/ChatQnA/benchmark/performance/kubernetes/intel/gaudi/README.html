@@ -2216,8 +2216,7 @@ huggingface-cli<span class="w"> </span>download<span class="w"> </span>--cache-d
 <h4>Upload Retrieval File<a class="headerlink" href="#upload-retrieval-file" title="Link to this heading">¶</a></h4>
 <p>Before testing, upload a specified file to make sure the llm input have the token length of 1k.</p>
 <p>Get files:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark/data/upload_file_no_rerank.txt
-wget<span class="w"> </span>https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark/data/upload_file.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark/data/upload_file.txt
 </pre></div>
 </div>
 <p>Retrieve the <code class="docutils literal notranslate"><span class="pre">ClusterIP</span></code> of the <code class="docutils literal notranslate"><span class="pre">chatqna-data-prep</span></code> service.</p>
@@ -2230,14 +2229,10 @@ wget<span class="w"> </span>https://github.com/opea-project/GenAIEval/tree/main/
 </div>
 <p>Use the following <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command to upload file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIEval/evals/benchmark/data
-<span class="c1"># RAG with Rerank</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">cluster_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;chunk_size=3800&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./upload_file.txt&quot;</span>
-<span class="c1"># RAG without Rerank</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">cluster_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./upload_file_no_rerank.txt&quot;</span>
 </pre></div>
 </div>
 </section>
