@@ -30,8 +30,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ChatQnA Example Deployment Options" href="deploy/index.html" />
-    <link rel="prev" title="GenAI Examples" href="../index.html" /> 
+    <link rel="next" title="Single node on-prem deployment with vLLM or TGI on Xeon Scalable processors" href="deploy/xeon.html" />
+    <link rel="prev" title="Single node on-prem deployment AgentQnA on Gaudi" href="../../GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -126,6 +126,16 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">GenAI Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html">AgentQnA Sample Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#deployment">Deployment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#single-node">Single Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ChatQnA Sample Guide</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
@@ -139,10 +149,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#microservice-outline-and-diagram">Microservice Outline and Diagram</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#deployment">Deployment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="deploy/index.html">ChatQnA Deployment Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment">Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#single-node">Single Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deploy/xeon.html">Xeon Scalable Processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploy/gaudi.html">Gaudi AI Accelerator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploy/nvidia.html">Nvidia GPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deploy/aipc.html">AI PC</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cloud-native">Cloud Native</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#set-up-the-prometheus-server">Set Up the Prometheus Server</a></li>
@@ -152,22 +168,12 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html">AgentQnA Sample Guide</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#purpose">Purpose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#how-it-works">How It Works</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#deployment">Deployment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/AgentQnA_Guide.html#single-node">Single Node</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../CodeGen/CodeGen_Guide.html">Codegen Sample Guide</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../CodeGen/CodeGen_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../CodeGen/CodeGen_Guide.html#purpose">Purpose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../CodeGen/CodeGen_Guide.html#how-it-works">How It Works</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../CodeGen/CodeGen_Guide.html#deployment">Deployment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../CodeGen/deploy/index.html">CodeGen Deployment Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeGen/deploy/gaudi.html">Gaudi AI Accelerator</a></li>
 </ul>
 </li>
 </ul>
@@ -2198,16 +2204,36 @@ The gateway serves as the interface for users to access. The gateway routes inco
 </section>
 <section id="deployment">
 <h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h2>
-<p>Here are some deployment options, including both single-node and
-orchestrated multi-node configurations, and choose the one that best fits your
-requirements.</p>
+<p>Here are some deployment options depending on your hardware and environment.
+It includes both single-node and orchestrated multi-node configurations.
+Choose the one that best fits your requirements.</p>
+</section>
+<section id="single-node">
+<h2>Single Node<a class="headerlink" href="#single-node" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="deploy/index.html">ChatQnA Deployment Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploy/xeon.html">Xeon Scalable Processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploy/gaudi.html">Gaudi AI Accelerator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploy/nvidia.html">Nvidia GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploy/aipc.html">AI PC</a></li>
 </ul>
 </div>
 </section>
 <hr class="docutils" />
+<section id="kubernetes">
+<h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Xeon &amp; Gaudi with GMC</p></li>
+<li><p>Xeon &amp; Gaudi without GMC</p></li>
+<li><p>Using Helm Charts</p></li>
+</ul>
+</section>
+<section id="cloud-native">
+<h2>Cloud Native<a class="headerlink" href="#cloud-native" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Red Hat OpenShift Container Platform (RHOCP)</p></li>
+</ul>
+</section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
 <p>TBD.</p>
@@ -2352,8 +2378,8 @@ Finally, open the dashboard in the Grafana UI, and you will see different panels
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="GenAI Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="deploy/index.html" class="btn btn-neutral float-right" title="ChatQnA Example Deployment Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/README.html" class="btn btn-neutral float-left" title="Single node on-prem deployment AgentQnA on Gaudi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deploy/xeon.html" class="btn btn-neutral float-right" title="Single node on-prem deployment with vLLM or TGI on Xeon Scalable processors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
