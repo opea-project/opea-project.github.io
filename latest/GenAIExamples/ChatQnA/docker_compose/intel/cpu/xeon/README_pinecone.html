@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of ChatQnA (with Pinecone) on Xeon &mdash; OPEA™ 1.1 documentation</title>
+  <title>Build Mega Service of ChatQnA on Xeon &mdash; OPEA™ 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -223,7 +223,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and deploy CodeGen Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README.html">Build Mega Service of ChatQnA on Xeon</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA (with Pinecone) on Xeon</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Build MegaService of ChatQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
@@ -1993,7 +1993,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of ChatQnA (with Pinecone) on Xeon</li>
+  <li>Build Mega Service of ChatQnA on Xeon</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_pinecone.md.txt" rel="nofollow"> View page source</a>
@@ -2013,61 +2013,97 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-chatqna-with-pinecone-on-xeon">
-<h1>Build Mega Service of ChatQnA (with Pinecone) on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-with-pinecone-on-xeon" title="Link to this heading">¶</a></h1>
+  <section id="build-mega-service-of-chatqna-on-xeon">
+<h1>Build Mega Service of ChatQnA on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-on-xeon" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
-<section id="apply-xeon-server-on-aws">
-<h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
-<p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage the power of 4th Generation Intel Xeon Scalable processors. These instances are optimized for high-performance computing and demanding workloads.</p>
-<p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
-<p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
-<p><strong>Certain ports in the EC2 instance need to opened up in the security group, for the microservices to work with the curl commands</strong></p>
-<blockquote>
-<div><p>See one example below. Please open up these ports in the EC2 instance based on the IP addresses you want to allow</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="n">data_prep_service</span>
-<span class="o">=====================</span>
-<span class="n">Port</span> <span class="mi">6007</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-<span class="n">Port</span> <span class="mi">6008</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">tei_embedding_service</span>
-<span class="o">=====================</span>
-<span class="n">Port</span> <span class="mi">6006</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">embedding</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">6000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">retriever</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">7000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">tei_xeon_service</span>
-<span class="o">================</span>
-<span class="n">Port</span> <span class="mi">8808</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">reranking</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">8000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
-<span class="o">===========</span>
-<span class="n">Port</span> <span class="mi">9009</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">llm</span>
-<span class="o">===</span>
-<span class="n">Port</span> <span class="mi">9000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="o">==========================</span>
-<span class="n">Port</span> <span class="mi">8888</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="o">=====================</span>
-<span class="n">Port</span> <span class="mi">5173</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
+<p>Quick Start:</p>
+<ol class="arabic simple">
+<li><p>Set up the environment variables.</p></li>
+<li><p>Run Docker Compose.</p></li>
+<li><p>Consume the ChatQnA Service.</p></li>
+</ol>
+<section id="quick-start-1-setup-environment-variable">
+<h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
+<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
+<ol class="arabic">
+<li><p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_API_KEY</span><span class="o">=</span><span class="s2">&quot;Pinecone_API_Key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;Pinecone_Index_Name&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;Pinecone_Index_Name&quot;</span>
 </pre></div>
 </div>
+</li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-pinecone-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
+</pre></div>
+</div>
+</li>
+<li><p>Set up other environment variables, make sure to update the INDEX_NAME variable to Pinecone index value:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="quick-start-2-run-docker-compose">
+<h2>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_pinecone.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
+docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
+</pre></div>
+</div>
+<p>NB: You should build docker image from source by yourself if:</p>
+<ul class="simple">
+<li><p>You are developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
+<li><p>You can’t download the docker image.</p></li>
+<li><p>You want to use a specific version of Docker image.</p></li>
+</ul>
+<p>Please refer to <a class="reference internal" href="#%F0%9F%9A%80-build-docker-images"><span class="xref myst">‘Build Docker Images’</span></a> in below.</p>
+</section>
+<section id="quickstart-3-consume-the-chatqna-service">
+<h2>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">    }&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="apply-xeon-server-on-aws">
+<h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
+<p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage 4th Generation Intel Xeon Scalable processors that are optimized for demanding workloads.</p>
+<p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
+<p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
+<section id="network-port-security">
+<h3>Network Port &amp; Security<a class="headerlink" href="#network-port-security" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Access the ChatQnA UI by web browser</p>
+<p>It supports to access by <code class="docutils literal notranslate"><span class="pre">80</span></code> port. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall of EC2 instance.</p>
+</li>
+<li><p>Access the microservice by tool or API</p>
+<ol class="arabic">
+<li><p>Login to the EC2 instance and access by <strong>local IP address</strong> and port.</p>
+<p>It’s recommended and do nothing of the network port setting.</p>
+</li>
+<li><p>Login to a remote client and access by <strong>public IP address</strong> and port.</p>
+<p>You need to open the port of the microservice in the security group setting of firewall of EC2 instance setting.</p>
+<p>For detailed guide, please refer to <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a>.</p>
+<p>Note, it will increase the risk of security, so please confirm before do it.</p>
+</li>
+</ol>
+</li>
+</ul>
+</section>
 </section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
@@ -2076,229 +2112,247 @@
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
 </pre></div>
 </div>
-<section id="build-embedding-image">
-<h3>1. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
 <section id="build-retriever-image">
-<h3>2. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
+<h3>1. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever-pinecone:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/pinecone/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="build-rerank-image">
-<h3>3. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking-tei:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/reranks/tei/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-llm-image">
-<h3>4. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
 <section id="build-dataprep-image">
-<h3>5. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
+<h3>2. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-pinecone:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/pinecone/langchain/Dockerfile<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 </section>
 <section id="build-megaservice-docker-image">
-<h3>6. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build MegaService Docker image via below command:</p>
+<h3>3. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>MegaService with Rerank</p>
+<p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build MegaService Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
+</li>
+<li><p>MegaService without Rerank</p>
+<p>To construct the Mega Service without Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna_without_rerank.py</span></code> Python script. Build MegaService Docker image via below command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-without-rerank:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.without_rerank<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+</ol>
 </section>
 <section id="build-ui-docker-image">
-<h3>7. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>4. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker/ui/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../..
 </pre></div>
 </div>
 </section>
 <section id="build-conversational-react-ui-docker-image-optional">
-<h3>8. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
+<h3>5. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image that enables Conversational experience with ChatQnA megaservice via below command:</p>
 <p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker/ui/
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/chatqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6008/v1/dataprep/get_file&quot;</span>
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$DATAPREP_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="nv">$DATAPREP_GET_FILE_ENDPOINT</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 7 Docker Images:</p>
+</section>
+<section id="build-nginx-docker-image">
+<h3>6. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/nginx/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-pinecone:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-tei:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-pinecone:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking-tei:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-tgi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/chatqna-without-rerank:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/nginx:latest</span></code></p></li>
 </ol>
 </section>
 </section>
 <section id="start-microservices">
 <h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
+<section id="required-models">
+<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
+<p>By default, the embedding, reranking and LLM models are set to a default value as listed below:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service</p></th>
+<th class="head"><p>Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Embedding</p></td>
+<td><p>BAAI/bge-base-en-v1.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reranking</p></td>
+<td><p>BAAI/bge-reranker-base</p></td>
+</tr>
+<tr class="row-even"><td><p>LLM</p></td>
+<td><p>Intel/neural-chat-7b-v3-3</p></td>
+</tr>
+</tbody>
+</table>
+<p>Change the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> below for your needs.</p>
+<p>For users in China who are unable to download models directly from Huggingface, you can use <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> or a Huggingface mirror to download models. TGI can load the models either online or offline as described below:</p>
+<ol class="arabic">
+<li><p>Online</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
+<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span>
+</pre></div>
+</div>
+</li>
+<li><p>Offline</p>
+<ul>
+<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://www.modelscope.cn/models/ai-modelscope/neural-chat-7b-v3-1/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">neural-chat-7b-v3-1</span></code>.</p></li>
+<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">this</span> <span class="pre">model</span></code> button, and choose one way to download the model to your local path <code class="docutils literal notranslate"><span class="pre">/path/to/model</span></code>.</p></li>
+<li><p>Run the following command to start TGI service.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi_service<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span>/data
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
 <section id="setup-environment-variables">
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<p>Since the <code class="docutils literal notranslate"><span class="pre">compose_pinecone.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<blockquote>
-<div><p>Change the External_Public_IP below with the actual IPV4 value</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<ol class="arabic">
+<li><p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="c1"># Example: NGINX_PORT=80</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_API_KEY</span><span class="o">=</span><span class="s2">&quot;Pinecone_API_Key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;Pinecone_Index_Name&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;Pinecone_Index_Name&quot;</span>
 </pre></div>
 </div>
-<p><strong>Export the value of your Huggingface API token to the <code class="docutils literal notranslate"><span class="pre">your_hf_api_token</span></code> environment variable</strong></p>
-<blockquote>
-<div><p>Change the Your_Huggingface_API_Token below with tyour actual Huggingface API Token value</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">your_hf_api_token</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-pinecone-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
 </pre></div>
 </div>
-<p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export your_no_proxy=${your_no_proxy},&quot;External_Public_IP&quot;
+</li>
+<li><p>Set up other environment variables, make sure to update the INDEX_NAME variable to use Pinecone Index name:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
 </pre></div>
 </div>
-<p>**Get the PINECONE_API_KEY and the INDEX_NAME</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export pinecone_api_key=${api_key}
-export pinecone_index_name=${pinecone_index}
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6006&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8808&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:9009&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_API_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">pinecone_api_key</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PINECONE_INDEX_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">pinecone_index_name</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">pinecone_index_name</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/chatqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6008/v1/dataprep/get_file&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6009/v1/dataprep/delete_file&quot;</span>
-</pre></div>
-</div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
+</li>
+</ol>
 </section>
 <section id="start-all-the-services-docker-containers">
 <h3>Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>Before running the docker compose command, you need to be in the folder that has the docker compose yaml file</p>
 </div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker/xeon/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
+</pre></div>
+</div>
+<p>If use TGI backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ChatQnA with Rerank Pipeline</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_pinecone.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
 <section id="validate-microservices">
 <h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<ol class="arabic simple">
-<li><p>TEI Embedding Service</p></li>
-</ol>
+<p>Note, when verify the microservices by curl or API from remote client, please make sure the <strong>ports</strong> of the microservices are opened in the firewall of the cloud node.
+Follow the instructions to validate MicroServices.
+For details on how to verify the correctness of the response, refer to <a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html"><span class="std std-doc">how-to-validate_service</span></a>.</p>
+<ol class="arabic">
+<li><p>TEI Embedding Service</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Embedding Microservice</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6000/v1/embeddings<span class="se">\</span>
+</li>
+<li><p>Retriever Microservice</p>
+<p>To consume the retriever microservice, you need to generate a mock embedding vector by Python script. The length of embedding vector
+is determined by the embedding model.
+Here we use the model <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;</span></code>, which vector size is 768.</p>
+<p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equals to it.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;hello&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
-<li><p>Retriever Microservice<br />
-To validate the retriever microservice, you need to generate a mock embedding vector of length 768 in Python script:</p></li>
-</ol>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
-<span class="n">embedding</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">768</span><span class="p">)]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Then substitute your mock embedding vector for the <code class="docutils literal notranslate"><span class="pre">${your_embedding}</span></code> in the following cURL command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;What is the revenue of Nike in 2023?&quot;,&quot;embedding&quot;:&quot;&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="4">
-<li><p>TEI Reranking Service</p></li>
-</ol>
+</li>
+<li><p>TEI Reranking Service</p>
+<blockquote>
+<div><p>Skip for ChatQnA without Rerank pipeline</p>
+</div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8808/rerank<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="5">
-<li><p>Reranking Microservice</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8000/v1/reranking<span class="se">\</span>
+</li>
+<li><p>LLM backend Service</p>
+<p>In first startup, this service will take more time to download the model files. After it’s finished, the service will be ready.</p>
+<p>Try the command below to check whether the LLM serving is ready.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+</pre></div>
+</div>
+<p>If the service is ready, you will get the response like below.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>2024-09-03T02:47:53.402023Z  INFO text_generation_router::server: router/src/server.rs:2311: Connected
+</pre></div>
+</div>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="6">
-<li><p>TGI Service</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</li>
+<li><p>MegaService</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">       }&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="7">
-<li><p>LLM Microservice</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</li>
+<li><p>Nginx Service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="8">
-<li><p>MegaService</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">     }&#39;</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="9">
+</li>
 <li><p>Dataprep Microservice（Optional）</p></li>
 </ol>
 <p>If you want to update the default knowledge base, you can use the following commands:</p>
-<p>Update Knowledge Base via Local File Upload:</p>
+<p>Update Knowledge Base via Local File <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/retrievers/redis/data/nke-10k-2023.pdf">nke-10k-2023.pdf</a>. Or
+click <a class="reference external" href="https://raw.githubusercontent.com/opea-project/GenAIComps/main/comps/retrievers/redis/data/nke-10k-2023.pdf">here</a> to download the file via any web browser.
+Or run this command to get the file on a terminal.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIComps/main/comps/retrievers/redis/data/nke-10k-2023.pdf
+</pre></div>
+</div>
+<p>Upload:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
@@ -2312,33 +2366,19 @@ To validate the retriever microservice, you need to generate a mock embedding ve
 </pre></div>
 </div>
 <p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
-<p>Also, you are able to get the file list that you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6008/v1/dataprep/get_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<p>To delete the files/link you uploaded:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete all uploaded files and links</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6009/v1/dataprep/delete_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="enable-langsmith-for-monotoring-application-optional">
-<h2>Enable LangSmith for Monotoring Application (Optional)<a class="headerlink" href="#enable-langsmith-for-monotoring-application-optional" title="Link to this heading">¶</a></h2>
-<p>LangSmith offers tools to debug, evaluate, and monitor language models and intelligent agents. It can be used to assess benchmark data for each microservice. Before launching your services with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">compose_pinecone.yaml</span> <span class="pre">up</span> <span class="pre">-d</span></code>, you need to enable LangSmith tracing by setting the <code class="docutils literal notranslate"><span class="pre">LANGCHAIN_TRACING_V2</span></code> environment variable to true and configuring your LangChain API key.</p>
-<p>Here’s how you can do it:</p>
-<ol class="arabic simple">
-<li><p>Install the latest version of LangSmith:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>langsmith
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Set the necessary environment variables:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LANGCHAIN_TRACING_V2</span><span class="o">=</span><span class="nb">true</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LANGCHAIN_API_KEY</span><span class="o">=</span>ls_...
-</pre></div>
-</div>
-</section>
 <section id="launch-the-ui">
 <h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
+<section id="launch-with-origin-port">
+<h3>Launch with origin port<a class="headerlink" href="#launch-with-origin-port" title="Link to this heading">¶</a></h3>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-ui-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-ui:latest</span>
@@ -2348,10 +2388,30 @@ To validate the retriever microservice, you need to generate a mock embedding ve
 </pre></div>
 </div>
 </section>
-<section id="launch-the-conversational-ui-react">
-<h2>🚀 Launch the Conversational UI (react)<a class="headerlink" href="#launch-the-conversational-ui-react" title="Link to this heading">¶</a></h2>
-<p>To access the Conversational UI frontend, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<section id="launch-with-nginx">
+<h3>Launch with Nginx<a class="headerlink" href="#launch-with-nginx" title="Link to this heading">¶</a></h3>
+<p>If you want to launch the UI using Nginx, open this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:${NGINX_PORT}</span></code> in your browser to access the frontend.</p>
+</section>
+</section>
+<section id="launch-the-conversational-ui-optional">
+<h2>🚀 Launch the Conversational UI (Optional)<a class="headerlink" href="#launch-the-conversational-ui-optional" title="Link to this heading">¶</a></h2>
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
+<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-conversation-ui-server</span>
+<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
+<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chaqna-xeon-backend-server</span>
+<span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+</pre></div>
+</div>
+<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-conversation-ui-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
