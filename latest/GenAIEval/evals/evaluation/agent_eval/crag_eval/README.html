@@ -1657,7 +1657,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#crag-dataset">CRAG dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#launch-agent-qna-system">Launch agent QnA system</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-crag-benchmark">Run CRAG benchmark</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-llm-as-judge-to-grade-the-answers">Use LLM-as-judge to grade the answers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-llm-as-judge-to-grade-the-answers">Use LLM-as-judge to grade the answers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#validation-of-llm-as-judge">Validation of LLM-as-judge</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#benchmark-results-for-opea-rag-agents">Benchmark results for OPEA RAG Agents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#comparison-with-gpt-4o-mini">Comparison with GPT-4o-mini</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../autorag/evaluation/README.html">AutoRAG to evaluate the RAG system performance</a><ul>
@@ -1898,6 +1905,23 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../release_notes/index.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../release_notes/RELEASE.html">OPEA Release Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#release-cadence">Release Cadence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#general-overview">General Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#feature-freeze">Feature Freeze</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#code-doc-freeze-and-creating-the-rc-branch">Code/Doc Freeze, and Creating the RC Branch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#preparing-creating-rc-branch">Preparing Creating RC Branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#creating-rc-branch">Creating RC Branch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#cherry-pick-critical-code-doc-fix">Cherry Pick Critical Code/Doc Fix</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#how-to-do-cherry-picking">How to do Cherry Picking</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#creating-tag-from-rc-branch">Creating Tag from RC Branch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/RELEASE.html#deliver-docker-images-helm-charts-and-pypi-binaries">Deliver Docker Images, Helm Charts, and PyPi Binaries</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../release_notes/v1.1.html">OPEA Release Notes v1.1</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../release_notes/v1.1.html#what-s-new-in-opea-v1-1">What’s New in OPEA v1.1</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../release_notes/v1.1.html#highlights">Highlights</a></li>
@@ -2075,7 +2099,7 @@ bash run_data_preprocess.sh
 </pre></div>
 </div>
 <p><strong>Note</strong>: This is an example of data processing. You can develop and optimize your own data processing for this benchmark.
-3. Sample queries for benchmark
+3. (Optional) Sample queries for benchmark
 The CRAG dataset has more than 4000 queries, and running all of them can be very expensive and time-consuming. You can sample a subset for benchmark. Here we provide a script to sample up to 5 queries per question_type per dynamism in each domain. For example, we were able to get 92 queries from the music domain using the script.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">run_sample_data</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
@@ -2083,11 +2107,11 @@ The CRAG dataset has more than 4000 queries, and running all of them can be very
 </section>
 <section id="launch-agent-qna-system">
 <h2>Launch agent QnA system<a class="headerlink" href="#launch-agent-qna-system" title="Link to this heading">¶</a></h2>
-<p>Here we showcase a RAG agent in GenAIExample repo. Please refer to the README in the <a class="reference internal" href="../../../../../GenAIExamples/AgentQnA/README.html"><span class="std std-doc">AgentQnA example</span></a> for more details.</p>
+<p>Here we showcase an agent system in OPEA GenAIExamples repo. Please refer to the README in the <a class="reference internal" href="../../../../../GenAIExamples/AgentQnA/README.html"><span class="std std-doc">AgentQnA example</span></a> for more details.</p>
 <blockquote>
 <div><p><strong>Please note</strong>: This is an example. You can build your own agent systems using OPEA components, then expose your own systems as an endpoint for this benchmark.</p>
 </div></blockquote>
-<p>To launch the agent in our AgentQnA example, open another terminal and build images and launch agent system there.</p>
+<p>To launch the agent in our AgentQnA example on Intel Gaudi accelerators, open another terminal and follow the instructions below.</p>
 <ol class="arabic simple">
 <li><p>Build images</p></li>
 </ol>
@@ -2095,13 +2119,13 @@ The CRAG dataset has more than 4000 queries, and running all of them can be very
 cd $WORKDIR
 git clone https://github.com/opea-project/GenAIExamples.git
 cd GenAIExamples/AgentQnA/tests/
-bash 1_build_images.sh
+bash step1_build_images.sh
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Start retrieval tool</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="mi">2</span><span class="n">_start_retrieval_tool</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">step2_start_retrieval_tool</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -2123,15 +2147,17 @@ python3 index_data.py --host_ip $host_ip --filedir ${WORKDIR}/datasets/crag_docs
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Go to the terminal where you launched the AgentQnA example
 cd $WORKDIR/GenAIExamples/AgentQnA/tests/
-bash 4_launch_and_validate_agent.sh
+bash step4_launch_and_validate_agent_gaudi.sh
 </pre></div>
 </div>
+<p>Note: There are two agents in the agent system: a RAG agent (as the worker agent) and a ReAct agent (as the supervisor agent). We can evaluate both agents - just need to specify the agent endpoint url in the scripts - see instructions below.</p>
 </section>
 <section id="run-crag-benchmark">
 <h2>Run CRAG benchmark<a class="headerlink" href="#run-crag-benchmark" title="Link to this heading">¶</a></h2>
-<p>Once you have your agent system up and running, the next step is to generate answers with agent. Change the variables in the script below and run the script. By default, it will run a sampled set of queries in music domain.</p>
+<p>Once you have your agent system up and running, the next step is to generate answers with agent. Change the variables in the script below and run the script. By default, it will run the entire set of queries in the music domain (in total 373 queries). You can choose to run other domains or just run a sampled subset of music domain.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Come back to the interactive crag-eval docker container
 cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark
+# Remember to specify the agent endpoint url in the script.
 bash run_generate_answer.sh
 </pre></div>
 </div>
@@ -2139,7 +2165,7 @@ bash run_generate_answer.sh
 <section id="use-llm-as-judge-to-grade-the-answers">
 <h2>Use LLM-as-judge to grade the answers<a class="headerlink" href="#use-llm-as-judge-to-grade-the-answers" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Launch llm endpoint with HF TGI: in another terminal, run the command below. By default, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-70B-Instruct</span></code> is used as the LLM judge.</p></li>
+<li><p>Launch llm endpoint with HF TGI: in another terminal, run the command below. By default, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> is used as the LLM judge.</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">llm_judge</span>
 <span class="n">bash</span> <span class="n">launch_llm_judge_endpoint</span><span class="o">.</span><span class="n">sh</span>
@@ -2169,6 +2195,99 @@ cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark/
 bash run_grading.sh
 </pre></div>
 </div>
+<section id="validation-of-llm-as-judge">
+<h3>Validation of LLM-as-judge<a class="headerlink" href="#validation-of-llm-as-judge" title="Link to this heading">¶</a></h3>
+<p>We validated RAGAS answer correctness as the metric to evaluate agents. We sampled 92 queries from the full music domain dataset (up to 5 questions per sub-category for all 32 sub-categories), and conducted human evaluations on the conventional RAG answers, the single RAG agent answers and the hierarchical ReAct agent answers of the 92 queries.</p>
+<p>We followed the criteria in the <a class="reference external" href="https://arxiv.org/pdf/2406.04744">CRAG paper</a> to get human scores:</p>
+<ol class="arabic simple">
+<li><p>score 1 if the answer matches the golden answer or semantically similar.</p></li>
+<li><p>score 0 if the answer misses information, or is “I don’t know”, “I’m sorry I can’t find …”, a system error such as recursion limit is hit, or a request from the system to clarify the original question.</p></li>
+<li><p>score -1 if the answer contains incorrect information.</p></li>
+</ol>
+<p>On the other hand, RAGAS <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> score is on a scale of 0-1 and is a weighted average of 1) an F1 score and 2) similarity between answer and golden answer. The F1 score is based on the number of statements in the answer supported or not supported by the golden answer, and the number of statements in the golden answer appeared or did not appear in the answer. Please refer to <a class="reference external" href="https://github.com/explodinggradients/ragas/blob/main/src/ragas/metrics/_answer_correctness.py">RAGAS source code</a> for the implementation of its <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> score. We ran RAGAS on Intel Gaudi2 accelerators. We used <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> as the LLM judge.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setup</p></th>
+<th class="head"><p>Mean Human score</p></th>
+<th class="head"><p>Mean RAGAS <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> score</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Conventional RAG</p></td>
+<td><p>0.05</p></td>
+<td><p>0.37</p></td>
+</tr>
+<tr class="row-odd"><td><p>Single RAG agent</p></td>
+<td><p>0.18</p></td>
+<td><p>0.43</p></td>
+</tr>
+<tr class="row-even"><td><p>Hierarchical ReAct agent</p></td>
+<td><p>0.22</p></td>
+<td><p>0.54</p></td>
+</tr>
+</tbody>
+</table>
+<p>We can see that the human scores and the RAGAS <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> scores follow the same trend, although the two scoring methods used different grading criteria and methods. Since LLM-as-judge is more scalable for larger datasets, we decided to use RAGAS <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> scores (produced by <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-70B-Instruct</span></code> as the LLM judge) for the evaluation of OPEA agents on the full CRAG music domain dataset.</p>
+<p>We have made available our scripts to calculate the mean RAGAS scores. Refer to the <code class="docutils literal notranslate"><span class="pre">run_compare_scores.sh</span></code> script in the <code class="docutils literal notranslate"><span class="pre">run_benchmark</span></code> folder.</p>
+</section>
+</section>
+<section id="benchmark-results-for-opea-rag-agents">
+<h2>Benchmark results for OPEA RAG Agents<a class="headerlink" href="#benchmark-results-for-opea-rag-agents" title="Link to this heading">¶</a></h2>
+<p>We have evaluated the agents (<code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> and <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> strategies) in the OPEA AgentQnA example on CRAG music domain dataset (373 questions in total). We used <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> and we served the LLM with tgi-gaudi on 4 Intel Gaudi2 accelerator cards. Refer to the docker compose yaml files in the AgentQnA example for more details on the configurations.</p>
+<p>For the tests of conventional RAG, we used the script in the <code class="docutils literal notranslate"><span class="pre">run_benchmark</span></code> folder: <code class="docutils literal notranslate"><span class="pre">run_conv_rag.sh</span></code>. And we used the same LLM, serving configs and generation parameters as the RAG agent.</p>
+<p>The Conventional RAG and Single RAG agent use the same retriever. The Hierarchical ReAct agent uses the Single RAG agent as its retrieval tool and also has access to CRAG APIs provided by Meta as part of the CRAG benchmark.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setup</p></th>
+<th class="head"><p>Mean RAGAS <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> score</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Conventional RAG</p></td>
+<td><p>0.42</p></td>
+</tr>
+<tr class="row-odd"><td><p>Single RAG agent</p></td>
+<td><p>0.43</p></td>
+</tr>
+<tr class="row-even"><td><p>Hierarchical ReAct agent</p></td>
+<td><p>0.53</p></td>
+</tr>
+</tbody>
+</table>
+<p>From the results, we can see that the single RAG agent performs better than conventional RAG, while the hierarchical ReAct agent has the highest <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> score. The reasons for such performance improvements:</p>
+<ol class="arabic simple">
+<li><p>RAG agent rewrites query and checks the quality of retrieved documents before feeding the docs to generation. It can get docs that are more relevant to generate answers. It can also decompose complex questions into modular tasks and get related docs for each task and then aggregate info to come up with answers.</p></li>
+<li><p>Hierarchical ReAct agent was supplied with APIs to get information from knowledge graphs, and thus can supplement info to the knowledge in the retrieval vector database. So it can answer questions where conventional RAG or Single RAG agent cannot due to the lack of relevant info in vector database.</p></li>
+</ol>
+<p>Note: The performance result for the hierarchical ReAct agent is with tool selection, i.e., only give a subset of tools to agent based on query, which we found can boost agent performance when the number of tools is large. However, currently OPEA agents do not support tool selection yet. We are in the process of enabling tool selection.</p>
+<section id="comparison-with-gpt-4o-mini">
+<h3>Comparison with GPT-4o-mini<a class="headerlink" href="#comparison-with-gpt-4o-mini" title="Link to this heading">¶</a></h3>
+<p>Open-source LLM serving libraries (tgi and vllm) have limited capabilities in producing tool-call objects. Although vllm improved its tool-calling capabilities recently, parallel tool calling is still not well supported. Therefore, we had to write our own prompts and output parsers for the <code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> and <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> strategies for using open-source LLMs served with open-source serving frameworks for OPEA agent microservices.</p>
+<p>Below we show the comparisons of <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> versus OpenAI’s <code class="docutils literal notranslate"><span class="pre">gpt-4o-mini-2024-07-18</span></code> on 20 sampled queries from the CRAG music domain dataset. We used human evaluation criteria outlined above. The numbers are the average scores graged by human. The parenthesis denotes the OPEA agent strategy used.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setup</p></th>
+<th class="head"><p>Llama3.1-70B-Instruct</p></th>
+<th class="head"><p>gpt-4o-mini</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Conventional RAG</p></td>
+<td><p>0.15</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-odd"><td><p>Single RAG agent</p></td>
+<td><p>0.45 (<code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code>)</p></td>
+<td><p>0.65 (<code class="docutils literal notranslate"><span class="pre">rag_agent</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>Hierarchical ReAct agent</p></td>
+<td><p>0.55 (<code class="docutils literal notranslate"><span class="pre">react_llama</span></code>)</p></td>
+<td><p>0.75 (<code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+<p>From the comparisons on this small subset, we can see that OPEA agents using <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> with calibrated prompt templates and output parsers are only slightly behind <code class="docutils literal notranslate"><span class="pre">gpt-4o-mini-2024-07-18</span></code> with proprietary tool-calling capabilities.</p>
+</section>
 </section>
 </section>
 
