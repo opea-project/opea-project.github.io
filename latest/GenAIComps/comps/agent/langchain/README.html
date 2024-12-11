@@ -444,6 +444,12 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src/strategy/planexec/README.html">Plan Execute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="src/strategy/ragagent/README.html">RAG Agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src/strategy/sqlagent/README.html">SQL Agents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src/strategy/sqlagent/README.html#overview-of-sql-agent-llama">Overview of sql_agent_llama</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/strategy/sqlagent/README.html#overview-of-sql-agent">Overview of sql_agent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/strategy/sqlagent/README.html#limitations">Limitations</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#animation-microservice">Animation Microservice</a><ul>
@@ -2077,10 +2083,11 @@
 <li><p>ReAct: use <code class="docutils literal notranslate"><span class="pre">react_langchain</span></code> or <code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code> or <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> as strategy. First introduced in this seminal <a class="reference external" href="https://arxiv.org/abs/2210.03629">paper</a>. The ReAct agent engages in “reason-act-observe” cycles to solve problems. Please refer to this <a class="reference external" href="https://python.langchain.com/v0.2/docs/how_to/migrate_agent/">doc</a> to understand the differences between the langchain and langgraph versions of react agents. See table below to understand the validated LLMs for each react strategy.</p></li>
 <li><p>RAG agent: use <code class="docutils literal notranslate"><span class="pre">rag_agent</span></code> or <code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> strategy. This agent is specifically designed for improving RAG performance. It has the capability to rephrase query, check relevancy of retrieved context, and iterate if context is not relevant. See table below to understand the validated LLMs for each rag agent strategy.</p></li>
 <li><p>Plan and execute: <code class="docutils literal notranslate"><span class="pre">plan_execute</span></code> strategy. This type of agent first makes a step-by-step plan given a user request, and then execute the plan sequentially (or in parallel, to be implemented in future). If the execution results can solve the problem, then the agent will output an answer; otherwise, it will replan and execute again.</p></li>
+<li><p>SQL agent: use <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code> or <code class="docutils literal notranslate"><span class="pre">sql_agent</span></code> strategy. This agent is specifically designed and optimized for answering questions aabout data in SQL databases. For more technical details read descriptions <a class="reference internal" href="src/strategy/sqlagent/README.html"><span class="std std-doc">here</span></a>.</p></li>
 </ol>
 <p><strong>Note</strong>:</p>
 <ol class="arabic simple">
-<li><p>Due to the limitations in support for tool calling by TGI and vllm, we have developed subcategories of agent strategies (<code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> and <code class="docutils literal notranslate"><span class="pre">react_llama</span></code>) specifically designed for open-source LLMs served with TGI and vllm.</p></li>
+<li><p>Due to the limitations in support for tool calling by TGI and vllm, we have developed subcategories of agent strategies (<code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code>, <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> and <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code>) specifically designed for open-source LLMs served with TGI and vllm.</p></li>
 <li><p>For advanced developers who want to implement their own agent strategies, please refer to <a class="reference internal" href="#customize-agent-strategy"><span class="xref myst">Section 5</span></a> below.</p></li>
 </ol>
 </section>
@@ -2113,7 +2120,7 @@
 </tr>
 <tr class="row-even"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_llama</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi) (vllm-gaudi)</p></td>
 <td><p>Recommended for open-source LLMs</p></td>
 </tr>
 <tr class="row-odd"><td><p>RAG agent</p></td>
@@ -2123,13 +2130,23 @@
 </tr>
 <tr class="row-even"><td><p>RAG agent</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi) (vllm-gaudi)</p></td>
 <td><p>Recommended for open-source LLMs, only allows 1 tool with input variable to be “query”</p></td>
 </tr>
 <tr class="row-odd"><td><p>Plan and execute</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">plan_execute</span></code></p></td>
 <td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3">Mistral-7B-Instruct-v0.3</a> (vllm-gaudi), <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct">Llama-3.1-8B-Instruct</a> (vllm-gaudi)</p></td>
-<td><p></p></td>
+<td><p>Currently, due to some issues with guaided decoding of vllm-gaudi, this strategy does not work properly with vllm-gaudi. We are actively debugging. Stay tuned. In the meanwhile, you can use OpenAI’s models with this strategy.</p></td>
+</tr>
+<tr class="row-even"><td><p>SQL agent</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (vllm-gaudi)</p></td>
+<td><p>database query tool is natively integrated using Langchain’s <a class="reference external" href="https://python.langchain.com/api_reference/community/tools/langchain_community.tools.sql_database.tool.QuerySQLDataBaseTool.html#langchain_community.tools.sql_database.tool.QuerySQLDataBaseTool">QuerySQLDataBaseTool</a>. User can also register their own tools with this agent.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SQL agent</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sql_agent</span></code></p></td>
+<td><p>GPT-4o-mini</p></td>
+<td><p>database query tool is natively integrated using Langchain’s <a class="reference external" href="https://python.langchain.com/api_reference/community/tools/langchain_community.tools.sql_database.tool.QuerySQLDataBaseTool.html#langchain_community.tools.sql_database.tool.QuerySQLDataBaseTool">QuerySQLDataBaseTool</a>. User can also register their own tools with this agent.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2221,12 +2238,12 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-langchain-agent-
 <h2>🚀 3. Validate Microservice<a class="headerlink" href="#validate-microservice" title="Link to this heading">¶</a></h2>
 <p>Once microservice starts, user can use below script to invoke.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;query&quot;: &quot;What is the weather today in Austin?&quot;</span>
+<span class="s1">     &quot;query&quot;: &quot;What is OPEA project?&quot;</span>
 <span class="s1">    }&#39;</span>
 
 <span class="c1"># expected output</span>
 
-data:<span class="w"> </span><span class="s1">&#39;The temperature in Austin today is 78°F.&lt;/s&gt;&#39;</span>
+data:<span class="w"> </span><span class="s1">&#39;The OPEA project is .....&lt;/s&gt;&#39;</span><span class="w"> </span><span class="c1"># just showing partial example here.</span>
 
 data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
