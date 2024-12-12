@@ -2144,6 +2144,9 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">6006</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$EMBEDDER_PORT</span><span class="s2">/v1/encode&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_PORT_MICROSERVICE</span><span class="o">=</span><span class="m">6000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7066
+<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_PORT</span><span class="o">=</span><span class="m">3001</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">ASR_SERVICE_PORT</span><span class="si">}</span><span class="s2">/v1/audio/transcriptions&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mm-rag-redis&quot;</span>
@@ -2204,8 +2207,19 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </pre></div>
 </div>
 </section>
+<section id="build-asr-images">
+<h3>5. Build asr images<a class="headerlink" href="#build-asr-images" title="Link to this heading">¶</a></h3>
+<p>Build whisper server image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/dependency/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Build asr image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/asr:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
 <section id="build-megaservice-docker-image">
-<h3>5. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<h3>6. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <a class="reference internal" href="#../../../../multimodalqna.py"><span class="xref myst">multimodalqna.py</span></a> Python script. Build MegaService Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA
@@ -2215,19 +2229,22 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div>
 </section>
 <section id="build-ui-docker-image">
-<h3>6. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>7. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA/ui/
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>../../../
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 11 Docker Images:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-multimodal-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-llava-svc:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-llava:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-multimodal-redis:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/asr:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/redis-vector-db</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-bridgetower:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/multimodalqna:latest</span></code></p></li>
@@ -2309,6 +2326,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
+<li><p>asr</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">ASR_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;byte_str&quot; : &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
 <li><p>lvm-llava</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LLAVA_SERVER_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
@@ -2317,7 +2343,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;:&quot;Describe the image please.&quot;, &quot;img_b64_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="6">
 <li><p>lvm-llava-svc</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
@@ -2339,7 +2365,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>dataprep-multimodal-redis</p></li>
 </ol>
 <p>Download a sample video, image, and audio file and create a caption</p>
@@ -2400,13 +2426,18 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="si">}</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>MegaService</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;audio&quot;, &quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}]}]}&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
