@@ -2092,22 +2092,16 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 </pre></div>
 </div>
 <p>Then you need to test your TEI service using the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="nv">$your_port</span>/embed<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="nv">$your_port</span>/v1/embeddings<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>Start the embedding service with the TEI_EMBEDDING_ENDPOINT.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://localhost:</span><span class="nv">$yourport</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://localhost:</span><span class="nv">$yourport</span><span class="s2">/v1/embeddings&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_MODEL_NAME</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-large-en-v1.5&quot;</span>
 python<span class="w"> </span>embedding_tei.py
-</pre></div>
-</div>
-</section>
-<section id="start-embedding-service-with-local-model">
-<h4>Start Embedding Service with Local Model<a class="headerlink" href="#start-embedding-service-with-local-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>local_embedding.py
 </pre></div>
 </div>
 </section>
@@ -2124,14 +2118,14 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 </pre></div>
 </div>
 <p>Then you need to test your TEI service using the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="nv">$your_port</span>/embed<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="nv">$your_port</span>/embed/v1/embeddings<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>Export the <code class="docutils literal notranslate"><span class="pre">TEI_EMBEDDING_ENDPOINT</span></code> for later usage:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://localhost:</span><span class="nv">$yourport</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://localhost:</span><span class="nv">$yourport</span><span class="s2">/v1/embeddings&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_MODEL_NAME</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-large-en-v1.5&quot;</span>
 </pre></div>
 </div>
@@ -2169,21 +2163,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="id2">
 <h3>3.2 Consume Embedding Service<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<p>Use our basic API.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## query with single text</span>
-curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Hello, world!&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1">## query with multiple texts</span>
-curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:[&quot;Hello, world!&quot;,&quot;How are you?&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<p>We are also compatible with <a class="reference external" href="https://platform.openai.com/docs/api-reference/embeddings">OpenAI API</a>.</p>
+<p>The input/output follows <a class="reference external" href="https://platform.openai.com/docs/api-reference/embeddings">OpenAI API Embeddings</a> format.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## Input single text</span>
 curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
@@ -2193,7 +2173,7 @@ curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">
 <span class="c1">## Input multiple texts with parameters</span>
 curl<span class="w"> </span>http://localhost:6000/v1/embeddings<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:[&quot;Hello, world!&quot;,&quot;How are you?&quot;], &quot;dimensions&quot;:100}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:[&quot;Hello, world!&quot;,&quot;How are you?&quot;], &quot;encoding_format&quot;:&quot;base64&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
