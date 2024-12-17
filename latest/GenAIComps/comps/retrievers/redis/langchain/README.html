@@ -955,7 +955,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../README.html#retriever-microservice-with-pathway">Retriever Microservice with Pathway</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../README.html#retriever-microservice-with-qdrant">Retriever Microservice with QDrant</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../README.html#retriever-microservice-with-vdms">Retriever Microservice with VDMS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../README.html#retriever-microservice-with-multimodal">Retriever Microservice with Multimodal</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../elasticsearch/langchain/README.html">Retriever Microservice</a><ul>
@@ -968,12 +967,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../milvus/langchain/README.html#start-microservice-with-python">🚀Start Microservice with Python</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../milvus/langchain/README.html#start-microservice-with-docker">🚀Start Microservice with Docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../milvus/langchain/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../multimodal/redis/langchain/README.html">Retriever Microservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../multimodal/redis/langchain/README.html#start-microservice-with-python-option-1">🚀1. Start Microservice with Python (Option 1)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../multimodal/redis/langchain/README.html#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../multimodal/redis/langchain/README.html#consume-retriever-service">🚀3. Consume Retriever Service</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../neo4j/langchain/README.html">Retriever Microservice with Neo4J</a><ul>
@@ -2117,11 +2110,22 @@ python<span class="w"> </span>retriever_redis.py
 <h2>🚀2. Start Microservice with Docker (Option 2)<a class="headerlink" href="#start-microservice-with-docker-option-2" title="Link to this heading">¶</a></h2>
 <section id="setup-environment-variables">
 <h3>2.1 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVE_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
+<p>Two versions of retriever are supported for redis: text retriever and multimodal retriever.
+Users need to setup different environment variables for each type of retriever as below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># for text retriever</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVE_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">your_index_name</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6060&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+
+<span class="c1"># for multimodal retriever</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVE_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">your_index_name</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BRIDGE_TOWER_EMBEDDING</span><span class="o">=</span><span class="nb">true</span>
 </pre></div>
 </div>
 </section>
@@ -2140,7 +2144,10 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-docker-with-cli-option-a">
 <h3>2.3 Run Docker with CLI (Option A)<a class="headerlink" href="#run-docker-with-cli-option-a" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;retriever-redis-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="nv">$REDIS_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="nv">$INDEX_NAME</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_EMBEDDING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="nv">$HUGGINGFACEHUB_API_TOKEN</span><span class="w"> </span>opea/retriever-redis:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start a text retriever server</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;retriever-redis-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="nv">$REDIS_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="nv">$INDEX_NAME</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_EMBEDDING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="nv">$HUGGINGFACEHUB_API_TOKEN</span><span class="w"> </span>opea/retriever-redis:latest
+<span class="c1"># start a multimodal retriever server</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;retriever-multimodal-redis-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="nv">$REDIS_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="nv">$INDEX_NAME</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">BRIDGE_TOWER_EMBEDDING</span><span class="o">=</span><span class="si">${</span><span class="nv">BRIDGE_TOWER_EMBEDDING</span><span class="si">}</span><span class="w"> </span>opea/retriever-redis:latest
 </pre></div>
 </div>
 </section>
@@ -2163,38 +2170,41 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="consume-embedding-service">
 <h3>3.2 Consume Embedding Service<a class="headerlink" href="#consume-embedding-service" title="Link to this heading">¶</a></h3>
-<p>To consume the Retriever Microservice, you can generate a mock embedding vector of length 768 with Python.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<p>To consume the Retriever Microservice, you can generate a mock embedding vector with Python.</p>
+<p>Same here, users need to validate text/multimodal embedding service with different lengths of vectors. Then use the <code class="docutils literal notranslate"><span class="pre">curl</span></code> command to validate.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># for text retriever</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
+<span class="c1"># for multimodal retriever</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(512)]; print(embedding)&quot;</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>Default validation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>You can set the parameters for the retriever.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">,\&quot;search_type\&quot;:\&quot;similarity\&quot;, \&quot;k\&quot;:4}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">,\&quot;search_type\&quot;:\&quot;similarity_distance_threshold\&quot;, \&quot;k\&quot;:4, \&quot;distance_threshold\&quot;:1.0}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">,\&quot;search_type\&quot;:\&quot;similarity_score_threshold\&quot;, \&quot;k\&quot;:4, \&quot;score_threshold\&quot;:0.2}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">,\&quot;search_type\&quot;:\&quot;mmr\&quot;, \&quot;k\&quot;:4, \&quot;fetch_k\&quot;:20, \&quot;lambda_mult\&quot;:0.5}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
