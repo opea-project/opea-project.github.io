@@ -2129,13 +2129,19 @@ and the release name given for its Helm install.)</p>
 <span class="gp">$ </span>curl<span class="w"> </span>--no-progress-meter<span class="w"> </span><span class="nv">$prom_url</span>/metrics<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>scrape_pool_targets.*<span class="nv">$chart</span>
 </pre></div>
 </div>
-<p>Check that Prometheus metrics from TGI inference component are available:</p>
+<p>Then check that Prometheus metrics from a relevant LLM inferencing service are available.</p>
+<p>For vLLM:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>--no-progress-meter<span class="w"> </span><span class="nv">$prom_url</span>/api/v1/query?<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;query=vllm:cache_config_info{service=&quot;&#39;</span><span class="nv">$chart</span><span class="s1">&#39;-vllm&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</pre></div>
+</div>
+<p>Or TGI:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>--no-progress-meter<span class="w"> </span><span class="nv">$prom_url</span>/api/v1/query?<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;query=tgi_queue_size{service=&quot;&#39;</span><span class="nv">$chart</span><span class="s1">&#39;-tgi&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </pre></div>
 </div>
 <p><strong>NOTE</strong>: services provide metrics only after they’ve processed their first request.
-And reranking service will be used only after context data has been uploaded!</p>
+And ChatQnA uses (TEI) reranking service only after query context data has been uploaded!</p>
 </section>
 </section>
 
