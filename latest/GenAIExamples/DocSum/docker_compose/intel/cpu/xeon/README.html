@@ -2262,11 +2262,12 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </li>
 <li><p>MegaService</p>
 <p>Text:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## json input</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;text&quot;, &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
 
-<span class="c1"># Use English mode (default).</span>
+<span class="c1"># form input, use English mode (default).</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2324,6 +2325,76 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>MegaService with long context</p>
+<p>If you want to deal with long context, can set following parameters and select suitable summary type.</p>
+<ul class="simple">
+<li><p>“summary_type”: can be “auto”, “stuff”, “truncate”, “map_reduce”, “refine”, default is “auto”</p></li>
+<li><p>“chunk_size”: max token length for each chunk. Set to be different default value according to “summary_type”.</p></li>
+<li><p>“chunk_overlap”: overlap token length between each chunk, default is 0.1*chunk_size</p></li>
+</ul>
+<p><strong>summary_type=auto</strong></p>
+<p>“summary_type” is set to be “auto” by default, in this mode we will check input token length, if it exceed <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code>, <code class="docutils literal notranslate"><span class="pre">summary_type</span></code> will automatically be set to <code class="docutils literal notranslate"><span class="pre">refine</span></code> mode, otherwise will be set to <code class="docutils literal notranslate"><span class="pre">stuff</span></code> mode.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=auto&quot;</span>
+</pre></div>
+</div>
+<p><strong>summary_type=stuff</strong></p>
+<p>In this mode LLM generate summary based on complete input text. In this case please carefully set <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code> and <code class="docutils literal notranslate"><span class="pre">MAX_TOTAL_TOKENS</span></code> according to your model and device memory, otherwise it may exceed LLM context limit and raise error when meet long context.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=stuff&quot;</span>
+</pre></div>
+</div>
+<p><strong>summary_type=truncate</strong></p>
+<p>Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=truncate&quot;</span>
+</pre></div>
+</div>
+<p><strong>summary_type=map_reduce</strong></p>
+<p>Map_reduce mode will split the inputs into multiple chunks, map each document to an individual summary, then consolidate those summaries into a single global summary. <code class="docutils literal notranslate"><span class="pre">streaming=True</span></code> is not allowed here.</p>
+<p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=map_reduce&quot;</span>
+</pre></div>
+</div>
+<p><strong>summary_type=refine</strong></p>
+<p>Refin mode will split the inputs into multiple chunks, generate summary for the first one, then combine with the second, loops over every remaining chunks to get the final summary.</p>
+<p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">128,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=refine&quot;</span>
 </pre></div>
 </div>
 </li>
