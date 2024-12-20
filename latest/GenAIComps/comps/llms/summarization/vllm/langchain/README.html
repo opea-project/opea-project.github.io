@@ -2157,7 +2157,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </ul>
 <p>If you want to deal with long context, can select suitable summary type, details in section 3.2.2.</p>
 <ul class="simple">
-<li><p>“summary_type”: can be “stuff”, “truncate”, “map_reduce”, “refine”, default is “stuff”</p></li>
+<li><p>“summary_type”: can be “auto”, “stuff”, “truncate”, “map_reduce”, “refine”, default is “auto”</p></li>
 <li><p>“chunk_size”: max token length for each chunk. Set to be different default value according to “summary_type”.</p></li>
 <li><p>“chunk_overlap”: overlap token length between each chunk, default is 0.1*chunk_size</p></li>
 </ul>
@@ -2185,8 +2185,10 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 </section>
 <section id="long-context-summarization-with-summary-type">
 <h4>3.2.2 Long context summarization with “summary_type”<a class="headerlink" href="#long-context-summarization-with-summary-type" title="Link to this heading">¶</a></h4>
-<p>“summary_type” is set to be “stuff” by default, which will let LLM generate summary based on complete input text. In this case please carefully set <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code> and <code class="docutils literal notranslate"><span class="pre">MAX_TOTAL_TOKENS</span></code> according to your model and device memory, otherwise it may exceed LLM context limit and raise error when meet long context.</p>
-<p>When deal with long context, you can set “summary_type” to one of “truncate”, “map_reduce” and “refine” for better performance.</p>
+<p><strong>summary_type=auto</strong></p>
+<p>“summary_type” is set to be “auto” by default, in this mode we will check input token length, if it exceed <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code>, <code class="docutils literal notranslate"><span class="pre">summary_type</span></code> will automatically be set to <code class="docutils literal notranslate"><span class="pre">refine</span></code> mode, otherwise will be set to <code class="docutils literal notranslate"><span class="pre">stuff</span></code> mode.</p>
+<p><strong>summary_type=stuff</strong></p>
+<p>In this mode LLM generate summary based on complete input text. In this case please carefully set <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code> and <code class="docutils literal notranslate"><span class="pre">MAX_TOTAL_TOKENS</span></code> according to your model and device memory, otherwise it may exceed LLM context limit and raise error when meet long context.</p>
 <p><strong>summary_type=truncate</strong></p>
 <p>Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/chat/docsum<span class="w"> </span><span class="se">\</span>
