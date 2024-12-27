@@ -453,20 +453,20 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#animation-microservice">Animation Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html">Avatar Animation Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#start-microservice-with-docker-option-1">🚀1. Start Microservice with Docker (option 1)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#build-the-docker-images">1.1 Build the Docker images</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#set-environment-variables">1.2. Set environment variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html">Avatar Animation Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#start-microservice-with-docker-option-1">🚀1. Start Microservice with Docker (option 1)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#build-the-docker-images">1.1 Build the Docker images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#set-environment-variables">1.2. Set environment variables</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#run-the-docker-container">🚀2. Run the Docker container</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#run-wav2lip-microservice">2.1 Run Wav2Lip Microservice</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#run-animation-microservice">2.2 Run Animation Microservice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-the-docker-container">🚀2. Run the Docker container</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-wav2lip-microservice">2.1 Run Wav2Lip Microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-animation-microservice">2.2 Run Animation Microservice</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#validate-microservice">🚀3. Validate Microservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#validate-wav2lip-service">3.1 Validate Wav2Lip service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/wav2lip/README.html#validate-animation-service">3.2 Validate Animation service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-microservice">🚀3. Validate Microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-wav2lip-service">3.1 Validate Wav2Lip service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-animation-service">3.2 Validate Animation service</a></li>
 </ul>
 </li>
 </ul>
@@ -2164,14 +2164,17 @@ Use this if you are not using Terraform and have provisioned your system with an
 </li>
 <li><p>Set up other environment variables:</p>
 <blockquote>
-<div><p>Notice that you can only choose <strong>one</strong> command below to set up envs according to your hardware. Other that the port numbers may be set incorrectly.</p>
+<div><p>Notice that you can only choose <strong>one</strong> hardware option below to set up envs according to your hardware. Make sure port numbers are set correctly as well.</p>
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Gaudi</span>
 <span class="nb">source</span><span class="w"> </span>./docker_compose/intel/hpu/gaudi/set_env.sh
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,guardrails
 <span class="c1"># on Xeon</span>
 <span class="nb">source</span><span class="w"> </span>./docker_compose/intel/cpu/xeon/set_env.sh
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
 <span class="c1"># on Nvidia GPU</span>
 <span class="nb">source</span><span class="w"> </span>./docker_compose/nvidia/gpu/set_env.sh
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-ui-server,chatqna-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service
 </pre></div>
 </div>
 </li>
