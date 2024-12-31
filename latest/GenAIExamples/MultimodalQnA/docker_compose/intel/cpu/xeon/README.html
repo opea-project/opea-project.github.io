@@ -2138,9 +2138,8 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">6006</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$EMBEDDER_PORT</span><span class="s2">/v1/encode&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_PORT_MICROSERVICE</span><span class="o">=</span><span class="m">6000</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7066
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_PORT</span><span class="o">=</span><span class="m">3001</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">ASR_SERVICE_PORT</span><span class="si">}</span><span class="s2">/v1/audio/transcriptions&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_PORT</span><span class="o">=</span><span class="m">7066</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">WHISPER_SERVER_PORT</span><span class="si">}</span><span class="s2">/v1/asr&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mm-rag-redis&quot;</span>
@@ -2205,11 +2204,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <section id="build-asr-images">
 <h3>5. Build asr images<a class="headerlink" href="#build-asr-images" title="Link to this heading">¶</a></h3>
 <p>Build whisper server image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/dependency/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Build asr image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/asr:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2238,7 +2233,6 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-llava:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-multimodal-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/asr:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/redis-vector-db</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-bridgetower:latest</span></code></p></li>
@@ -2323,10 +2317,10 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple" start="4">
 <li><p>asr</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">ASR_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">WHISPER_SERVER_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;byte_str&quot; : &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot; : &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">

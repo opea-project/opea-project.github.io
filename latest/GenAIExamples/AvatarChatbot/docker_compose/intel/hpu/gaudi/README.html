@@ -2081,24 +2081,17 @@
 </section>
 <section id="build-asr-image">
 <h3>2. Build ASR Image<a class="headerlink" href="#build-asr-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/dependency/Dockerfile.intel_hpu<span class="w"> </span>.
-
-
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/asr:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/whisper/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile.intel_hpu<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="build-llm-image">
 <h3>3. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
+<p>Intel Xeon optimized image hosted in huggingface repo will be used for TGI service: ghcr.io/huggingface/tgi-gaudi:2.0.6 (https://github.com/huggingface/tgi-gaudi)</p>
 </section>
 <section id="build-tts-image">
 <h3>4. Build TTS Image<a class="headerlink" href="#build-tts-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/speecht5/dependency/Dockerfile.intel_hpu<span class="w"> </span>.
-
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/tts:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/speecht5/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5-gaudi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/src/integrations/dependency/speecht5/Dockerfile.intel_hpu<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2121,10 +2114,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have following images ready:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper-gaudi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/asr:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-tgi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/speecht5-gaudi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/tts:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/wav2lip-gaudi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/animation:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/avatarchatbot:latest</span></code></p></li>
@@ -2137,24 +2127,21 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;your_hf_token&gt;
 <span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:3006
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Intel/neural-chat-7b-v3-3
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7066
-<span class="nb">export</span><span class="w"> </span><span class="nv">TTS_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7055
 <span class="nb">export</span><span class="w"> </span><span class="nv">WAV2LIP_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7860
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TTS_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_PORT</span><span class="o">=</span><span class="m">7066</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_PORT</span><span class="o">=</span><span class="m">7055</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_PORT</span><span class="o">=</span><span class="m">3006</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ANIMATION_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ANIMATION_SERVICE_PORT</span><span class="o">=</span><span class="m">3008</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ASR_SERVICE_PORT</span><span class="o">=</span><span class="m">3001</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TTS_SERVICE_PORT</span><span class="o">=</span><span class="m">3002</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVICE_PORT</span><span class="o">=</span><span class="m">3007</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ANIMATION_SERVICE_PORT</span><span class="o">=</span><span class="m">3008</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -2190,32 +2177,14 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 
-<span class="c1"># asr microservice</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3001/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;byte_str&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
 <span class="c1"># tgi service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3006/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 
-<span class="c1"># llm microservice</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3007/v1/chat/completions<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:false}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
 <span class="c1"># speecht5 service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7055/v1/tts<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># tts microservice</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3002/v1/audio/speech<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
