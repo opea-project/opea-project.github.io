@@ -352,6 +352,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#translation-application">Translation Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/README.html">Translation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/amd/gpu/rocm/README.html">Build and deploy Translation Application on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/amd/gpu/rocm/README.html#validate-the-microservices-and-megaservice">Validate the MicroServices and MegaService</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Translation on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Translation on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/kubernetes/intel/README.html">Deploy Translation in Kubernetes Cluster</a></li>
@@ -1034,16 +1036,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/text2image/README.html#test-text-to-image-service">3 Test Text-to-Image Service</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#texttosql-microservice">Texttosql Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/texttosql/README.html">🛢 Text-to-SQL Microservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/texttosql/README.html#features">🛠️ Features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/texttosql/README.html#implementation">⚙️ Implementation</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/texttosql/langchain/README.html">🛢🔗 Text-to-SQL Microservice with Langchain</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/texttosql/langchain/README.html#start-microservice-with-python-option-1">🚀 Start Microservice with Python（Option 1）</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/texttosql/langchain/README.html#start-microservice-with-docker-option-2">🚀 Start Microservice with Docker (Option 2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/texttosql/langchain/README.html#invoke-the-microservice">✅ Invoke the microservice.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#text2sql-microservice">Text2sql Microservice</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/text2sql/src/README.html">🛢 Text-to-SQL Microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/text2sql/src/README.html#features">🛠️ Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/text2sql/src/README.html#implementation">⚙️ Implementation</a></li>
 </ul>
 </li>
 </ul>
@@ -1352,6 +1348,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/mongodb/README.html#install-the-chart">Install the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/mongodb/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/mongodb/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/nginx/README.html">OPEA nginx microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/nginx/README.html#using-nginx-chart">Using nginx chart</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../GenAIInfra/helm-charts/common/prompt-usvc/README.html">prompt-usvc</a><ul>
@@ -2073,6 +2073,16 @@
 Retrieval-Augmented Generation system for edge solutions. It is designed to
 curate the RAG pipeline to meet hardware requirements at edge with guaranteed
 quality and performance.</p>
+<section id="what-s-new-in-this-release">
+<h2>What’s New in this release?<a class="headerlink" href="#what-s-new-in-this-release" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Support image/url data retrieval and display in EC-RAG</p></li>
+<li><p>Support display of LLM-used context sources in UI</p></li>
+<li><p>Support pipeline remove operation in RESTful API and UI</p></li>
+<li><p>Support RAG pipeline performance benchmark and display in UI</p></li>
+<li><p>Fixed known issues in EC-RAG UI and server</p></li>
+</ul>
+</section>
 <section id="quick-start-guide">
 <h2>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading">¶</a></h2>
 <section id="optional-build-docker-images-for-mega-service-server-and-ui-by-your-own">
@@ -2110,6 +2120,8 @@ Please follow this link <a class="reference external" href="https://github.com/o
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
 <span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${GRADIO_PATH}</span>
+<span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
+<span class="c1"># chown 1000:1000 $HOME/.cache</span>
 
 <span class="c1"># Use `ip a` to check your active ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="s2">&quot;your host ip&quot;</span>
@@ -2256,7 +2268,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 <section id="update-a-pipeline">
 <h4>Update a pipeline<a class="headerlink" href="#update-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2268,7 +2280,26 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 <section id="activate-a-pipeline">
 <h4>Activate a pipeline<a class="headerlink" href="#activate-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/test1<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;true&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;true&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="remove-a-pipeline">
+<h4>Remove a pipeline<a class="headerlink" href="#remove-a-pipeline" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Firstly, deactivate the pipeline if the pipeline status is active</span>
+curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;false&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<span class="c1"># Then delete the pipeline</span>
+curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="enable-and-check-benchmark-for-pipelines">
+<h4>Enable and check benchmark for pipelines<a class="headerlink" href="#enable-and-check-benchmark-for-pipelines" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ENABLE_BENCHMARK as true before launch services</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_BENCHMARK</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
+
+<span class="c1"># check the benchmark data for pipeline {pipeline_name}</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>pipeline_name<span class="o">}</span>/benchmark<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2277,7 +2308,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <h3>Model Management<a class="headerlink" href="#model-management" title="Link to this heading">¶</a></h3>
 <section id="load-a-model">
 <h4>Load a model<a class="headerlink" href="#load-a-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;cpu&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;cpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 <p>It will take some time to load the model.</p>
@@ -2290,7 +2321,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 <section id="update-a-model">
 <h4>Update a model<a class="headerlink" href="#update-a-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;gpu&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;gpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
