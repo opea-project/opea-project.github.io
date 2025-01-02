@@ -2077,7 +2077,7 @@
 <h3>1.1 Build Text to SQL service Image<a class="headerlink" href="#build-text-to-sql-service-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/texttosql:comps<span class="w"> </span>-f<span class="w"> </span>comps/texttosql/langchain/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/text2sql:comps<span class="w"> </span>-f<span class="w"> </span>comps/text2sql/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2085,12 +2085,12 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <h3>1.2 Build react UI Docker Image<a class="headerlink" href="#build-react-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build the frontend Docker image based on react framework via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DBQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/texttosql-react-ui:latest<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.react<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/text2sql-react-ui:latest<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.react<span class="w"> </span>.
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker Images:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/texttosql:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/text2sql:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dbqna-react-ui:latest</span></code></p></li>
 </ol>
 </section>
@@ -2124,7 +2124,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
 <span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>testpwd
 <span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>chinook
-<span class="nb">export</span><span class="w"> </span><span class="nv">texttosql_port</span><span class="o">=</span><span class="m">9090</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">text2sql_port</span><span class="o">=</span><span class="m">9090</span>
 </pre></div>
 </div>
 <p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">your_ip</span></code> with your external IP address, do not use localhost.</p>
@@ -2147,13 +2147,13 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <li><p>Start PostgresDB Service</p></li>
 </ul>
 <p>We will use <a class="reference external" href="https://github.com/lerocha/chinook-database">Chinook</a> sample database as a default to test the Text-to-SQL microservice. Chinook database is a sample database ideal for demos and testing ORM tools targeting single and multiple database servers.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>test-texttosql-postgres<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_HOST_AUTH_METHOD</span><span class="o">=</span>trust<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5442</span>:5432<span class="w"> </span>-d<span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/texttosql/langchain/chinook.sql:/docker-entrypoint-initdb.d/chinook.sql<span class="w"> </span>postgres:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>test-text2sql-postgres<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_HOST_AUTH_METHOD</span><span class="o">=</span>trust<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5442</span>:5432<span class="w"> </span>-d<span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/text2sql/langchain/chinook.sql:/docker-entrypoint-initdb.d/chinook.sql<span class="w"> </span>postgres:latest
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Start TGI Service</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-texttosql-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.1.0<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-text2sql-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.1.0<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -2161,7 +2161,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">unset</span><span class="w"> </span>http_proxy
 
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-texttosql-server&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">texttosql_port</span><span class="si">}</span>:8090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="nv">$TGI_LLM_ENDPOINT</span><span class="w"> </span>opea/texttosql:latest
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-text2sql-server&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">text2sql_port</span><span class="si">}</span>:8090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="nv">$TGI_LLM_ENDPOINT</span><span class="w"> </span>opea/text2sql:latest
 </pre></div>
 </div>
 <ul class="simple">
@@ -2197,7 +2197,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </section>
 <section id="invoke-the-microservice">
 <h4>3.2.2 Invoke the microservice.<a class="headerlink" href="#invoke-the-microservice" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/texttosql<span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/text2sql<span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
