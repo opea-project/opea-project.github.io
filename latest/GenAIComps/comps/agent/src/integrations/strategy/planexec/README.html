@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL Agents &mdash; OPEA™ 1.1 documentation</title>
+  <title>Plan Execute &mdash; OPEA™ 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,8 +28,8 @@
     <script src="../../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../../search.html" />
-    <link rel="next" title="Avatar Animation Microservice" href="../../../../../animation/src/README.html" />
-    <link rel="prev" title="RAG Agent" href="../ragagent/README.html" /> 
+    <link rel="next" title="RAG Agent" href="../ragagent/README.html" />
+    <link rel="prev" title="Agent Microservice" href="../../../README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -445,12 +445,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../README.html#customize-agent-strategy">5. Customize agent strategy</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../planexec/README.html">Plan Execute</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Plan Execute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ragagent/README.html">RAG Agent</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">SQL Agents</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#overview-of-sql-agent-llama">Overview of sql_agent_llama</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#overview-of-sql-agent">Overview of sql_agent</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#limitations">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sqlagent/README.html">SQL Agents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../sqlagent/README.html#overview-of-sql-agent-llama">Overview of sql_agent_llama</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sqlagent/README.html#overview-of-sql-agent">Overview of sql_agent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sqlagent/README.html#limitations">Limitations</a></li>
 </ul>
 </li>
 </ul>
@@ -1972,10 +1972,10 @@
   
      <li><a href="../../../../../../../microservices/index.html">GenAI Microservices</a> &raquo;</li>
   
-  <li>SQL Agents</li>
+  <li>Plan Execute</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../../../../_sources/GenAIComps/comps/agent/langchain/src/strategy/sqlagent/README.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../../../../_sources/GenAIComps/comps/agent/src/integrations/strategy/planexec/README.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -1992,51 +1992,28 @@
   
            <div itemprop="articleBody">
              
-  <section id="sql-agents">
-<h1>SQL Agents<a class="headerlink" href="#sql-agents" title="Link to this heading">¶</a></h1>
-<p>We currently have two types of SQL agents:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code>: for using with open-source LLMs, especially <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-3.1-70B-Instruct</span></code> model.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sql_agent</span></code>: for using with OpenAI models, we developed and validated with GPT-4o-mini.</p></li>
+  <section id="plan-execute">
+<h1>Plan Execute<a class="headerlink" href="#plan-execute" title="Link to this heading">¶</a></h1>
+<p>This strategy is a practise provided with <a class="reference external" href="https://github.com/langchain-ai/langgraph/blob/main/examples/plan-and-execute/plan-and-execute.ipynb?ref=blog.langchain.dev">LangGraph</a></p>
+<ol class="arabic">
+<li><p>Planner</p>
+<p>Plan steps to achieve final Goal =&gt; Goto “Executor”</p>
+</li>
+<li><p>Executor:</p>
+<p>Leverage React Agent Executor to complete steps one by one =&gt; Goto “Planner”</p>
+</li>
+<li><p>Replanner:</p>
+<p>Judge on executor result and provide response =&gt; Goto “CompletionChecker”</p>
+</li>
+<li><p>CompletionChecker:</p>
+<p>Judge on Replanner output</p>
+<ul class="simple">
+<li><p>option plan_executor: Goto “Executor”</p></li>
+<li><p>option END: Complete the query with Final answer.</p></li>
+</ul>
+</li>
 </ol>
-<section id="overview-of-sql-agent-llama">
-<h2>Overview of sql_agent_llama<a class="headerlink" href="#overview-of-sql-agent-llama" title="Link to this heading">¶</a></h2>
-<p>The architecture of <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code> is shown in the figure below.
-The agent node takes user question, hints (optional) and history (when available), and thinks step by step to solve the problem.</p>
-<p><img alt="SQL Agent Llama Architecture" src="../../../../../../../_images/sql_agent_llama.png" /></p>
-<section id="database-schema">
-<h3>Database schema:<a class="headerlink" href="#database-schema" title="Link to this heading">¶</a></h3>
-<p>We use langchain’s <a class="reference external" href="https://python.langchain.com/docs/integrations/tools/sql_database/">SQLDatabase</a> API to get table names and schemas from the SQL database. User just need to specify <code class="docutils literal notranslate"><span class="pre">db_path</span></code> and <code class="docutils literal notranslate"><span class="pre">db_name</span></code>. The table schemas are incorporated into the prompts for the agent.</p>
-</section>
-<section id="hints-module">
-<h3>Hints module:<a class="headerlink" href="#hints-module" title="Link to this heading">¶</a></h3>
-<p>If you want to use the hints module, you need to prepare a csv file that has 3 columns: <code class="docutils literal notranslate"><span class="pre">table_name</span></code>, <code class="docutils literal notranslate"><span class="pre">column_name</span></code>, <code class="docutils literal notranslate"><span class="pre">description</span></code>, and make this file available to the agent microservice. The <code class="docutils literal notranslate"><span class="pre">description</span></code> should include useful information (for example, domain knowledge) about a certain column in a table in the database. The hints module will pick up to five relevant columns together with their descriptions based on the user question using similarity search. The hints module will then pass these column descriptions to the agent node.</p>
-</section>
-<section id="output-parser">
-<h3>Output parser:<a class="headerlink" href="#output-parser" title="Link to this heading">¶</a></h3>
-<p>Due to the current limitations of open source LLMs and serving frameworks (tgi and vllm) in generating tool call objects, we developed and optimized a custom output parser, together with our specially designed prompt templates. The output parser has 3 functions:</p>
-<ol class="arabic simple">
-<li><p>Decide if a valid final answer presents in the raw agent output. This is needed because: a) we found sometimes agent would make guess or hallucinate data, so it is critical to double check, b) sometimes LLM does not strictly follow instructions on output format so simple string parsing can fail. We use one additional LLM call to perform this function.</p></li>
-<li><p>Pick out tool calls from raw agent output. And check if the agent has made same tool calls before. If yes, remove the repeated tool calls.</p></li>
-<li><p>Parse and review SQL query, and fix SQL query if there are errors. This proved to improve SQL agent performance since the initial query may contain errors and having a “second pair of eyes” can often spot the errors while the agent node itself may not be able to identify the errors in subsequent execution steps.</p></li>
-</ol>
-</section>
-</section>
-<section id="overview-of-sql-agent">
-<h2>Overview of sql_agent<a class="headerlink" href="#overview-of-sql-agent" title="Link to this heading">¶</a></h2>
-<p>The architecture of <code class="docutils literal notranslate"><span class="pre">sql_agent</span></code> is shown in the figure below.
-The agent node takes user question, hints (optional) and history (when available), and thinks step by step to solve the problem. The basic idea is the same as <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code>. However, since OpenAI APIs produce well-structured tool call objects, we don’t need a special output parser. Instead, we only keep the query fixer.</p>
-<p><img alt="SQL Agent Architecture" src="../../../../../../../_images/sql_agent.png" /></p>
-</section>
-<section id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Agent is only allowed to issue “SELECT” commands to databases, i.e., agent can only query databases but cannot update databases.</p></li>
-<li><p>We currently does not support “stream” agent outputs on the fly for <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code>.</p></li>
-<li><p>Users need to pass the SQL database URI to the agent with the <code class="docutils literal notranslate"><span class="pre">db_path</span></code> environment variable. We have only validated SQLite database connected in such way.</p></li>
-</ol>
-<p>Please submit issues if you want new features to be added. We also welcome community contributions!</p>
-</section>
+<p><img alt="PlanExecute" src="https://raw.githubusercontent.com/langchain-ai/langgraph/3a53843185d64a2759fb422c74e967d462315246/examples/plan-and-execute/img/plan-and-execute.png" /></p>
 </section>
 
 
@@ -2044,8 +2021,8 @@ The agent node takes user question, hints (optional) and history (when available
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../ragagent/README.html" class="btn btn-neutral float-left" title="RAG Agent" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../../../../animation/src/README.html" class="btn btn-neutral float-right" title="Avatar Animation Microservice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../../README.html" class="btn btn-neutral float-left" title="Agent Microservice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../ragagent/README.html" class="btn btn-neutral float-right" title="RAG Agent" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
