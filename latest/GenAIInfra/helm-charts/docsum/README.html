@@ -2029,12 +2029,15 @@
 </section>
 <section id="verify-the-workload-through-ui">
 <h3>Verify the workload through UI<a class="headerlink" href="#verify-the-workload-through-ui" title="Link to this heading">¶</a></h3>
-<p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with the NGINX port. You can find the NGINX port using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>docsum-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with docsum-ui service nodePort(If using the default docsum gradio UI) or along with the NGINX service nodePort. You can find the corresponding port using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For docsum gradio UI</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>docsum-docsum-ui<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<span class="c1"># For other docsum UI</span>
+<span class="c1"># export port=$(kubectl get service docsum-nginx --output=&#39;jsonpath={.spec.ports[0].nodePort}&#39;)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$port</span>
 </pre></div>
 </div>
-<p>Open a browser to access <code class="docutils literal notranslate"><span class="pre">http://&lt;k8s-node-ip-address&gt;:${port}</span></code> to play with the ChatQnA workload.</p>
+<p>Open a browser to access <code class="docutils literal notranslate"><span class="pre">http://&lt;k8s-node-ip-address&gt;:${port}</span></code> to play with the DocSum workload.</p>
 </section>
 </section>
 <section id="values">
