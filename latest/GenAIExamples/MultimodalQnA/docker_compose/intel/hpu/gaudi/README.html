@@ -2042,8 +2042,8 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.6
 </pre></div>
 </div>
-<p>Build lvm-tgi microservice image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/lvm-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/tgi-llava/Dockerfile<span class="w"> </span>.
+<p>Build lvm microservice image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/lvm:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2079,7 +2079,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 11 Docker Images:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-multimodal-redis:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-tgi:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-multimodal-redis:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
@@ -2183,7 +2183,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
-<li><p>lvm-tgi</p></li>
+<li><p>lvm</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
@@ -2230,7 +2230,7 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Also, test dataprep microservice with generating an image caption using lvm-tgi</p>
+<p>Also, test dataprep microservice with generating an image caption using lvm</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>

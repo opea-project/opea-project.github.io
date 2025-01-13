@@ -2035,10 +2035,10 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="build-lvm-image-xeon">
 <h3>4. Build LVM Image (Xeon)<a class="headerlink" href="#build-lvm-image-xeon" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/video-llama-lvm-server:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/video-llama/dependency/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/lvm-video-llama:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/src/integrations/dependency/video-llama/Dockerfile<span class="w"> </span>.
 
 <span class="c1"># LVM Service Image</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/lvm-video-llama:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/video-llama/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/lvm:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2066,13 +2066,34 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep-multimodal-vdms:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-clip:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-vdms:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever-vdms:latest</span></code>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/video-llama-lvm-server:latest</span></code></p></li>
+<li><h1 class="rubric" id="opea-lvm-video-llama-latest"><code class="docutils literal notranslate"><span class="pre">opea/lvm-video-llama:latest</span></code></h1>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking-tei:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-video-llama:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm:latest</span></code></p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>d93597cbfd9da92b956adb3673c9e5d743c181af</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/videoqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/videoqna-ui:latest</span></code></p></li>
 </ol>
@@ -2219,7 +2240,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </li>
 <li><p>LVM backend Service</p>
 <p>In first startup, this service will take times to download the LLM file. After it’s finished, the service will be ready.</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">video-llama-lvm-server</span></code> to check if the download is finished.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">lvm-video-llama</span></code> to check if the download is finished.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:9009/generate?video_url=silence_girl.mp4&amp;start=0.0&amp;duration=9&amp;prompt=What%20is%20the%20person%20doing%3F&amp;max_new_tokens=150&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;accept: */*&quot;</span><span class="w"> </span><span class="se">\</span>
