@@ -47,7 +47,8 @@ Results will be displayed in the terminal and saved as CSV file named `1_stats.c
 
 ### Prerequisites
 
-- Kubernetes installation: Use [kubespray](/guide/installation/k8s_install/k8s_install_kubespray.md) or other official Kubernetes installation guides.
+- Kubernetes installation: Use [kubespray](/guide/installation/k8s_install/k8s_install_kubespray.md) or other official Kubernetes installation guides: 
+- (Optional) [Kubernetes set up guide on Intel Gaudi product](/GenAIInfra/README.md#setup-kubernetes-cluster) 
 - Helm installation: Follow the [Helm documentation](https://helm.sh/docs/intro/install/#helm) to install Helm.
 - Setup Hugging Face Token
 
