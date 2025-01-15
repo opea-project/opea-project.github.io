@@ -852,9 +852,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#ragas-microservice">Ragas Microservice</a><ul class="simple">
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../microservices/index.html#rerankings-microservice">Rerankings Microservice</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIComps/comps/rerankings/deployment/kubernetes/README.html">Deploy reranking microservice on Kubernetes cluster</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIComps/comps/rerankings/deployment/kubernetes/README.html#deploy-on-kubernetes">Deploy on Kubernetes</a></li>
@@ -1323,8 +1320,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">llm-uservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 </ul>
@@ -2059,39 +2055,71 @@
              
   <section id="llm-uservice">
 <h1>llm-uservice<a class="headerlink" href="#llm-uservice" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying LLM microservice.</p>
-<p>llm-uservice depends on TGI, you should set TGI_LLM_ENDPOINT as tgi endpoint.</p>
-<section id="option1-installing-the-chart-separately">
-<h2>(Option1): Installing the chart separately<a class="headerlink" href="#option1-installing-the-chart-separately" title="Link to this heading">¶</a></h2>
-<p>First, you need to install the tgi chart, please refer to the <a class="reference internal" href="#../tgi"><span class="xref myst">tgi</span></a> chart for more information.</p>
-<p>After you’ve deployted the tgi chart successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the tgi service endpoint, i.e. <code class="docutils literal notranslate"><span class="pre">http://tgi</span></code>.</p>
-<p>To install the chart, run the following:</p>
+<p>Helm chart for deploying OPEA LLM microservices.</p>
+<section id="installing-the-chart">
+<h2>Installing the chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">llm-uservice</span></code> depends on one of the following inference backend services:</p>
+<ul class="simple">
+<li><p>TGI: please refer to <a class="reference internal" href="#../tgi"><span class="xref myst">tgi</span></a> chart for more information</p></li>
+<li><p>vLLM: please refer to <a class="reference internal" href="#../vllm"><span class="xref myst">vllm</span></a> chart for more information</p></li>
+</ul>
+<p>First, you need to install one of the dependent chart, i.e. <code class="docutils literal notranslate"><span class="pre">tgi</span></code> or <code class="docutils literal notranslate"><span class="pre">vllm</span></code> helm chart.</p>
+<p>After you’ve deployed the dependent chart successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the backend inference service endpoint, e.g. <code class="docutils literal notranslate"><span class="pre">http://tgi</span></code>, <code class="docutils literal notranslate"><span class="pre">http://vllm</span></code>.</p>
+<p>To install the <code class="docutils literal notranslate"><span class="pre">llm-uservice</span></code> chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/llm-uservice</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export TGI_LLM_ENDPOINT=&quot;http://tgi&quot;</span>
 <span class="go">helm dependency update</span>
-<span class="go">helm install llm-uservice . --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set TGI_LLM_ENDPOINT=${TGI_LLM_ENDPOINT} --wait</span>
-</pre></div>
-</div>
-</section>
-<section id="option2-installing-the-chart-with-dependencies-automatically">
-<h2>(Option2): Installing the chart with dependencies automatically<a class="headerlink" href="#option2-installing-the-chart-with-dependencies-automatically" title="Link to this heading">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/llm-uservice</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install llm-uservice . --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set tgi.enabled=true --wait</span>
+<span class="gp"># </span><span class="nb">set</span><span class="w"> </span>backend<span class="w"> </span>inferene<span class="w"> </span>service<span class="w"> </span>endpoint<span class="w"> </span>URL
+<span class="gp"># </span><span class="k">for</span><span class="w"> </span>tgi
+<span class="go">export LLM_ENDPOINT=&quot;http://tgi&quot;</span>
+<span class="gp"># </span><span class="k">for</span><span class="w"> </span>vllm
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://vllm&quot;</span>
+
+<span class="gp"># </span><span class="nb">set</span><span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>model<span class="w"> </span>used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>backend<span class="w"> </span>inference<span class="w"> </span>service
+<span class="go">export LLM_MODEL_ID=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+
+<span class="gp"># </span>install<span class="w"> </span>llm-textgen<span class="w"> </span>with<span class="w"> </span>TGI<span class="w"> </span>backend
+<span class="go">helm install llm-uservice . --set TEXTGEN_BACKEND=&quot;TGI&quot; --set LLM_ENDPOINT=${LLM_ENDPOINT} --set LLM_MODEL_ID=${LLM_MODEL_ID} --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --wait</span>
+
+<span class="gp"># </span>install<span class="w"> </span>llm-textgen<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>backend
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEXTGEN_BACKEND</span><span class="o">=</span><span class="s2">&quot;vLLM&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
+
+<span class="gp"># </span>install<span class="w"> </span>llm-docsum<span class="w"> </span>with<span class="w"> </span>TGI<span class="w"> </span>backend
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-docsum&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">DOCSUM_BACKEND</span><span class="o">=</span><span class="s2">&quot;TGI&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_INPUT_TOKENS</span><span class="o">=</span><span class="m">2048</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_TOTAL_TOKENS</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
+
+<span class="gp"># </span>install<span class="w"> </span>llm-docsum<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>backend
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-docsum&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">DOCSUM_BACKEND</span><span class="o">=</span><span class="s2">&quot;vLLM&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_INPUT_TOKENS</span><span class="o">=</span><span class="m">2048</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_TOTAL_TOKENS</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
+
+<span class="gp"># </span>install<span class="w"> </span>llm-faqgen<span class="w"> </span>with<span class="w"> </span>TGI<span class="w"> </span>backend
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-faqgen&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">FAQGEN_BACKEND</span><span class="o">=</span><span class="s2">&quot;TGI&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
+
+<span class="gp"># </span>install<span class="w"> </span>llm-faqgen<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>backend
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-faqgen&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">FAQGEN_BACKEND</span><span class="o">=</span><span class="s2">&quot;vLLM&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
 </pre></div>
 </div>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/llm-uservice</span> <span class="pre">9000:9000</span></code> to expose the llm-uservice service for access.</p>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/llm-uservice</span> <span class="pre">9000:9000</span></code> to expose the service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9000/v1/chat/completions \</span>
-<span class="go">    -X POST \</span>
-<span class="go">    -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39; \</span>
-<span class="go">    -H &#39;Content-Type: application/json&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="k">for</span><span class="w"> </span>llm-textgen<span class="w"> </span>service
+<span class="go">curl http://localhost:9000/v1/chat/completions \</span>
+<span class="go">  -X POST \</span>
+<span class="go">  -d d &#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17}&#39; \</span>
+<span class="go">  -H &#39;Content-Type: application/json&#39;</span>
+
+<span class="gp"># </span><span class="k">for</span><span class="w"> </span>llm-docsum<span class="w"> </span>service
+<span class="go">curl http://localhost:9000/v1/docsum \</span>
+<span class="go">  -X POST \</span>
+<span class="go">  -d &#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;}&#39; \</span>
+<span class="go">  -H &#39;Content-Type: application/json&#39;</span>
+
+<span class="gp"># </span><span class="k">for</span><span class="w"> </span>llm-faqgen<span class="w"> </span>service
+<span class="go">curl http://localhost:9000/v1/faqgen \</span>
+<span class="go">  -X POST \</span>
+<span class="go">  -d &#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,&quot;max_tokens&quot;: 128}&#39; \</span>
+<span class="go">  -H &#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2113,20 +2141,35 @@
 </tr>
 <tr class="row-odd"><td><p>image.repository</p></td>
 <td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/llm-tgi&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/llm-textgen&quot;</span></code></p></td>
+<td><p>one of “opea/llm-textgen”, “opea/llm-docsum”, “opea/llm-faqgen”</p></td>
 </tr>
-<tr class="row-even"><td><p>service.port</p></td>
-<td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;9000&quot;</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>TGI_LLM_ENDPOINT</p></td>
+<tr class="row-even"><td><p>LLM_ENDPOINT</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
-<td><p>LLM endpoint</p></td>
+<td><p>backend inference service endpoint</p></td>
 </tr>
-<tr class="row-even"><td><p>global.monitoring</p></td>
+<tr class="row-odd"><td><p>LLM_MODEL_ID</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Intel/neural-chat-7b-v3-3&quot;</span></code></p></td>
+<td><p>model used by the inference backend</p></td>
+</tr>
+<tr class="row-even"><td><p>TEXTGEN_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;tgi&quot;</span></code></p></td>
+<td><p>backend inference engine, only valid for llm-textgen image, one of “TGI”, “vLLM”</p></td>
+</tr>
+<tr class="row-odd"><td><p>DOCSUM_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;tgi&quot;</span></code></p></td>
+<td><p>backend inference engine, only valid for llm-docsum image, one of “TGI”, “vLLM”</p></td>
+</tr>
+<tr class="row-even"><td><p>FAQGEN_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;tgi&quot;</span></code></p></td>
+<td><p>backend inference engine, only valid for llm-faqgen image, one of “TGi”, “vLLM”</p></td>
+</tr>
+<tr class="row-odd"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>Service usage metrics</p></td>
