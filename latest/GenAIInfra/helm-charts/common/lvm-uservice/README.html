@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="mongodb" href="../mongodb/README.html" />
-    <link rel="prev" title="llm-uservice" href="../llm-uservice/README.html" /> 
+    <link rel="prev" title="OPEA lvm-serve microservice" href="../lvm-serve/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -1325,9 +1325,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../llm-uservice/README.html#values">Values</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../lvm-serve/README.html">OPEA lvm-serve microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#values">Values</a></li>
+</ul>
+</li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">lvm-uservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 </ul>
@@ -1386,6 +1391,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#installing-the-chart">Installing the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../text2image/README.html">OPEA text2image microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#values">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../tgi/README.html">tgi</a><ul>
@@ -2056,37 +2067,40 @@
   <section id="lvm-uservice">
 <h1>lvm-uservice<a class="headerlink" href="#lvm-uservice" title="Link to this heading">¶</a></h1>
 <p>Helm chart for deploying LVM microservice.</p>
-<p>lvm-uservice depends on TGI, you should set LVM_ENDPOINT as tgi endpoint.</p>
-<section id="option1-installing-the-chart-separately">
-<h2>(Option1): Installing the chart separately<a class="headerlink" href="#option1-installing-the-chart-separately" title="Link to this heading">¶</a></h2>
-<p>First, you need to install the tgi chart, please refer to the <a class="reference internal" href="#../tgi"><span class="xref myst">tgi</span></a> chart for more information.</p>
-<p>After you’ve deployted the tgi chart successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the tgi service endpoint, i.e. <code class="docutils literal notranslate"><span class="pre">http://tgi</span></code>.</p>
-<p>To install the chart, run the following:</p>
+<section id="installing-the-chart">
+<h2>Installing the chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p>lvm-uservice depends on one of the following backend services:</p>
+<ul class="simple">
+<li><p>TGI: please refer to <a class="reference internal" href="#../tgi"><span class="xref myst">tgi</span></a> chart for more information</p></li>
+<li><p>one of the large vision model inference engine: please refer to <a class="reference internal" href="#../lvm-serve"><span class="xref myst">lvm-serve</span></a> chart for more information</p></li>
+</ul>
+<p>First, you need to get the dependent service deployed, i.e. deploy the tgi helm chart, or lvm helm chart.</p>
+<p>After you’ve deployed the dependent service successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the backend service URL, e.g. <code class="docutils literal notranslate"><span class="pre">http://tgi</span></code>, <code class="docutils literal notranslate"><span class="pre">http://lvm-serve</span></code>.</p>
+<p>To install the <code class="docutils literal notranslate"><span class="pre">lvm-uservice</span></code> chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/lvm-uservice</span>
+<span class="go">helm dependency update</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
+
+<span class="gp"># </span>Use<span class="w"> </span>TGI<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>backend
+<span class="go">export LVM_BACKEND=&quot;TGI&quot;</span>
 <span class="go">export LVM_ENDPOINT=&quot;http://tgi&quot;</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install lvm-uservice . --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set LVM_ENDPOINT=${LVM_ENDPOINT} --wait</span>
-</pre></div>
-</div>
-</section>
-<section id="option2-installing-the-chart-with-dependencies-automatically">
-<h2>(Option2): Installing the chart with dependencies automatically<a class="headerlink" href="#option2-installing-the-chart-with-dependencies-automatically" title="Link to this heading">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/lvm-uservice</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install lvm-uservice . --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set tgi.enabled=true --wait</span>
+<span class="go">helm install lvm-uservice . --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set LVM_BACKEND=${LVM_BACKEND} --set LVM_ENDPOINT=${LVM_ENDPOINT} --wait</span>
+
+<span class="gp"># </span>Use<span class="w"> </span>other<span class="w"> </span>lvm-serve<span class="w"> </span>engine<span class="w"> </span>variant<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>backend,<span class="w"> </span>see<span class="w"> </span>file<span class="w"> </span><span class="sb">`</span>values.yaml<span class="sb">`</span><span class="w"> </span>more<span class="w"> </span>details
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://lvm-serve&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">LVM_BACKEND</span><span class="o">=</span><span class="s2">&quot;LLaVA&quot;</span>
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>lvm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LVM_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">LVM_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LVM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--wait
 </pre></div>
 </div>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/lvm-uservice</span> <span class="pre">9000:9000</span></code> to expose the lvm-uservice service for access.</p>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/lvm-uservice</span> <span class="pre">9399:9399</span></code> to expose the lvm-uservice service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9000/v1/chat/completions \</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9000/v1/lvm \</span>
 <span class="go">    -X POST \</span>
-<span class="go">    -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39; \</span>
+<span class="go">    -d &#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39; \</span>
 <span class="go">    -H &#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2107,22 +2121,17 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Your own Hugging Face API token</p></td>
 </tr>
-<tr class="row-odd"><td><p>image.repository</p></td>
+<tr class="row-odd"><td><p>LVM_BACKEND</p></td>
 <td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/lvm-tgi&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;TGI&quot;</span></code></p></td>
+<td><p>lvm backend engine, possible value “TGI”, “LLaVA”, “VideoLlama”, “LlamaVision”, “PredictionGuard”</p></td>
 </tr>
-<tr class="row-even"><td><p>service.port</p></td>
-<td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;9000&quot;</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>LVM_ENDPOINT</p></td>
+<tr class="row-even"><td><p>LVM_ENDPOINT</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>LVM endpoint</p></td>
 </tr>
-<tr class="row-even"><td><p>global.monitoring</p></td>
+<tr class="row-odd"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>Service usage metrics</p></td>
@@ -2137,7 +2146,7 @@
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../llm-uservice/README.html" class="btn btn-neutral float-left" title="llm-uservice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../lvm-serve/README.html" class="btn btn-neutral float-left" title="OPEA lvm-serve microservice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../mongodb/README.html" class="btn btn-neutral float-right" title="mongodb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

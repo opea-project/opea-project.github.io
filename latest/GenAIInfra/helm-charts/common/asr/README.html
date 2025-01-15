@@ -1325,9 +1325,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../llm-uservice/README.html#values">Values</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../lvm-serve/README.html">OPEA lvm-serve microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-serve/README.html#values">Values</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../lvm-uservice/README.html">lvm-uservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#values">Values</a></li>
 </ul>
@@ -1386,6 +1391,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#installing-the-chart">Installing the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../teirerank/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../text2image/README.html">OPEA text2image microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../text2image/README.html#values">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../tgi/README.html">tgi</a><ul>
@@ -2082,10 +2093,11 @@
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/asr</span> <span class="pre">9099:9099</span></code> to expose the asr service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9099/v1/audio/transcriptions \</span>
-<span class="go">  -XPOST \</span>
-<span class="go">  -d &#39;{&quot;byte_str&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39; \</span>
-<span class="go">  -H &#39;Content-Type: application/json&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav</span>
+<span class="go">curl http://localhost:9099/v1/audio/transcriptions \</span>
+<span class="go">  -H &quot;Content-Type: multipart/form-data&quot; \</span>
+<span class="go">  -F file=&quot;@./sample.wav&quot; \</span>
+<span class="go">  -F model=&quot;openai/whisper-small&quot;</span>
 </pre></div>
 </div>
 </section>
