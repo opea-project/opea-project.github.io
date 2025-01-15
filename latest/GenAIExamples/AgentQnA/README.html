@@ -2072,7 +2072,7 @@
 <h1>Agents for Question Answering<a class="headerlink" href="#agents-for-question-answering" title="Link to this heading">¶</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram is shown below. The supervisor agent interfaces with the user and dispatch tasks to the worker agent and other tools to gather information and come up with answers. The worker agent uses the retrieval tool to generate answers to the queries posted by the supervisor agent. Other tools used by the supervisor agent may include APIs to interface knowledge graphs, SQL databases, external knowledge bases, etc.
+<p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram is shown below. The supervisor agent interfaces with the user and dispatch tasks to two worker agents to gather information and come up with answers. The worker RAG agent uses the retrieval tool to retrieve relevant documents from the knowledge base (a vector database). The worker SQL agent retrieve relevant data from the SQL database. Although not included in this example, but other tools such as a web search tool or a knowledge graph query tool can be used by the supervisor agent to gather information from additional sources.
 <img alt="Architecture Overview" src="../../_images/agent_qna_arch.png" /></p>
 <p>The AgentQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
@@ -2097,6 +2097,7 @@
     end
     AG_REACT([Agent MicroService - react]):::blue
     AG_RAG([Agent MicroService - rag]):::blue
+    AG_SQL([Agent MicroService - sql]):::blue
     LLM_gen{{LLM Service &lt;br&gt;}}
     DP([Data Preparation MicroService]):::blue
     TEI_RER{{Reranking service&lt;br&gt;}}
@@ -2110,6 +2111,7 @@
     direction LR
     a[User Input Query] --&gt; AG_REACT
     AG_REACT --&gt; AG_RAG
+    AG_REACT --&gt; AG_SQL
     AG_RAG --&gt; DocIndexRetriever-MegaService
     EM ==&gt; RET
     RET ==&gt; RER
@@ -2118,6 +2120,7 @@
     %% Embedding service flow
     direction LR
     AG_RAG &lt;-.-&gt; LLM_gen
+    AG_SQL &lt;-.-&gt; LLM_gen
     AG_REACT &lt;-.-&gt; LLM_gen
     EM &lt;-.-&gt; TEI_EM
     RET &lt;-.-&gt; R_RET
@@ -2132,11 +2135,11 @@
 <h3>Why Agent for question answering?<a class="headerlink" href="#why-agent-for-question-answering" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Improve relevancy of retrieved context.
-Agent can rephrase user queries, decompose user queries, and iterate to get the most relevant context for answering user’s questions. Compared to conventional RAG, RAG agent can significantly improve the correctness and relevancy of the answer.</p></li>
-<li><p>Use tools to get additional knowledge.
-For example, knowledge graphs and SQL databases can be exposed as APIs for Agents to gather knowledge that may be missing in the retrieval vector database.</p></li>
-<li><p>Hierarchical agent can further improve performance.
-Expert worker agents, such as retrieval agent, knowledge graph agent, SQL agent, etc., can provide high-quality output for different aspects of a complex query, and the supervisor agent can aggregate the information together to provide a comprehensive answer.</p></li>
+RAG agent can rephrase user queries, decompose user queries, and iterate to get the most relevant context for answering user’s questions. Compared to conventional RAG, RAG agent can significantly improve the correctness and relevancy of the answer.</p></li>
+<li><p>Expand scope of the agent.
+The supervisor agent can interact with multiple worker agents that specialize in different domains with different skills (e.g., retrieve documents, write SQL queries, etc.), and thus can answer questions in multiple domains.</p></li>
+<li><p>Hierarchical multi-agents can improve performance.
+Expert worker agents, such as RAG agent and SQL agent, can provide high-quality output for different aspects of a complex query, and the supervisor agent can aggregate the information together to provide a comprehensive answer. If we only use one agent and provide all the tools to this single agent, it may get overwhelmed and not able to provide accurate answers.</p></li>
 </ol>
 </section>
 </section>
@@ -2198,23 +2201,45 @@ bash launch_retrieval_tool.sh
 </pre></div>
 </div>
 </li>
+<li><p>Prepare SQL database
+In this example, we will use the Chinook SQLite database. Run the commands below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Download data
+cd $WORKDIR
+git clone https://github.com/lerocha/chinook-database.git
+cp chinook-database/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite $WORKDIR/GenAIExamples/AgentQnA/tests/
+</pre></div>
+</div>
+</li>
 <li><p>Launch other tools. </br>
 In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
 </pre></div>
 </div>
 </li>
-<li><p>Launch agent services</br>
-We provide two options for <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs, 2. OpenAI models via API calls.</p>
-<p>Deploy it on Gaudi or Xeon respectively</p>
+<li><p>Launch multi-agent system. </br>
+We provide two options for <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs on Intel Gaudi2, 2. OpenAI models via API calls.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Gaudi" for="sd-tab-item-0">
 Gaudi</label><div class="sd-tab-content docutils">
-<p>To use open-source LLMs on Gaudi2, run commands below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi
-bash launch_tgi_gaudi.sh
-bash launch_agent_service_tgi_gaudi.sh
+<p>On Gaudi2 we will serve <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> using vllm.</p>
+<p>First build vllm-gaudi docker image.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
+<span class="nb">cd</span><span class="w"> </span>./vllm
+git<span class="w"> </span>checkout<span class="w"> </span>v0.6.6
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
+</pre></div>
+</div>
+<p>Then launch vllm on Gaudi2 with the command below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">vllm_port</span><span class="o">=</span><span class="m">8086</span>
+<span class="nv">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;vllm-gaudi-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span>-p<span class="w"> </span><span class="nv">$vllm_port</span>:8000<span class="w"> </span>-v<span class="w"> </span><span class="nv">$vllm_volume</span>:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span>/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">PT_HPU_ENABLE_LAZY_COLLECTIVES</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_SKIP_WARMUP</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>--max-seq-len-to-capture<span class="w"> </span><span class="m">16384</span><span class="w"> </span>--tensor-parallel-size<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p>Then launch Agent microservices.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
+bash<span class="w"> </span>launch_agent_service_gaudi.sh
 </pre></div>
 </div>
 </div>
@@ -2222,7 +2247,8 @@ bash launch_agent_service_tgi_gaudi.sh
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Xeon" for="sd-tab-item-1">
 Xeon</label><div class="sd-tab-content docutils">
 <p>To use OpenAI models, run commands below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export OPENAI_API_KEY=&lt;your-openai-key&gt;
+cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
 bash launch_agent_service_openai.sh
 </pre></div>
 </div>
@@ -2238,8 +2264,11 @@ bash launch_agent_service_openai.sh
 <section id="validate-services">
 <h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
 <p>First look at logs of the agent docker containers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker agent</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
 <span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+
+<span class="c1"># worker SQL agent</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">sql</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
@@ -2247,15 +2276,21 @@ bash launch_agent_service_openai.sh
 </pre></div>
 </div>
 <p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
-<p>Second, validate worker agent:</p>
+<p>Second, validate worker RAG agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;Michael Jackson song Thriller&quot;
     }&#39;
 </pre></div>
 </div>
-<p>Third, validate supervisor agent:</p>
+<p>Third, validate worker SQL agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9096/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;messages&quot;: &quot;How many employees are in the company&quot;
+    }&#39;
+</pre></div>
+</div>
+<p>Finally, validate supervisor agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;
     }&#39;
 </pre></div>
 </div>

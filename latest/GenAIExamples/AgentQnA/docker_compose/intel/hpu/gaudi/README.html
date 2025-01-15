@@ -2068,7 +2068,7 @@
              
   <section id="single-node-on-prem-deployment-agentqna-on-gaudi">
 <h1>Single node on-prem deployment AgentQnA on Gaudi<a class="headerlink" href="#single-node-on-prem-deployment-agentqna-on-gaudi" title="Link to this heading">¶</a></h1>
-<p>This example showcases a hierarchical multi-agent system for question-answering applications. We deploy the example on Gaudi using open-source LLMs,
+<p>This example showcases a hierarchical multi-agent system for question-answering applications. We deploy the example on Gaudi using open-source LLMs.
 For more details, please refer to the deployment guide <a class="reference internal" href="../../../../README.html"><span class="std std-doc">here</span></a>.</p>
 <section id="deployment-with-docker">
 <h2>Deployment with docker<a class="headerlink" href="#deployment-with-docker" title="Link to this heading">¶</a></h2>
@@ -2109,21 +2109,45 @@ bash launch_retrieval_tool.sh
 </pre></div>
 </div>
 </li>
+<li><p>Prepare SQL database
+In this example, we will use the Chinook SQLite database. Run the commands below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Download data
+cd $WORKDIR
+git clone https://github.com/lerocha/chinook-database.git
+cp chinook-database/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite $WORKDIR/GenAIExamples/AgentQnA/tests/
+</pre></div>
+</div>
+</li>
 <li><p>Launch Tool service
 In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
 </pre></div>
 </div>
 </li>
-<li><p>Launch <code class="docutils literal notranslate"><span class="pre">Agent</span></code> service</p>
-<p>To use open-source LLMs on Gaudi2, run commands below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi
-bash launch_tgi_gaudi.sh
-bash launch_agent_service_tgi_gaudi.sh
+<li><p>Launch multi-agent system</p>
+<p>On Gaudi2 we will serve <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> using vllm.</p>
+<p>First build vllm-gaudi docker image.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
+<span class="nb">cd</span><span class="w"> </span>./vllm
+git<span class="w"> </span>checkout<span class="w"> </span>v0.6.6
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
+</pre></div>
+</div>
+<p>Then launch vllm on Gaudi2 with the command below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">vllm_port</span><span class="o">=</span><span class="m">8086</span>
+<span class="nv">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;vllm-gaudi-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span>-p<span class="w"> </span><span class="nv">$vllm_port</span>:8000<span class="w"> </span>-v<span class="w"> </span><span class="nv">$vllm_volume</span>:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span>/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">PT_HPU_ENABLE_LAZY_COLLECTIVES</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_SKIP_WARMUP</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>--max-seq-len-to-capture<span class="w"> </span><span class="m">16384</span><span class="w"> </span>--tensor-parallel-size<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p>Then launch Agent microservices.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
+bash<span class="w"> </span>launch_agent_service_gaudi.sh
 </pre></div>
 </div>
 </li>
 <li><p>[Optional] Build <code class="docutils literal notranslate"><span class="pre">Agent</span></code> docker image if pulling images failed.</p>
+<p>If docker image pulling failed in Step 6 above, build the agent docker image with the commands below. After image build, try Step 6 again.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
 <span class="n">cd</span> <span class="n">GenAIComps</span>
 <span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">opea</span><span class="o">/</span><span class="n">agent</span><span class="p">:</span><span class="n">latest</span> <span class="o">-</span><span class="n">f</span> <span class="n">comps</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">.</span>
@@ -2135,8 +2159,11 @@ bash launch_agent_service_tgi_gaudi.sh
 <section id="validate-services">
 <h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
 <p>First look at logs of the agent docker containers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker agent</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
 <span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+
+<span class="c1"># worker SQL agent</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">sql</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
@@ -2144,15 +2171,21 @@ bash launch_agent_service_tgi_gaudi.sh
 </pre></div>
 </div>
 <p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
-<p>Second, validate worker agent:</p>
+<p>Second, validate worker RAG agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;Michael Jackson song Thriller&quot;
     }&#39;
 </pre></div>
 </div>
-<p>Third, validate supervisor agent:</p>
+<p>Third, validate worker SQL agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;messages&quot;: &quot;How many employees are in the company?&quot;
+    }&#39;
+</pre></div>
+</div>
+<p>Finally, validate supervisor agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;
     }&#39;
 </pre></div>
 </div>

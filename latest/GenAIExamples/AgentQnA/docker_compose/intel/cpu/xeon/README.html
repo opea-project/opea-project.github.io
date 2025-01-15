@@ -2105,14 +2105,25 @@ bash launch_retrieval_tool.sh
 </pre></div>
 </div>
 </li>
+<li><p>Prepare SQL database
+In this example, we will use the SQLite database provided in the <a class="reference external" href="https://github.com/TAG-Research/TAG-Bench/tree/main">TAG-Bench</a>. Run the commands below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Download data
+cd $WORKDIR
+git clone https://github.com/TAG-Research/TAG-Bench.git
+cd TAG-Bench/setup
+chmod +x get_dbs.sh
+./get_dbs.sh
+</pre></div>
+</div>
+</li>
 <li><p>Launch Tool service
 In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
 </pre></div>
 </div>
 </li>
-<li><p>Launch <code class="docutils literal notranslate"><span class="pre">Agent</span></code> service</p>
-<p>The configurations of the supervisor agent and the worker agent are defined in the docker-compose yaml file. We currently use openAI GPT-4o-mini as LLM, and llama3.1-70B-instruct (served by TGI-Gaudi) in Gaudi example. To use openai llm, run command below.</p>
+<li><p>Launch multi-agent system</p>
+<p>The configurations of the supervisor agent and the worker agents are defined in the docker-compose yaml file. We currently use openAI GPT-4o-mini as LLM.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
 bash launch_agent_service_openai.sh
 </pre></div>
@@ -2130,8 +2141,11 @@ bash launch_agent_service_openai.sh
 <section id="validate-services">
 <h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
 <p>First look at logs of the agent docker containers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker agent</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
 <span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+
+<span class="c1"># worker SQL agent</span>
+<span class="n">docker</span> <span class="n">logs</span> <span class="n">sql</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
@@ -2139,15 +2153,21 @@ bash launch_agent_service_openai.sh
 </pre></div>
 </div>
 <p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
-<p>Second, validate worker agent:</p>
+<p>Second, validate worker RAG agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;Michael Jackson song Thriller&quot;
     }&#39;
 </pre></div>
 </div>
-<p>Third, validate supervisor agent:</p>
+<p>Third, validate worker SQL agent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
+     &quot;messages&quot;: &quot;How many employees are in the company?&quot;
+    }&#39;
+</pre></div>
+</div>
+<p>Finally, validate supervisor agent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
+     &quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;
     }&#39;
 </pre></div>
 </div>
