@@ -1308,8 +1308,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">embedding-usvc</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 </ul>
@@ -1343,6 +1342,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../lvm-uservice/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../mm-embedding/README.html">OPEA mm-embedding microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../mm-embedding/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../mm-embedding/README.html#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../mm-embedding/README.html#values">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../mongodb/README.html">mongodb</a><ul>
@@ -2074,25 +2079,35 @@
              
   <section id="embedding-usvc">
 <h1>embedding-usvc<a class="headerlink" href="#embedding-usvc" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying embedding microservice.</p>
-<p>embedding-usvc depends on TEI, set TEI_EMBEDDING_ENDPOINT.</p>
-<section id="option1-installing-the-chart-separately">
-<h2>(Option1): Installing the chart separately<a class="headerlink" href="#option1-installing-the-chart-separately" title="Link to this heading">¶</a></h2>
-<p>First, you need to install the tei chart, please refer to the <a class="reference internal" href="#../tei"><span class="xref myst">tei</span></a> chart for more information.</p>
-<p>After you’ve deployted the tei chart successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the tei service endpoint, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei</span></code>.</p>
+<p>Helm chart for deploying OPEA embedding microservice.</p>
+<section id="installing-the-chart">
+<h2>Installing the chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p>The OPEA embedding microservice depends on one of the following backend services:</p>
+<ul class="simple">
+<li><p>TEI: please refer to <a class="reference internal" href="#../tei"><span class="xref myst">tei</span></a> chart for more information</p></li>
+<li><p>multimodal embedding BridgeTower: please refer to <a class="reference internal" href="#../mm-embedding"><span class="xref myst">mm-embedding</span></a> chart for more information.</p></li>
+<li><p>prediction guard: please refert to external <a class="reference external" href="https://predictionguard.com">Prediction Guard</a> for more information.</p></li>
+</ul>
+<p>First, you need to get the dependent service deployed, i.e. deploy the <code class="docutils literal notranslate"><span class="pre">tei</span></code> helm chart, <code class="docutils literal notranslate"><span class="pre">mm-embedding</span></code> helm chart, or contact prediction guard to get access info.</p>
+<p>After you’ve deployed the dependent service successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the backend service URL, e.g. <code class="docutils literal notranslate"><span class="pre">http://tei</span></code>, <code class="docutils literal notranslate"><span class="pre">http://mm-embedding</span></code>.</p>
 <p>To install the embedding-usvc chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/embedding-usvc</span>
-<span class="go">export TEI_EMBEDDING_ENDPOINT=&quot;http://tei&quot;</span>
 <span class="go">helm dependency update</span>
-<span class="go">helm install embedding-usvc . --set TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT}</span>
-</pre></div>
-</div>
-</section>
-<section id="option2-installing-the-chart-with-dependencies-automatically">
-<h2>(Option2): Installing the chart with dependencies automatically<a class="headerlink" href="#option2-installing-the-chart-with-dependencies-automatically" title="Link to this heading">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/embedding-usvc</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install embedding-usvc . --set tei.enabled=true</span>
+
+<span class="gp"># </span>Use<span class="w"> </span>TEI<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>backend<span class="o">(</span>default<span class="o">)</span>
+<span class="go">export EMBEDDING_BACKEND=&quot;TEI&quot;</span>
+<span class="go">export EMBEDDING_ENDPOINT=&quot;http://tei&quot;</span>
+<span class="go">helm install embedding-usvc . --set EMBEDDING_BACKEND=${EMBEDDING_BACKEND} --set EMBEDDING_ENDPOINT=${EMBEDDING_ENDPOINT}</span>
+
+<span class="gp"># </span>Use<span class="w"> </span>multimodal<span class="w"> </span>embedding<span class="w"> </span>BridgeTower<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>backend
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_BACKEND</span><span class="o">=</span><span class="s2">&quot;BridgeTower&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://mm-embedding&quot;</span>
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>embedding-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">EMBEDDING_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">EMBEDDING_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">EMBEDDING_ENDPOINT</span><span class="si">}</span>
+
+<span class="gp"># </span>Use<span class="w"> </span>predcition<span class="w"> </span>guard<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>backend
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_BACKEND</span><span class="o">=</span><span class="s2">&quot;PredictionGuard&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">API_KEY</span><span class="o">=</span>&lt;your<span class="w"> </span>PedictionGuard<span class="w"> </span>api<span class="w"> </span>key&gt;
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>embedding-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">EMBEDDING_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">EMBEDDING_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2101,10 +2116,17 @@
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/embedding-usvc</span> <span class="pre">6000:6000</span></code> to expose the embedding-usvc service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:6000/v1/embeddings \</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Verify<span class="w"> </span>with<span class="w"> </span>TEI<span class="w"> </span>or<span class="w"> </span>prediction<span class="w"> </span>guard<span class="w"> </span>backend:
+<span class="go">curl http://localhost:6000/v1/embeddings \</span>
 <span class="go">    -X POST \</span>
-<span class="go">    -d &#39;{&quot;text&quot;:&quot;hello&quot;}&#39; \</span>
-<span class="go">    -H &#39;Content-Type: application/json&#39;</span>
+<span class="go">    -H &#39;Content-Type: application/json&#39; \</span>
+<span class="go">    -d &#39;{&quot;input&quot;:&quot;What is Deep Learning?&quot;}&#39;</span>
+
+<span class="gp"># </span>Verify<span class="w"> </span>with<span class="w"> </span>multimodal<span class="w"> </span>embedding<span class="w"> </span>BridgeTower<span class="w"> </span>backend:
+<span class="go">curl http://localhost:6000/v1/embeddings \</span>
+<span class="go">    -X POST \</span>
+<span class="go">    -H &#39;Content-Type: application/json&#39; \</span>
+<span class="go">    -d &#39;{&quot;text&quot;: {&quot;text&quot; : &quot;This is some sample text.&quot;}, &quot;image&quot; : {&quot;url&quot;: &quot;https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true&quot;}}&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2119,17 +2141,17 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>image.repository</p></td>
-<td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/embedding-tei&quot;</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>service.port</p></td>
+<tr class="row-even"><td><p>service.port</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;6000&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
+<tr class="row-odd"><td><p>EMBEDDING_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;TEI&quot;</span></code></p></td>
+<td><p>backend engine to use, one of “TEI”, “BridgeTower”, “PredictionGuard”</p></td>
+</tr>
+<tr class="row-even"><td><p>EMBEDDING_ENDPOINT</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p></p></td>
