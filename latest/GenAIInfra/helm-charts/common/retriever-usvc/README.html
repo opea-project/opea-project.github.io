@@ -1207,8 +1207,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../guardrails-usvc/README.html">guardrails-usvc</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../guardrails-usvc/README.html#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../guardrails-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guardrails-usvc/README.html#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../guardrails-usvc/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../guardrails-usvc/README.html#values">Values</a></li>
 </ul>
@@ -1268,8 +1267,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">retriever-usvc</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#milvus-support">Milvus support</a></li>
@@ -1965,26 +1963,32 @@
              
   <section id="retriever-usvc">
 <h1>retriever-usvc<a class="headerlink" href="#retriever-usvc" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying Retriever microservice.</p>
-<p>retriever-usvc depends on redis and tei, you should set these endpoints before start.</p>
-<section id="option1-installing-the-chart-separately">
-<h2>(Option1): Installing the chart separately<a class="headerlink" href="#option1-installing-the-chart-separately" title="Link to this heading">¶</a></h2>
-<p>First, you need to install the tei and redis-vector-db chart, refer to the <a class="reference internal" href="../tei/README.html"><span class="std std-doc">tei</span></a> and <a class="reference internal" href="../redis-vector-db/README.html"><span class="std std-doc">redis-vector-db</span></a> for more information.</p>
-<p>After you’ve deployed the tei and redis-vector-db chart successfully, run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the service endpoint and URL respectively, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei</span></code>, <code class="docutils literal notranslate"><span class="pre">redis://redis-vector-db:6379</span></code>.</p>
-<p>To install retriever-usvc chart, run the following:</p>
+<p>Helm chart for deploying OPEA retriever-usvc microservice.</p>
+<section id="installing-the-chart">
+<h2>Installing the chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">retriever-usvc</span></code> will use TEI for embedding service, and support different vector DB backends.</p>
+<ul class="simple">
+<li><p>TEI: please refer to the <a class="reference internal" href="#../tei"><span class="xref myst">tei</span></a> for more information.</p></li>
+<li><p>Redis vector DB: please refer to <a class="reference internal" href="#../redis-vector-db/"><span class="xref myst">redis-vector-db</span></a> for more information.</p></li>
+<li><p>Milvus DB: please refer to <a class="reference external" href="https://github.com/zilliztech/milvus-helm/tree/milvus-4.2.12">milvus-helm</a> for more information.</p></li>
+</ul>
+<p>First, you need to install the <code class="docutils literal notranslate"><span class="pre">tei</span></code> helm chart and one of the vector DB service, i.e. <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code> chart.</p>
+<p>After you’ve deployed dependency charts successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the service endpoint URL respectively, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei:80</span></code>, <code class="docutils literal notranslate"><span class="pre">redis://redis-vector-db:6379</span></code>.</p>
+<p>To install <code class="docutils literal notranslate"><span class="pre">retriever-usvc</span></code> chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/retriever-usvc</span>
-<span class="go">export REDIS_URL=&quot;redis://redis-vector-db:6379&quot;</span>
+<span class="go">helm dependency update</span>
+<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
 <span class="go">export TEI_EMBEDDING_ENDPOINT=&quot;http://tei&quot;</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install retriever-usvc . --set REDIS_URL=${REDIS_URL} --set TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT}</span>
-</pre></div>
-</div>
-</section>
-<section id="option2-installing-the-chart-with-dependencies-automatically">
-<h2>(Option2): Installing the chart with dependencies automatically<a class="headerlink" href="#option2-installing-the-chart-with-dependencies-automatically" title="Link to this heading">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/retriever-usvc</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install retriever-usvc . --set tei.enabled=true --set redis-vector-db.enabled=true</span>
+
+<span class="gp"># </span>Install<span class="w"> </span>retriever-usvc<span class="w"> </span>with<span class="w"> </span>Redis<span class="w"> </span>DB<span class="w"> </span>backend
+<span class="go">export RETRIEVER_BACKEND=&quot;REDIS&quot;</span>
+<span class="go">export DB_HOST=&quot;redis-vector-db&quot;</span>
+<span class="go">helm install retriever-usvc . --set TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT} --set global.HUGGINGFACEHUB_API_TOKEN=${HF_TOKEN} --set RETRIEVER_BACKEND=${RETRIEVER_BACKEND} --set REDIS_HOST=${DB_HOST}</span>
+
+<span class="gp"># </span>Install<span class="w"> </span>retriever-usvc<span class="w"> </span>with<span class="w"> </span>Milvus<span class="w"> </span>DB<span class="w"> </span>backend
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="s2">&quot;MILVUS&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">&quot;milvus&quot;</span>
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>retriever-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">RETRIEVER_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MILVUS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2012,20 +2016,30 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>image.repository</p></td>
+<tr class="row-even"><td><p>global.HUGGINGFACEHUB_API_TOKEN</p></td>
 <td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/retriever-tgi&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Your own Hugging Face API token</p></td>
 </tr>
 <tr class="row-odd"><td><p>service.port</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;7000&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>REDIS_URL</p></td>
+<tr class="row-even"><td><p>RETRIEVER_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;REDIS&quot;</span></code></p></td>
+<td><p>vector DB backend to use, one of “REDIS”, “MILVUS”</p></td>
+</tr>
+<tr class="row-odd"><td><p>REDIS_HOST</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p>Redis service URL host, only valid for Redis, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Redis configuration</p></td>
+</tr>
+<tr class="row-even"><td><p>MILVUS_HOST</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Milvus service URL host, only valid for Milvus, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Milvus configuration</p></td>
 </tr>
 <tr class="row-odd"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
 <td><p>string</p></td>
@@ -2042,7 +2056,7 @@
 </section>
 <section id="milvus-support">
 <h2>Milvus support<a class="headerlink" href="#milvus-support" title="Link to this heading">¶</a></h2>
-<p>Refer to the milvus-values.yaml for milvus configurations.</p>
+<p>Refer to the milvus-values.yaml for Milvus configurations.</p>
 </section>
 </section>
 
