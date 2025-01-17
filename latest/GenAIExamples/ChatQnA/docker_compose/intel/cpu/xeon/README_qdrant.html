@@ -1984,7 +1984,8 @@
              
   <section id="build-mega-service-of-chatqna-with-qdrant-on-xeon">
 <h1>Build Mega Service of ChatQnA (with Qdrant) on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-with-qdrant-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
+<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
+<p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component.</p>
 <section id="apply-xeon-server-on-aws">
 <h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
 <p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage the power of 4th Generation Intel Xeon Scalable processors. These instances are optimized for high-performance computing and demanding workloads.</p>
@@ -2023,7 +2024,7 @@
 <span class="o">=========</span>
 <span class="n">Port</span> <span class="mi">6046</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
-<span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
+<span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
 <span class="o">===========</span>
 <span class="n">Port</span> <span class="mi">6042</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
@@ -2151,7 +2152,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </pre></div>
 </div>
 <p><strong>Append the value of the public IP address to the no_proxy list if you are in a proxy environment</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export your_no_proxy=${your_no_proxy},&quot;External_Public_IP&quot;,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-qdrant-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export your_no_proxy=${your_no_proxy},&quot;External_Public_IP&quot;,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-qdrant-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
@@ -2209,17 +2210,17 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </li>
-<li><p>TGI Service</p>
-<p>In first startup, this service will take more time to download the model files. After it’s finished, the service will be ready.</p>
-<p>Try the command below to check whether the TGI service is ready.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span><span class="si">${</span><span class="nv">CONTAINER_ID</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<li><p>LLM Backend Service</p>
+<p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.</p>
+<p>Try the command below to check whether the LLM service is ready.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>vllm-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
 </pre></div>
 </div>
 <p>If the service is ready, you will get the response like below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2024</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">03</span><span class="n">T02</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mf">53.402023</span><span class="n">Z</span>  <span class="n">INFO</span> <span class="n">text_generation_router</span><span class="p">::</span><span class="n">server</span><span class="p">:</span> <span class="n">router</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">rs</span><span class="p">:</span><span class="mi">2311</span><span class="p">:</span> <span class="n">Connected</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>INFO: Application startup complete.
 </pre></div>
 </div>
-<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate TGI.</p>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate vLLM service.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6042/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
