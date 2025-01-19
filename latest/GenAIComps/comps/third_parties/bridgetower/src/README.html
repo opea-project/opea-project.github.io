@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multimodal Embeddings Microservice with BridgePower &mdash; OPEA™ 1.1 documentation</title>
+  <title>Multimodal Embeddings Microservice with BridgeTower &mdash; OPEA™ 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -891,7 +891,7 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../microservices/index.html#third-parties-microservice">Third_parties Microservice</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Multimodal Embeddings Microservice with BridgePower</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Multimodal Embeddings Microservice with BridgeTower</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#start-mmei-on-gaudi2-hpu">🚀1. Start MMEI on Gaudi2 HPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-mmei-on-xeon-cpu">🚀2. Start MMEI on Xeon CPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#access-the-service">🚀3. Access the service</a></li>
@@ -1966,7 +1966,7 @@
   
      <li><a href="../../../../../microservices/index.html">GenAI Microservices</a> &raquo;</li>
   
-  <li>Multimodal Embeddings Microservice with BridgePower</li>
+  <li>Multimodal Embeddings Microservice with BridgeTower</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../_sources/GenAIComps/comps/third_parties/bridgetower/src/README.md.txt" rel="nofollow"> View page source</a>
@@ -1986,8 +1986,8 @@
   
            <div itemprop="articleBody">
              
-  <section id="multimodal-embeddings-microservice-with-bridgepower">
-<h1>Multimodal Embeddings Microservice with BridgePower<a class="headerlink" href="#multimodal-embeddings-microservice-with-bridgepower" title="Link to this heading">¶</a></h1>
+  <section id="multimodal-embeddings-microservice-with-bridgetower">
+<h1>Multimodal Embeddings Microservice with BridgeTower<a class="headerlink" href="#multimodal-embeddings-microservice-with-bridgetower" title="Link to this heading">¶</a></h1>
 <p>The Multimodal Embedding Microservice is designed to efficiently convert pairs of textual string and image into vectorized embeddings, facilitating seamless integration into various machine learning and data processing workflows. This service utilizes advanced algorithms to generate high-quality embeddings that capture the joint semantic essence of the input text-and-image pairs, making it ideal for applications in multi-modal data processing, information retrieval, and similar fields.</p>
 <p>Key Features:</p>
 <p><strong>High Performance</strong>: Optimized for quick and reliable conversion of textual data and image inputs into vector embeddings.</p>
@@ -2001,7 +2001,10 @@
 <ul class="simple">
 <li><p>Gaudi2 HPU</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../../../../
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define port to use for the embeddings microservice</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">8080</span>
+
+<span class="nb">cd</span><span class="w"> </span>../../../../../../../
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower-hpu:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/bridgetower/src/Dockerfile.intel_hpu<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>comps/third_parties/bridgetower/deployment/docker_compose/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_intel_hpu.yaml<span class="w"> </span>up<span class="w"> </span>-d
@@ -2013,7 +2016,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <ul class="simple">
 <li><p>Xeon CPU</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../../../../
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define port to use for the embeddings microservice</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">8080</span>
+
+<span class="nb">cd</span><span class="w"> </span>../../../../../../../
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/bridgetower/src/Dockerfile<span class="w"> </span>.
 <span class="nb">cd</span><span class="w"> </span>comps/third_parties/bridgetower/deployment/docker_compose/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_intel_cpu.yaml<span class="w"> </span>up<span class="w"> </span>-d
@@ -2023,10 +2029,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="access-the-service">
 <h2>🚀3. Access the service<a class="headerlink" href="#access-the-service" title="Link to this heading">¶</a></h2>
 <p>Then you need to test your MMEI service using the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:<span class="nv">$your_mmei_port</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:<span class="nv">$EMBEDDER_PORT</span>/v1/encode<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>To compute a joint embedding of an image-text pair, a base64 encoded image can be passed along with text:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:<span class="nv">$EMBEDDER_PORT</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:  &quot;This is some sample text.&quot;, &quot;img_b64_str&quot; : &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
 </pre></div>
 </div>
 </section>

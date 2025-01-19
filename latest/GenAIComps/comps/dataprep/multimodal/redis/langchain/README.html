@@ -891,7 +891,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../microservices/index.html#third-parties-microservice">Third_parties Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../third_parties/bridgetower/src/README.html">Multimodal Embeddings Microservice with BridgePower</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../third_parties/bridgetower/src/README.html">Multimodal Embeddings Microservice with BridgeTower</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../third_parties/bridgetower/src/README.html#start-mmei-on-gaudi2-hpu">🚀1. Start MMEI on Gaudi2 HPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../third_parties/bridgetower/src/README.html#start-mmei-on-xeon-cpu">🚀2. Start MMEI on Xeon CPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../third_parties/bridgetower/src/README.html#access-the-service">🚀3. Access the service</a></li>
@@ -1993,6 +1993,7 @@
 <li><p>Videos (mp4 files) and their transcripts (optional)</p></li>
 <li><p>Images (gif, jpg, jpeg, and png files) and their captions (optional)</p></li>
 <li><p>Audio (wav files)</p></li>
+<li><p>PDFs (with text and images)</p></li>
 </ul>
 <section id="start-microservice-with-python-option-1">
 <h2>🚀1. Start Microservice with Python（Option 1）<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
@@ -2096,15 +2097,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="consume-microservice">
 <h2>🚀4. Consume Microservice<a class="headerlink" href="#consume-microservice" title="Link to this heading">¶</a></h2>
-<p>Once this dataprep microservice is started, user can use the below commands to invoke the microservice to convert images and videos and their transcripts (optional) to embeddings and save to the Redis vector store.</p>
+<p>Once this dataprep microservice is started, user can use the below commands to invoke the microservice to convert images, videos, text, and PDF files to embeddings and save to the Redis vector store.</p>
 <p>This microservice provides 3 different ways for users to ingest files into Redis vector store corresponding to the 3 use cases.</p>
 <section id="consume-ingest-with-text-api">
 <h3>4.1 Consume <em>ingest_with_text</em> API<a class="headerlink" href="#consume-ingest-with-text-api" title="Link to this heading">¶</a></h3>
-<p><strong>Use case:</strong> This API is used when videos are accompanied by transcript files (<code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format) or images are accompanied by text caption files (<code class="docutils literal notranslate"><span class="pre">.txt</span></code> format).</p>
+<p><strong>Use case:</strong> This API is used for videos accompanied by transcript files (<code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format), images accompanied by text caption files (<code class="docutils literal notranslate"><span class="pre">.txt</span></code> format), and PDF files containing a mix of text and images.</p>
 <p><strong>Important notes:</strong></p>
 <ul class="simple">
 <li><p>Make sure the file paths after <code class="docutils literal notranslate"><span class="pre">files=&#64;</span></code> are correct.</p></li>
 <li><p>Every transcript or caption file’s name must be identical to its corresponding video or image file’s name (except their extension - .vtt goes with .mp4 and .txt goes with .jpg, .jpeg, .png, or .gif). For example, <code class="docutils literal notranslate"><span class="pre">video1.mp4</span></code> and <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code>. Otherwise, if <code class="docutils literal notranslate"><span class="pre">video1.vtt</span></code> is not included correctly in the API call, the microservice will return an error <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">captions</span> <span class="pre">file</span> <span class="pre">video1.vtt</span> <span class="pre">found</span> <span class="pre">for</span> <span class="pre">video1.mp4</span></code>.</p></li>
+<li><p>It is assumed that PDFs will contain at least one image. Each image in the file will be embedded along with the text that appears on the same page as the image.</p></li>
 </ul>
 <section id="single-video-transcript-pair-upload">
 <h4>Single video-transcript pair upload<a class="headerlink" href="#single-video-transcript-pair-upload" title="Link to this heading">¶</a></h4>
@@ -2138,6 +2140,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image2.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image2.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./example.pdf&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/ingest_with_text
 </pre></div>
 </div>

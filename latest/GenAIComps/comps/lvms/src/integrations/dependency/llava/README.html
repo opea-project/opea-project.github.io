@@ -891,7 +891,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../../microservices/index.html#third-parties-microservice">Third_parties Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../third_parties/bridgetower/src/README.html">Multimodal Embeddings Microservice with BridgePower</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../third_parties/bridgetower/src/README.html">Multimodal Embeddings Microservice with BridgeTower</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../third_parties/bridgetower/src/README.html#start-mmei-on-gaudi2-hpu">🚀1. Start MMEI on Gaudi2 HPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../third_parties/bridgetower/src/README.html#start-mmei-on-xeon-cpu">🚀2. Start MMEI on Xeon CPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../third_parties/bridgetower/src/README.html#access-the-service">🚀3. Access the service</a></li>
@@ -1988,7 +1988,7 @@
              
   <section id="lvm-microservice">
 <h1>LVM Microservice<a class="headerlink" href="#lvm-microservice" title="Link to this heading">¶</a></h1>
-<p>Visual Question and Answering is one of the multimodal tasks empowered by LVMs (Large Visual Models). This microservice supports visual Q&amp;A by using LLaVA as the base large visual model. It accepts two inputs: a prompt and an image. It outputs the answer to the prompt about the image.</p>
+<p>Visual Question and Answering is one of the multimodal tasks empowered by LVMs (Large Visual Models). This microservice supports visual Q&amp;A by using LLaVA as the base large visual model. It accepts two inputs: a prompt and images. It outputs the answer to the prompt about the images.</p>
 <section id="start-microservice-with-python-option-1">
 <h2>🚀1. Start Microservice with Python (Option 1)<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
 <section id="install-requirements">
@@ -2064,7 +2064,24 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="test">
 <h4>2.2.2 Test<a class="headerlink" href="#test" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test</span>
+<blockquote>
+<div><p>Note: The <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> environment variable is used to specify the maximum number of images that will be sent from the LVM service to the LLaVA server.
+If an image list longer than <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> is sent to the LVM server, a shortened image list will be sent to the LLaVA service. If the image list
+needs to be shortened, the most recent images (the ones at the end of the list) are prioritized to send to the LLaVA service. Some LLaVA models have not
+been trained with multiple images and may lead to inaccurate results. If <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> is not set, it will default to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use curl/python</span>
+
+<span class="c1"># curl with an image and a prompt</span>
+<span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span>http://localhost:9399/v1/lvm<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1"># curl with multiple images and a prompt (Note that depending on your MAX_IMAGES value, both images may not be sent to the LLaVA model)</span>
+<span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span>http://localhost:9399/v1/lvm<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: [&quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNkYPhfz0AEYBxVSF+FAP5FDvcfRYWgAAAAAElFTkSuQmCC&quot;, &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+M9Qz0AEYBxVSF+FAAhKDveksOjmAAAAAElFTkSuQmCC&quot;], &quot;prompt&quot;:&quot;What is in these images?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1"># curl with a prompt only (no image)</span>
+<span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span>http://localhost:9399/v1/lvm<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;&quot;, &quot;prompt&quot;:&quot;What is deep learning?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1"># Test</span>
 python<span class="w"> </span>check_llava_server.py
 </pre></div>
 </div>
