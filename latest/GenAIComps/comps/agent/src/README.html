@@ -2161,6 +2161,8 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
 <section id="validate-microservice">
 <h2>🚀 3. Validate Microservice<a class="headerlink" href="#validate-microservice" title="Link to this heading">¶</a></h2>
 <p>Once microservice starts, user can use below script to invoke.</p>
+<section id="use-chat-completions-api">
+<h3>3.1 Use chat completions API<a class="headerlink" href="#use-chat-completions-api" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">     &quot;query&quot;: &quot;What is OPEA project?&quot;</span>
 <span class="s1">    }&#39;</span>
@@ -2172,6 +2174,39 @@ data:<span class="w"> </span><span class="s1">&#39;The OPEA project is .....&lt;
 data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
 </div>
+</section>
+<section id="use-assistants-apis">
+<h3>3.2 Use assistants APIs<a class="headerlink" href="#use-assistants-apis" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># step1 create assistant to get `asssistant_id`</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/assistants<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;tgi&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;}</span>
+<span class="s1">    }&#39;</span>
+
+<span class="c1">## if want to persist your agent messages, set store config like this:</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/assistants<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;tgi&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;,&quot;with_store&quot;:true, &quot;store_config&quot;:{&quot;redis_uri&quot;:&quot;redis://${ip_address}:6379&quot;}}</span>
+<span class="s1">    }&#39;</span>
+
+<span class="c1"># step2 create thread to get `thread_id`</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/threads<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{}&#39;</span>
+
+<span class="c1"># step3 create messages</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;}&#39;</span>
+
+
+<span class="c1">## if agent is set with `with_store`, should add `assistant_id` in the messages for store</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;, &quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
+
+<span class="c1"># step4 run</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/runs<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="provide-your-own-tools">
 <h2>🚀 4. Provide your own tools<a class="headerlink" href="#provide-your-own-tools" title="Link to this heading">¶</a></h2>
