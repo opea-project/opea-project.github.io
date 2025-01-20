@@ -1989,6 +1989,7 @@
 <h1>Build Mega Service of ChatQnA (with Qdrant) on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-with-qdrant-on-xeon" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
 <p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component.</p>
+<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
 <section id="apply-xeon-server-on-aws">
 <h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
 <p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage the power of 4th Generation Intel Xeon Scalable processors. These instances are optimized for high-performance computing and demanding workloads.</p>
@@ -2131,7 +2132,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <td><p>BAAI/bge-reranker-base</p></td>
 </tr>
 <tr class="row-even"><td><p>LLM</p></td>
-<td><p>Intel/neural-chat-7b-v3-3</p></td>
+<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
 </tr>
 </tbody>
 </table>
@@ -2163,7 +2164,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;rag-qdrant&quot;</span>
 </pre></div>
 </div>
@@ -2226,7 +2227,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate vLLM service.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6042/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>

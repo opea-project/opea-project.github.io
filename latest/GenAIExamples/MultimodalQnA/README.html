@@ -1989,8 +1989,8 @@
              
   <section id="multimodalqna-application">
 <h1>MultimodalQnA Application<a class="headerlink" href="#multimodalqna-application" title="Link to this heading">¶</a></h1>
-<p>Suppose you possess a set of videos and wish to perform question-answering to extract insights from these videos. To respond to your questions, it typically necessitates comprehension of visual cues within the videos, knowledge derived from the audio content, or often a mix of both these visual elements and auditory facts. The MultimodalQnA framework offers an optimal solution for this purpose.</p>
-<p><code class="docutils literal notranslate"><span class="pre">MultimodalQnA</span></code> addresses your questions by dynamically fetching the most pertinent multimodal information (frames, transcripts, and/or captions) from your collection of videos, images, and audio files. For this purpose, MultimodalQnA utilizes <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower model</a>, a multimodal encoding transformer model which merges visual and textual data into a unified semantic space. During the ingestion phase, the BridgeTower model embeds both visual cues and auditory facts as texts, and those embeddings are then stored in a vector database. When it comes to answering a question, the MultimodalQnA will fetch its most relevant multimodal content from the vector store and feed it into a downstream Large Vision-Language Model (LVM) as input context to generate a response for the user.</p>
+<p>Suppose you possess a set of videos, images, audio files, PDFs, or some combination thereof and wish to perform question-answering to extract insights from these documents. To respond to your questions, the system needs to comprehend a mix of textual, visual, and audio facts drawn from the document contents. The MultimodalQnA framework offers an optimal solution for this purpose.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MultimodalQnA</span></code> addresses your questions by dynamically fetching the most pertinent multimodal information (e.g. images, transcripts, and captions) from your collection of video, image, audio, and PDF files. For this purpose, MultimodalQnA utilizes <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower model</a>, a multimodal encoding transformer model which merges visual and textual data into a unified semantic space. During the ingestion phase, the BridgeTower model embeds both visual cues and auditory facts as texts, and those embeddings are then stored in a vector database. When it comes to answering a question, the MultimodalQnA will fetch its most relevant multimodal content from the vector store and feed it into a downstream Large Vision-Language Model (LVM) as input context to generate a response for the user.</p>
 <p>The MultimodalQnA architecture shows below:</p>
 <p><img alt="architecture" src="../../_images/MultimodalQnA.png" /></p>
 <p>MultimodalQnA is implemented on top of <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>, the MultimodalQnA Flow Chart shows below:</p>
@@ -2087,7 +2087,7 @@
 <td><p>Redis, Langchain, TGI</p></td>
 <td><p>Gaudi</p></td>
 <td><p>6007</p></td>
-<td><p>/v1/generate_transcripts, /v1/generate_captions</p></td>
+<td><p>/v1/generate_transcripts, /v1/generate_captions, /v1/ingest_with_text</p></td>
 </tr>
 </tbody>
 </table>
@@ -2182,9 +2182,42 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="multimodalqna-demo-on-gaudi2">
 <h2>MultimodalQnA Demo on Gaudi2<a class="headerlink" href="#multimodalqna-demo-on-gaudi2" title="Link to this heading">¶</a></h2>
-<p><img alt="MultimodalQnA-upload-waiting-screenshot" src="../../_images/upload-gen-trans.png" /></p>
-<p><img alt="MultimodalQnA-upload-done-screenshot" src="../../_images/upload-gen-captions.png" /></p>
-<p><img alt="MultimodalQnA-query-example-screenshot" src="../../_images/example_query.png" /></p>
+<section id="multimodal-qna-ui">
+<h3>Multimodal QnA UI<a class="headerlink" href="#multimodal-qna-ui" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-ui-screenshot" src="../../_images/mmqna-ui.png" /></p>
+</section>
+<section id="video-ingestion">
+<h3>Video Ingestion<a class="headerlink" href="#video-ingestion" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-ingest-video-screenshot" src="../../_images/video-ingestion.png" /></p>
+</section>
+<section id="text-query-following-the-ingestion-of-a-video">
+<h3>Text Query following the ingestion of a Video<a class="headerlink" href="#text-query-following-the-ingestion-of-a-video" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-video-query-screenshot" src="../../_images/video-query.png" /></p>
+</section>
+<section id="image-ingestion">
+<h3>Image Ingestion<a class="headerlink" href="#image-ingestion" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-ingest-image-screenshot" src="../../_images/image-ingestion.png" /></p>
+</section>
+<section id="text-query-following-the-ingestion-of-an-image">
+<h3>Text Query following the ingestion of an image<a class="headerlink" href="#text-query-following-the-ingestion-of-an-image" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-video-query-screenshot" src="../../_images/image-query.png" /></p>
+</section>
+<section id="audio-ingestion">
+<h3>Audio Ingestion<a class="headerlink" href="#audio-ingestion" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-audio-ingestion-screenshot" src="../../_images/audio-ingestion.png" /></p>
+</section>
+<section id="text-query-following-the-ingestion-of-an-audio-podcast">
+<h3>Text Query following the ingestion of an Audio Podcast<a class="headerlink" href="#text-query-following-the-ingestion-of-an-audio-podcast" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-audio-query-screenshot" src="../../_images/audio-query.png" /></p>
+</section>
+<section id="pdf-ingestion">
+<h3>PDF Ingestion<a class="headerlink" href="#pdf-ingestion" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-upload-pdf-screenshot" src="../../_images/ingest_pdf.png" /></p>
+</section>
+<section id="text-query-following-the-ingestion-of-a-pdf">
+<h3>Text query following the ingestion of a PDF<a class="headerlink" href="#text-query-following-the-ingestion-of-a-pdf" title="Link to this heading">¶</a></h3>
+<p><img alt="MultimodalQnA-pdf-query-example-screenshot" src="../../_images/pdf-query.png" /></p>
+</section>
 </section>
 </section>
 

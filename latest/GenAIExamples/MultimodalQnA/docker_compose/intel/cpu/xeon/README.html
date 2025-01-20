@@ -2022,6 +2022,10 @@
 <span class="o">===</span>
 <span class="n">Port</span> <span class="mi">9399</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
+<span class="n">whisper</span>
+<span class="o">===</span>
+<span class="n">port</span> <span class="mi">7066</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
+
 <span class="n">dataprep</span><span class="o">-</span><span class="n">multimodal</span><span class="o">-</span><span class="n">redis</span>
 <span class="o">===</span>
 <span class="n">Port</span> <span class="mi">6007</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
@@ -2053,33 +2057,47 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">6006</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$EMBEDDER_PORT</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_PORT_MICROSERVICE</span><span class="o">=</span><span class="m">6000</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_PORT</span><span class="o">=</span><span class="m">7066</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">WHISPER_SERVER_PORT</span><span class="si">}</span><span class="s2">/v1/asr&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mm-rag-redis&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BRIDGE_TOWER_EMBEDDING</span><span class="o">=</span><span class="nb">true</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLAVA_SERVER_PORT</span><span class="o">=</span><span class="m">8399</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8399&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BridgeTower/bridgetower-large-itm-mlm-itc&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;llava-hf/llava-1.5-7b-hf&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_MODEL</span><span class="o">=</span><span class="s2">&quot;base&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/multimodalqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/ingest&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/generate_transcripts&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/generate_captions&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_PORT</span><span class="o">=</span><span class="m">7066</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">WHISPER_PORT</span><span class="si">}</span><span class="s2">/v1/asr&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_MODEL</span><span class="o">=</span><span class="s2">&quot;base&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_IMAGES</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_DB_PORT</span><span class="o">=</span><span class="m">6379</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_INSIGHTS_PORT</span><span class="o">=</span><span class="m">8001</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">REDIS_DB_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mm-rag-redis&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_MMR_PORT</span><span class="o">=</span><span class="m">5000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/ingest&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/generate_transcripts&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/generate_captions&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/delete&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="o">=</span><span class="m">6006</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BridgeTower/bridgetower-large-itm-mlm-itc&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BRIDGE_TOWER_EMBEDDING</span><span class="o">=</span><span class="nb">true</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$EMM_BRIDGETOWER_PORT</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_PORT_MICROSERVICE</span><span class="o">=</span><span class="m">6000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_RETRIEVER_PORT</span><span class="o">=</span><span class="m">7000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLAVA_SERVER_PORT</span><span class="o">=</span><span class="m">8399</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;llava-hf/llava-1.5-7b-hf&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$LLAVA_SERVER_PORT</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="nv">$MEGA_SERVICE_PORT</span><span class="s2">/v1/multimodalqna&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">UI_PORT</span><span class="o">=</span><span class="m">5173</span>
 </pre></div>
 </div>
 <p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
+<blockquote>
+<div><p>Note: The <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> environment variable is used to specify the maximum number of images that will be sent from the LVM service to the LLaVA server.
+If an image list longer than <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> is sent to the LVM server, a shortened image list will be sent to the LLaVA service. If the image list
+needs to be shortened, the most recent images (the ones at the end of the list) are prioritized to send to the LLaVA service. Some LLaVA models have not
+been trained with multiple images and may lead to inaccurate results. If <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> is not set, it will default to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</div></blockquote>
 </section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
@@ -2088,7 +2106,7 @@
 <p>Build embedding-multimodal-bridgetower docker image</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/bridgetower/src/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMM_BRIDGETOWER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/bridgetower/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <p>Build embedding microservice image</p>
@@ -2119,8 +2137,8 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </pre></div>
 </div>
 </section>
-<section id="build-asr-images">
-<h3>5. Build asr images<a class="headerlink" href="#build-asr-images" title="Link to this heading">¶</a></h3>
+<section id="build-whisper-server-image">
+<h3>5. Build Whisper Server Image<a class="headerlink" href="#build-whisper-server-image" title="Link to this heading">¶</a></h3>
 <p>Build whisper server image</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
 </pre></div>
@@ -2195,13 +2213,13 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <ol class="arabic simple">
 <li><p>embedding-multimodal-bridgetower</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;, &quot;img_b64_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
@@ -2226,14 +2244,14 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <li><p>retriever-multimodal-redis</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(512)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/multimodal_retrieval<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">REDIS_RETRIEVER_PORT</span><span class="si">}</span>/v1/multimodal_retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li><p>asr</p></li>
+<li><p>whisper</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">WHISPER_SERVER_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
@@ -2253,20 +2271,20 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple" start="6">
 <li><p>lvm</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [{&quot;b64_img_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;transcript_for_inference&quot;: &quot;yellow image&quot;, &quot;video_id&quot;: &quot;8c7461df-b373-4a00-8696-9a2234359fe0&quot;, &quot;time_of_frame_ms&quot;:&quot;37000000&quot;, &quot;source_video&quot;:&quot;WeAreGoingOnBullrun_8c7461df-b373-4a00-8696-9a2234359fe0.mp4&quot;}], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w">  </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w">  </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39;</span>
 </pre></div>
 </div>
 <p>Also, validate LVM Microservice with empty retrieval results</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
@@ -2275,18 +2293,29 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple" start="7">
 <li><p>dataprep-multimodal-redis</p></li>
 </ol>
-<p>Download a sample video, image, and audio file and create a caption</p>
+<p>Download a sample video, image, pdf, and audio file and create a caption</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">video_fn</span><span class="o">=</span><span class="s2">&quot;WeAreGoingOnBullrun.mp4&quot;</span>
 wget<span class="w"> </span>http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">image_fn</span><span class="o">=</span><span class="s2">&quot;apple.png&quot;</span>
 wget<span class="w"> </span>https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span>
 
+<span class="nb">export</span><span class="w"> </span><span class="nv">pdf_fn</span><span class="o">=</span><span class="s2">&quot;nke-10k-2023.pdf&quot;</span>
+wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIComps/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">pdf_fn</span><span class="si">}</span>
+
 <span class="nb">export</span><span class="w"> </span><span class="nv">caption_fn</span><span class="o">=</span><span class="s2">&quot;apple.txt&quot;</span>
 <span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This is an apple.&quot;</span><span class="w">  </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">audio_fn</span><span class="o">=</span><span class="s2">&quot;AudioSample.wav&quot;</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_MMR_PORT</span><span class="o">=</span><span class="m">6007</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/ingest&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/generate_transcripts&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/generate_captions&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_MMR_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/delete&quot;</span>
 </pre></div>
 </div>
 <p>Test dataprep microservice with generating transcript. This command updates a knowledge base by uploading a local video .mp4 and an audio .wav file.</p>
@@ -2298,18 +2327,19 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Also, test dataprep microservice with generating an image caption using lvm microservice</p>
+<p>Also, test dataprep microservice with generating an image caption using lvm microservice.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Now, test the microservice with posting a custom caption along with an image</p>
+<p>Now, test the microservice with posting a custom caption along with an image and a PDF containing images and text.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">pdf_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 <p>Also, you are able to get the list of all files that you uploaded:</p>
@@ -2323,8 +2353,9 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_7ac553a1-116c-40a2-9fc5-deccbb89b507.mp4&quot;</span>,
 <span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_6d13cf26-8ba2-4026-a3a9-ab2e5eb73a29.mp4&quot;</span>,
 <span class="w">    </span><span class="s2">&quot;apple_fcade6e6-11a5-44a2-833a-3e534cbe4419.png&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;AudioSample_976a85a6-dc3e-43ab-966c-9d81beef780c.wav</span>
-<span class="s2">]</span>
+<span class="w">    </span><span class="s2">&quot;nke-10k-2023_28000757-5533-4b1b-89fe-7c0a1b7e2cd0.pdf&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;AudioSample_976a85a6-dc3e-43ab-966c-9d81beef780c.wav&quot;</span>
+<span class="o">]</span>
 </pre></div>
 </div>
 <p>To delete all uploaded files along with data indexed with <code class="docutils literal notranslate"><span class="pre">$INDEX_NAME</span></code> in REDIS.</p>
@@ -2336,18 +2367,32 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <ol class="arabic simple" start="8">
 <li><p>MegaService</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
+<p>Test the MegaService with a text query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w">  </span><span class="se">\</span>
+<p>Test the MegaService with an audio query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w">  </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w">  </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;audio&quot;, &quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}]}]}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
+<p>Test the MegaService with a text and image query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w">  </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Green bananas in a tree&quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;http://images.cocodataset.org/test-stuff2017/000000004248.jpg&quot;}}]}]}&#39;</span>
+</pre></div>
+</div>
+<p>Test the MegaService with a back and forth conversation between the user and assistant:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;audio&quot;, &quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}]}]}&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;hello, &quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;}}]}, {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;opea project! &quot;}, {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;chao, &quot;}], &quot;max_tokens&quot;: 10}&#39;</span>
 </pre></div>

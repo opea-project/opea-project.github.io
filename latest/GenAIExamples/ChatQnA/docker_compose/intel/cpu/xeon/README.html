@@ -1995,6 +1995,7 @@
 <li><p>Run Docker Compose.</p></li>
 <li><p>Consume the ChatQnA Service.</p></li>
 </ol>
+<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
 <section id="quick-start-1-setup-environment-variable">
 <h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
 <p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
@@ -2168,7 +2169,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <td><p>BAAI/bge-reranker-base</p></td>
 </tr>
 <tr class="row-even"><td><p>LLM</p></td>
-<td><p>Intel/neural-chat-7b-v3-3</p></td>
+<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
 </tr>
 </tbody>
 </table>
@@ -2178,7 +2179,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <li><p>Online</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
-<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
 <span class="c1"># Start vLLM LLM Service</span>
 docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
 <span class="c1"># Start TGI LLM Service</span>
@@ -2188,7 +2189,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 </li>
 <li><p>Offline</p>
 <ul>
-<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://www.modelscope.cn/models/ai-modelscope/neural-chat-7b-v3-1/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">neural-chat-7b-v3-1</span></code>.</p></li>
+<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://modelscope.cn/models/LLM-Research/Meta-Llama-3-8B-Instruct/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3-8B-Instruct</span></code>.</p></li>
 <li><p>Click on <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">this</span> <span class="pre">model</span></code> button, and choose one way to download the model to your local path <code class="docutils literal notranslate"><span class="pre">/path/to/model</span></code>.</p></li>
 <li><p>Run the following command to start the LLM service.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
@@ -2308,7 +2309,7 @@ docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># either vLLM or TGI service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2402,7 +2403,7 @@ By default, vLLM profiling is not enabled. Users could start and stop profiling 
 <h5>Start vLLM profiling<a class="headerlink" href="#start-vllm-profiling" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/start_profile<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;}&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;}&#39;</span>
 </pre></div>
 </div>
 <p>Users would see below docker logs from vllm-service if profiling is started correctly.</p>
@@ -2421,7 +2422,7 @@ under /mnt folder in vllm-service docker instance.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM Service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/stop_profile<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;}&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;}&#39;</span>
 </pre></div>
 </div>
 <p>Users would see below docker logs from vllm-service if profiling is stopped correctly.</p>
