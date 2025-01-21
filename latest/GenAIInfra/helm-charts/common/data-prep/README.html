@@ -1178,8 +1178,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">data-prep</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#option1-installing-the-chart-separately">(Option1): Installing the chart separately</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#milvus-support">Milvus support</a></li>
@@ -1985,26 +1984,32 @@
              
   <section id="data-prep">
 <h1>data-prep<a class="headerlink" href="#data-prep" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying data-prep microservice.</p>
-<p>data-prep will use redis and tei service, please specify the endpoints.</p>
-<section id="option1-installing-the-chart-separately">
-<h2>(Option1): Installing the chart separately<a class="headerlink" href="#option1-installing-the-chart-separately" title="Link to this heading">¶</a></h2>
-<p>First, you need to install the tei and redis-vector-db chart, please refer to the <a class="reference internal" href="../tei/README.html"><span class="std std-doc">tei</span></a> and <a class="reference internal" href="../redis-vector-db/README.html"><span class="std std-doc">redis-vector-db</span></a> for more information.</p>
-<p>After you’ve deployted the tei and redis-vector-db chart successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the service endpoint and URL respectively, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei</span></code>, <code class="docutils literal notranslate"><span class="pre">redis://redis-vector-db:6379</span></code>.</p>
-<p>To install data-prep chart, run the following:</p>
+<p>Helm chart for deploying OPEA data-prep microservice.</p>
+<section id="installing-the-chart">
+<h2>Installing the chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">data-prep</span></code> will use TEI for embedding service, and support different vector DB backends.</p>
+<ul class="simple">
+<li><p>TEI: please refer to the <a class="reference internal" href="#../tei"><span class="xref myst">tei</span></a> for more information.</p></li>
+<li><p>Redis vector DB: please refer to <a class="reference internal" href="#../redis-vector-db/"><span class="xref myst">redis-vector-db</span></a> for more information.</p></li>
+<li><p>Milvus DB: please refer to <a class="reference external" href="https://github.com/zilliztech/milvus-helm/tree/milvus-4.2.12">milvus-helm</a> for more information.</p></li>
+</ul>
+<p>First, you need to install the <code class="docutils literal notranslate"><span class="pre">tei</span></code> helm chart and one of the vector DB service, i.e. <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code> chart.</p>
+<p>After you’ve deployed dependency charts successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the service endpoint URL respectively, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei:80</span></code>, <code class="docutils literal notranslate"><span class="pre">redis://redis-vector-db:6379</span></code>.</p>
+<p>To install <code class="docutils literal notranslate"><span class="pre">data-prep</span></code> chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/data-prep</span>
-<span class="go">export REDIS_URL=&quot;redis://redis-vector-db:6379&quot;</span>
+<span class="go">helm dependency update</span>
+<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
 <span class="go">export TEI_EMBEDDING_ENDPOINT=&quot;http://tei&quot;</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install data-prep . --set REDIS_URL=${REDIS_URL} --set TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT}</span>
-</pre></div>
-</div>
-</section>
-<section id="option2-installing-the-chart-with-dependencies-automatically">
-<h2>(Option2): Installing the chart with dependencies automatically<a class="headerlink" href="#option2-installing-the-chart-with-dependencies-automatically" title="Link to this heading">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/data-prep</span>
-<span class="go">helm dependency update</span>
-<span class="go">helm install data-prep . --set redis-vector-db.enabled=true --set tei.enabled=true</span>
+
+<span class="gp"># </span>Install<span class="w"> </span>data-prep<span class="w"> </span>with<span class="w"> </span>Redis<span class="w"> </span>DB<span class="w"> </span>backend
+<span class="go">export DATAPREP_BACKEND=&quot;REDIS&quot;</span>
+<span class="go">export DB_HOST=&quot;redis-vector-db&quot;</span>
+<span class="go">helm install data-prep . --set TEI_EMBEDDING_ENDPOINT=${TEI_EMBEDDING_ENDPOINT} --set global.HUGGINGFACEHUB_API_TOKEN=${HF_TOKEN} --set DATAPREP_BACKEND=${DATAPREP_BACKEND} --set REDIS_HOST=${DB_HOST}</span>
+
+<span class="gp"># </span>Install<span class="w"> </span>data-prep<span class="w"> </span>with<span class="w"> </span>Milvus<span class="w"> </span>DB<span class="w"> </span>backend
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_BACKEND</span><span class="o">=</span><span class="s2">&quot;MILVUS&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">&quot;milvus&quot;</span>
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>data-prep<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">DATAPREP_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">DATAPREP_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MILVUS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2013,7 +2018,7 @@
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/data-prep</span> <span class="pre">6007:6007</span></code> to expose the data-prep service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:6007/v1/dataprep  \</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:6007/v1/dataprep/ingest  \</span>
 <span class="go">    -X POST \</span>
 <span class="go">    -H &quot;Content-Type: multipart/form-data&quot; \</span>
 <span class="go">    -F &quot;files=@./README.md&quot;</span>
@@ -2031,20 +2036,30 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>image.repository</p></td>
-<td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;opea/dataprep-redis&quot;</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p>service.port</p></td>
+<tr class="row-even"><td><p>service.port</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;6007&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>REDIS_URL</p></td>
+<tr class="row-odd"><td><p>global.HUGGINGFACEHUB_API_TOKEN</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p>Your own Hugging Face API token</p></td>
+</tr>
+<tr class="row-even"><td><p>DATAPREP_BACKEND</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;REDIS&quot;</span></code></p></td>
+<td><p>vector DB backend to use, one of “REDIS”, “MILVUS”</p></td>
+</tr>
+<tr class="row-odd"><td><p>REDIS_HOST</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Redis service URL host, only valid for Redis, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Redis configuration</p></td>
+</tr>
+<tr class="row-even"><td><p>MILVUS_HOST</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Milvus service URL host, only valid for Milvus, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Milvus configuration</p></td>
 </tr>
 <tr class="row-odd"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
 <td><p>string</p></td>
