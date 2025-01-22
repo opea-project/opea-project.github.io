@@ -1098,9 +1098,10 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Authentication and Authorization with APISIX and OIDC based Identity provider (Keycloak)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-chatqna-service">Start ChatQnA service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#starting-and-configuring-keycloak">Starting and Configuring Keycloak</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#update-values">Update values</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-apisix">Install APISIX</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#uninstall">Uninstall</a></li>
 </ul>
@@ -1109,6 +1110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../auth-istio/README.html#prerequisite">Prerequisite</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../auth-istio/README.html#perform-authentication-and-authorization-via-bearer-jwt-tokens-and-curl">Perform authentication and authorization via Bearer JWT tokens and curl</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../auth-istio/README.html#perform-authentication-and-authorization-via-oauth2-proxy-and-oidc-provider-and-ui">Perform authentication and authorization via oauth2-proxy and OIDC provider and UI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auth-istio/README.html#uninstall-istio">Uninstall Istio</a></li>
 </ul>
 </li>
 </ul>
@@ -1976,15 +1978,17 @@
   <section id="authentication-and-authorization-with-apisix-and-oidc-based-identity-provider-keycloak">
 <h1>Authentication and Authorization with APISIX and OIDC based Identity provider (Keycloak)<a class="headerlink" href="#authentication-and-authorization-with-apisix-and-oidc-based-identity-provider-keycloak" title="Link to this heading">¶</a></h1>
 <p>Follow the steps to enable authentication and authorization of OPEA services using APISIX api gateway and Identity provider like keycloak</p>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Make sure ChatQnA service is running and accessible locally</p></li>
-<li><p>Run keycloak, setup a realm with OIDC based authentication and add users with passwords for each user.</p></li>
-</ol>
-<p>Steps to start keycloak from official keycloak helm chart</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prerequisite: Create a PersistentVolume of 9Gi for keycloak-postgress with RWO access (to persist updated keycloak configuration)</span>
-<span class="c1"># Below is a reference to create PersistentVolume which will be used by keycloak-postgress</span>
+<section id="start-chatqna-service">
+<h2>Start ChatQnA service<a class="headerlink" href="#start-chatqna-service" title="Link to this heading">¶</a></h2>
+<p>Please refer to <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/ChatQnA/kubernetes">GenAIExamples ChatQnA</a> to start <code class="docutils literal notranslate"><span class="pre">chatqna</span></code> megaservice.</p>
+</section>
+<section id="starting-and-configuring-keycloak">
+<h2>Starting and Configuring Keycloak<a class="headerlink" href="#starting-and-configuring-keycloak" title="Link to this heading">¶</a></h2>
+<p>In this stage we run keycloak and setup a realm with OIDC based authentication. For demonstration, we will add a realm called <code class="docutils literal notranslate"><span class="pre">apisix</span></code> and add a user called <code class="docutils literal notranslate"><span class="pre">mary</span></code> with password. In the authentication step, only the user from <code class="docutils literal notranslate"><span class="pre">apisix</span></code> realm can access the chatQnA pipeline.</p>
+<section id="step-1-prerequisite">
+<h3>Step 1: Prerequisite.<a class="headerlink" href="#step-1-prerequisite" title="Link to this heading">¶</a></h3>
+<p>Create a PersistentVolume of 9Gi for keycloak-postgress with RWO access (to persist updated keycloak configuration)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Below is a reference to create PersistentVolume which will be used by keycloak-postgress</span>
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 <span class="s">apiVersion: v1</span>
 <span class="s">kind: PersistentVolume</span>
@@ -1998,83 +2002,116 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">  accessModes:</span>
 <span class="s">    - ReadWriteOnce</span>
 <span class="s">EOF</span>
-
-<span class="c1"># install keycloak with helm by setting</span>
-helm<span class="w"> </span>install<span class="w"> </span>keycloak<span class="w"> </span>oci://registry-1.docker.io/bitnamicharts/keycloak<span class="w"> </span>--version<span class="w"> </span><span class="m">22</span>.1.0<span class="w"> </span>--set<span class="w"> </span>auth.adminUser<span class="o">=</span>admin<span class="w"> </span>--set<span class="w"> </span>auth.adminPassword<span class="o">=</span>admin
-
-<span class="c1"># Access keycloak UI through service/keycloak to do the necessary configurations</span>
 </pre></div>
 </div>
-<p>Once the keycloak pod is up and running, access the UI through the Keycloak’s NodePort service and set the necessary configuration</p>
+</section>
+<section id="step-2-install-keycloak">
+<h3>Step 2: Install keycloak<a class="headerlink" href="#step-2-install-keycloak" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># (Option 1) install keycloak with helm by setting, you can change the user and password to your customized setting</span>
+helm<span class="w"> </span>install<span class="w"> </span>keycloak<span class="w"> </span>oci://registry-1.docker.io/bitnamicharts/keycloak<span class="w"> </span>--version<span class="w"> </span><span class="m">22</span>.1.0<span class="w"> </span>--set<span class="w"> </span>auth.adminUser<span class="o">=</span>admin<span class="w"> </span>--set<span class="w"> </span>auth.adminPassword<span class="o">=</span>admin
+
+<span class="c1">#(Option 2) install keycloak with kubectl and configuration file</span>
+<span class="nb">cd</span><span class="w"> </span>..
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>./keycloak_install.yaml
+</pre></div>
+</div>
+</section>
+<section id="step-3-determine-keycloak-service-ip-and-port">
+<h3>Step 3: Determine keycloak service ip and port.<a class="headerlink" href="#step-3-determine-keycloak-service-ip-and-port" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>config<span class="w"> </span>view<span class="w"> </span>--minify<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.clusters[0].cluster.server}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span>-f3<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;:&#39;</span><span class="w"> </span>-f1<span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_PORT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>keycloak<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_ADDR</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">KEYCLOAK_PORT</span><span class="si">}</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Double check if the host ip captured is the correct ip.</p>
+</section>
+<section id="step-4-configuration">
+<h3>Step 4. Configuration.<a class="headerlink" href="#step-4-configuration" title="Link to this heading">¶</a></h3>
+<p>Access the Keycloak admin console through the <code class="docutils literal notranslate"><span class="pre">KEYCLOAK_ADDR</span></code> and use the username and password specified in step 2 to login. Then we configure the users, here we create a user named “mary” and assign “user” role to her.</p>
+<p>The user management is done via Keycloak and the configuration steps look like this:</p>
+<ol class="arabic simple">
+<li><p>Create a new realm named <code class="docutils literal notranslate"><span class="pre">apisix</span></code> (change if needed) within Keycloak.</p></li>
+<li><p>Create a new client called <code class="docutils literal notranslate"><span class="pre">apisix</span></code> (change if needed) , set <code class="docutils literal notranslate"><span class="pre">Client</span> <span class="pre">authentication</span></code> to <code class="docutils literal notranslate"><span class="pre">On</span></code>, <code class="docutils literal notranslate"><span class="pre">Save</span></code> setting and go to the <code class="docutils literal notranslate"><span class="pre">Credentials</span></code> page, copy <code class="docutils literal notranslate"><span class="pre">Client</span> <span class="pre">Secret</span></code> for later use.</p></li>
+<li><p>From the left pane select the Realm roles and create a new role name as <code class="docutils literal notranslate"><span class="pre">user</span></code>.</p></li>
+<li><p>Create a new user name as <code class="docutils literal notranslate"><span class="pre">mary</span></code>, set password for her (set ‘Temporary’ to ‘Off’). Select Role mapping on the top, assign the <code class="docutils literal notranslate"><span class="pre">user</span></code> role to <code class="docutils literal notranslate"><span class="pre">mary</span></code>.</p></li>
+<li><p>Turn off all ‘Required actions’ buttons under the ‘Authentication’ section in Keycloak</p></li>
+</ol>
+<p>Then set some environment variables.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">USER</span><span class="o">=</span><span class="s1">&#39;mary&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_REALM</span><span class="o">=</span><span class="s1">&#39;apisix&#39;</span><span class="w">  </span><span class="c1"># change if needed</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_CLIENT_ID</span><span class="o">=</span><span class="s1">&#39;apisix&#39;</span><span class="w"> </span><span class="c1"># change if needed</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span>&lt;keycloak<span class="w"> </span>client<span class="w"> </span>secret&gt;
+</pre></div>
+</div>
+<p><strong>Trouble Shooting: https required</strong></p>
+<p>If you meet “https required” issue when you open the console, you can fix with the following steps:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span><span class="si">${</span><span class="nv">keycloak_pods_id</span><span class="si">}</span><span class="w"> </span>--<span class="w"> </span>/bin/bash
+<span class="nb">cd</span><span class="w"> </span>/opt/keycloak/bin/
+./kcadm.sh<span class="w"> </span>config<span class="w"> </span>credentials<span class="w"> </span>--server<span class="w"> </span><span class="si">${</span><span class="nv">KEYCLOAK_ADDR</span><span class="si">}</span><span class="w"> </span>--realm<span class="w"> </span>master<span class="w"> </span>--user<span class="w"> </span>admin<span class="w"> </span><span class="c1">## need to type in password set before</span>
+./kcadm.sh<span class="w"> </span>update<span class="w"> </span>realms/master<span class="w"> </span>-s<span class="w"> </span><span class="nv">sslRequired</span><span class="o">=</span>NONE<span class="w"> </span>--server<span class="w"> </span><span class="si">${</span><span class="nv">KEYCLOAK_ADDR</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>Then go to the Keycloak console and find the “Realm setting” for <code class="docutils literal notranslate"><span class="pre">apisix</span></code> realm, set “Require SSL” to “None”.</p>
+</section>
 </section>
 <section id="update-values">
 <h2>Update values<a class="headerlink" href="#update-values" title="Link to this heading">¶</a></h2>
-<p>Update the following values in values.yaml</p>
+<p>Update the following values in values.yaml, you can take values_megaservice.yaml as a reference.</p>
 <ol class="arabic simple">
 <li><p>Update all the entries in oidc config pertaining to your identity provider</p></li>
 <li><p>Update all the entries in API specific configs</p></li>
 </ol>
 </section>
-<section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install apisix api gateway and ingress controller [reference: https://apisix.apache.org/docs/apisix/installation-guide/]</span>
+<section id="install-apisix">
+<h2>Install APISIX<a class="headerlink" href="#install-apisix" title="Link to this heading">¶</a></h2>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install APISIX api gateway and ingress controller [reference: https://apisix.apache.org/docs/apisix/installation-guide/]</span>
 helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>apisix<span class="w"> </span>https://charts.apiseven.com
 helm<span class="w"> </span>repo<span class="w"> </span>update
 helm<span class="w"> </span>install<span class="w"> </span>auth-apisix<span class="w"> </span>apisix/apisix<span class="w"> </span>-f<span class="w"> </span>values_apisix_gw.yaml<span class="w"> </span>--create-namespace<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix
 
-<span class="c1"># WAIT UNTIL apisix-ingress-controller POD IS READY by checking status with &#39;kubectl get -n auth-apisix pods&#39;</span>
+<span class="c1"># WAIT UNTIL the apisix-ingress-controller POD IS READY by checking it&#39;s status with &#39;kubectl get -n auth-apisix pods&#39;</span>
 <span class="c1"># The pod is ready when READY status shows 1/1</span>
 
 <span class="c1"># Publish authenticated APIs in APISIX gateway</span>
 helm<span class="w"> </span>install<span class="w"> </span>auth-apisix-crds<span class="w"> </span>.<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix
 </pre></div>
 </div>
+</br>
+APISIX helm chart provides configs to change the service type to other options like LoadBalancer (apisix.service.type) and externalTrafficPolicy to 'local'(apisix.service.externalTrafficPolicy). These can be added in values_apisix_gw.yaml </br></br>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<p>The published APIs in apisix gateway are accessible through auth-apisix-gateway kubernetes service. By default, it is a NodePort service and can be accessed as:</p>
+<p>The published APIs in APISIX gateway are accessible through auth-apisix-gateway kubernetes service. By default, it is a NodePort service and can be accessed as:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NODE_PORT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.spec.ports[0].nodePort}&quot;</span><span class="w"> </span>services<span class="w"> </span>auth-apisix-gateway<span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NODE_IP</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.items[0].status.addresses[0].address}&quot;</span><span class="k">)</span>
 
 <span class="c1"># the authenticated endpoint published in APISIX gateway can be accessed as: http://$NODE_IP:$NODE_PORT/&lt;published endpoint uri&gt;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">accessUrl</span><span class="o">=</span>http://<span class="nv">$NODE_IP</span>:<span class="nv">$NODE_PORT</span>/&lt;your<span class="w"> </span>published<span class="w"> </span>endpoint<span class="w"> </span>uri&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">accessUrl</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$NODE_IP</span><span class="s2">:</span><span class="nv">$NODE_PORT</span><span class="s2">/chatqna-oidc&quot;</span>
 </pre></div>
 </div>
-</br>
-Apisix helm chart provides configs to change the service type to other options like LoadBalancer (apisix.service.type) and externalTrafficPolicy to 'local'(apisix.service.externalTrafficPolicy). These can be added in values_apisix_gw.yaml </br></br>
-While accessing the published APIs, the HTTP Authorization header of the request should contain the Access token provided by Identity provider as 'Bearer &ltAccess Token>'. </br></br>
-The access token, refresh token, userinfo, user roles and OIDC scopes assigned to user can be obtained by invoking OIDC auth endpoint through UI or token endpoint through curl and providing user credentials. </br></br>
+<p>While accessing the published APIs, the HTTP Authorization header of the request should contain the Access token provided by Identity provider as ‘Bearer &amp;ltAccess Token&gt;’. </br></br>
+The access token, refresh token, userinfo, user roles and OIDC scopes assigned to user can be obtained by invoking OIDC auth endpoint through UI or token endpoint through curl and providing user credentials. </br></br></p>
 <p>Below steps can be followed to get access token from keycloak and access the APISIX published ChatQnA API through curl</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get access token for specified user from keycloak</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">USER</span><span class="o">=</span>&lt;username&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">PASSWORD</span><span class="o">=</span>&lt;password&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_ADDR</span><span class="o">=</span>&lt;keycloak<span class="w"> </span>url&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_REALM</span><span class="o">=</span>&lt;keycloak<span class="w"> </span>realm&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_CLIENT_ID</span><span class="o">=</span>&lt;keycloak<span class="w"> </span>client<span class="w"> </span>id&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span>&lt;keycloak<span class="w"> </span>client<span class="w"> </span>secret&gt;
-
-<span class="c1">#Invoke Keycloak&#39;s OIDC token endpoint to get access token, refresh token and expirt times. (Only Access token is used in the example below)</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1">#Invoke Keycloak&#39;s OIDC token endpoint to get access token, refresh token and expiry  times. (Only Access token is used in the example below)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">KEYCLOAK_ADDR</span><span class="si">}</span>/realms/<span class="si">${</span><span class="nv">KEYCLOAK_REALM</span><span class="si">}</span>/protocol/openid-connect/token<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&amp;client_id=</span><span class="si">${</span><span class="nv">KEYCLOAK_CLIENT_ID</span><span class="si">}</span><span class="s2">&amp;client_secret=</span><span class="si">${</span><span class="nv">KEYCLOAK_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&amp;username=</span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="s2">&amp;password=</span><span class="si">${</span><span class="nv">PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.access_token<span class="k">)</span>
 
-<span class="c1"># follow instructions above to fetch the NODE_IP and NODE_PORT</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">accessUrl</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$NODE_IP</span><span class="s2">:</span><span class="nv">$NODE_PORT</span><span class="s2">/chatqna-oidc&quot;</span>
-
 <span class="c1"># try without token. Shall get response: &quot;Authorization required 401 error&quot;</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;What is the revenue of Nike in 2023?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot; %{http_code}\n&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;, &quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}&#39;</span><span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot; %{http_code}\n&quot;</span>
 
 <span class="c1"># try with token. Shall get the correct response from ChatQnA with http code 200</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;What is the revenue of Nike in 2023?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot; %{http_code}\n&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;, &quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}&#39;</span><span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot; %{http_code}\n&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="uninstall">
 <h2>Uninstall<a class="headerlink" href="#uninstall" title="Link to this heading">¶</a></h2>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uninstall apisix</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uninstall APISIX</span>
 helm<span class="w"> </span>uninstall<span class="w"> </span>auth-apisix-crds<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix
 helm<span class="w"> </span>uninstall<span class="w"> </span>auth-apisix<span class="w"> </span>--namespace<span class="w"> </span>auth-apisix
 </pre></div>
 </div>
-<p>The crds installed by apisix won’t be deleted by helm uninstall. Need to manually delete those crds </br>
+<p>The crds installed by APISIX won’t be deleted by helm uninstall. Need to manually delete those crds </br>
 All APISIX specific crds can be obtained by ‘kubectl get crds | grep apisix’ </br>
 Each crd can be manually deleted by ‘kubectl delete crd/&lt;crd name&gt;’ </br></p>
 </section>
