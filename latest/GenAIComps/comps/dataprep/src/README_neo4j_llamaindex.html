@@ -2181,13 +2181,13 @@
 <h1>Dataprep Microservice with Neo4J<a class="headerlink" href="#dataprep-microservice-with-neo4j" title="Link to this heading">¶</a></h1>
 <p>This Dataprep microservice performs:</p>
 <ul class="simple">
-<li><p>Graph extraction (entities, relationships and descripttions) using LLM</p></li>
+<li><p>Graph extraction (entities, relationships and descriptions) using LLM</p></li>
 <li><p>Performs hierarchical_leiden clustering to identify communities in the knowledge graph</p></li>
 <li><p>Generates a community symmary for each community</p></li>
 <li><p>Stores all of the above in Neo4j Graph DB</p></li>
 </ul>
-<p>This microservice follows the graphRAG approached defined by Microsoft paper <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/from-local-to-global-a-graph-rag-approach-to-query-focused-summarization/">“From Local to Global: A Graph RAG Approach to Query-Focused Summarization”</a> with some differences such as: 1) only level zero cluster summaries are leveraged, 2) The input context to the final answer generation is trimmed to fit maximum context length.</p>
-<p>This dataprep microservice ingests the input files and uses LLM (TGI or OpenAI model when OPENAI_API_KEY is set) to extract entities, relationships and descriptions of those to build a graph-based text index.</p>
+<p>This microservice follows the graphRAG approached defined by Microsoft paper <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/from-local-to-global-a-graph-rag-approach-to-query-focused-summarization/">“From Local to Global: A Graph RAG Approach to Query-Focused Summarization”</a> with some differences such as: 1) no node degree prioritization is used in populating the LLM context window for community summaries, 2) no ranking of sub-communities is applied in generating higher level communities summaries.</p>
+<p>This dataprep microservice ingests the input files and uses LLM (TGI, VLLM or OpenAI model when OPENAI_API_KEY is set) to extract entities, relationships and descriptions of those to build a graph-based text index. Compose yaml file deploys TGI but works also with vLLM inference endpoint.</p>
 <section id="setup-environment-variables">
 <h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Manually set private environment settings</span>
@@ -2199,10 +2199,20 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_username</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_password</span><span class="si">}</span><span class="w">  </span><span class="c1"># should match what was used in NEO4J_AUTH when running the neo4j-apoc</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">path_to_comps</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_openai_api_key</span><span class="si">}</span><span class="w">  </span><span class="c1"># optional, when not provided will use smaller models TGI/TEI</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_openai_api_key</span><span class="si">}</span><span class="w">  </span><span class="c1"># optional, when not provided will use open models TGI/TEI</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+
 <span class="c1"># set additional environment settings</span>
-<span class="nb">source</span><span class="w"> </span>./set_env.sh
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_EMBEDDING_MODEL</span><span class="o">=</span><span class="s2">&quot;text-embedding-3-small&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6006&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6005&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URL</span><span class="o">=</span><span class="s2">&quot;bolt://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:7687&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span>neo4j
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6004/v1/dataprep&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True
 </pre></div>
 </div>
 </section>
@@ -2237,7 +2247,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h3>3. Run Docker with Docker Compose<a class="headerlink" href="#run-docker-with-docker-compose" title="Link to this heading">¶</a></h3>
 <p>Docker compose will start 4 microservices: dataprep-neo4j-llamaindex, neo4j-apoc, tgi-gaudi-service and tei-embedding-service. The reason TGI and TEI are needed is because dataprep relies on LLM to extract entities and relationships from text to build the graph and Neo4j Property Graph Index. Neo4j database supports embeddings natively so we do not need a separate vector store. Checkout the blog <a class="reference external" href="https://www.llamaindex.ai/blog/introducing-the-property-graph-index-a-powerful-new-way-to-build-knowledge-graphs-with-llms">Introducing the Property Graph Index: A Powerful New Way to Build Knowledge Graphs with LLMs</a> for a better understanding of Property Graph Store and Index.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>comps/dataprep/deployment/docker_compose
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>ompose_neo4j_llamaindex.yaml<span class="w"> </span>up<span class="w"> </span>-d
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
@@ -2293,7 +2303,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Jan 27, 2025.</span>
+<span class="lastupdated">Published on Jan 28, 2025.</span>
 
   </div>
 
