@@ -2335,6 +2335,12 @@ Use this if you are not using Terraform and have provisioned your system with an
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.<br />
+CPU example with Open Telemetry feature:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
 docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
@@ -2501,6 +2507,11 @@ In the below, we provide a table that describes for each microservice component 
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
 </section>
 <section id="deploy-chatqna-on-xeon">
@@ -2508,6 +2519,11 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for more instructions on building docker images from source.</p>
@@ -2607,7 +2623,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <section id="tracing-services-with-opentelemetry-tracing-and-jaeger">
 <h2>Tracing Services with OpenTelemetry Tracing and Jaeger<a class="headerlink" href="#tracing-services-with-opentelemetry-tracing-and-jaeger" title="Link to this heading">¶</a></h2>
 <blockquote>
-<div><p>NOTE: limited support. Only LLM inference serving with TGI on Gaudi is enabled for this feature.</p>
+<div><p>NOTE: This feature is disabled by default. Please check the Deploy ChatQnA sessions for how to enable this feature with compose_telemetry.yaml file.</p>
 </div></blockquote>
 <p>OPEA microservice and TGI/TEI serving can easily be traced through Jaeger dashboards in conjunction with OpenTelemetry Tracing feature. Follow the <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/cores/telemetry#tracing">README</a> to trace additional functions if needed.</p>
 <p>Tracing data is exported to http://{EXTERNAL_IP}:4318/v1/traces via Jaeger.

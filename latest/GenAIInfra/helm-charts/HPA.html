@@ -2243,8 +2243,8 @@ https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/</p>
 <p>HPA controlled <em>CPU</em> pods SHOULD have appropriate resource requests or affinity rules (enabled in their
 subcharts and tested to work) so that k8s scheduler does not schedule too many of them on the same
 node(s). Otherwise they never reach ready state.</p>
-<p>If you use different models than the default ones, update TGI and TEI resource requests to match
-model requirements.</p>
+<p>If you use different models than the default ones, update inferencing services (vLLM, TGI, TEI) resource
+requests to match model requirements.</p>
 <p>Too large requests would not be a problem as long as pods still fit to available nodes. However,
 unless rules have been added to pods preventing them from being scheduled on same nodes, too
 small requests would be an issue:</p>
@@ -2342,7 +2342,7 @@ used model, data type and image versions, the specified resource values may need
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>After <a class="reference internal" href="monitoring.html#verify"><span class="std std-ref">verifying that service metrics work</span></a>,
 one can verify that HPA rules can access custom metrics based on them.</p>
-<p>Verify that there are (TGI and/or TEI) custom metrics prefixed with chart name:</p>
+<p>Verify that there are custom metrics from inferencing service(s), prefixed with the chart name:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>--raw<span class="w"> </span>/apis/custom.metrics.k8s.io/v1beta1<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.resources<span class="o">[]</span>.name
 </pre></div>
 </div>
@@ -2351,6 +2351,8 @@ one can verify that HPA rules can access custom metrics based on them.</p>
 <span class="gp">$ </span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$ns</span><span class="w"> </span>get<span class="w"> </span>hpa
 </pre></div>
 </div>
+<p><strong>NOTE</strong>: inferencing services provide metrics only after they’ve processed their first request.
+And reranking service is used only after query context data has been uploaded!</p>
 </section>
 </section>
 

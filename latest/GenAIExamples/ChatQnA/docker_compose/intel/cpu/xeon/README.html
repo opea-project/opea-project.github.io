@@ -2250,6 +2250,12 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.<br />
+CPU example with Open Telemetry feature:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
 docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
@@ -2468,10 +2474,14 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 <span class="c1"># Start ChatQnA without Rerank Pipeline</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_without_rerank.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># Start ChatQnA with Rerank Pipeline and Open Telemetry Tracing</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>If use TGI as the LLM serving backend.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># Start ChatQnA with Open Telemetry Tracing</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose_tgi.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
