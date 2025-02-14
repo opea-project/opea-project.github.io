@@ -2222,6 +2222,7 @@
 <li><p>TEI: please refer to the <a class="reference internal" href="#../tei"><span class="xref myst">tei</span></a> for more information.</p></li>
 <li><p>Redis vector DB: please refer to <a class="reference internal" href="#../redis-vector-db/"><span class="xref myst">redis-vector-db</span></a> for more information.</p></li>
 <li><p>Milvus DB: please refer to <a class="reference external" href="https://github.com/zilliztech/milvus-helm/tree/milvus-4.2.12">milvus-helm</a> for more information.</p></li>
+<li><p>Qdrant DB: please refer to <a class="reference external" href="https://github.com/qdrant/qdrant-helm/tree/qdrant-1.13.1/charts/qdrant">qdrant-helm</a> for more information.</p></li>
 </ul>
 <p>First, you need to install the <code class="docutils literal notranslate"><span class="pre">tei</span></code> helm chart and one of the vector DB service, i.e. <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code> chart.</p>
 <p>After you’ve deployed dependency charts successfully, please run <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">svc</span></code> to get the service endpoint URL respectively, i.e. <code class="docutils literal notranslate"><span class="pre">http://tei:80</span></code>, <code class="docutils literal notranslate"><span class="pre">redis://redis-vector-db:6379</span></code>.</p>
@@ -2240,6 +2241,11 @@
 <span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="s2">&quot;MILVUS&quot;</span>
 <span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">&quot;milvus&quot;</span>
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>retriever-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">RETRIEVER_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MILVUS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>
+
+<span class="gp"># </span>Install<span class="w"> </span>retriever-usvc<span class="w"> </span>with<span class="w"> </span>Qdrant<span class="w"> </span>DB<span class="w"> </span>backend
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="s2">&quot;QDRANT&quot;</span>
+<span class="gp"># </span><span class="nb">export</span><span class="w"> </span><span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">&quot;qdrant&quot;</span>
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>retriever-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">RETRIEVER_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">QDRANT_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2280,7 +2286,7 @@
 <tr class="row-even"><td><p>RETRIEVER_BACKEND</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;REDIS&quot;</span></code></p></td>
-<td><p>vector DB backend to use, one of “REDIS”, “MILVUS”</p></td>
+<td><p>vector DB backend to use, one of “REDIS”, “MILVUS”, “QDRANT”</p></td>
 </tr>
 <tr class="row-odd"><td><p>REDIS_HOST</p></td>
 <td><p>string</p></td>
@@ -2292,12 +2298,17 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Milvus service URL host, only valid for Milvus, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Milvus configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
+<tr class="row-odd"><td><p>QDRANT_HOST</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Qdrant service URL host, only valid for Qdrant, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Qdrant configuration</p></td>
+</tr>
+<tr class="row-even"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>global.monitoring</p></td>
+<tr class="row-odd"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p></p></td>
