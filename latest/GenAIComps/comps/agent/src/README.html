@@ -2221,7 +2221,7 @@
 <h3>1.1 Supported agent types<a class="headerlink" href="#supported-agent-types" title="Link to this heading">¶</a></h3>
 <p>We currently support the following types of agents. Please refer to the example config yaml (links in the table in <a class="reference internal" href="#llm-engine"><span class="xref myst">Section 1.2</span></a>) for each agent strategy to see what environment variables need to be set up.</p>
 <ol class="arabic simple">
-<li><p>ReAct: use <code class="docutils literal notranslate"><span class="pre">react_langchain</span></code> or <code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code> or <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> as strategy. First introduced in this seminal <a class="reference external" href="https://arxiv.org/abs/2210.03629">paper</a>. The ReAct agent engages in “reason-act-observe” cycles to solve problems. Please refer to this <a class="reference external" href="https://python.langchain.com/v0.2/docs/how_to/migrate_agent/">doc</a> to understand the differences between the langchain and langgraph versions of react agents. See table below to understand the validated LLMs for each react strategy.</p></li>
+<li><p>ReAct: use <code class="docutils literal notranslate"><span class="pre">react_langchain</span></code> or <code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code> or <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> as strategy. First introduced in this seminal <a class="reference external" href="https://arxiv.org/abs/2210.03629">paper</a>. The ReAct agent engages in “reason-act-observe” cycles to solve problems. Please refer to this <a class="reference external" href="https://python.langchain.com/v0.2/docs/how_to/migrate_agent/">doc</a> to understand the differences between the langchain and langgraph versions of react agents. See table below to understand the validated LLMs for each react strategy. We recommend using <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> as it has the most features enabled, including agent memory, multi-turn conversations and assistants APIs.</p></li>
 <li><p>RAG agent: use <code class="docutils literal notranslate"><span class="pre">rag_agent</span></code> or <code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code> strategy. This agent is specifically designed for improving RAG performance. It has the capability to rephrase query, check relevancy of retrieved context, and iterate if context is not relevant. See table below to understand the validated LLMs for each rag agent strategy.</p></li>
 <li><p>Plan and execute: <code class="docutils literal notranslate"><span class="pre">plan_execute</span></code> strategy. This type of agent first makes a step-by-step plan given a user request, and then execute the plan sequentially (or in parallel, to be implemented in future). If the execution results can solve the problem, then the agent will output an answer; otherwise, it will replan and execute again.</p></li>
 <li><p>SQL agent: use <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code> or <code class="docutils literal notranslate"><span class="pre">sql_agent</span></code> strategy. This agent is specifically designed and optimized for answering questions aabout data in SQL databases. Users need to specify <code class="docutils literal notranslate"><span class="pre">db_name</span></code> and <code class="docutils literal notranslate"><span class="pre">db_path</span></code> for the agent to access the SQL database. For more technical details read descriptions <a class="reference internal" href="integrations/strategy/sqlagent/README.html"><span class="std std-doc">here</span></a>.</p></li>
@@ -2229,15 +2229,15 @@
 <p><strong>Note</strong>:</p>
 <ol class="arabic simple">
 <li><p>Due to the limitations in support for tool calling by TGI and vllm, we have developed subcategories of agent strategies (<code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code>, <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> and <code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code>) specifically designed for open-source LLMs served with TGI and vllm.</p></li>
+<li><p>Currently only <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> agent supports memory and multi-turn conversations.</p></li>
 <li><p>For advanced developers who want to implement their own agent strategies, please refer to <a class="reference internal" href="#customize-agent-strategy"><span class="xref myst">Section 5</span></a> below.</p></li>
 </ol>
 </section>
 <section id="llm-engine">
 <h3>1.2 LLM engine<a class="headerlink" href="#llm-engine" title="Link to this heading">¶</a></h3>
-<p>Agents use LLM for reasoning and planning. We support 3 options of LLM engine:</p>
+<p>Agents use LLM for reasoning and planning. We support 2 options of LLM engine:</p>
 <ol class="arabic simple">
-<li><p>Open-source LLMs served with TGI. Follow the instructions in <a class="reference internal" href="#start-agent-microservices-with-tgi"><span class="xref myst">Section 2.2.1</span></a>.</p></li>
-<li><p>Open-source LLMs served with vllm. Follow the instructions in <a class="reference internal" href="#start-agent-microservices-with-vllm"><span class="xref myst">Section 2.2.2</span></a>.</p></li>
+<li><p>Open-source LLMs served with vllm. Follow the instructions in <a class="reference internal" href="#start-agent-microservices-with-vllm"><span class="xref myst">Section 2.2</span></a>.</p></li>
 <li><p>OpenAI LLMs via API calls. To use OpenAI llms, specify <code class="docutils literal notranslate"><span class="pre">llm_engine=openai</span></code> and <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">OPENAI_API_KEY=&lt;your-openai-key&gt;</span></code></p></li>
 </ol>
 <table class="docutils align-default">
@@ -2252,19 +2252,19 @@
 <tbody>
 <tr class="row-even"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_langchain</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi) (vllm-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (vllm-gaudi)</p></td>
 <td><p>Only allows tools with one input variable</p></td>
 <td><p><a class="reference internal" href="#../../../tests/agent/react_langchain.yaml"><span class="xref myst">react_langchain yaml</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_langgraph</span></code></p></td>
-<td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (vllm-gaudi),</p></td>
-<td><p>if using vllm, need to specify <code class="docutils literal notranslate"><span class="pre">--enable-auto-tool-choice</span> <span class="pre">--tool-call-parser</span> <span class="pre">${model_parser}</span></code>, refer to vllm docs for more info</p></td>
+<td><p>GPT-4o-mini, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (vllm-gaudi)</p></td>
+<td><p>if using vllm, need to specify <code class="docutils literal notranslate"><span class="pre">--enable-auto-tool-choice</span> <span class="pre">--tool-call-parser</span> <span class="pre">${model_parser}</span></code>, refer to vllm docs for more info, only one tool call in each LLM output due to the limitations of llama3.1 modal and vllm tool call parser.</p></td>
 <td><p><a class="reference internal" href="#../../../tests/agent/react_vllm.yaml"><span class="xref myst">react_langgraph yaml</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p>ReAct</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">react_llama</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi) (vllm-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a>, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">llama3.3-70B-Instruct</a>(vllm-gaudi)</p></td>
 <td><p>Recommended for open-source LLMs, supports multiple tools and parallel tool calls.</p></td>
 <td><p><a class="reference internal" href="#../../../tests/agent/reactllama.yaml"><span class="xref myst">react_llama yaml</span></a></p></td>
 </tr>
@@ -2276,7 +2276,7 @@
 </tr>
 <tr class="row-even"><td><p>RAG agent</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">rag_agent_llama</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (tgi-gaudi) (vllm-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a>, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">llama3.3-70B-Instruct</a> (vllm-gaudi)</p></td>
 <td><p>Recommended for open-source LLMs, only allows 1 tool with input variable to be “query”</p></td>
 <td><p><a class="reference internal" href="#../../../tests/agent/ragagent.yaml"><span class="xref myst">rag_agent_llama yaml</span></a></p></td>
 </tr>
@@ -2288,7 +2288,7 @@
 </tr>
 <tr class="row-even"><td><p>SQL agent</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sql_agent_llama</span></code></p></td>
-<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a> (vllm-gaudi)</p></td>
+<td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct">llama3.1-70B-Instruct</a>, <a class="reference external" href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">llama3.3-70B-Instruct</a> (vllm-gaudi)</p></td>
 <td><p>database query tool is natively integrated using Langchain’s <a class="reference external" href="https://python.langchain.com/api_reference/community/tools/langchain_community.tools.sql_database.tool.QuerySQLDatabaseTool.html">QuerySQLDataBaseTool</a>. User can also register their own tools with this agent.</p></td>
 <td><p><a class="reference internal" href="#../../../tests/agent/sql_agent_llama.yaml"><span class="xref myst">sql_agent_llama yaml</span></a></p></td>
 </tr>
@@ -2313,44 +2313,74 @@
 </section>
 <section id="agent-apis">
 <h3>1.4 Agent APIs<a class="headerlink" href="#agent-apis" title="Link to this heading">¶</a></h3>
+<p>We support two sets of APIs that are OpenAI compatible:</p>
 <ol class="arabic simple">
-<li><p>OpenAI compatible chat completions API</p></li>
-<li><p>OpenAI compatible assistants APIs.</p></li>
+<li><p>OpenAI compatible chat completions API. Example usage with Python code below.</p></li>
 </ol>
-<p><strong>Note</strong>: not all keywords are supported yet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">agent_port</span><span class="si">}</span><span class="s2">/v1/chat/completions&quot;</span>
+
+<span class="c1"># single-turn, not streaming -&gt; if agent is used as a worker agent (i.e., tool for supervisor agent)</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">}</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># multi-turn, streaming -&gt; to interface with users</span>
+<span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">user_message</span><span class="p">,</span> <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="n">thread_id</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="n">stream</span><span class="p">}</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">decode_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p>OpenAI compatible assistants APIs.</p>
+<p>See example Python code <a class="reference internal" href="#./test_assistant_api.py"><span class="xref myst">here</span></a>. There are 4 steps:</p>
+<p>Step 1. create an assistant: /v1/assistants</p>
+<p>Step 2. create a thread: /v1/threads</p>
+<p>Step 3. send a message to the thread: /v1/threads/{thread_id}/messages</p>
+<p>Step 4. run the assistant: /v1/threads/{thread_id}/runs</p>
+</li>
+</ol>
+<p><strong>Note</strong>:</p>
+<ol class="arabic simple">
+<li><p>Currently only <code class="docutils literal notranslate"><span class="pre">reract_llama</span></code> agent is enabled for assistants APIs.</p></li>
+<li><p>Not all keywords of OpenAI APIs are supported yet.</p></li>
+</ol>
+</section>
+<section id="agent-memory">
+<h3>1.5 Agent memory<a class="headerlink" href="#agent-memory" title="Link to this heading">¶</a></h3>
+<p>We currently supports two types of memory.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">checkpointer</span></code>: agent memory stored in RAM, so is volatile, the memory contains agent states within a thread. Used to enable multi-turn conversations between the user and the agent. Both chat completions API and assistants APIs support this type of memory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">store</span></code>: agent memory stored in Redis database, contains agent states in all threads. Only assistants APIs support this type of memory. Used to enable multi-turn conversations. In future we will explore algorithms to take advantage of the info contained in previous conversations to improve agent’s performance.</p></li>
+</ol>
+<p><strong>Note</strong>: Currently only <code class="docutils literal notranslate"><span class="pre">react_llama</span></code> agent supports memory and multi-turn conversations.</p>
+<section id="how-to-enable-agent-memory">
+<h4>How to enable agent memory?<a class="headerlink" href="#how-to-enable-agent-memory" title="Link to this heading">¶</a></h4>
+<p>Specify <code class="docutils literal notranslate"><span class="pre">with_memory</span></code>=True. If want to use persistent memory, specify <code class="docutils literal notranslate"><span class="pre">memory_type</span></code>=<code class="docutils literal notranslate"><span class="pre">store</span></code>, and you need to launch a Redis database using the command below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># you can change the port from 6379 to another one.</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-it<span class="w"> </span>-p<span class="w"> </span><span class="m">6379</span>:6379<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;test-persistent-redis&quot;</span><span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>--name<span class="w"> </span>redis-vector-db<span class="w"> </span>redis/redis-stack:7.2.0-v9
+</pre></div>
+</div>
+<p>Examples of python code for multi-turn conversations using agent memory:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#./test_chat_completion_multiturn.py"><span class="xref myst">chat completions API with checkpointer</span></a></p></li>
+<li><p><a class="reference internal" href="#./test_assistant_api.py"><span class="xref myst">assistants APIs with persistent store memory</span></a></p></li>
+</ol>
+<p>To run the two examples above, first launch the agent microservice using <a class="reference internal" href="#../../../tests/agent/reactllama.yaml"><span class="xref myst">this docker compose yaml</span></a>.</p>
+</section>
 </section>
 </section>
 <section id="start-agent-microservice">
 <h2>🚀2. Start Agent Microservice<a class="headerlink" href="#start-agent-microservice" title="Link to this heading">¶</a></h2>
-<section id="build-microservices">
-<h3>2.1 Build Microservices<a class="headerlink" href="#build-microservices" title="Link to this heading">¶</a></h3>
+<section id="build-docker-image-for-agent-microservice">
+<h3>2.1 Build docker image for agent microservice<a class="headerlink" href="#build-docker-image-for-agent-microservice" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps/<span class="w"> </span><span class="c1"># back to GenAIComps/ folder</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/agent:latest<span class="w"> </span>-f<span class="w"> </span>comps/agent/src/Dockerfile<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
 </pre></div>
 </div>
-<section id="start-agent-microservices-with-tgi">
-<h4>2.2.1 Start Agent microservices with TGI<a class="headerlink" href="#start-agent-microservices-with-tgi" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
-
-<span class="c1"># TGI serving on 4 Gaudi2 cards</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;comps-tgi-gaudi-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">PT_HPU_ENABLE_LAZY_COLLECTIVES</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:latest<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model</span><span class="w"> </span>--max-input-tokens<span class="w"> </span><span class="m">8192</span><span class="w"> </span>--max-total-tokens<span class="w"> </span><span class="m">16384</span><span class="w"> </span>--sharded<span class="w"> </span><span class="nb">true</span><span class="w"> </span>--num-shard<span class="w"> </span><span class="m">4</span>
-
-<span class="c1"># check status</span>
-docker<span class="w"> </span>logs<span class="w"> </span>comps-tgi-gaudi-service
-
-<span class="c1"># Agent: react_llama strategy</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/src/tools:/home/user/comps/agent/src/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_llama<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>tgi<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/src/tools/custom_tools.yaml<span class="w"> </span>opea/agent:latest
-
-<span class="c1"># check status</span>
-docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
-</pre></div>
-</div>
 </section>
 <section id="start-agent-microservices-with-vllm">
-<h4>2.2.2 Start Agent microservices with vllm<a class="headerlink" href="#start-agent-microservices-with-vllm" title="Link to this heading">¶</a></h4>
+<h3>2.2 Start Agent microservices with vllm<a class="headerlink" href="#start-agent-microservices-with-vllm" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
@@ -2358,8 +2388,9 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
 <span class="nb">export</span><span class="w"> </span><span class="nv">vllm_volume</span><span class="o">=</span><span class="si">${</span><span class="nv">YOUR_LOCAL_DIR_FOR_MODELS</span><span class="si">}</span>
 
 <span class="c1"># build vLLM image</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
-<span class="nb">cd</span><span class="w"> </span>./vllm
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/HabanaAI/vllm-fork.git
+<span class="nb">cd</span><span class="w"> </span>./vllm-fork
+git<span class="w"> </span>checkout<span class="w"> </span>v0.6.4.post2+Gaudi-1.19.0
 docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
 
 <span class="c1"># vllm serving on 4 Gaudi2 cards</span>
@@ -2369,7 +2400,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 docker<span class="w"> </span>logs<span class="w"> </span>comps-vllm-gaudi-service
 
 <span class="c1"># Agent</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/src/tools:/home/user/comps/agent/src/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_llama<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>vllm<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/src/tools/custom_tools.yaml<span class="w"> </span>opea/agent:latest
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/agent/src/tools:/home/user/comps/agent/src/tools<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_llama<span class="w"> </span>-e<span class="w"> </span><span class="nv">with_memory</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>vllm<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/src/tools/custom_tools.yaml<span class="w"> </span>opea/agent:latest
 
 <span class="c1"># check status</span>
 docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
@@ -2377,11 +2408,10 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
 </div>
 <blockquote>
 <div><p>debug mode</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>./comps/agent/src/:/home/user/comps/agent/src/<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_llama<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>vllm<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/src/tools/custom_tools.yaml<span class="w"> </span>opea/agent:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;comps-agent-endpoint&quot;</span><span class="w"> </span>-v<span class="w"> </span>./comps/agent/src/:/home/user/comps/agent/src/<span class="w"> </span>-p<span class="w"> </span><span class="m">9090</span>:9090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">strategy</span><span class="o">=</span>react_llama<span class="w"> </span>-e<span class="w"> </span><span class="nv">with_memory</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:8080<span class="w"> </span>-e<span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span>vllm<span class="w"> </span>-e<span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">require_human_feedback</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">tools</span><span class="o">=</span>/home/user/comps/agent/src/tools/custom_tools.yaml<span class="w"> </span>opea/agent:latest
 </pre></div>
 </div>
 </div></blockquote>
-</section>
 </section>
 </section>
 <section id="validate-microservice">
@@ -2389,8 +2419,12 @@ docker<span class="w"> </span>logs<span class="w"> </span>comps-agent-endpoint
 <p>Once microservice starts, user can use below script to invoke.</p>
 <section id="use-chat-completions-api">
 <h3>3.1 Use chat completions API<a class="headerlink" href="#use-chat-completions-api" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;query&quot;: &quot;What is OPEA project?&quot;</span>
+<p>For multi-turn conversations, first specify a <code class="docutils literal notranslate"><span class="pre">thread_id</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">thread_id</span><span class="o">=</span>&lt;thread-id&gt;
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">     &quot;messages&quot;: &quot;What is OPEA project?&quot;,</span>
+<span class="s1">     &quot;thread_id&quot;:${thread_id},</span>
+<span class="s1">     &quot;stream&quot;:true</span>
 <span class="s1">    }&#39;</span>
 
 <span class="c1"># expected output</span>
@@ -2406,12 +2440,12 @@ data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># step1 create assistant to get `asssistant_id`</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/assistants<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;tgi&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;}</span>
+<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;vllm&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;}</span>
 <span class="s1">    }&#39;</span>
 
 <span class="c1">## if want to persist your agent messages, set store config like this:</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/assistants<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;tgi&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;,&quot;with_store&quot;:true, &quot;store_config&quot;:{&quot;redis_uri&quot;:&quot;redis://${ip_address}:6379&quot;}}</span>
+<span class="s1">     &quot;agent_config&quot;: {&quot;llm_engine&quot;: &quot;vllm&quot;, &quot;llm_endpoint_url&quot;: &quot;http://${ip_address}:8080&quot;, &quot;tools&quot;: &quot;/home/user/comps/agent/src/tools/custom_tools.yaml&quot;,&quot;with_memory&quot;:true, &quot;memory_type&quot;:&quot;store&quot;, &quot;store_config&quot;:{&quot;redis_uri&quot;:&quot;redis://${ip_address}:6379&quot;}}</span>
 <span class="s1">    }&#39;</span>
 
 <span class="c1"># step2 create thread to get `thread_id`</span>
@@ -2420,16 +2454,16 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 
 <span class="c1"># step3 create messages</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;}&#39;</span>
 
 
-<span class="c1">## if agent is set with `with_store`, should add `assistant_id` in the messages for store</span>
+<span class="c1">## if agent is set with `memory_type`=store, should add `assistant_id` in the messages for store</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;, &quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/messages<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is OPEA project?&quot;, &quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
 
 <span class="c1"># step4 run</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9091/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/runs<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/threads/<span class="o">{</span>thread_id<span class="o">}</span>/runs<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;assistant_id&quot;: &quot;{assistant_id}&quot;}&#39;</span>
 </pre></div>
 </div>
 </section>
