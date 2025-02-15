@@ -2220,9 +2220,10 @@
 example with OPEA comps to deploy using vLLM or TGI service. There are several
 slice-n-dice ways to enable RAG with vectordb and LLM models, but here we will
 be covering one option of doing it for convenience : we will be showcasing  how
-to build an e2e chatQnA with Redis VectorDB and neural-chat-7b-v3-3 model,
-deployed on IDC. To quickly learn about OPEA in just 5 minutes and set up the required hardware and software, please follow the instructions in the
-<a class="reference external" href="https://opea-project.github.io/latest/getting-started/README.html">Getting Started</a> section.</p>
+to build an e2e chatQnA with Redis VectorDB and meta-llama/Meta-Llama-3-8B-Instruct model,
+deployed on Intel® Xeon® Scalable processors. To quickly learn about OPEA in just 5 minutes
+and set up the required hardware and software, please follow the instructions in the
+<a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a> section.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>There are several ways to setup a ChatQnA use case. Here in this tutorial, we
@@ -2236,7 +2237,7 @@ GenAIComps to deploy a single node vLLM or TGI megaservice solution.</p>
 <li><p>LLM with vLLM or TGI</p></li>
 </ol>
 <p>The solution is aimed to show how to use Redis vectordb for RAG and
-neural-chat-7b-v3-3 model on Intel Xeon Scalable processors. We will go through
+Meta-Llama-3-8B-Instruct model on Intel Xeon Scalable processors. We will go through
 how to setup docker container to start a microservices and megaservice . The
 solution will then utilize a sample Nike dataset which is in PDF format. Users
 can then ask a question about Nike and get a chat-like response by default for
@@ -2251,29 +2252,44 @@ are interested to use.</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>First step is to clone the GenAIExamples and GenAIComps. GenAIComps are
-fundamental necessary components used to build examples you find in
-GenAIExamples and deploy them as microservices.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
-<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<p>The first step is to clone the GenAIExamples and GenAIComps projects. GenAIComps are
+fundamental necessary components used to build the examples you find in
+GenAIExamples and deploy them as microservices. Set an environment
+variable for the desired release version with the <strong>number only</strong>
+(i.e. 1.0, 1.1, etc) and checkout using the tag with that version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set workspace</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;path&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>
+
+<span class="c1"># Set desired release version - number only</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;insert-release-version&gt;
+
+<span class="c1"># GenAIComps</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="nb">cd</span><span class="w"> </span>GenAIComps
+git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1"># GenAIExamples</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples
+git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
-<p>The examples utilize model weights from HuggingFace and langchain.</p>
-<p>Setup your <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and generate
-<a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
 <p>Setup the HuggingFace token</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 </pre></div>
 </div>
 <p>The example requires you to set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> to deploy the microservices on
 endpoint enabled with ports. Set the host_ip env variable</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 </pre></div>
 </div>
 <p>Make sure to setup Proxies if you are behind a firewall</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export no_proxy=${your_no_proxy},$host_ip
-export http_proxy=${your_http_proxy}
-export https_proxy=${your_http_proxy}
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="nv">$host_ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2293,34 +2309,35 @@ there are 8 required and an optional docker images.</p>
 Pull</label><div class="sd-tab-content docutils">
 <p>If you decide to pull the docker containers and not build them locally,
 you can proceed to the next step where all the necessary containers will
-be pulled in from dockerhub.</p>
+be pulled in from Docker Hub.</p>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Build" for="sd-tab-item-1">
 Build</label><div class="sd-tab-content docutils">
-<p>From within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder, checkout the release tag.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIComps</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+<p>Follow the steps below to build the docker images from within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder.
+<strong>Note:</strong> For RELEASE_VERSIONS older than 1.0, you will need to add a ‘v’ in front
+of ${RELEASE_VERSION} to reference the correct image on Docker Hub.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIComps
 </pre></div>
 </div>
 <h4 class="rubric" id="build-dataprep-image">Build Dataprep Image</h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/dataprep-redis:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/dataprep/redis/langchain/Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h4 class="rubric" id="build-embedding-image">Build Embedding Image</h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/embedding-tei:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/embeddings/tei/langchain/Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/tei/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h4 class="rubric" id="build-retriever-image">Build Retriever Image</h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> docker build --no-cache -t opea/retriever-redis:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/retrievers/redis/langchain/Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/redis/langchain/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h4 class="rubric" id="build-rerank-image">Build Rerank Image</h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/reranking-tei:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/reranks/tei/Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/reranks/tei/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h4 class="rubric" id="build-llm-image">Build LLM Image</h4>
@@ -2329,27 +2346,26 @@ Build</label><div class="sd-tab-content docutils">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-2">
 vllm</label><div class="sd-tab-content docutils">
 <p>We build the vllm docker image from source</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/vllm-project/vllm.git
-cd ./vllm/
-docker build --no-cache -t opea/vllm:latest --build-arg https_proxy=$https_proxy \
-   --build-arg http_proxy=$http_proxy -f Dockerfile.cpu .
-cd ..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
+<span class="nb">cd</span><span class="w"> </span>vllm
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/vllm:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.cpu<span class="w"> </span>.
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <p>Next, we’ll build the vllm microservice docker. This will set the entry point
 needed for the vllm to suit the ChatQnA examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-vllm:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy \
-  -f comps/llms/text-generation/vllm/langchain/Dockerfile.microservice .
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-vllm:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/llms/text-generation/vllm/langchain/Dockerfile.microservice<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-3">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/llm-tgi:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f comps/llms/text-generation/tgi/Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-tgi:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/text-generation/tgi/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
@@ -2363,31 +2379,27 @@ microservice which will in turn passes data to the reranking microservice and so
 on. You can also add newer or remove some microservices and customize the
 megaservice to suit the needs.</p>
 <p>Build the megaservice image for this use case</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.0</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/ChatQnA
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker build --no-cache -t opea/chatqna:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f Dockerfile .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h3 class="rubric" id="build-other-service-images">Build Other Service images</h3>
 <h4 class="rubric" id="build-the-ui-image">Build the UI Image</h4>
 <p>As mentioned, you can build 2 modes of UI</p>
 <p><em>Basic UI</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
-docker build --no-cache -t opea/chatqna-ui:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile .
-cd ../../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/ChatQnA/ui/
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <p><em>Conversation UI</em>
 If you want a conversational experience with chatqna megaservice.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIExamples/ChatQnA/ui/
-docker build --no-cache -t opea/chatqna-conversation-ui:latest --build-arg https_proxy=$https_proxy \
-  --build-arg http_proxy=$http_proxy -f ./docker/Dockerfile.react .
-cd ../../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/ChatQnA/ui/
+docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
 </pre></div>
 </div>
 <h3 class="rubric" id="sanity-check">Sanity Check</h3>
@@ -2397,27 +2409,27 @@ cd ../../..
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-4">
 vllm</label><div class="sd-tab-content docutils">
 <ul class="simple">
-<li><p>opea/dataprep-redis:latest</p></li>
-<li><p>opea/embedding-tei:latest</p></li>
-<li><p>opea/retriever-redis:latest</p></li>
-<li><p>opea/reranking-tei:latest</p></li>
-<li><p>opea/vllm:latest</p></li>
-<li><p>opea/chatqna:latest</p></li>
-<li><p>opea/chatqna-ui:latest</p></li>
-<li><p>opea/llm-vllm:latest</p></li>
+<li><p>opea/dataprep-redis:${RELEASE_VERSION}</p></li>
+<li><p>opea/embedding-tei:${RELEASE_VERSION}</p></li>
+<li><p>opea/retriever-redis:${RELEASE_VERSION}</p></li>
+<li><p>opea/reranking-tei:${RELEASE_VERSION}</p></li>
+<li><p>opea/vllm:${RELEASE_VERSION}</p></li>
+<li><p>opea/chatqna:${RELEASE_VERSION}</p></li>
+<li><p>opea/chatqna-ui:${RELEASE_VERSION}</p></li>
+<li><p>opea/llm-vllm:${RELEASE_VERSION}</p></li>
 </ul>
 </div>
 <input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-5">
 TGI</label><div class="sd-tab-content docutils">
 <ul class="simple">
-<li><p>opea/dataprep-redis:latest</p></li>
-<li><p>opea/embedding-tei:latest</p></li>
-<li><p>opea/retriever-redis:latest</p></li>
-<li><p>opea/reranking-tei:latest</p></li>
-<li><p>opea/chatqna:latest</p></li>
-<li><p>opea/chatqna-ui:latest</p></li>
-<li><p>opea/llm-tgi:latest</p></li>
+<li><p>opea/dataprep-redis:${RELEASE_VERSION}</p></li>
+<li><p>opea/embedding-tei:${RELEASE_VERSION}</p></li>
+<li><p>opea/retriever-redis:${RELEASE_VERSION}</p></li>
+<li><p>opea/reranking-tei:${RELEASE_VERSION}</p></li>
+<li><p>opea/chatqna:${RELEASE_VERSION}</p></li>
+<li><p>opea/chatqna-ui:${RELEASE_VERSION}</p></li>
+<li><p>opea/llm-tgi:${RELEASE_VERSION}</p></li>
 </ul>
 </div>
 </div>
@@ -2464,7 +2476,7 @@ vllm</label><div class="sd-tab-content docutils">
 </tr>
 <tr class="row-even"><td><p>LLM</p></td>
 <td><p>vLLM</p></td>
-<td><p>Intel/neural-chat-7b-v3-3</p></td>
+<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
 <td><p>OPEA Microservice</p></td>
 </tr>
 <tr class="row-odd"><td><p>UI</p></td>
@@ -2475,7 +2487,7 @@ vllm</label><div class="sd-tab-content docutils">
 </tbody>
 </table>
 <p>Tools and models mentioned in the table are configurable either through the
-environment variable or <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code> file.</p>
+environment variable or <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
 </div>
 <input id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-7">
@@ -2511,7 +2523,7 @@ TGI</label><div class="sd-tab-content docutils">
 </tr>
 <tr class="row-even"><td><p>LLM</p></td>
 <td><p>TGI</p></td>
-<td><p>Intel/neural-chat-7b-v3-3</p></td>
+<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
 <td><p>OPEA Microservice</p></td>
 </tr>
 <tr class="row-odd"><td><p>UI</p></td>
@@ -2525,9 +2537,10 @@ TGI</label><div class="sd-tab-content docutils">
 environment variable or <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
 </div>
 </div>
-<p>Set the necessary environment variables to setup the use case case</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
-<span class="n">source</span> <span class="o">./</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+<p>Set the necessary environment variables to setup the use case. If you want to swap
+out models, modify <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> before running.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon
+<span class="nb">source</span><span class="w"> </span>./set_env.sh
 </pre></div>
 </div>
 </section>
@@ -2540,16 +2553,14 @@ above mentioned services as containers.</p>
 <input checked="checked" id="sd-tab-item-8" name="sd-tab-set-4" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-8">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span>
-<span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-9" name="sd-tab-set-4" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-9">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span>
-<span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </div>
@@ -2562,11 +2573,11 @@ TGI</label><div class="sd-tab-content docutils">
 <input checked="checked" id="sd-tab-item-10" name="sd-tab-set-5" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-10">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Check the start up log by `docker compose -f ./compose_vllm.yaml logs`.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Check the start up log by `docker compose -f ./compose.yaml logs`.
 </pre></div>
 </div>
 <p>The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose_vllm.yaml up -d
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ubuntu@xeon-vm:~/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon$ docker compose -f ./compose.yaml up -d
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
@@ -2575,7 +2586,7 @@ WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to 
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_API_KEY&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;LANGCHAIN_TRACING_V2&quot; variable is not set. Defaulting to a blank string.
-WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml: `version` is obsolete
+WARN[0000] /home/ubuntu/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml: `version` is obsolete
 </pre></div>
 </div>
 </div>
@@ -2611,35 +2622,35 @@ To do a quick sanity check, try <code class="docutils literal notranslate"><span
 <input checked="checked" id="sd-tab-item-12" name="sd-tab-set-6" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-12">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                   <span class="n">COMMAND</span>                  <span class="n">CREATED</span>        <span class="n">STATUS</span>        <span class="n">PORTS</span>                                                                                  <span class="n">NAMES</span>
-<span class="mi">3</span><span class="n">b5fa9a722da</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="n">d3b37f3d1faa</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="p">:</span><span class="n">latest</span>                                     <span class="s2">&quot;python chatqna.py&quot;</span>      <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="n">b3e1388fa2ca</span>   <span class="n">opea</span><span class="o">/</span><span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python reranking_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">24</span><span class="n">a240f8ad1c</span>   <span class="n">opea</span><span class="o">/</span><span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                             <span class="s2">&quot;python retriever_re…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">9</span><span class="n">c0d2a2553e8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python embedding_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">24</span><span class="n">cae0db1a70</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">vllm</span><span class="p">:</span><span class="n">latest</span>                                    <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">llm</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">server</span>
-<span class="n">ea3986c3cf82</span>   <span class="n">opea</span><span class="o">/</span><span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                              <span class="s2">&quot;python prepare_doc_…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
-<span class="n">e10dd14497a8</span>   <span class="n">redis</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="mf">7.2.0</span><span class="o">-</span><span class="n">v9</span>                              <span class="s2">&quot;/entrypoint.sh&quot;</span>         <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">redis</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
-<span class="n">b98fa07a4f5c</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="p">:</span><span class="n">latest</span>                                        <span class="s2">&quot;python3 -m vllm.ent…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9009</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9009</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
-<span class="mi">79276</span><span class="n">cf45a47</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">embedding</span><span class="o">-</span><span class="n">server</span>
-<span class="mf">4943e5</span><span class="n">f6cd80</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">reranking</span><span class="o">-</span><span class="n">server</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                   </span>COMMAND<span class="w">                  </span>CREATED<span class="w">        </span>STATUS<span class="w">        </span>PORTS<span class="w">                                                                                  </span>NAMES
+3b5fa9a722da<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-xeon-ui-server
+d3b37f3d1faa<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-xeon-backend-server
+b3e1388fa2ca<span class="w">   </span>opea/reranking-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-xeon-server
+24a240f8ad1c<span class="w">   </span>opea/retriever-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
+9c0d2a2553e8<span class="w">   </span>opea/embedding-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
+24cae0db1a70<span class="w">   </span>opea/llm-vllm:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-vllm-server
+ea3986c3cf82<span class="w">   </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
+e10dd14497a8<span class="w">   </span>redis/redis-stack:7.2.0-v9<span class="w">                              </span><span class="s2">&quot;/entrypoint.sh&quot;</span><span class="w">         </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6379-&gt;6379/tcp,<span class="w"> </span>:::6379-&gt;6379/tcp,<span class="w"> </span><span class="m">0</span>.0.0.0:8001-&gt;8001/tcp,<span class="w"> </span>:::8001-&gt;8001/tcp<span class="w">   </span>redis-vector-db
+b98fa07a4f5c<span class="w">   </span>opea/vllm:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                        </span><span class="s2">&quot;python3 -m vllm.ent…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:9009-&gt;80/tcp,<span class="w"> </span>:::9009-&gt;80/tcp<span class="w">                                                  </span>vllm-service
+79276cf45a47<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.2<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6006-&gt;80/tcp,<span class="w"> </span>:::6006-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-server
+4943e5f6cd80<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.2<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8808-&gt;80/tcp,<span class="w"> </span>:::8808-&gt;80/tcp<span class="w">                                                  </span>tei-reranking-server
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-13" name="sd-tab-set-6" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-13">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                   <span class="n">COMMAND</span>                  <span class="n">CREATED</span>        <span class="n">STATUS</span>        <span class="n">PORTS</span>                                                                                  <span class="n">NAMES</span>
-<span class="mi">3</span><span class="n">b5fa9a722da</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="n">d3b37f3d1faa</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="p">:</span><span class="n">latest</span>                                     <span class="s2">&quot;python chatqna.py&quot;</span>      <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="n">b3e1388fa2ca</span>   <span class="n">opea</span><span class="o">/</span><span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python reranking_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">reranking</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">24</span><span class="n">a240f8ad1c</span>   <span class="n">opea</span><span class="o">/</span><span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                             <span class="s2">&quot;python retriever_re…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">9</span><span class="n">c0d2a2553e8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="p">:</span><span class="n">latest</span>                               <span class="s2">&quot;python embedding_te…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6000</span><span class="o">-&gt;</span><span class="mi">6000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">embedding</span><span class="o">-</span><span class="n">tei</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">24</span><span class="n">cae0db1a70</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">tgi</span><span class="p">:</span><span class="n">latest</span>                                    <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">llm</span><span class="o">-</span><span class="n">tgi</span><span class="o">-</span><span class="n">server</span>
-<span class="n">ea3986c3cf82</span>   <span class="n">opea</span><span class="o">/</span><span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="p">:</span><span class="n">latest</span>                              <span class="s2">&quot;python prepare_doc_…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">6007</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
-<span class="n">e10dd14497a8</span>   <span class="n">redis</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="mf">7.2.0</span><span class="o">-</span><span class="n">v9</span>                              <span class="s2">&quot;/entrypoint.sh&quot;</span>         <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">redis</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
-<span class="mi">79276</span><span class="n">cf45a47</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">embedding</span><span class="o">-</span><span class="n">server</span>
-<span class="mf">4943e5</span><span class="n">f6cd80</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.2</span>   <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">32</span> <span class="n">hours</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">hours</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">reranking</span><span class="o">-</span><span class="n">server</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                   </span>COMMAND<span class="w">                  </span>CREATED<span class="w">        </span>STATUS<span class="w">        </span>PORTS<span class="w">                                                                                  </span>NAMES
+3b5fa9a722da<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                  </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-xeon-ui-server
+d3b37f3d1faa<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                     </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-xeon-backend-server
+b3e1388fa2ca<span class="w">   </span>opea/reranking-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python reranking_te…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8000-&gt;8000/tcp,<span class="w"> </span>:::8000-&gt;8000/tcp<span class="w">                                              </span>reranking-tei-xeon-server
+24a240f8ad1c<span class="w">   </span>opea/retriever-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                             </span><span class="s2">&quot;python retriever_re…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
+9c0d2a2553e8<span class="w">   </span>opea/embedding-tei:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                               </span><span class="s2">&quot;python embedding_te…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6000-&gt;6000/tcp,<span class="w"> </span>:::6000-&gt;6000/tcp<span class="w">                                              </span>embedding-tei-server
+24cae0db1a70<span class="w">   </span>opea/llm-tgi:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">                                              </span>llm-tgi-server
+ea3986c3cf82<span class="w">   </span>opea/dataprep-redis:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                              </span><span class="s2">&quot;python prepare_doc_…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6007-&gt;6007/tcp,<span class="w"> </span>:::6007-&gt;6007/tcp<span class="w">                                              </span>dataprep-redis-server
+e10dd14497a8<span class="w">   </span>redis/redis-stack:7.2.0-v9<span class="w">                              </span><span class="s2">&quot;/entrypoint.sh&quot;</span><span class="w">         </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6379-&gt;6379/tcp,<span class="w"> </span>:::6379-&gt;6379/tcp,<span class="w"> </span><span class="m">0</span>.0.0.0:8001-&gt;8001/tcp,<span class="w"> </span>:::8001-&gt;8001/tcp<span class="w">   </span>redis-vector-db
+79276cf45a47<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.2<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:6006-&gt;80/tcp,<span class="w"> </span>:::6006-&gt;80/tcp<span class="w">                                                  </span>tei-embedding-server
+4943e5f6cd80<span class="w">   </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.2<span class="w">   </span><span class="s2">&quot;text-embeddings-rou…&quot;</span><span class="w">   </span><span class="m">32</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>hours<span class="w">   </span><span class="m">0</span>.0.0.0:8808-&gt;80/tcp,<span class="w"> </span>:::8808-&gt;80/tcp<span class="w">                                                  </span>tei-reranking-server
 </pre></div>
 </div>
 </div>
@@ -2657,55 +2668,54 @@ the microservices deployed</p>
 commands. The dataprep microservice extracts the texts from variety of data
 sources, chunks the data, embeds each chunk using embedding microservice and
 store the embedded vectors in the redis vector database.</p>
-<p>Update Knowledge Base via Local File <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/retrievers/redis/data/nke-10k-2023.pdf">nke-10k-2023.pdf</a>. Or click <a class="reference external" href="https://raw.githubusercontent.com/opea-project/GenAIComps/main/comps/retrievers/redis/data/nke-10k-2023.pdf">here</a> to download the file via any web browser. Or run this command to get the file on a terminal.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">comps</span><span class="o">/</span><span class="n">retrievers</span><span class="o">/</span><span class="n">redis</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">nke</span><span class="o">-</span><span class="mi">10</span><span class="n">k</span><span class="o">-</span><span class="mf">2023.</span><span class="n">pdf</span>
+<p><code class="docutils literal notranslate"><span class="pre">nke-10k-2023.pdf</span></code> is Nike’s annual report on a form 10-K. Run this command to get the file on a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/opea-project/GenAIComps/blob/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf
 </pre></div>
 </div>
-<p>Upload:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
-     <span class="o">-</span><span class="n">F</span> <span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
+<p>Upload the file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by uploading a local file for processing.
 Update the file path according to your environment.</p>
 <p>Add Knowledge Base via HTTP Links:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep&quot;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: multipart/form-data&quot;</span> \
-     <span class="o">-</span><span class="n">F</span> <span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
 <p>Also, you are able to get the file list that you uploaded:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/get_file&quot;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 <p>To delete the file/link you uploaded you can use the following commands:</p>
 <section id="delete-link">
 <h4>Delete link<a class="headerlink" href="#delete-link" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The dataprep service will add a .txt postfix for link file</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The dataprep service will add a .txt postfix for link file</span>
 
-<span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
-     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="delete-file">
 <h4>Delete file<a class="headerlink" href="#delete-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
-     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="delete-all-uploaded-files-and-links">
 <h4>Delete all uploaded files and links<a class="headerlink" href="#delete-all-uploaded-files-and-links" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="s2">&quot;http://$</span><span class="si">{host_ip}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span> \
-     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span> \
-     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -2715,10 +2725,10 @@ Update the file path according to your environment.</p>
 <p>The TEI embedding service takes in a string as input, embeds the string into a
 vector of a specific length determined by the embedding model and returns this
 embedded vector.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl ${host_ip}:6006/embed \
-    -X POST \
-    -d &#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39; \
-    -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>In this example the embedding model used is “BAAI/bge-base-en-v1.5”, which has a
@@ -2731,10 +2741,10 @@ length 768.</p>
 input parameters, it takes in a string, embeds it into a vector using the TEI
 embedding service and pads other default parameters that are required for the
 retrieval microservice and returns it.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:6000/v1/embeddings\
-  -X POST \
-  -d &#39;{&quot;text&quot;:&quot;hello&quot;}&#39; \
-  -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6000/v1/embeddings<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;hello&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2746,13 +2756,12 @@ embedding model. Here we use the
 model EMBEDDING_MODEL_ID=”BAAI/bge-base-en-v1.5”, which vector size is 768.</p>
 <p>Check the vector dimension of your embedding model and set
 <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equal to it.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export your_embedding=$(python3 -c &quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;)
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
 
-curl http://${host_ip}:7000/v1/retrieval \
-  -X POST \
-  -d &quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:${your_embedding}}&quot; \
-  -H &#39;Content-Type: application/json&#39;
-
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>The output of the retriever microservice comprises of the a unique id for the
@@ -2760,8 +2769,7 @@ request, initial query or the input to the retrieval microservice, a list of top
 <code class="docutils literal notranslate"><span class="pre">n</span></code> retrieved documents relevant to the input query, and top_n where n refers to
 the number of documents to be returned.</p>
 <p>The output is retrieved text that relevant to the input data:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;27210945c7c6c054fa7355bdd4cde818&quot;</span><span class="p">,</span><span class="s2">&quot;retrieved_docs&quot;</span><span class="p">:[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;0c1dd04b31ab87a5468d65f98e33a9f6&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;Company: Nike. financial instruments are subject to master netting arrangements that allow for the offset of assets and liabilities in the event of default or early termination of the contract.</span><span class="se">\n</span><span class="s2">Any amounts of cash collateral received related to these instruments associated with the Company&#39;s credit-related contingent features are recorded in Cash and</span><span class="se">\n</span><span class="s2">equivalents and Accrued liabilities, the latter of which would further offset against the Company&#39;s derivative asset balance. Any amounts of cash collateral posted related</span><span class="se">\n</span><span class="s2">to these instruments associated with the Company&#39;s credit-related contingent features are recorded in Prepaid expenses and other current assets, which would further</span><span class="se">\n</span><span class="s2">offset against the Company&#39;s derivative liability balance. Cash collateral received or posted related to the Company&#39;s credit-related contingent features is presented in the</span><span class="se">\n</span><span class="s2">Cash provided by operations component of the Consolidated Statements of Cash Flows. The Company does not recognize amounts of non-cash collateral received, such</span><span class="se">\n</span><span class="s2">as securities, on the Consolidated Balance Sheets. For further information related to credit risk, refer to Note 12 — Risk Management and Derivatives.</span><span class="se">\n</span><span class="s2">2023 FORM 10-K 68Table of Contents</span><span class="se">\n</span><span class="s2">The following tables present information about the Company&#39;s derivative assets and liabilities measured at fair value on a recurring basis and indicate the level in the fair</span><span class="se">\n</span><span class="s2">value hierarchy in which the Company classifies the fair value measurement:</span><span class="se">\n</span><span class="s2">MAY 31, 2023</span><span class="se">\n</span><span class="s2">DERIVATIVE ASSETS</span><span class="se">\n</span><span class="s2">DERIVATIVE LIABILITIES&quot;</span><span class="p">},{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;1d742199fb1a86aa8c3f7bcd580d94af&quot;</span><span class="p">,</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">}</span>
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;27210945c7c6c054fa7355bdd4cde818&quot;</span>,<span class="s2">&quot;retrieved_docs&quot;</span>:<span class="o">[{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;0c1dd04b31ab87a5468d65f98e33a9f6&quot;</span>,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;Company: Nike. financial instruments are subject to master netting arrangements that allow for the offset of assets and liabilities in the event of default or early termination of the contract.\nAny amounts of cash collateral received related to these instruments associated with the Company&#39;s credit-related contingent features are recorded in Cash and\nequivalents and Accrued liabilities, the latter of which would further offset against the Company&#39;s derivative asset balance. Any amounts of cash collateral posted related\nto these instruments associated with the Company&#39;s credit-related contingent features are recorded in Prepaid expenses and other current assets, which would further\noffset against the Company&#39;s derivative liability balance. Cash collateral received or posted related to the Company&#39;s credit-related contingent features is presented in the\nCash provided by operations component of the Consolidated Statements of Cash Flows. The Company does not recognize amounts of non-cash collateral received, such\nas securities, on the Consolidated Balance Sheets. For further information related to credit risk, refer to Note 12 — Risk Management and Derivatives.\n2023 FORM 10-K 68Table of Contents\nThe following tables present information about the Company&#39;s derivative assets and liabilities measured at fair value on a recurring basis and indicate the level in the fair\nvalue hierarchy in which the Company classifies the fair value measurement:\nMAY 31, 2023\nDERIVATIVE ASSETS\nDERIVATIVE LIABILITIES&quot;</span><span class="o">}</span>,<span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;1d742199fb1a86aa8c3f7bcd580d94af&quot;</span>,<span class="s2">&quot;text&quot;</span>:<span class="w"> </span>...<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
@@ -2772,10 +2780,10 @@ service. It consumes the query and list of documents and returns the document
 index based on decreasing order of the similarity score. The document
 corresponding to the returned index with the highest score is the most relevant
 document for the input query.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8808/rerank \
-    -X POST \
-    -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39; \
-    -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8808/rerank<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>Output is:  <code class="docutils literal notranslate"><span class="pre">[{&quot;index&quot;:1,&quot;score&quot;:0.9988041},{&quot;index&quot;:0,&quot;score&quot;:0.022948774}]</span></code></p>
@@ -2784,11 +2792,11 @@ document for the input query.</p>
 <h3>Reranking Microservice<a class="headerlink" href="#reranking-microservice" title="Link to this heading">¶</a></h3>
 <p>The reranking microservice consumes the TEI Reranking service and pads the
 response with default parameters required for the llm microservice.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8000/v1/reranking\
-  -X POST \
-  -d &#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: \
-     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39; \
-  -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8000/v1/reranking<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: \</span>
+<span class="s1">     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>The input to the microservice is the <code class="docutils literal notranslate"><span class="pre">initial_query</span></code> and a list of retrieved
@@ -2796,16 +2804,15 @@ documents and it outputs the most relevant document to the initial query along
 with other default parameter such as temperature, <code class="docutils literal notranslate"><span class="pre">repetition_penalty</span></code>,
 <code class="docutils literal notranslate"><span class="pre">chat_template</span></code> and so on. We can also get top n documents by setting <code class="docutils literal notranslate"><span class="pre">top_n</span></code> as one
 of the input parameters. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8000/v1/reranking\
-  -X POST \
-  -d &#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot; ,&quot;top_n&quot;:2, &quot;retrieved_docs&quot;: \
-     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39; \
-  -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8000/v1/reranking<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot; ,&quot;top_n&quot;:2, &quot;retrieved_docs&quot;: \</span>
+<span class="s1">     [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>Here is the output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;e1eb0e44f56059fc01aa0334b1dac313&quot;</span><span class="p">,</span><span class="s2">&quot;query&quot;</span><span class="p">:</span><span class="s2">&quot;Human: Answer the question based only on the following context:</span><span class="se">\n</span><span class="s2">    Deep learning is...</span><span class="se">\n</span><span class="s2">    Question: What is Deep Learning?&quot;</span><span class="p">,</span><span class="s2">&quot;max_new_tokens&quot;</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="s2">&quot;top_k&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s2">&quot;top_p&quot;</span><span class="p">:</span><span class="mf">0.95</span><span class="p">,</span><span class="s2">&quot;typical_p&quot;</span><span class="p">:</span><span class="mf">0.95</span><span class="p">,</span><span class="s2">&quot;temperature&quot;</span><span class="p">:</span><span class="mf">0.01</span><span class="p">,</span><span class="s2">&quot;repetition_penalty&quot;</span><span class="p">:</span><span class="mf">1.03</span><span class="p">,</span><span class="s2">&quot;streaming&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;e1eb0e44f56059fc01aa0334b1dac313&quot;</span>,<span class="s2">&quot;query&quot;</span>:<span class="s2">&quot;Human: Answer the question based only on the following context:\n    Deep learning is...\n    Question: What is Deep Learning?&quot;</span>,<span class="s2">&quot;max_new_tokens&quot;</span>:1024,<span class="s2">&quot;top_k&quot;</span>:10,<span class="s2">&quot;top_p&quot;</span>:0.95,<span class="s2">&quot;typical_p&quot;</span>:0.95,<span class="s2">&quot;temperature&quot;</span>:0.01,<span class="s2">&quot;repetition_penalty&quot;</span>:1.03,<span class="s2">&quot;streaming&quot;</span>:true<span class="o">}</span>
 </pre></div>
 </div>
 <p>You may notice reranking microservice are with state (‘ID’ and other meta data),
@@ -2816,7 +2823,7 @@ while reranking service are not.</p>
 <p>In first startup, this service will take more time to download the model files.
 After it’s finished, the service will be ready.</p>
 <p>Try the command below to check whether the LLM serving is ready.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docker logs ${CONTAINER_ID} | grep Connected
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span><span class="si">${</span><span class="nv">CONTAINER_ID</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
 </pre></div>
 </div>
 <p>If the service is ready, you will get the response like below.</p>
@@ -2827,16 +2834,16 @@ After it’s finished, the service will be ready.</p>
 <input checked="checked" id="sd-tab-item-14" name="sd-tab-set-7" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-14">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9009/v1/completions \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, \
-     &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, \
-     &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, \</span>
+<span class="s1">     &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, \</span>
+<span class="s1">     &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;</span>
 </pre></div>
 </div>
 <p>vLLM service generates text for the input prompt. Here is the expected result
 from vllm:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span><span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.</span><span class="se">\n\n</span><span class="s2">Deep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="p">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.\n\nDeep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p><strong>NOTE</strong>: After launch the vLLM, it takes few minutes for vLLM server to load
@@ -2845,16 +2852,15 @@ LLM model and warm up.</p>
 <input id="sd-tab-item-15" name="sd-tab-set-7" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-15">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9009/generate \
-  -X POST \
-  -d &#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;, \
-     &quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39; \
-  -H &#39;Content-Type: application/json&#39;
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/generate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;, \</span>
+<span class="s1">     &quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>TGI service generate text for the input prompt. Here is the expected result from TGI:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span><span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.</span><span class="se">\n\n</span><span class="s2">Deep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="p">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;We have all heard the buzzword, but our understanding of it is still growing. It’s a sub-field of Machine Learning, and it’s the cornerstone of today’s Machine Learning breakthroughs.\n\nDeep Learning makes machines act more like humans through their ability to generalize from very large&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p><strong>NOTE</strong>: After launch the TGI, it takes few minutes for TGI server to load LLM model and warm up.</p>
@@ -2869,11 +2875,11 @@ to wait for them being ready in first startup.</p>
 <input checked="checked" id="sd-tab-item-16" name="sd-tab-set-8" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-16">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions \
- -X POST \
- -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_p&quot;:1,&quot;temperature&quot;:0.7,\
- &quot;frequency_penalty&quot;:0,&quot;presence_penalty&quot;:0, &quot;streaming&quot;:true}&#39; \
- -H &#39;Content-Type: application/json&#39;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_tokens&quot;:17,&quot;top_p&quot;:1,&quot;temperature&quot;:0.7,\</span>
+<span class="s1"> &quot;frequency_penalty&quot;:0,&quot;presence_penalty&quot;:0, &quot;streaming&quot;:true}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>For parameters in vLLM modes, can refer to <a class="reference external" href="https://huggingface.co/docs/huggingface_hub/package_reference/inference_client#huggingface_hub.InferenceClient.text_generation">LangChain VLLMOpenAI API</a></p>
@@ -2881,81 +2887,79 @@ vllm</label><div class="sd-tab-content docutils">
 <input id="sd-tab-item-17" name="sd-tab-set-8" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-17">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9000/v1/chat/completions\
-  -X POST \
-  -d &#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,\
-     &quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39; \
-  -H &#39;Content-Type: application/json&#39;
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&quot;max_new_tokens&quot;:17,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,\</span>
+<span class="s1">     &quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;streaming&quot;:true}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>For parameters in TGI modes, please refer to <a class="reference external" href="https://huggingface.co/docs/huggingface_hub/package_reference/inference_client#huggingface_hub.InferenceClient.text_generation">HuggingFace InferenceClient API</a> (except we rename “max_new_tokens” to “max_tokens”.)</p>
 </div>
 </div>
 <p>You will get generated text from LLM:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;Deep&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; is&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; a&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; subset&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; machine&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learning&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; that&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; uses&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; algorithms&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; to&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; learn&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; from&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; data&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>data:<span class="w"> </span>b<span class="s1">&#39;\n&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;\n&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;Deep&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; learning&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; is&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; a&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; subset&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; of&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; machine&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; learning&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; that&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; uses&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; algorithms&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; to&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; learn&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; from&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; data&#39;</span>
+data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 <section id="megaservice">
 <h3>MegaService<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:8888/v1/chatqna -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;
-     }&#39;
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">     }&#39;</span>
 </pre></div>
 </div>
 <p>Here is the output for your reference:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;An&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;swer&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;:&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; In&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; fiscal&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; &#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;0&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;3&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; N&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;I&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;KE&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;,&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Inc&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; achieved&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; record&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; Rev&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;en&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;ues&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; of&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; $&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;5&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;1&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;2&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39; billion&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;&lt;/s&gt;&#39;</span>
-<span class="n">data</span><span class="p">:</span> <span class="p">[</span><span class="n">DONE</span><span class="p">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>data:<span class="w"> </span>b<span class="s1">&#39;\n&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;An&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;swer&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;:&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; In&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; fiscal&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; &#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;2&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;0&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;2&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;3&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;,&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; N&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;I&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;KE&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;,&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; Inc&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;.&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; achieved&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; record&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; Rev&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;en&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;ues&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; of&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; $&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;5&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;1&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;.&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;2&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39; billion&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;.&#39;</span>
+data:<span class="w"> </span>b<span class="s1">&#39;&lt;/s&gt;&#39;</span>
+data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -2976,47 +2980,45 @@ TGI</label><div class="sd-tab-content docutils">
 <input checked="checked" id="sd-tab-item-18" name="sd-tab-set-9" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-18">
 vllm</label><div class="sd-tab-content docutils">
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose_vllm.yaml</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>vllm_service:
-    image: ${REGISTRY:-opea}/vllm:${TAG:-latest}
-    container_name: vllm-service
-    ports:
-      - &quot;9009:80&quot;
-    volumes:
-      - &quot;./data:/data&quot;
-    shm_size: 128g
-    environment:
-      no_proxy: ${no_proxy}
-      http_proxy: ${http_proxy}
-      https_proxy: ${https_proxy}
-      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
-      LLM_MODEL_ID: ${LLM_MODEL_ID}
-    command: --model $LLM_MODEL_ID --host 0.0.0.0 --port 80
-
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">vllm_service</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/vllm:${TAG:-latest}</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vllm-service</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;9009:80&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./data:/data&quot;</span>
+<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128g</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">no_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${no_proxy}</span>
+<span class="w">      </span><span class="nt">http_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${http_proxy}</span>
+<span class="w">      </span><span class="nt">https_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${https_proxy}</span>
+<span class="w">      </span><span class="nt">HF_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HUGGINGFACEHUB_API_TOKEN}</span>
+<span class="w">      </span><span class="nt">LLM_MODEL_ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${LLM_MODEL_ID}</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--model $LLM_MODEL_ID --host 0.0.0.0 --port 80</span>
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-19" name="sd-tab-set-9" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-19">
 TGI</label><div class="sd-tab-content docutils">
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./ChatQnA/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> tgi-service:
-    image: ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu
-    container_name: tgi-service
-    ports:
-      - &quot;9009:80&quot;
-    volumes:
-      - &quot;./data:/data&quot;
-    shm_size: 1g
-    environment:
-      no_proxy: ${no_proxy}
-      http_proxy: ${http_proxy}
-      https_proxy: ${https_proxy}
-      HF_TOKEN: ${HUGGINGFACEHUB_API_TOKEN}
-      HF_HUB_DISABLE_PROGRESS_BARS: 1
-      HF_HUB_ENABLE_HF_TRANSFER: 0
-    command: --model-id ${LLM_MODEL_ID} --cuda-graphs 0
-
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/compose_tgi.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nt">tgi-service</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tgi-service</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;9009:80&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./data:/data&quot;</span>
+<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">no_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${no_proxy}</span>
+<span class="w">      </span><span class="nt">http_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${http_proxy}</span>
+<span class="w">      </span><span class="nt">https_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${https_proxy}</span>
+<span class="w">      </span><span class="nt">HF_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HUGGINGFACEHUB_API_TOKEN}</span>
+<span class="w">      </span><span class="nt">HF_HUB_DISABLE_PROGRESS_BARS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">HF_HUB_ENABLE_HF_TRANSFER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--model-id ${LLM_MODEL_ID} --cuda-graphs 0</span>
 </pre></div>
 </div>
 </div>
@@ -3030,14 +3032,14 @@ compose.yaml is the mega service docker-compose configuration file.</p>
 <input checked="checked" id="sd-tab-item-20" name="sd-tab-set-10" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-20">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>logs
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-21" name="sd-tab-set-10" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-21">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">logs</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>logs
 </pre></div>
 </div>
 </div>
@@ -3048,37 +3050,37 @@ TGI</label><div class="sd-tab-content docutils">
 <section id="basic-ui">
 <h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
-    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
-    <span class="o">...</span>
-    <span class="n">ports</span><span class="p">:</span>
-      <span class="o">-</span> <span class="s2">&quot;80:5173&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-xeon-ui-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-ui:${TAG:-latest}</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5173:5173&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="conversational-ui">
 <h3>Conversational UI<a class="headerlink" href="#conversational-ui" title="Link to this heading">¶</a></h3>
-<p>To access the Conversational UI (react based) frontend, modify the UI service in the compose.yaml file. Replace chaqna-xeon-ui-server service with the chatqna-xeon-conversation-ui-server service as per the config below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>chaqna-xeon-conversation-ui-server:
-  image: opea/chatqna-conversation-ui:latest
-  container_name: chatqna-xeon-conversation-ui-server
-  environment:
-    - APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}
-    - APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}
-  ports:
-    - &quot;5174:80&quot;
-  depends_on:
-    - chaqna-xeon-backend-server
-  ipc: host
-  restart: always
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:${TAG:-latest}</span>
+<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-conversation-ui-server</span>
+<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:5174&quot;</span>
+<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chaqna-xeon-backend-server</span>
+<span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
 </pre></div>
 </div>
-<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the compose.yaml file as shown below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span>
-    <span class="n">image</span><span class="p">:</span> <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">conversation</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>
-    <span class="o">...</span>
-    <span class="n">ports</span><span class="p">:</span>
-      <span class="o">-</span> <span class="s2">&quot;80:80&quot;</span>
+<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:${TAG:-latest}</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -3089,14 +3091,14 @@ TGI</label><div class="sd-tab-content docutils">
 <input checked="checked" id="sd-tab-item-22" name="sd-tab-set-11" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-22">
 vllm</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
 </pre></div>
 </div>
 </div>
 <input id="sd-tab-item-23" name="sd-tab-set-11" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-23">
 TGI</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
 </pre></div>
 </div>
 </div>

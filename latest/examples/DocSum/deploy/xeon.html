@@ -2221,7 +2221,7 @@ example with OPEA comps to deploy using the TGI service. We will be showcasing h
 to build an e2e DocSum solution with the Intel/neural-chat-7b-v3-3 model, deployed on
 Intel® Xeon® Scalable processors. To quickly learn about OPEA in just 5 minutes and set
 up the required hardware and software, please follow the instructions in the
-<a class="reference external" href="https://opea-project.github.io/latest/getting-started/README.html">Getting Started</a>
+<a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a>
 section.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
@@ -2250,23 +2250,39 @@ choose from:</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>The first step is to clone the GenAIExamples and GenAIComps. GenAIComps are
-fundamental necessary components used to build examples you find in
-GenAIExamples and deploy them as microservices. Also, set the <code class="docutils literal notranslate"><span class="pre">TAG</span></code>
-environment variable with the version.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<p>The first step is to clone the GenAIExamples and GenAIComps projects. GenAIComps are
+fundamental necessary components used to build the examples you find in
+GenAIExamples and deploy them as microservices. Set an environment
+variable for the desired release version with the <strong>number only</strong>
+(i.e. 1.0, 1.1, etc) and checkout using the tag with that version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set workspace and navigate into it</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;path&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>
+
+<span class="c1"># Set desired release version - number only</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;insert-release-version&gt;
+
+<span class="c1"># GenAIComps</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="nb">cd</span><span class="w"> </span>GenAIComps
+git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1"># GenAIExamples</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span><span class="m">1</span>.2
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples
+git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <p>The example requires you to set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> to deploy the microservices on the endpoint enabled with ports. Set the host_ip env variable.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 </pre></div>
 </div>
 <p>Make sure to set up Proxies if you are behind a firewall.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export no_proxy=${your_no_proxy},$host_ip
-export http_proxy=${your_http_proxy}
-export https_proxy=${your_http_proxy}
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="nv">$host_ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
@@ -2291,13 +2307,14 @@ be pulled in from the docker hub.</p>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="Build" for="sd-tab-item-1">
 Build</label><div class="sd-tab-content docutils">
-<p>From within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder, check out the release tag.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIComps
-git checkout tags/v${TAG}
+<p>Follow the steps below to build the docker images from within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder.
+<strong>Note:</strong> For RELEASE_VERSIONS older than 1.0, you will need to add a ‘v’ in front
+of ${RELEASE_VERSION} to reference the correct image on dockerhub.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIComps
 </pre></div>
 </div>
 <h4 class="rubric" id="build-whisper-service">Build Whisper Service</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h3 class="rubric" id="build-mega-service-images">Build Mega Service images</h3>
@@ -2305,46 +2322,39 @@ git checkout tags/v${TAG}
 microservices, each performing varied tasks. The LLM, whisper microservice, and flow of data are defined in the <code class="docutils literal notranslate"><span class="pre">docsum.py</span></code> file. You can also add or
 remove microservices and customize the megaservice to suit your needs.</p>
 <p>Build the megaservice image for this use case.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>..
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples
-git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span>
-<span class="nb">cd</span><span class="w"> </span>DocSum
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <h3 class="rubric" id="build-the-ui-image">Build the UI Image</h3>
 <p>You can build 3 modes of UI</p>
 <p><em>Gradio UI</em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-gradio-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.gradio<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/ui
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-gradio-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.gradio<span class="w"> </span>.
 </pre></div>
 </div>
 <p><em>Svelte UI (Optional)</em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/ui
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 <p><em>React UI (Optional)</em>
 If you want a React-based frontend.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/docsum&quot;</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-react-ui:<span class="si">${</span><span class="nv">TAG</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w">  </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../..
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-react-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w">  </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
 </pre></div>
 </div>
 <h3 class="rubric" id="sanity-check">Sanity Check</h3>
 <p>Check if you have the following set of docker images by running the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code> before moving on to the next step.
-The tags are based on what you set the environment variable <code class="docutils literal notranslate"><span class="pre">TAG</span></code> to.</p>
+The tags are based on what you set the environment variable <code class="docutils literal notranslate"><span class="pre">RELEASE_VERSION</span></code> to.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:${TAG}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum:${TAG}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-gradio-ui:${TAG}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-ui:${TAG}</span></code> (optional)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-react-ui:${TAG}</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:${RELEASE_VERSION}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum:${RELEASE_VERSION}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-gradio-ui:${RELEASE_VERSION}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-ui:${RELEASE_VERSION}</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-react-ui:${RELEASE_VERSION}</span></code> (optional)</p></li>
 </ul>
 </div>
 </div>
@@ -2384,9 +2394,13 @@ environment variables or the <code class="docutils literal notranslate"><span cl
 <p>Set the necessary environment variables to set up the use case by running the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.
 Here is where the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is set, and you can change it to another model
 by specifying the HuggingFace model card ID.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose
+<p><strong>Note:</strong> If you wish to run the UI on a web browser on your laptop, you will need to modify <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> or <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> inside <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for the backend to properly receive data from the UI. Additionally, you will need to port-forward the port used for <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code>. Specifically, for DocSum, append the following to your ssh command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="w"> </span><span class="m">8888</span>:localhost:8888
+</pre></div>
+</div>
+<p>Run the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/docker_compose
 <span class="nb">source</span><span class="w"> </span>./set_env.sh
-<span class="nb">cd</span><span class="w"> </span>../../..
 </pre></div>
 </div>
 </section>
@@ -2395,7 +2409,7 @@ by specifying the HuggingFace model card ID.</p>
 <p>In this tutorial, we will be deploying via docker compose with the provided
 YAML file.  The docker compose instructions should start all the
 above-mentioned services as containers.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/intel/cpu/xeon
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
@@ -2427,12 +2441,12 @@ WARN[0000] The &quot;https_proxy&quot; variable is not set. Defaulting to a blan
 <p>The DocSum example starts 4 docker containers. Check that these docker
 containers are all running, i.e., all the containers  <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> are  <code class="docutils literal notranslate"><span class="pre">Up</span></code>.
 You can do this with the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> command.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                           <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>                       <span class="n">PORTS</span>                                       <span class="n">NAMES</span>
-<span class="mi">8</span><span class="n">ec82528bcbb</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="o">-</span><span class="n">gradio</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                    <span class="s2">&quot;python docsum_ui_gr…&quot;</span>   <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="n">e22344ed80d5</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                              <span class="s2">&quot;python docsum.py&quot;</span>       <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="n">bbb3c05a2878</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                          <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">llm</span><span class="o">-</span><span class="n">docsum</span><span class="o">-</span><span class="n">server</span>
-<span class="n">d20a8896d2a0</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>   <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">tgi</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">8213029</span><span class="n">b6b26</span>   <span class="n">opea</span><span class="o">/</span><span class="n">whisper</span><span class="p">:</span><span class="n">latest</span>                                             <span class="s2">&quot;python whisper_serv…&quot;</span>   <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">an</span> <span class="n">hour</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">whisper</span><span class="o">-</span><span class="n">server</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                           </span>COMMAND<span class="w">                  </span>CREATED<span class="w">             </span>STATUS<span class="w">                       </span>PORTS<span class="w">                                       </span>NAMES
+8ec82528bcbb<span class="w">   </span>opea/docsum-gradio-ui:latest<span class="w">                                    </span><span class="s2">&quot;python docsum_ui_gr…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">   </span>docsum-xeon-ui-server
+e22344ed80d5<span class="w">   </span>opea/docsum:latest<span class="w">                                              </span><span class="s2">&quot;python docsum.py&quot;</span><span class="w">       </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">   </span>docsum-xeon-backend-server
+bbb3c05a2878<span class="w">   </span>opea/llm-docsum:latest<span class="w">                                          </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">   </span>llm-docsum-server
+d20a8896d2a0<span class="w">   </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w">   </span><span class="s2">&quot;text-generation-lau…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8008-&gt;80/tcp,<span class="w"> </span>:::8008-&gt;80/tcp<span class="w">       </span>tgi-server
+8213029b6b26<span class="w">   </span>opea/whisper:latest<span class="w">                                             </span><span class="s2">&quot;python whisper_serv…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:7066-&gt;7066/tcp,<span class="w"> </span>:::7066-&gt;7066/tcp<span class="w">   </span>whisper-server
 </pre></div>
 </div>
 </section>
@@ -2453,8 +2467,7 @@ to validate each microservice and megaservice.</p>
 </pre></div>
 </div>
 <p>Here is the output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Deep learning is a sub-discipline of machine learning. Machine learning is&quot;</span><span class="p">}</span>
-
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;\nDeep learning is a sub-discipline of machine learning. Machine learning is&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
@@ -2477,7 +2490,7 @@ to validate each microservice and megaservice.</p>
 </pre></div>
 </div>
 <p>Here is the output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="p">{</span><span class="s2">&quot;asr_result&quot;</span><span class="p">:</span><span class="s2">&quot;you&quot;</span><span class="p">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="o">{</span><span class="s2">&quot;asr_result&quot;</span>:<span class="s2">&quot;you&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
@@ -2565,59 +2578,59 @@ Video</label><div class="sd-tab-content docutils">
 <section id="gradio-ui">
 <h3>Gradio UI<a class="headerlink" href="#gradio-ui" title="Link to this heading">¶</a></h3>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docsum-xeon-ui-server:
-<span class="w">  </span>image:<span class="w"> </span><span class="si">${</span><span class="nv">REGISTRY</span><span class="k">:-</span><span class="nv">opea</span><span class="si">}</span>/docsum-ui:<span class="si">${</span><span class="nv">TAG</span><span class="k">:-</span><span class="nv">latest</span><span class="si">}</span>
-<span class="w">  </span>...
-<span class="w">  </span>ports:
-<span class="w">  </span>-<span class="w"> </span><span class="s2">&quot;5173:5173&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-ui-server</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-ui:${TAG:-latest}</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5173:5173&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="svelte-ui-optional">
 <h3>Svelte UI (Optional)<a class="headerlink" href="#svelte-ui-optional" title="Link to this heading">¶</a></h3>
 <p>To access the Svelte-based frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">docsum-gradio-ui</span></code> service with the <code class="docutils literal notranslate"><span class="pre">docsum-ui</span></code> service as per the config below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docsum-ui:
-<span class="w">    </span>image:<span class="w"> </span><span class="si">${</span><span class="nv">REGISTRY</span><span class="k">:-</span><span class="nv">opea</span><span class="si">}</span>/docsum-ui:<span class="si">${</span><span class="nv">TAG</span><span class="k">:-</span><span class="nv">latest</span><span class="si">}</span>
-<span class="w">    </span>container_name:<span class="w"> </span>docsum-xeon-ui-server
-<span class="w">    </span>depends_on:
-<span class="w">    </span>-<span class="w"> </span>docsum-xeon-backend-server
-<span class="w">    </span>ports:
-<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;5173:5173&quot;</span>
-<span class="w">    </span>environment:
-<span class="w">    </span>-<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">DOC_BASE_URL</span><span class="o">=</span><span class="si">${</span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="si">}</span>
-<span class="w">    </span>ipc:<span class="w"> </span>host
-<span class="w">    </span>restart:<span class="w"> </span>always
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-ui</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-ui:${TAG:-latest}</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-ui-server</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-backend-server</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5173:5173&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_proxy=${no_proxy}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https_proxy=${https_proxy}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_proxy=${http_proxy}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DOC_BASE_URL=${BACKEND_SERVICE_ENDPOINT}</span>
+<span class="w">    </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
 </pre></div>
 </div>
 </section>
 <section id="react-based-ui-optional">
 <h3>React-Based UI (Optional)<a class="headerlink" href="#react-based-ui-optional" title="Link to this heading">¶</a></h3>
 <p>To access the React-based frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">docsum-gradio-ui</span></code> service with the <code class="docutils literal notranslate"><span class="pre">docsum-react-ui</span></code> service as per the config below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docsum-xeon-react-ui-server:
-<span class="w">    </span>image:<span class="w"> </span><span class="si">${</span><span class="nv">REGISTRY</span><span class="k">:-</span><span class="nv">opea</span><span class="si">}</span>/docsum-react-ui:<span class="si">${</span><span class="nv">TAG</span><span class="k">:-</span><span class="nv">latest</span><span class="si">}</span>
-<span class="w">    </span>container_name:<span class="w"> </span>docsum-xeon-react-ui-server
-<span class="w">    </span>depends_on:
-<span class="w">    </span>-<span class="w"> </span>docsum-xeon-backend-server
-<span class="w">    </span>ports:
-<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;5174:80&quot;</span>
-<span class="w">    </span>environment:
-<span class="w">    </span>-<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
-<span class="w">    </span>-<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span>
-<span class="w">    </span>ipc:<span class="w"> </span>host
-<span class="w">    </span>restart:<span class="w"> </span>always
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-react-ui-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-react-ui:${TAG:-latest}</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-react-ui-server</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-backend-server</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_proxy=${no_proxy}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https_proxy=${https_proxy}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_proxy=${http_proxy}</span>
+<span class="w">    </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
 </pre></div>
 </div>
 <p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docsum-xeon-react-ui-server:
-<span class="w">    </span>image:<span class="w"> </span><span class="si">${</span><span class="nv">REGISTRY</span><span class="k">:-</span><span class="nv">opea</span><span class="si">}</span>/docsum-react-ui:<span class="si">${</span><span class="nv">TAG</span><span class="k">:-</span><span class="nv">latest</span><span class="si">}</span>
-<span class="w">    </span>...
-<span class="w">    </span>ports:
-<span class="w">    </span>-<span class="w"> </span><span class="s2">&quot;80:80&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-react-ui-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-react-ui:${TAG:-latest}</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -2630,12 +2643,12 @@ Video</label><div class="sd-tab-content docutils">
 </div>
 <p>You can also check the overall logs with the following command, where the
 <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> is the megaservice docker-compose configuration file.</p>
-<p>Assuming you are still in this directory <code class="docutils literal notranslate"><span class="pre">GenAIExamples/DocSum/docker_compose/intel/cpu/xeon</span></code>,
+<p>Assuming you are still in this directory <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon</span></code>,
 run the following command to check the logs:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>logs
 </pre></div>
 </div>
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">./DocSum/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
+<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">tgi-server</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span>
 <span class="w">      </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tgi-server</span>
@@ -2667,7 +2680,7 @@ the newly selected model.</p>
 <section id="stop-the-services">
 <h2>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h2>
 <p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="n">down</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>down
 </pre></div>
 </div>
 </section>
