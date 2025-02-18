@@ -1343,7 +1343,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/TDX.html#getting-started">Getting Started</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../helm-charts/monitoring.html">Monitoring support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../helm-charts/monitoring.html">Observability for OPEA Workloads in Kubernetes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/monitoring.html#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/monitoring.html#introduction">Introduction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/monitoring.html#pre-conditions">Pre-conditions</a></li>
@@ -1369,6 +1369,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/common/chathistory-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/common/chathistory-usvc/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../helm-charts/common/chathistory-usvc/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../helm-charts/common/dashboard/README.html">Dashboards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../helm-charts/common/dashboard/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../helm-charts/common/dashboard/README.html#values">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../helm-charts/common/data-prep/README.html">data-prep</a><ul>
@@ -1592,12 +1597,12 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deploy/index.html#kubernetes-addons">Kubernetes Addons</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../kubernetes-addons/README.html">Deploy Kubernetes add-ons for OPEA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html">How-To Setup Observability for OPEA Workload in Kubernetes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#prepare">Prepare</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#setup-prometheus-grafana">1. Setup Prometheus &amp; Grafana</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#metrics-for-gaudi-hardware-v1-16-2">2. Metrics for Gaudi Hardware (v1.16.2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#metrics-for-opea-applications">3. Metrics for OPEA applications</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#metrics-for-pcm-intel-performance-counter-monitor">4. Metrics for PCM (Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html">Metrics / visualization add-ons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#pre-conditions">Pre-conditions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#device-metrics-for-gaudi-hw">Device metrics for Gaudi HW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#extra-metrics-for-opea-applications">Extra metrics for OPEA applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#cpu-mmetrics-from-pcm">CPU mmetrics from PCM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#importing-dashboards-to-grafana">Importing dashboards to Grafana</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../kubernetes-addons/Observability/README.html#more-dashboards">More dashboards</a></li>
 </ul>
 </li>
@@ -2461,7 +2466,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <p>The user management is done via Keycloak and the configuration steps look like this:</p>
 <ol class="arabic">
 <li><p>Create a new realm named <code class="docutils literal notranslate"><span class="pre">chatqna</span></code> within Keycloak.</p>
-<p><img alt="create realm" src="../../../_images/create_realm1.png" /></p>
+<p><img alt="create realm" src="../../../_images/create_realm.png" /></p>
 </li>
 <li><p>Create a new client called <code class="docutils literal notranslate"><span class="pre">chatqna</span></code> and set <code class="docutils literal notranslate"><span class="pre">Client</span> <span class="pre">authentication</span></code> to ‘On’. Set the value of <code class="docutils literal notranslate"><span class="pre">$URL</span></code> with “/* “ (e.g. “http://chatqna-ui.com:${INGRESS_PORT}/*”) in the <code class="docutils literal notranslate"><span class="pre">Valid</span> <span class="pre">redirect</span> <span class="pre">URIs</span></code> part. Note that <code class="docutils literal notranslate"><span class="pre">INGRESS_PORT</span></code> and <code class="docutils literal notranslate"><span class="pre">INGRESS_HOST</span></code> shall be exported following the guide <a class="reference external" href="https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports">here</a>. Under the Credentials tab you will now be able to locate <code class="docutils literal notranslate"><span class="pre">&lt;your</span> <span class="pre">client's</span> <span class="pre">secret&gt;</span></code>, which will be used in the oauth2-proxy configs.</p>
 <p><img alt="create client 1" src="../../../_images/create_client_1.png" /></p>

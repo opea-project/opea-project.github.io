@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monitoring support &mdash; OPEA™ 1.2 documentation</title>
+  <title>Observability for OPEA Workloads in Kubernetes &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -1343,7 +1343,7 @@
 <li class="toctree-l4"><a class="reference internal" href="TDX.html#getting-started">Getting Started</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Monitoring support</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Observability for OPEA Workloads in Kubernetes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pre-conditions">Pre-conditions</a></li>
@@ -1369,6 +1369,11 @@
 <li class="toctree-l4"><a class="reference internal" href="common/chathistory-usvc/README.html#option2-installing-the-chart-with-dependencies-automatically">(Option2): Installing the chart with dependencies automatically</a></li>
 <li class="toctree-l4"><a class="reference internal" href="common/chathistory-usvc/README.html#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="common/chathistory-usvc/README.html#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="common/dashboard/README.html">Dashboards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="common/dashboard/README.html#installing-the-chart">Installing the Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="common/dashboard/README.html#values">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="common/data-prep/README.html">data-prep</a><ul>
@@ -1592,12 +1597,12 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deploy/index.html#kubernetes-addons">Kubernetes Addons</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../kubernetes-addons/README.html">Deploy Kubernetes add-ons for OPEA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../kubernetes-addons/Observability/README.html">How-To Setup Observability for OPEA Workload in Kubernetes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#prepare">Prepare</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#setup-prometheus-grafana">1. Setup Prometheus &amp; Grafana</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#metrics-for-gaudi-hardware-v1-16-2">2. Metrics for Gaudi Hardware (v1.16.2)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#metrics-for-opea-applications">3. Metrics for OPEA applications</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#metrics-for-pcm-intel-performance-counter-monitor">4. Metrics for PCM (Intel® Performance Counter Monitor)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../kubernetes-addons/Observability/README.html">Metrics / visualization add-ons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#pre-conditions">Pre-conditions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#device-metrics-for-gaudi-hw">Device metrics for Gaudi HW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#extra-metrics-for-opea-applications">Extra metrics for OPEA applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#cpu-mmetrics-from-pcm">CPU mmetrics from PCM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#importing-dashboards-to-grafana">Importing dashboards to Grafana</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../kubernetes-addons/Observability/README.html#more-dashboards">More dashboards</a></li>
 </ul>
 </li>
@@ -2199,7 +2204,7 @@
   
      <li><a href="../../deploy/index.html">Deploying GenAI</a> &raquo;</li>
   
-  <li>Monitoring support</li>
+  <li>Observability for OPEA Workloads in Kubernetes</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/GenAIInfra/helm-charts/monitoring.md.txt" rel="nofollow"> View page source</a>
@@ -2219,39 +2224,46 @@
   
            <div itemprop="articleBody">
              
-  <section id="monitoring-support">
-<h1>Monitoring support<a class="headerlink" href="#monitoring-support" title="Link to this heading">¶</a></h1>
+  <section id="observability-for-opea-workloads-in-kubernetes">
+<h1>Observability for OPEA Workloads in Kubernetes<a class="headerlink" href="#observability-for-opea-workloads-in-kubernetes" title="Link to this heading">¶</a></h1>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#introduction"><span class="xref myst">Introduction</span></a></p></li>
 <li><p><a class="reference internal" href="#pre-conditions"><span class="xref myst">Pre-conditions</span></a></p>
 <ul>
-<li><p><a class="reference internal" href="#prometheus-install"><span class="xref myst">Prometheus install</span></a></p></li>
-<li><p><a class="reference internal" href="#helm-options"><span class="xref myst">Helm options</span></a></p></li>
+<li><p><a class="reference internal" href="#prometheus--grafana-install"><span class="xref myst">Prometheus + Grafana install</span></a></p></li>
+<li><p><a class="reference internal" href="#opea-helm-options"><span class="xref myst">OPEA Helm options</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#install"><span class="xref myst">Install</span></a></p></li>
+<li><p><a class="reference internal" href="#install"><span class="xref myst">Install</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#monitoring-support--grafana-access"><span class="xref myst">Monitoring support + Grafana access</span></a></p></li>
+<li><p><a class="reference internal" href="#dashboards"><span class="xref myst">Dashboards</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#verify"><span class="xref myst">Verify</span></a></p></li>
+<li><p><a class="reference internal" href="#dashboards"><span class="xref myst">Dashboards</span></a></p></li>
 </ul>
 </section>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>Monitoring provides service component usage metrics for <a class="reference external" href="https://prometheus.io/">Prometheus</a>,
-which can be visualized e.g. in <a class="reference external" href="https://grafana.com/">Grafana</a>.</p>
+<p>Helm chart <code class="docutils literal notranslate"><span class="pre">monitoring</span></code> option enables observability support for the OPEA workloads;
+<a class="reference external" href="https://prometheus.io/">Prometheus</a> metrics for the service components,
+and <a class="reference external" href="https://grafana.com/">Grafana</a> visualization for them.</p>
 <p>Scaling the services automatically based on their usage with <a class="reference internal" href="HPA.html"><span class="std std-doc">HPA</span></a> also relies on these metrics.</p>
-<p><a class="reference internal" href="../kubernetes-addons/Observability/README.html"><span class="std std-doc">Observability documentation</span></a>
+<p><a class="reference internal" href="../kubernetes-addons/Observability/README.html"><span class="std std-doc">Metrics / visualization add-ons</span></a>
 explains how to install additional monitoring for node and device metrics,
 and Grafana for visualizing those metrics.</p>
 </section>
 <section id="pre-conditions">
 <h2>Pre-conditions<a class="headerlink" href="#pre-conditions" title="Link to this heading">¶</a></h2>
-<section id="prometheus-install">
-<h3>Prometheus install<a class="headerlink" href="#prometheus-install" title="Link to this heading">¶</a></h3>
+<section id="prometheus-grafana-install">
+<h3>Prometheus + Grafana install<a class="headerlink" href="#prometheus-grafana-install" title="Link to this heading">¶</a></h3>
 <p>If cluster does not run <a class="reference external" href="https://github.com/prometheus-operator/kube-prometheus">Prometheus operator</a>
 yet, it SHOULD be be installed before enabling monitoring, e.g. by using a Helm chart for it:
 https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack</p>
-<p>To install (older version) of Prometheus:</p>
+<p>To install (older 55.x version) of Prometheus &amp; Grafana:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>prometheus-community<span class="w"> </span>https://prometheus-community.github.io/helm-charts
 <span class="gp">$ </span>helm<span class="w"> </span>repo<span class="w"> </span>update
 <span class="gp">$ </span><span class="nv">prom_ns</span><span class="o">=</span>monitoring<span class="w">  </span><span class="c1"># namespace for Prometheus</span>
@@ -2260,9 +2272,9 @@ https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-promet
 </pre></div>
 </div>
 </section>
-<section id="helm-options">
-<h3>Helm options<a class="headerlink" href="#helm-options" title="Link to this heading">¶</a></h3>
-<p>If Prometheus is installed under some other release name than <code class="docutils literal notranslate"><span class="pre">prometheus-stack</span></code>,
+<section id="opea-helm-options">
+<h3>OPEA Helm options<a class="headerlink" href="#opea-helm-options" title="Link to this heading">¶</a></h3>
+<p>If Prometheus &amp; Grafana are installed under some other release name than <code class="docutils literal notranslate"><span class="pre">prometheus-stack</span></code>,
 provide that as <code class="docutils literal notranslate"><span class="pre">global.prometheusRelease</span></code> value for the OPEA service Helm install,
 or in its <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> file. Otherwise Prometheus ignores the installed
 <code class="docutils literal notranslate"><span class="pre">serviceMonitor</span></code> objects.</p>
@@ -2270,7 +2282,34 @@ or in its <code class="docutils literal notranslate"><span class="pre">values.ya
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
-<p>Install Helm chart with <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">global.monitoring=true</span></code> option.</p>
+<section id="monitoring-support-grafana-access">
+<h3>Monitoring support + Grafana access<a class="headerlink" href="#monitoring-support-grafana-access" title="Link to this heading">¶</a></h3>
+<p>Install (e.g. ChatQnA) Helm chart with <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">global.monitoring=true</span></code> option.</p>
+<p>Use port-forward to access Grafana</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kubectl</span> <span class="n">port</span><span class="o">-</span><span class="n">forward</span> <span class="n">service</span><span class="o">/</span><span class="n">grafana</span> <span class="mi">3000</span><span class="p">:</span><span class="mi">80</span>
+</pre></div>
+</div>
+<p>Open your browser and navigate to http://localhost:3000. Use
+“admin/prom-operator” as the username and the password to login.</p>
+</section>
+<section id="dashboards">
+<h3>Dashboards<a class="headerlink" href="#dashboards" title="Link to this heading">¶</a></h3>
+<p>Currently, when <code class="docutils literal notranslate"><span class="pre">monitoring</span></code> option is enabled for ChatQnA and DocSum
+Helm charts, also OPEA application monitoring dashboard is installed:</p>
+<p><img alt="Metrics dashboard" src="../../_images/opea-metrics.png" /></p>
+<p>When <a class="reference internal" href="HPA.html"><span class="std std-doc">HPA scaling</span></a> is enabled, additional application scaling
+dashboard is installed:</p>
+<p><img alt="Scaling dashboard" src="../../_images/opea-scaling.png" /></p>
+<p>For other applications, if they were installed with <code class="docutils literal notranslate"><span class="pre">monitoring</span></code>
+option enabled, dashboard(s) for monitoring them can be installed
+afterwards, with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ helm install dashboards dashboards/ --set global.monitoring=true
+</pre></div>
+</div>
+<p>NOTE: dashboards will list available applications and their metrics
+only after they’ve processed their first token, because related
+metrics are not available before that!</p>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
