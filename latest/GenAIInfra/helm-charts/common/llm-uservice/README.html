@@ -2255,6 +2255,18 @@
 <span class="gp"># </span>install<span class="w"> </span>llm-textgen<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>backend
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEXTGEN_BACKEND</span><span class="o">=</span><span class="s2">&quot;vLLM&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
 
+<span class="gp"># </span>install<span class="w"> </span>llm-textgen<span class="w"> </span>with<span class="w"> </span>BEDROCK<span class="w"> </span>backend
+<span class="go">export LLM_MODEL_ID=&quot;insert-bedrock-model-id-here&quot;</span>
+
+<span class="gp"># </span>If<span class="w"> </span>you<span class="w"> </span>plan<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>an<span class="w"> </span>IAM<span class="w"> </span>User<span class="w"> </span>to<span class="w"> </span>provide<span class="w"> </span>AWS<span class="w"> </span>access
+<span class="go">export AWS_ACCESS_KEY_ID=&quot;insert-your-aws-access-key-here&quot;</span>
+<span class="go">export AWS_SECRET_ACCESS_KEY=&quot;insert-your-aws-secret-key-here&quot;</span>
+<span class="go">helm install llm-uservice . --set TEXTGEN_BACKEND=&quot;BEDROCK&quot; --set LLM_MODEL_ID=${LLM_MODEL_ID} --set bedrock.AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --set bedrock.AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} --wait</span>
+
+<span class="gp"># </span>If<span class="w"> </span>you<span class="w"> </span>plan<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>EKS<span class="w"> </span>Pod<span class="w"> </span>Identity<span class="w"> </span>or<span class="w"> </span>IAM<span class="w"> </span>Role<span class="w"> </span><span class="k">for</span><span class="w"> </span>Service<span class="w"> </span>Account<span class="w"> </span>to<span class="w"> </span>provide<span class="w"> </span>AWS<span class="w"> </span>access
+<span class="go">export SERVICE_ACCOUNT_NAME=&quot;insert-service-account-name&quot;</span>
+<span class="go">helm install llm-uservice . --set TEXTGEN_BACKEND=&quot;BEDROCK&quot; --set LLM_MODEL_ID=${LLM_MODEL_ID} --set bedrock.AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --set serviceAccount.create=true --set serviceAccount.name=${SERVICE_ACCOUNT_NAME} --wait</span>
+
 <span class="gp"># </span>install<span class="w"> </span>llm-docsum<span class="w"> </span>with<span class="w"> </span>TGI<span class="w"> </span>backend
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-docsum&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">DOCSUM_BACKEND</span><span class="o">=</span><span class="s2">&quot;TGI&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_INPUT_TOKENS</span><span class="o">=</span><span class="m">2048</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">MAX_TOTAL_TOKENS</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
 
@@ -2277,7 +2289,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="k">for</span><span class="w"> </span>llm-textgen<span class="w"> </span>service
 <span class="go">curl http://localhost:9000/v1/chat/completions \</span>
 <span class="go">  -X POST \</span>
-<span class="go">  -d d &#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17}&#39; \</span>
+<span class="go">  -d &#39;{&quot;model&quot;: &quot;&#39;${LLM_MODEL_ID}&#39;&quot;, &quot;messages&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17}&#39; \</span>
 <span class="go">  -H &#39;Content-Type: application/json&#39;</span>
 
 <span class="gp"># </span><span class="k">for</span><span class="w"> </span>llm-docsum<span class="w"> </span>service
@@ -2328,7 +2340,7 @@
 <tr class="row-even"><td><p>TEXTGEN_BACKEND</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;TGI&quot;</span></code></p></td>
-<td><p>backend inference engine, only valid for llm-textgen image, one of “TGI”, “vLLM”</p></td>
+<td><p>backend inference engine, only valid for llm-textgen image, one of “TGI”, “vLLM”, “BEDROCK”</p></td>
 </tr>
 <tr class="row-odd"><td><p>DOCSUM_BACKEND</p></td>
 <td><p>string</p></td>
@@ -2344,6 +2356,21 @@
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>Service usage metrics</p></td>
+</tr>
+<tr class="row-even"><td><p>bedrock.BEDROCK_REGION</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;us-east-1&quot;</span></code></p></td>
+<td><p>The AWS Region to use when accessing the Bedrock service</p></td>
+</tr>
+<tr class="row-odd"><td><p>bedrock.AWS_ACCESS_KEY_ID</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>The AWS Access Key to use when authenticating with the Bedrock service. If set, bedrock.AWS_SECRET_ACCESS_KEY must also be set</p></td>
+</tr>
+<tr class="row-even"><td><p>bedrock.AWS_SECRET_ACCESS_KEY</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>The AWS Secret Access Key to use when authenticating with the Bedrock service. If set, bedrock.AWS_ACCESS_KEY_ID must also be set</p></td>
 </tr>
 </tbody>
 </table>
