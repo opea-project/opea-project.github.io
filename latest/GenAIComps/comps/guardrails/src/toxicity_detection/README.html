@@ -771,6 +771,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../prompt_injection/README.html#consume-prompt-injection-detection-service">🚀 Consume Prompt Injection Detection Service</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Toxicity Detection Microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-setup">Environment Setup</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#get-status-of-microservice">🚀3. Get Status of Microservice</a></li>
@@ -2228,15 +2229,77 @@
 <h1>Toxicity Detection Microservice<a class="headerlink" href="#toxicity-detection-microservice" title="Link to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>Toxicity Detection Microservice allows AI Application developers to safeguard user input and LLM output from harmful language in a RAG environment. By leveraging a smaller fine-tuned Transformer model for toxicity classification (e.g. DistilledBERT, RoBERTa, etc.), we maintain a lightweight guardrails microservice without significantly sacrificing performance making it readily deployable on both Intel Gaudi and Xeon.</p>
-<p>This microservice uses <a class="reference external" href="https://huggingface.co/Intel/toxic-prompt-roberta"><code class="docutils literal notranslate"><span class="pre">Intel/toxic-prompt-roberta</span></code></a> that was fine-tuned on Gaudi2 with ToxicChat and Jigsaw Unintended Bias datasets.</p>
-<p>Toxicity is defined as rude, disrespectful, or unreasonable language likely to make someone leave a conversation. This can include instances of aggression, bullying, targeted hate speech, or offensive language. For more information on labels see <a class="reference external" href="http://kaggle.com/c/jigsaw-toxic-comment-classification-challenge">Jigsaw Toxic Comment Classification Challenge</a>.</p>
+<p>Toxicity Detection Microservice allows AI Application developers to safeguard user input and LLM output from harmful language in a RAG environment. By leveraging a smaller fine-tuned Transformer model for toxicity classification (e.g. DistillBERT, RoBERTa, etc.), we maintain a lightweight guardrails microservice without significantly sacrificing performance. This <a class="reference external" href="https://huggingface.co/blog/daniel-de-leon/toxic-prompt-roberta">article</a> shows how the small language model (SLM) used in this microservice performs as good, if not better, than some of the most popular decoder LLM guardrails. This microservice uses <a class="reference external" href="https://huggingface.co/Intel/toxic-prompt-roberta"><code class="docutils literal notranslate"><span class="pre">Intel/toxic-prompt-roberta</span></code></a> that was fine-tuned on Gaudi2 with ToxicChat and Jigsaw Unintended Bias datasets.</p>
+<p>In addition to showing promising toxic detection performance, the table below compares a <a class="reference external" href="https://github.com/locustio/locust">locust</a> stress test on this microservice and the <a class="reference internal" href="../guardrails/README.html#LlamaGuard"><span class="std std-ref">LlamaGuard microservice</span></a>. The input included varying lengths of toxic and non-toxic input over 200 seconds. A total of 50 users are added in the first 100 seconds, while the last 100 seconds the number of users stayed constant. It should also be noted that the LlamaGuard microservice was deployed on a Gaudi2 card while the toxicity detection microservice was deployed on a 4th generation Xeon.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Microservice</p></th>
+<th class="head text-right"><p>Request Count</p></th>
+<th class="head text-right"><p>Median Response Time (ms)</p></th>
+<th class="head text-right"><p>Average Response Time (ms)</p></th>
+<th class="head text-right"><p>Min Response Time (ms)</p></th>
+<th class="head text-right"><p>Max Response Time (ms)</p></th>
+<th class="head text-right"><p>Requests/s</p></th>
+<th class="head text-right"><p>50%</p></th>
+<th class="head text-right"><p>95%</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>LG</p></td>
+<td class="text-right"><p>2099</p></td>
+<td class="text-right"><p>3300</p></td>
+<td class="text-right"><p>2718</p></td>
+<td class="text-right"><p>81</p></td>
+<td class="text-right"><p>4612</p></td>
+<td class="text-right"><p>10.5</p></td>
+<td class="text-right"><p>3300</p></td>
+<td class="text-right"><p>4600</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Toxicity Detection</p></td>
+<td class="text-right"><p>4547</p></td>
+<td class="text-right"><p>450</p></td>
+<td class="text-right"><p>796</p></td>
+<td class="text-right"><p>19</p></td>
+<td class="text-right"><p>10045</p></td>
+<td class="text-right"><p>22.7</p></td>
+<td class="text-right"><p>450</p></td>
+<td class="text-right"><p>2500</p></td>
+</tr>
+</tbody>
+</table>
+<p>This microservice is designed to detect toxicity, which is defined as rude, disrespectful, or unreasonable language likely to make someone leave a conversation. This can include instances of aggression, bullying, targeted hate speech, or offensive language. For more information on labels see <a class="reference external" href="http://kaggle.com/c/jigsaw-toxic-comment-classification-challenge">Jigsaw Toxic Comment Classification Challenge</a>.</p>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading">¶</a></h2>
+<section id="clone-opea-genaicomps-and-setup-environment">
+<h3>Clone OPEA GenAIComps and Setup Environment<a class="headerlink" href="#clone-opea-genaicomps-and-setup-environment" title="Link to this heading">¶</a></h3>
+<p>Clone this repository at your desired location and set an environment variable for easy setup and usage throughout the instructions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/GenAIComps
+</pre></div>
+</div>
+<p>Set the port that this service will use and the component name</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">TOXICITY_DETECTION_PORT</span><span class="o">=</span><span class="mi">9090</span>
+<span class="n">export</span> <span class="n">TOXICITY_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_NATIVE_TOXICITY&quot;</span>
+</pre></div>
+</div>
+<p>By default, this microservice uses <code class="docutils literal notranslate"><span class="pre">OPEA_NATIVE_TOXICITY</span></code> which invokes <a class="reference external" href="https://huggingface.co/Intel/toxic-prompt-roberta"><code class="docutils literal notranslate"><span class="pre">Intel/toxic-prompt-roberta</span></code></a>, locally.</p>
+<p>Alternatively, if you are using Prediction Guard, reset the following component name environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">TOXICITY_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;PREDICTIONGUARD_TOXICITY_DETECTION&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-environment-variables">
+<h3>Set environment variables<a class="headerlink" href="#set-environment-variables" title="Link to this heading">¶</a></h3>
+</section>
 </section>
 <section id="start-microservice-with-python-option-1">
 <h2>🚀1. Start Microservice with Python（Option 1）<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
 <section id="install-requirements">
 <h3>1.1 Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>/comps/guardrails/src/toxicity_detection
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
@@ -2249,27 +2312,42 @@
 </section>
 <section id="start-microservice-with-docker-option-2">
 <h2>🚀2. Start Microservice with Docker (Option 2)<a class="headerlink" href="#start-microservice-with-docker-option-2" title="Link to this heading">¶</a></h2>
-<section id="prepare-toxicity-detection-model">
-<h3>2.1 Prepare toxicity detection model<a class="headerlink" href="#prepare-toxicity-detection-model" title="Link to this heading">¶</a></h3>
-<p>export HUGGINGFACEHUB_API_TOKEN=${HP_TOKEN}</p>
-</section>
 <section id="build-docker-image">
-<h3>2.2 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../<span class="w"> </span><span class="c1"># back to GenAIComps/ folder</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/guardrails-toxicity-detection:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/guardrails/src/toxicity_detection/Dockerfile<span class="w"> </span>.
+<h3>2.1 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-t<span class="w"> </span>opea/guardrails-toxicity-detection:latest<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-f<span class="w"> </span>comps/guardrails/src/toxicity_detection/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<section id="run-docker-container-with-microservice">
-<h3>2.3 Run Docker Container with Microservice<a class="headerlink" href="#run-docker-container-with-microservice" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;guardrails-toxicity-detection-endpoint&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9091</span>:9091<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>opea/guardrails-toxicity-detection:latest
+<section id="a-run-docker-with-compose-option-a">
+<h3>2.2.a Run Docker with Compose (Option A)<a class="headerlink" href="#a-run-docker-with-compose-option-a" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>/comps/guardrails/deployment/docker_compose
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>guardrails-toxicity-detection-server
+</pre></div>
+</div>
+</section>
+<section id="b-run-docker-with-cli-option-b">
+<h3>2.2.b Run Docker with CLI (Option B)<a class="headerlink" href="#b-run-docker-with-cli-option-b" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;guardrails-toxicity-detection-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--runtime<span class="o">=</span>runc<span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">TOXICITY_DETECTION_PORT</span><span class="si">}</span>:9090<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>opea/guardrails-toxicity-detection:latest
 </pre></div>
 </div>
 </section>
 </section>
 <section id="get-status-of-microservice">
 <h2>🚀3. Get Status of Microservice<a class="headerlink" href="#get-status-of-microservice" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>guardrails-toxicity-detection-endpoint
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>guardrails-toxicity-detection-server
 </pre></div>
 </div>
 </section>
@@ -2277,9 +2355,9 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h2>🚀4. Consume Microservice Pre-LLM/Post-LLM<a class="headerlink" href="#consume-microservice-pre-llm-post-llm" title="Link to this heading">¶</a></h2>
 <p>Once microservice starts, users can use examples (bash or python) below to apply toxicity detection for both user’s query (Pre-LLM) or LLM’s response (Post-LLM)</p>
 <p><strong>Bash:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9091/v1/toxicity
-<span class="w">    </span>-X<span class="w"> </span>POST
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;How to poison my neighbor&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;s dog without being caught?&quot;}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="si">${</span><span class="nv">TOXICITY_DETECTION_PORT</span><span class="si">}</span>/v1/toxicity<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;How to poison my neighbor&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;s dog without being caught?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2290,9 +2368,11 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p><strong>Python Script:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="n">toxicity_detection_port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TOXICITY_DETECTION_PORT&quot;</span><span class="p">)</span>
 <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:9091/v1/toxicity&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="n">toxicty_detection_port</span><span class="si">}</span><span class="s2">/v1/toxicity&quot;</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;How to poison my neighbor&#39;&#39;&#39;s dog without being caught?&quot;</span><span class="p">}</span>
 
 
