@@ -2304,8 +2304,8 @@ Expert worker agents, such as RAG agent and SQL agent, can provide high-quality 
 </ol>
 </section>
 </section>
-<section id="deployment-with-docker">
-<h2>Deployment with docker<a class="headerlink" href="#deployment-with-docker" title="Link to this heading">¶</a></h2>
+<section id="deploy-with-docker">
+<h2>Deploy with docker<a class="headerlink" href="#deploy-with-docker" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Build agent docker image [Optional]</p></li>
 </ol>
@@ -2418,13 +2418,20 @@ bash launch_agent_service_openai.sh
 </li>
 </ol>
 </section>
+<section id="deploy-agentqna-ui">
+<h2>Deploy AgentQnA UI<a class="headerlink" href="#deploy-agentqna-ui" title="Link to this heading">¶</a></h2>
+<p>The AgentQnA UI can be deployed locally or using Docker.</p>
+<p>For detailed instructions on deploying AgentQnA UI, refer to the <a class="reference internal" href="ui/svelte/README.html"><span class="std std-doc">AgentQnA UI Guide</span></a>.</p>
+</section>
 <section id="deploy-using-helm-chart">
 <h2>Deploy using Helm Chart<a class="headerlink" href="#deploy-using-helm-chart" title="Link to this heading">¶</a></h2>
 <p>Refer to the <a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">AgentQnA helm chart</span></a> for instructions on deploying AgentQnA on Kubernetes.</p>
 </section>
 <section id="validate-services">
 <h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
-<p>First look at logs of the agent docker containers:</p>
+<ol class="arabic simple">
+<li><p>First look at logs of the agent docker containers:</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
 <span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
 
@@ -2437,29 +2444,19 @@ bash launch_agent_service_openai.sh
 </pre></div>
 </div>
 <p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
-<p>Second, validate worker RAG agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;messages&quot;: &quot;Michael Jackson song Thriller&quot;
-    }&#39;
+<ol class="arabic simple" start="2">
+<li><p>You can use python to validate the agent system</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># RAG worker agent</span>
+python<span class="w"> </span>tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;Tell me about Michael Jackson song Thriller&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9095</span>
+
+<span class="c1"># SQL agent</span>
+python<span class="w"> </span>tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;How many employees in company&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9096</span>
+
+<span class="c1"># supervisor agent: this will test a two-turn conversation</span>
+python<span class="w"> </span>tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9090</span>
 </pre></div>
 </div>
-<p>Third, validate worker SQL agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9096/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;messages&quot;: &quot;How many employees are in the company&quot;
-    }&#39;
-</pre></div>
-</div>
-<p>Finally, validate supervisor agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;
-    }&#39;
-</pre></div>
-</div>
-</section>
-<section id="deploy-agentqna-ui">
-<h2>Deploy AgentQnA UI<a class="headerlink" href="#deploy-agentqna-ui" title="Link to this heading">¶</a></h2>
-<p>The AgentQnA UI can be deployed locally or using Docker.</p>
-<p>For detailed instructions on deploying AgentQnA UI, refer to the <a class="reference internal" href="ui/svelte/README.html"><span class="std std-doc">AgentQnA UI Guide</span></a>.</p>
 </section>
 <section id="how-to-register-your-own-tools-with-agent">
 <h2>How to register your own tools with agent<a class="headerlink" href="#how-to-register-your-own-tools-with-agent" title="Link to this heading">¶</a></h2>
