@@ -2230,6 +2230,77 @@
   <section id="build-mega-service-of-chatqna-on-aipc">
 <h1>Build Mega Service of ChatQnA on AIPC<a class="headerlink" href="#build-mega-service-of-chatqna-on-aipc" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on AIPC. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
+<section id="quick-start">
+<h2>Quick Start:<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Set up the environment variables.</p></li>
+<li><p>Run Docker Compose.</p></li>
+<li><p>Consume the ChatQnA Service.</p></li>
+</ol>
+<section id="quick-start-1-set-up-environment-variable">
+<h3>Quick Start: 1. Set up Environment Variable<a class="headerlink" href="#quick-start-1-set-up-environment-variable" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/OPEA<span class="w"> </span>-p
+<span class="nb">cd</span><span class="w"> </span>~/OPEA
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/aipc
+</pre></div>
+</div>
+<ol class="arabic">
+<li><p>Set the required environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>,chatqna-aipc-backend-server,tei-embedding-service,retriever,tei-reranking-service,redis-vector-db,dataprep-redis-service,ollama-service
+</pre></div>
+</div>
+</li>
+<li><p>Set up other environment variables</p>
+<p>By default, llama3.2 is used for LLM serving, the default model can be changed to other LLM models. Please pick a <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/src/text-generation#validated-llm-models">validated llm models</a> from the table.<br />
+To change the default model defined in set_env.sh, overwrite it by exporting OLLAMA_MODEL to the new model or by modifying set_env.sh.<br />
+For example, change to using the following model.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OLLAMA_MODEL</span><span class="o">=</span><span class="s2">&quot;deepseek-r1:8b&quot;</span>
+</pre></div>
+</div>
+<p>to use the <a class="reference external" href="https://ollama.com/library/deepseek-r1:8b">DeepSeek-R1-Distill-Llama-8B model</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="quick-start-2-run-docker-compose">
+<h3>Quick Start: 2. Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>It will take several minutes to automatically download the docker images</p>
+<p>NB: You should build docker image from source by yourself if:</p>
+<ul class="simple">
+<li><p>You are developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
+<li><p>You can’t download the docker image.</p></li>
+<li><p>You want to use a specific version of Docker image.</p></li>
+</ul>
+<p>Please refer to <a class="reference internal" href="#%F0%9F%9A%80-build-docker-images"><span class="xref myst">‘Build Docker Images’</span></a> in below.</p>
+</section>
+<section id="quick-start-3-consume-the-chatqna-service">
+<h3>Quick Start:3. Consume the ChatQnA Service<a class="headerlink" href="#quick-start-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h3>
+<p>Once the services are up, open the following URL from your browser: http://{host_ip}:80.
+Enter Prompt like What is deep learning?</p>
+<p>Or if you prefer to try only on the localhost machine, then try</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">        &quot;messages&quot;: &quot;What is deep learning?&quot;</span>
+<span class="s1">    }&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it.</p>
