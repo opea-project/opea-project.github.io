@@ -2323,7 +2323,7 @@ Microsoft Azure</label><div class="sd-tab-content docutils">
 <li><p>Click Go to resource -&gt; Connect -&gt; Connect -&gt; SSH using Azure CLI. Accept the terms and then select “Configure + connect”</p></li>
 </ol>
 <blockquote>
-<div><p><strong>Note</strong>: If you have issues connecting to the instance with SSH, you could use instead Bastion with your username and password.</p>
+<div><p><strong>Note</strong>: If you have issues connecting to the instance with SSH, you could instead access the same via the Bastion host with your username and password.</p>
 </div></blockquote>
 </div>
 <input id="sd-tab-item-4" name="sd-tab-set-0" type="radio">
@@ -2339,12 +2339,50 @@ Oracle Cloud Infrastructure</label><div class="sd-tab-content docutils">
 <li><p>Specify a boot volume size of 100 GiB with 30 VPU units of performance.</p></li>
 <li><p>Click Create to launch the instance.</p></li>
 <li><p>Note the public IP address of the machine once its launched.</p></li>
-<li><p>Once the instance is launched, click on the subnet in the Primary VNIC section. Then click on the “Default Security List for vcn-xxxxxxxx-xxxx” , click on the “Add Ingress Rules”.  Add the following information:
-Source CIDR: 0.0.0.0/0<br />
-Source Port Range : All
-Destination Port Range : 80
-Click on “Save”</p></li>
+<li><p>Once the instance is launched, click on the subnet in the Primary VNIC section. Then click on the “Default Security List for vcn-xxxxxxxx-xxxx” , click on the “Add Ingress Rules”.  Add the following information:</p>
+<ul class="simple">
+<li><p>Source CIDR: <strong>0.0.0.0/0</strong></p></li>
+<li><p>Source Port Range: <strong>All</strong></p></li>
+<li><p>Destination Port Range: <strong>80</strong></p></li>
+<li><p>Click on “Save”</p></li>
+</ul>
+</li>
 <li><p>Connect using ssh (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;private_key&gt;</span>&#160; <span class="pre">ubuntu&#64;&lt;public_ip_address&gt;</span></code>).</p></li>
+</ol>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ITAC" for="sd-tab-item-5">
+Intel® Tiber™ AI Cloud</label><div class="sd-tab-content docutils">
+<ol class="arabic simple">
+<li><p>Sign up to create an account or log in to <a class="reference external" href="https://ai.cloud.intel.com/">Intel® Tiber™ AI Cloud</a>. Check if you have sufficient cloud credits and purchase or redeem a coupon if needed. Go to the “Compute” tab on the left and click on “Instances”. In the center of the screen, click on the “Launch instance” button.</p></li>
+<li><p>Select your instance configuration, instance type, and machine image which will be Ubuntu.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Note</strong>: It is recommended to use the <code class="docutils literal notranslate"><span class="pre">VM-SPR-LRG</span></code> powered by 4th Generation Intel® Xeon® Scalable processors with 64GB of memory and 64GB of disk or more if you wish to use a CPU to run an 8B-parameter model.</p>
+</div></blockquote>
+<ol class="arabic" start="3">
+<li><p>Fill out the rest of the form such as giving your instance a name and answering any additional quesitons.</p></li>
+<li><p>Add your public key for SSH. You can select a key you have previously uploaded or upload a key. The “Upload Key” button also provides instructions on how to create a new SSH key.</p></li>
+<li><p>Click “Launch instance” to start your machine.</p></li>
+<li><p>Go back to the “Compute” tab and under “Instances”, note down the private IP address of your new VM.</p></li>
+<li><p>If you wish to make the UI accessible to others, proceed to the next step to create a load balancer. Otherwise, skip to Step 10 which will explain how to connect to your VM with port forwarding.</p></li>
+<li><p>Create a load balancer. This can be found in Compute-&gt;Load Balancers. Click on “Launch Load Balancer”. Ignore any messages about signing up for access and close any pop-up windows if any. Fill out the form with the following info:</p>
+<ul class="simple">
+<li><p>Name: <strong>Name for your load balancer</strong></p></li>
+<li><p>Source IP: <strong>The private IP address of your VM in Step 6</strong></p></li>
+<li><p>Listener Port: <strong>80</strong></p></li>
+<li><p>Instance Port: <strong>80</strong></p></li>
+<li><p>Monitor Type: <strong>HTTP</strong></p></li>
+<li><p>Mode: <strong>Round Robin</strong></p></li>
+<li><p>Instances: <strong>Select the name of the VM you created</strong></p></li>
+</ul>
+<blockquote>
+<div><p><strong>Note</strong>: The port used is 80 because this is the NGINX port for the GenAI Examples.</p>
+</div></blockquote>
+<p>Click “Launch”.</p>
+</li>
+<li><p>Go back to Compute-&gt;Load Balancers to see your new load balancer. Note down the virtual IP address. This is what you will use to access the UI of your GenAI Example on a web browser.</p></li>
+<li><p>Connect to your VM using ssh and port forward port 80 if needed (<code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;private_key&gt;</span> <span class="pre">-J</span> <span class="pre">guest&#64;&lt;proxy_jump_ip_address&gt;</span> <span class="pre">-L</span> <span class="pre">80:localhost:80</span> <span class="pre">ubuntu&#64;&lt;private_ip_address_of_vm</span></code>). If you are using a load balancer, you do not need to include <code class="docutils literal notranslate"><span class="pre">-L</span> <span class="pre">80:localhost:80</span></code>.</p></li>
 </ol>
 </div>
 </div>
@@ -2358,9 +2396,11 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 </pre></div>
 </div>
 <p>Configure Docker to run as a non-root user by following these <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">instructions</a></p>
-<p>Clone the repo and navigate to ChatQnA</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
+<p>Clone the repo. It is recommended to checkout a specific release version (i.e. 1.0, 1.1, 1.2, etc):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;your-release-version&gt;
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples
+git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
 </pre></div>
 </div>
 <p>Set the required environment variables:</p>
@@ -2368,40 +2408,46 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 </pre></div>
 </div>
-<p>Set up other specific use-case environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/intel/cpu/xeon/
-<span class="nb">source</span><span class="w"> </span>set_env.sh
-<span class="nb">export</span><span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<p>Set up proxies if you are behind a firewall:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="nv">$host_ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>Now we can start the services</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<p>Set up other specific use-case environment variables in <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> before running it. For example, this is where you can change the model(s) to run with.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>ChatQnA/docker_compose/intel/cpu/xeon/
+<span class="nb">source</span><span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+<p>Now we can start the services:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <blockquote>
 <div><p><strong>Note</strong>: It takes a few minutes for the services to start. Check the logs for the services to ensure that ChatQnA is running before proceeding further.</p>
 </div></blockquote>
-<p>For example to check the logs for the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<p>For example to check the logs for the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>vllm-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Complete
 </pre></div>
 </div>
-<p>Proceed further <strong>only after</strong> the output shows <code class="docutils literal notranslate"><span class="pre">Connected</span></code> as shown:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span> <span class="o">|</span> <span class="mi">2024</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">18</span><span class="n">T22</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mf">18.973042</span><span class="n">Z</span> <span class="n">INFO</span> <span class="n">text_generation_router</span><span class="p">::</span><span class="n">server</span><span class="p">:</span> <span class="n">router</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">rs</span><span class="p">:</span><span class="mi">2311</span><span class="p">:</span> <span class="n">Connected</span>
+<p>Proceed further <strong>only after</strong> the output shows <code class="docutils literal notranslate"><span class="pre">Application</span> <span class="pre">startup</span> <span class="pre">complete.</span></code> as shown:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>INFO:<span class="w">     </span>Started<span class="w"> </span>server<span class="w"> </span>process<span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="o">]</span>
+INFO:<span class="w">     </span>Waiting<span class="w"> </span><span class="k">for</span><span class="w"> </span>application<span class="w"> </span>startup.
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
+INFO:<span class="w">     </span>Uvicorn<span class="w"> </span>running<span class="w"> </span>on<span class="w"> </span>http://0.0.0.0:80<span class="w"> </span><span class="o">(</span>Press<span class="w"> </span>CTRL+C<span class="w"> </span>to<span class="w"> </span>quit<span class="o">)</span>
 </pre></div>
 </div>
-<p>Run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> as an additional check to verify that all the services are running as shown:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>| CONTAINER ID | IMAGE                                                                  | COMMAND                | CREATED      | STATUS      | PORTS                                                                                    | NAMES                        |
-|--------------|------------------------------------------------------------------------|------------------------|--------------|-------------|------------------------------------------------------------------------------------------|------------------------------|
-| 3a65ff9e16bd | opea/nginx:latest                                                      | `/docker-entrypoint.\…`| 14 hours ago | Up 14 hours | 0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp                                                        | chatqna-xeon-nginx-server    |
-| 7563b2ee1cd9 | opea/chatqna-ui:latest                                                 | `docker-entrypoint.s\…`| 14 hours ago | Up 14 hours | 0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                                | chatqna-xeon-ui-server       |
-| 9ea57a660cd6 | opea/chatqna:latest                                                    | `python chatqna.py`    | 14 hours ago | Up 14 hours | 0.0.0.0:8888-&gt;8888/tcp, :::8888-&gt;8888/tcp                                                | chatqna-xeon-backend-server  |
-| 451bacaac3e6 | opea/retriever-redis:latest                                            | `python retriever_re\…`| 14 hours ago | Up 14 hours | 0.0.0.0:7000-&gt;7000/tcp, :::7000-&gt;7000/tcp                                                | retriever-redis-server       |
-| c1f952ef5c08 | opea/dataprep-redis:latest                                             | `python prepare_doc_\…`| 14 hours ago | Up 14 hours | 0.0.0.0:6007-&gt;6007/tcp, :::6007-&gt;6007/tcp                                                | dataprep-redis-server        |
-| 2a874ed8ce6f | redis/redis-stack:7.2.0-v9                                             | `/entrypoint.sh`       | 14 hours ago | Up 14 hours | 0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp     | redis-vector-db              |
-| ac7b62306eb8 | ghcr.io/huggingface/text-embeddings-inference:cpu-1.5                  | `text-embeddings-rou\…`| 14 hours ago | Up 14 hours | 0.0.0.0:8808-&gt;80/tcp, [::]:8808-&gt;80/tcp                                                  | tei-reranking-server         |
-| 521cc7faa00e | ghcr.io/huggingface/text-generation-inference:sha-e4201f4-intel-cpu    | `text-generation-lau\…`| 14 hours ago | Up 14 hours | 0.0.0.0:9009-&gt;80/tcp, [::]:9009-&gt;80/tcp                                                  | tgi-service                  |
-| 9faf553d3939 | ghcr.io/huggingface/text-embeddings-inference:cpu-1.5                  | `text-embeddings-rou\…`| 14 hours ago | Up 14 hours | 0.0.0.0:6006-&gt;80/tcp, [::]:6006-&gt;80/tcp                                                  | tei-embedding-server         |
-
+<p>Run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> as an additional check to verify that all the services are running as shown. Notice the version of the docker images matches the RELEASE_VERSION you specified.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">|</span><span class="w"> </span>CONTAINER<span class="w"> </span>ID<span class="w"> </span><span class="p">|</span><span class="w"> </span>IMAGE<span class="w">                                                 </span><span class="p">|</span><span class="w"> </span>COMMAND<span class="w">                 </span><span class="p">|</span><span class="w"> </span>CREATED<span class="w">     </span><span class="p">|</span><span class="w"> </span>STATUS<span class="w">     </span><span class="p">|</span><span class="w"> </span>PORTS<span class="w">                                                                                 </span><span class="p">|</span><span class="w"> </span>NAMES<span class="w">                        </span><span class="p">|</span>
+<span class="p">|</span>--------------<span class="p">|</span>--------------------------------------------------------<span class="p">|</span>------------------------<span class="p">|</span>--------------<span class="p">|</span>-------------<span class="p">|</span>------------------------------------------------------------------------------------------<span class="p">|</span>------------------------------<span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>d992b34fda27<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/nginx:1.2<span class="w">                                         </span><span class="p">|</span><span class="w"> </span><span class="s2">&quot;/docker-entrypoint.…&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:80-&gt;80/tcp,<span class="w"> </span>:::80-&gt;80/tcp<span class="w">                                                     </span><span class="p">|</span><span class="w"> </span>chatqna-xeon-nginx-server<span class="w">    </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>2d297d595650<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/chatqna-ui:1.2<span class="w">                                    </span><span class="p">|</span><span class="w"> </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                             </span><span class="p">|</span><span class="w"> </span>chatqna-xeon-ui-server<span class="w">    </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>0b9b2be1feef<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/chatqna-without-rerank:1.2<span class="w">                        </span><span class="p">|</span><span class="w"> </span><span class="s2">&quot;python chatqna.py -…&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>days<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                             </span><span class="p">|</span><span class="w"> </span>chatqna-xeon-backend-server<span class="w">    </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>b64ba100723c<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/dataprep:1.2<span class="w">                                      </span><span class="p">|</span><span class="w"> </span><span class="s2">&quot;sh -c &#39;python </span><span class="k">$(</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>…<span class="s2">&quot; | 6 days ago | Up 6 days | 0.0.0.0:6007-&gt;5000/tcp, [::]:6007-&gt;5000/tcp                                             | dataprep-redis-server    |</span>
+<span class="s2">| a9b93207988d | opea/retriever:1.2                                     | &quot;</span>python<span class="w"> </span>opea_retriev…<span class="s2">&quot; | 6 days ago | Up 6 days | 0.0.0.0:7000-&gt;7000/tcp, :::7000-&gt;7000/tcp                                             | retriever-redis-server    |</span>
+<span class="s2">| 4bf653d83cba | redis/redis-stack:7.2.0-v9                             | &quot;</span>/entrypoint.sh<span class="s2">&quot;       | 6 days ago | Up 6 days | 0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp   | redis-vector-db    |</span>
+<span class="s2">| b2774012be67 | ghcr.io/huggingface/text-embeddings-inference:cpu-1.5  | &quot;</span>text-embeddings-rou…<span class="s2">&quot; | 6 days ago | Up 6 days | 0.0.0.0:6006-&gt;80/tcp, [::]:6006-&gt;80/tcp                                             | tei-embedding-server    |</span>
+<span class="s2">| 6407712b6f9b | opea/vllm:1.2                                          | &quot;</span>python3<span class="w"> </span>-m<span class="w"> </span>vllm.ent…<span class="s2">&quot; | 6 days ago | Up 6 days | 0.0.0.0:9009-&gt;80/tcp, [::]:9009-&gt;80/tcp                                             | vllm-service    |</span>
 </pre></div>
 </div>
 <section id="interact-with-chatqna">
@@ -2410,6 +2456,9 @@ chmod<span class="w"> </span>+x<span class="w"> </span>install_docker.sh
 <ul class="simple">
 <li><p>To view the ChatQnA interface, open a browser and navigate to the UI by inserting your public facing IP address in the following: `http://{public_ip}:80’.</p></li>
 </ul>
+<blockquote>
+<div><p><strong>Note:</strong> For users running on ITAC, open a browser to localhost:80 if you are using port forwarding OR the virtual IP address of your load balancer.</p>
+</div></blockquote>
 <p>We can go ahead and ask a sample question, say ‘What is OPEA?’.</p>
 <p>A snapshot of the interface looks as follows:</p>
 <p><img alt="Chat Interface" src="../_images/chat_ui_response1.png" /></p>
