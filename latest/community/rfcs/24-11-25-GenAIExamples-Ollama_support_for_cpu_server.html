@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>24-08-07 OPEA-001 OPEA GenAIStudio &mdash; OPEA™ 1.2 documentation</title>
+  <title>24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -25,11 +25,13 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=32c45995"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="24-08-20-OPEA-001-AI Gateway API" href="24-08-20-OPEA-001-AI_Gateway_API.html" />
-    <link rel="prev" title="24-08-02-OPEA-AIAvatarChatbot" href="24-08-02-OPEA-AIAvatarChatbot.html" /> 
+    <link rel="next" title="25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents" href="25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html" />
+    <link rel="prev" title="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA" href="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -2063,11 +2065,11 @@
 <li class="toctree-l4"><a class="reference internal" href="24-06-21-OPEA-001-Guardrails-Gateway.html">24-06-21-OPEA-001-Guardrails-Gateway</a></li>
 <li class="toctree-l4"><a class="reference internal" href="24-07-11-OPEA-Agent.html">24-07-11-OPEA-Agent</a></li>
 <li class="toctree-l4"><a class="reference internal" href="24-08-02-OPEA-AIAvatarChatbot.html">24-08-02-OPEA-AIAvatarChatbot</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">24-08-07 OPEA-001 OPEA GenAIStudio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="24-08-07-OPEA-GenAIStudio.html">24-08-07 OPEA-001 OPEA GenAIStudio</a></li>
 <li class="toctree-l4"><a class="reference internal" href="24-08-20-OPEA-001-AI_Gateway_API.html">24-08-20-OPEA-001-AI Gateway API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="24-08-21-GenAIExample-002-Edge_Craft_RAG.html">24-08-21-GenAIExample-002-Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.html">24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA</a></li>
-<li class="toctree-l4"><a class="reference internal" href="24-11-25-GenAIExamples-Ollama_support_for_cpu_server.html">24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html">25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../rfcs.html#rfc-template">RFC Template</a></li>
 </ul>
@@ -2211,10 +2213,10 @@
   
      <li><a href="../rfcs.html">Request for Comments (RFCs)</a> &raquo;</li>
   
-  <li>24-08-07 OPEA-001 OPEA GenAIStudio</li>
+  <li>24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/community/rfcs/24-08-07-OPEA-GenAIStudio.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/community/rfcs/24-11-25-GenAIExamples-Ollama_support_for_cpu_server.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -2231,240 +2233,214 @@
   
            <div itemprop="articleBody">
              
-  <section id="opea-001-opea-genaistudio">
-<h1>24-08-07 OPEA-001 OPEA GenAIStudio<a class="headerlink" href="#opea-001-opea-genaistudio" title="Link to this heading">¶</a></h1>
-<section id="author">
-<h2>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="https://github.com/OngSoonEe">ongsoonee</a>
-<a class="reference external" href="https://github.com/chinyixiang">chinyixiang</a></p>
+  <section id="genaiexamples-ollama-support-for-cpu-server">
+<h1>24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server<a class="headerlink" href="#genaiexamples-ollama-support-for-cpu-server" title="Link to this heading">¶</a></h1>
+<p>The AgentQnA workflow in GenAIExamples leverages large language models (LLMs) as agents to intelligently manage control flow within the pipeline. Currently, it depends on cloud-hosted, paid APIs for LLM services on the CPU server platform, which incurs significant costs and does not utilize the full computational capabilities of the CPU. This RFC proposes the integration of support for open-source small language models (SLMs) locally deployed on x86 CPU servers using Ollama, thereby enabling LLM computation locally on on-prem CPUs and reducing operational expenses.</p>
+<section id="author-s">
+<h2>Author(s)<a class="headerlink" href="#author-s" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/pbharti0831/">Pratool Bharti</a></p>
 </section>
 <section id="status">
 <h2>Status<a class="headerlink" href="#status" title="Link to this heading">¶</a></h2>
-<p>Under Review</p>
+<p><code class="docutils literal notranslate"><span class="pre">Under</span> <span class="pre">Review</span></code></p>
 </section>
-<section id="rfc-content">
-<h2>RFC Content<a class="headerlink" href="#rfc-content" title="Link to this heading">¶</a></h2>
 <section id="objective">
-<h3>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h3>
-<p>The purpose of this RFC is to propose the creation of GenAI Studio, a platform designed to facilitate the development of custom large language model (LLM) applications, leveraging insights from the playground experimentation phase. GenAI Studio will enable users to construct, evaluate, and benchmark their LLM applications through a user-friendly no-code/low-code interface. The platform also provide the capability to export the developed application as a ready-to-deploy package for immediate enterprise integration. This initiative aims to streamline the transition from concept to production, ensuring a seamless deployment process for day-0 enterprise applications.</p>
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
+<section id="problems-this-will-solve">
+<h3>Problems This Will Solve<a class="headerlink" href="#problems-this-will-solve" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Access to Open-source SLMs on CPU Servers</strong>: Enables the use of open-source SLMs through Ollama on x86 CPU servers. State-of-the-art open-source SLMs are suitable for less complex agent workflows. A critical task for agents is accurately invoking the correct tools for specific tasks. As demonstrated in the <a class="reference external" href="https://gorilla.cs.berkeley.edu/leaderboard.html">Berkeley Function-Calling Leaderboard</a>, Llama 70B and 8B models perform similarly in tool-calling tasks, indicating that smaller language models can effectively support agent workflows.</p></li>
+<li><p><strong>Cost Reduction</strong>: Eliminates the need for paid cloud-based API services by running open-source SLMs locally on-prem CPUs.</p></li>
+<li><p><strong>Data Privacy</strong>: Ensures data privacy by processing data locally.</p></li>
+<li><p><strong>Compute Efficiency</strong>: Leverages the computational power of x86 CPU servers for efficient LLM execution.</p></li>
+<li><p><strong>Lower Network Latency and Bandwidth Needs</strong>: By processing data locally, the reliance on external cloud services is minimized, resulting in reduced network latency and bandwidth usage. This ensures faster response times and more efficient data handling.</p></li>
+</ul>
+</section>
+<section id="goals">
+<h3>Goals<a class="headerlink" href="#goals" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Local Deployment</strong>: Enable local deployment of open-source SLMs on-prem x86 CPU servers.</p></li>
+<li><p><strong>Integration with Ollama</strong>: Seamless integration of Ollama framework to access open-source SLMs.</p></li>
+<li><p><strong>Maintain Functionality</strong>: Ensure the AgentQnA workflow continues to function effectively with the new setup.</p></li>
+<li><p><strong>Integration of popular serving framework</strong>: Integration of Ollama serving framework in AgentQnA workflow in OPEA.</p></li>
+</ul>
+</section>
+<section id="non-goals">
+<h3>Non-Goals<a class="headerlink" href="#non-goals" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>New Features</strong>: No new features will be added to the AgentQnA workflow beyond the support for local SLMs as an agent.</p></li>
+<li><p><strong>Support for Non-Xeon Platforms</strong>: This RFC is specific to x86 CPU servers and does not cover other hardware platforms.</p></li>
+</ul>
+</section>
 </section>
 <section id="motivation">
-<h3>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h3>
-<p>This RFC outlines the creation of the Enterprise GenAI Assembly Framework, a streamlined platform for OPEA users. The framework’s key goals include:</p>
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">¶</a></h2>
+<section id="slms-performance-on-cpu">
+<h3>SLMs Performance on CPU<a class="headerlink" href="#slms-performance-on-cpu" title="Link to this heading">¶</a></h3>
+<p>Open-source small language models (SLMs) are optimized to run efficiently on CPU servers, including Intel Xeon processors. These models are designed to balance performance and resource usage, making them suitable for deployment in environments where GPU resources are limited or unavailable. By leveraging the computational capabilities of x86  CPU servers, SLMs can achieve satisfactory performance for various agent tasks within the AgentQnA workflow. Given the right prompt, smaller Llama models are fairly accurate in tool calling which is an essential feature for agents.</p>
+</section>
+<section id="ollama-popularity-and-wide-range-of-models">
+<h3>Ollama Popularity and Wide Range of Models<a class="headerlink" href="#ollama-popularity-and-wide-range-of-models" title="Link to this heading">¶</a></h3>
+<p>Ollama provides a comprehensive set of libraries and tools to facilitate the deployment and management of open-source language models. These libraries are designed to integrate seamlessly with existing workflows, enabling developers to easily incorporate SLMs into their applications. Ollama’s model libraries support a wide range of open-source models, ensuring compatibility and ease of use for different use cases.</p>
+</section>
+<section id="ollama-vs-vllm">
+<h3>Ollama vs vLLM<a class="headerlink" href="#ollama-vs-vllm" title="Link to this heading">¶</a></h3>
+<p>VLLM is an optimized inference engine designed for high-throughput token generation and efficient memory utilization, making it suitable for large-scale AI deployments. Ollama is a lightweight and intuitive framework that facilitates the execution of open-source LLMs on local on-prem hardware. In terms of popularity, the <a class="reference external" href="https://github.com/vllm-project/vllm">vLLM</a> GitHub repository has 35K stars, while <a class="reference external" href="https://github.com/ollama/ollama">Ollama</a> has 114K stars.</p>
+<section id="key-features-of-ollama">
+<h4>Key Features of Ollama<a class="headerlink" href="#key-features-of-ollama" title="Link to this heading">¶</a></h4>
 <ul class="simple">
-<li><p>Assembly and Configuration: Simplify the process of assembling and configuring GenAI components, such as GenAIComps, with an interactive interface for crafting functional applications.</p></li>
-<li><p>Benchmarking and Evaluation: Perform benchmarking and evaluation on the application for tuning and optimization, including use of <a class="reference external" href="https://github.com/opea-project/GenAIEval">GenAIEval</a> facilities.</p></li>
-<li><p>Enterprise Deployment Package Creation: Provide tools to create ready-to-deploy Enterprise Packages, including integration of <a class="reference external" href="https://github.com/opea-project/GenAIInfra">GenAIInfra</a>.</p></li>
+<li><p><strong>Extensive Model Support</strong>: Ollama supports a variety of open-source large and small language models, including state-of-the-art models that are continuously updated. Additionally, it also hosts embedding and re-ranking models that are critical for RAG applications.</p></li>
+<li><p><strong>Ease of Integration</strong>: The libraries and tools provided by Ollama are designed to integrate smoothly with existing systems, reducing the complexity of adding new models to the workflow.</p></li>
+<li><p><strong>Scalability</strong>: Ollama’s tools are built to handle different scales of deployment, from small-scale local setups to larger, more complex environments.</p></li>
+<li><p><strong>Community and Documentation</strong>: Ollama has a strong community and extensive documentation, providing support and resources for developers to effectively use and troubleshoot the tools.</p></li>
 </ul>
-<p>The framework is designed to democratize development, evaluation, and deployment of GenAI applications for OPEA users, promoting innovation and operational efficiency in the enterprise AI landscape with OPEA.</p>
 </section>
-<section id="value-proposition">
-<h3>Value Proposition<a class="headerlink" href="#value-proposition" title="Link to this heading">¶</a></h3>
-<section id="current-approach">
-<h4>Current Approach<a class="headerlink" href="#current-approach" title="Link to this heading">¶</a></h4>
-<p><img alt="Current Approach of GenAI Solution for enterprise" src="https://github.com/user-attachments/assets/adb10f29-b506-46d6-abd3-ed5f70049bee" /></p>
-<p>Days/weeks before 1st working solution</p>
-</section>
-<section id="genai-studio-approach">
-<h4>GenAI Studio Approach<a class="headerlink" href="#genai-studio-approach" title="Link to this heading">¶</a></h4>
-<p><img alt="Proposed GenAIStudio Approach" src="https://github.com/user-attachments/assets/e0c59dd2-0ff5-4deb-9561-8cba4ab5defe" /></p>
-<p>A Day-0 solution that offers users a foundational skeleton, allowing them to focus on business use-cases rather than building the basic framework.</p>
+<section id="benefits-of-using-ollama">
+<h4>Benefits of Using Ollama<a class="headerlink" href="#benefits-of-using-ollama" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong>Flexibility</strong>: Developers can choose from a wide range of models to best fit their specific needs and use cases.</p></li>
+<li><p><strong>Cost Efficiency</strong>: By leveraging open-source models, organizations can reduce costs associated with proprietary solutions.</p></li>
+<li><p><strong>Performance</strong>: Ollama’s tools are optimized for performance, ensuring efficient execution of language models on Intel Xeon CPUs.</p></li>
+<li><p><strong>Security</strong>: Local deployment of models through Ollama enhances data security by keeping sensitive information within the organization’s infrastructure.</p></li>
+</ul>
+<p>By incorporating Ollama into the AgentQnA workflow, the project can leverage these benefits to enhance the overall performance, security, and cost-efficiency of the system.</p>
 </section>
 </section>
-<section id="persona">
-<h3>Persona<a class="headerlink" href="#persona" title="Link to this heading">¶</a></h3>
-<p>OPEA is a framework designed to streamline the automation of enterprise processes through a series of microservices. The GenAI Studio enhances OPEA by enabling users to develop, deploy, and optimize AI-driven solutions. This scenario demonstrates how different personas—OPEA Developers, Enterprise Users (DevOps), and End Users—can leverage the GenAI Studio to build and deploy enterprise-ready solutions efficiently.</p>
-<p>Scenarios:</p>
+<section id="open-source-models-are-getting-better">
+<h3>Open-source Models are Getting Better<a class="headerlink" href="#open-source-models-are-getting-better" title="Link to this heading">¶</a></h3>
+<p>The landscape of open-source language models is rapidly evolving, with continuous improvements in model architecture, training techniques, and performance. Recent advancements have led to the development of state-of-the-art (SOTA) open-source models that rival proprietary solutions in terms of accuracy and efficiency. By adopting these open-source models, the AgentQnA workflow can benefit from cutting-edge technology while maintaining flexibility and control over the deployment environment.</p>
+</section>
+<section id="cost-efficiency">
+<h3>Cost Efficiency<a class="headerlink" href="#cost-efficiency" title="Link to this heading">¶</a></h3>
+<p>By integrating open-source small language models (SLMs) through Ollama, organizations can significantly reduce costs associated with language model services. The reliance on paid APIs, such as those provided by OpenAI, can be eliminated, leading to substantial savings. Open-source models do not incur usage fees, making them a cost-effective alternative for deploying language models on Intel Xeon CPUs. Additionally, the local deployment of these models reduces the need for expensive cloud-based infrastructure, further lowering operational expenses. This cost efficiency allows organizations to allocate resources to other critical areas, enhancing overall productivity and innovation.</p>
+</section>
+<section id="enhanced-data-security">
+<h3>Enhanced Data Security<a class="headerlink" href="#enhanced-data-security" title="Link to this heading">¶</a></h3>
+<p>Processing data locally ensures that sensitive information remains secure and private.</p>
+</section>
+<section id="open-source-flexibility">
+<h3>Open-Source Flexibility<a class="headerlink" href="#open-source-flexibility" title="Link to this heading">¶</a></h3>
+<p>Open-source LLMs provide greater flexibility and customization options compared to proprietary solutions.</p>
+</section>
+</section>
+<section id="design-proposal">
+<h2>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h2>
+<p>The workflow for the proposed changes are as follows. As shown below, Ollama serving models will be added as LLM serving engine for the Xeon platform. This will work as an alternative for vLLM, TGI and OpenAI LLM engines. New change is highlighted in orange.</p>
+<div class="mermaid">
+            flowchart LR
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    %% Subgraphs %%
+    subgraph DocIndexRetriever[&quot;DocIndexRetriever MegaService&quot;]
+      direction TB
+      EM([Embedding MicroService]):::blue
+      RET([Retrieval MicroService]):::blue
+      RER([Rerank MicroService]):::blue
+    end
+    subgraph UserInput[&quot;User Input&quot;]
+        direction TB
+        a([User Input Query]):::orchid
+        Ingest([Ingest Data]):::orchid
+    end
+    subgraph LLMServices[&quot;LLM Services&quot;]
+      direction TB
+      LLM_ollama{{Ollama}}:::orange
+      LLM_tgi{{TGI}}:::blue
+      LLM_vllm{{vLLM}}:::blue
+      LLM_openai{{OpenAI}}:::blue
+    end
+    subgraph Legend
+        X([New LLM service]):::orange
+        Y([Input query]):::orchid
+        Z{{Existing serv./ Microserv.}}:::blue
+    end
+    AG_REACT([Agent MicroService - react]):::blue
+    AG_RAG([Agent MicroService - rag]):::blue
+    LLM_gen{{LLM Service}}
+    DP([Data Preparation MicroService]):::blue
+    TEI_RER{{Reranking Service}}
+    TEI_EM{{Embedding Service}}
+    VDB{{Vector DB}}
+    R_RET{{Retriever Service}}
+
+    %% Flow %%
+    a --&gt; AG_REACT
+    AG_REACT --&gt; AG_RAG
+    AG_RAG --&gt; DocIndexRetriever
+    EM --&gt; RET
+    RET --&gt; RER
+    Ingest --&gt; DP
+
+    AG_RAG &lt;--&gt; LLM_gen
+    LLM_gen &lt;--&gt; LLMServices
+    AG_REACT &lt;--&gt; LLM_gen
+    EM &lt;--&gt; TEI_EM
+    RET &lt;--&gt; R_RET
+    RER &lt;--&gt; TEI_RER
+
+    R_RET &lt;--&gt; VDB
+    DP &lt;--&gt; VDB
+        </div><p>The proposed design for Ollama serving support entails following changes:</p>
+<section id="ollama-serving-container">
+<h3>1. Ollama serving container:<a class="headerlink" href="#ollama-serving-container" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Models hosted in Ollama container</strong>: Build and run a container on Xeon platform that hosts Ollama models as an alternative LLM service engine. Hosted models can be accessed by Agent microservice at a given host ip and port.</p></li>
+</ul>
+</section>
+<section id="support-for-latest-open-source-slms-from-the-llama-family-and-deepseek">
+<h3>2. Support for latest open-source SLMs from the Llama family and DeepSeek:<a class="headerlink" href="#support-for-latest-open-source-slms-from-the-llama-family-and-deepseek" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Add Llama 3.1, 3.2, and DeepSeek-R1 small models for Xeon</strong>: Small language models (SLMs) from the Llama 3.1 and 3.2 model families, as well as the DeepSeek-R1 model, will be added and validated for the AgentQnA workflow.</p></li>
+</ul>
+</section>
+<section id="compatibility">
+<h3>3. Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h3>
+<p><strong>Compatibility with exisiting services</strong>: Added component will be compatible with the existing components, ensuring seamless integration with the current AgentQnA workflow. Ollama’s serving container will work alongside existing LLM services like vLLM, TGI, and OpenAI, maintaining the overall functionality and performance of the system.</p>
+</section>
+</section>
+<section id="use-case-stories">
+<h2>Use-case Stories<a class="headerlink" href="#use-case-stories" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Developer Persona</p>
+<li><p><strong>Data Privacy and Security</strong>:</p>
 <ul class="simple">
-<li><p>Objective: Develop and integrate GenAI Application for specific business use-case within OPEA microservice architecture.</p></li>
-<li><p>Use of the Studio:</p>
-<ul>
-<li><p>The OPEA Developer uses the GenAI Studio to create a GenAI model help enhances business use-case</p></li>
-<li><p>The Studio’s advanced development tools allow the developer to fine-tune the model based on enterprise-specific data, ensuring optimal performance.</p></li>
-<li><p>After development, the Studio automatically generates a ready-to-use enterprise deployment package that includes all necessary components, such as configurations and resource management tools, ensuring seamless integration with the existing OPEA infrastructure.</p></li>
-<li><p>This package is designed to be easily deployable at the customer’s site, minimizing the need for additional configuration and setup.</p></li>
+<li><p><strong>Scenario</strong>: A healthcare organization needs to process sensitive patient data for generating medical reports and insights.</p></li>
+<li><p><strong>Solution</strong>: By using Ollama service on-prem x86 server CPUs, the organization can run LLM agents locally, ensuring that sensitive patient data remains within their secure infrastructure. This preserves privacy and complies with data protection regulations.</p></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><p>Enterprise User Persona</p>
+<li><p><strong>Cost Efficiency</strong>:</p>
 <ul class="simple">
-<li><p>Objective: Optimize and deploy the GenAI application with OPEA microservices to meet specific enterprise needs.</p></li>
-<li><p>Use of the Studio:</p>
-<ul>
-<li><p>The enterprise user uses the GenAI Studio to test and optimize the deployment package generated.</p></li>
-<li><p>With the Studio’s benchmarking tools, they evaluate the AI model’s performance from both inference and compute perspectives, ensuring it meets the enterprise’s operational requirements.</p></li>
-<li><p>The Studio provides insights into resource allocation, helping DevOps fine-tune the deployment to achieve the best possible performance. Once optimized, the deployment package is easily launched, allowing the enterprise to immediately benefit from the AI enhancements.</p></li>
+<li><p><strong>Scenario</strong>: A startup is developing an AI-driven customer support system but has limited budget for cloud services.</p></li>
+<li><p><strong>Solution</strong>: Deploying Ollama service on-prem x86 CPU servers allows the startup to run LLM agents locally, reducing dependency on expensive cloud-based APIs like OpenAI, Anthropic, Gemini, etc. This significantly lowers operational costs and makes the solution more affordable.</p></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><p>End User Persona</p>
+<li><p><strong>Low Latency and High Performance</strong>:</p>
 <ul class="simple">
-<li><p>Objective: Implement and utilize the AI-enhanced OPEA solution for specific business tasks.</p></li>
-<li><p>Use of the Studio:</p>
-<ul>
-<li><p>The End User accesses the GenAI Studio to explore the ready-to-use deployment package provided by the DevOps team.</p></li>
-<li><p>The Studio offers tools to evaluate the solution’s performance in real-world scenarios, ensuring it aligns with the business’s objectives.</p></li>
-<li><p>With minimal setup, the End User can deploy the AI-enhanced solution in their environment, automating complex workflows and optimizing resource usage to achieve business goals more efficiently.</p></li>
+<li><p><strong>Scenario</strong>: A financial institution requires real-time analysis of market data to make quick trading decisions.</p></li>
+<li><p><strong>Solution</strong>: Running Ollama service locally on-prem CPU servers provides high computational power locally, enabling the institution to achieve low latency and high performance. This ensures timely and accurate analysis without the delays associated with cloud-based services.</p></li>
 </ul>
 </li>
+<li><p><strong>Scalability and Control</strong>:</p>
+<ul class="simple">
+<li><p><strong>Scenario</strong>: An enterprise wants to scale its AI capabilities across multiple departments while maintaining control over the infrastructure.</p></li>
+<li><p><strong>Solution</strong>: Deploying Ollama service on Intel Xeon CPUs enables the enterprise to scale LLM agents locally across various departments. This provides better control over the infrastructure and ensures consistent performance and reliability.</p></li>
+</ul>
+</li>
+<li><p><strong>Compliance with Regulations</strong>:</p>
+<ul class="simple">
+<li><p><strong>Scenario</strong>: A legal firm needs to process confidential client information while adhering to strict regulatory requirements.</p></li>
+<li><p><strong>Solution</strong>: Running the Ollama service locally ensures that all data processing occurs within the firm’s infrastructure, aiding in regulatory compliance and maintaining client confidentiality. This setup ensures that neither prompts nor any proprietary data stored in a vector database need to leave the enterprise.</p></li>
+</ul>
+</li>
+<li><p><strong>Enhanced Reliability</strong>:</p>
+<ul class="simple">
+<li><p><strong>Scenario</strong>: A manufacturing company relies on AI-driven predictive maintenance to avoid equipment downtime.</p></li>
+<li><p><strong>Solution</strong>: Running the Ollama service locally ensures that all data processing occurs within the firm’s infrastructure, aiding in regulatory compliance and maintaining client confidentiality. This setup ensures that neither prompts nor proprietary data inserted to a vector database need to leave the enterprise.</p></li>
 </ul>
 </li>
 </ol>
-<p>The Generative AI Studio empowers Developers, Enterprise User, and End Users to create, optimize, and deploy AI-driven enterprise solutions effortlessly. By providing tools to generate ready-to-use deployment packages and benchmark performance, the Studio ensures that AI solutions are not only powerful but also easy to deploy and maintain, making them highly effective for business applications.</p>
-</section>
-<section id="stragegy-and-scope-of-work">
-<h3>Stragegy and Scope of Work<a class="headerlink" href="#stragegy-and-scope-of-work" title="Link to this heading">¶</a></h3>
-<p>Not reinventing the wheel - leverage existing work from OPEA, open-source and EasyData foundation works.</p>
-<ul class="simple">
-<li><p>GMC on configuration/deploy</p></li>
-<li><p>Langflow/flowise.ai for app configuration</p></li>
-<li><p>Suites of performance evaluation (VictoriaMetric, OpenTelemetry (Otel), Tempo, Loki, Grafana)</p></li>
-<li><p>Istio for workload management</p></li>
-</ul>
-<p>Scope of model development/optimization</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Scope of Work</p></th>
-<th class="head"><p>Status</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Prompt engineering, RAG</p></td>
-<td><p>In scope</p></td>
-</tr>
-<tr class="row-odd"><td><p>Model Finetune</p></td>
-<td><p>Stretch Goal</p></td>
-</tr>
-<tr class="row-even"><td><p>Model Pre-train</p></td>
-<td><p>Out of Scope</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="genai-studio-high-level-architecture">
-<h3>GenAI Studio High Level Architecture<a class="headerlink" href="#genai-studio-high-level-architecture" title="Link to this heading">¶</a></h3>
-<p><img alt="OPEA GenAI Studio Architecture" src="https://github.com/user-attachments/assets/fa55aeae-158b-4035-8325-25821c24a27f" /></p>
-</section>
-<section id="design-proposal">
-<h3>Design Proposal<a class="headerlink" href="#design-proposal" title="Link to this heading">¶</a></h3>
-</section>
-<section id="design-space">
-<h3>Design Space<a class="headerlink" href="#design-space" title="Link to this heading">¶</a></h3>
-<p>Providing a interactive user interface for user to build, configure, test and generate final deployment package.
-User may utilize the yaml data file for creation and modification of studio project, as an alternate to GUI.</p>
-<section id="part-1-application-build-and-configuration">
-<h4>Part 1: Application Build and Configuration<a class="headerlink" href="#part-1-application-build-and-configuration" title="Link to this heading">¶</a></h4>
-<p>User to build GenAI application with configuration, such as</p>
-<ul class="simple">
-<li><p>model selection</p></li>
-<li><p>model parameter setting (temp, top-p, top-k, max response)</p></li>
-<li><p>system instruction</p></li>
-</ul>
-<p>Provides 2 mode of configuration</p>
-<ul class="simple">
-<li><p>Wizard Mode: User is guided through step-by-step process to create an application</p>
-<ul>
-<li><p><img alt="screenshot sample of wizard mode" src="https://github.com/user-attachments/assets/1c780be1-d6dc-47fb-8a23-5229392ab45b" /></p></li>
-</ul>
-</li>
-<li><p>Drag-n-drop Workflow Mode: Allow user to create their own flow from available components (leverage Flowise AI)</p>
-<ul>
-<li><p>Utilize Flowise AI - https://docs.flowiseai.com/</p></li>
-<li><p>Note: Need further feasibility study on</p>
-<ul>
-<li><p>Ease of customization or adding new UI components</p></li>
-<li><p>Connectivity and integration to Mega Service (HelmChart, DockerCompose, GMC)</p></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="part-2-benchmark-and-evaluation">
-<h4>Part 2: Benchmark and Evaluation<a class="headerlink" href="#part-2-benchmark-and-evaluation" title="Link to this heading">¶</a></h4>
-<p>A. Inference Performance</p>
-<ul class="simple">
-<li><p>General Benchmarking</p>
-<ul>
-<li><p>GLUE/SuperGLUE</p></li>
-<li><p>GPQA</p></li>
-<li><p>SQuAD</p></li>
-<li><p>ImageNet</p></li>
-<li><p>MLPerf</p></li>
-</ul>
-</li>
-<li><p>Halucination</p></li>
-<li><p>Vertical/Domain Specific Benchmarking (with ground truth)</p></li>
-<li><p>Finetuning – next phase</p></li>
-</ul>
-<p>B. Model Compute Performance</p>
-<ul class="simple">
-<li><p>token-per-sec (TPS)</p></li>
-<li><p>1st token latency</p></li>
-<li><p>Throughput</p></li>
-<li><p>RAG performance</p></li>
-</ul>
-<p>C. Resource Monitoring - CPU utilization, memory utilization
-<img alt="Diagram on resource monitoring architecture" src="https://github.com/user-attachments/assets/0fe9fed7-0979-4325-b242-fcd753b19f09" /></p>
-<p>Enablement of components for compute performance evaluation</p>
-<ul class="simple">
-<li><p>VictoriaMetric: as metrics store for resource utilization</p></li>
-<li><p>OpenTelemetry (Otel): tracing probing mechanism</p></li>
-<li><p>Tempo: Trace store for OpenTelemetry</p></li>
-<li><p>Loki: log store for pod/Kubernetes</p></li>
-<li><p>Grafana: visualization of metrics, trace and logs</p></li>
-<li><p>Prometheus</p></li>
-</ul>
-</section>
-<section id="part-3-enterprise-deployment">
-<h4>Part 3: Enterprise Deployment<a class="headerlink" href="#part-3-enterprise-deployment" title="Link to this heading">¶</a></h4>
-<p>Generate Enterprise Deployment Package base on the applicaiton with enterprise facilities features, including,
-Features:</p>
-<ul class="simple">
-<li><p>Application UI</p></li>
-<li><p>user management (login, create, update, delete)</p></li>
-<li><p>Session management (e.g. Chat sessions)</p></li>
-<li><p>inference parameter setting (top-p, top-k, temperature)</p></li>
-<li><p>Vector Store</p></li>
-<li><p>token generation</p></li>
-<li><p>API access</p></li>
-</ul>
-<p>Applications:</p>
-<ul class="simple">
-<li><p>QnA</p></li>
-<li><p>AudioChat</p></li>
-<li><p>VisualChat</p></li>
-<li><p>Translation</p></li>
-<li><p>CodeGen</p></li>
-<li><p>CodeTrans</p></li>
-<li><p>Summarizer</p></li>
-</ul>
-<p>Deployment configuration - Sample UI</p>
-<ul class="simple">
-<li><p>OS</p></li>
-<li><p>Cloud/ OnPrem</p></li>
-<li><p>Cluster /single Machine</p></li>
-<li><p>Feature selection (API access, user management etc)</p></li>
-<li><p>Monitoring dashboard for Resource Management</p></li>
-</ul>
-<p><img alt="GenAI Deployment Package Configuration" src="https://github.com/user-attachments/assets/8dd43bff-26a6-4c3e-a80c-127bccdff7f3" /></p>
-<p>Generated Deployment Package generally contains the follow parts:</p>
-<ul class="simple">
-<li><p>Ansible playbooks - Ansible playbooks will be used to setup and initialize important services such as K8s, SQL Database, local image registry, etc.</p></li>
-<li><p>App UI codes</p></li>
-<li><p>App backend server codes</p></li>
-<li><p>Other OPEA microservice component images can be pulled from OPEA registry directly during setup.</p></li>
-</ul>
-</section>
-</section>
-<section id="compatibility">
-<h3>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">¶</a></h3>
-<p>This RFC will require a feasibility study on tools to use for Part 1 Drag-n-Drop Workflow Mode design. Flowise AI is a good candidate but it needs to run as a separate service which will add to the complexity of the UI/UX design.</p>
-</section>
+<p>The proposed design for Ollama serving support on-prem x86 CPU servers integrates Ollama as an additional LLM service alongside existing services like vLLM and TGI. This setup enhances data privacy by keeping processing local, reduces operational costs by leveraging on-premise hardware, and provides flexibility and control over AI deployments. The workflow includes embedding, retrieval, and re-ranking microservices, ensuring efficient and secure handling of user queries and data preparation.</p>
 </section>
 </section>
 
@@ -2473,8 +2449,8 @@ Features:</p>
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="24-08-02-OPEA-AIAvatarChatbot.html" class="btn btn-neutral float-left" title="24-08-02-OPEA-AIAvatarChatbot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="24-08-20-OPEA-001-AI_Gateway_API.html" class="btn btn-neutral float-right" title="24-08-20-OPEA-001-AI Gateway API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA.html" class="btn btn-neutral float-left" title="24-10-02-GenAIExamples-001-Image_and_Audio_Support_in_MultimodalQnA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html" class="btn btn-neutral float-right" title="25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
