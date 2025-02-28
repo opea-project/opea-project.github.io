@@ -427,8 +427,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#using-deploy-and-benchmark-py-recommended">Using deploy_and_benchmark.py (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-deploy-and-benchmark-tests">Running Deploy and Benchmark Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-tests">Running the Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test-modes">Test Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -2244,27 +2246,71 @@
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
-<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#using-deploy_and_benchmark.py-recommended"><span class="xref myst">Using deploy_and_benchmark.py</span></a></p></li>
-</ul>
-</li>
 <li><p><a class="reference internal" href="#data-preparation"><span class="xref myst">Data Preparation</span></a></p></li>
-<li><p><a class="reference internal" href="#configuration"><span class="xref myst">Configuration</span></a></p></li>
+<li><p><a class="reference internal" href="#running-deploy-and-benchmark-tests"><span class="xref myst">Running Deploy and Benchmark Tests</span></a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p></li>
 </ul>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <p>Before running the benchmarks, ensure you have:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p><strong>Kubernetes Environment</strong></p>
 <ul class="simple">
 <li><p>Kubernetes installation: Use <a class="reference internal" href="../guide/installation/k8s_install/k8s_install_kubespray.html"><span class="std std-doc">kubespray</span></a> or other official Kubernetes installation guides</p></li>
 <li><p>(Optional) <a class="reference internal" href="../GenAIInfra/README.html#setup-kubernetes-cluster"><span class="std std-ref">Kubernetes set up guide on Intel Gaudi product</span></a></p></li>
 </ul>
 </li>
-<li><p><strong>Configuration YAML</strong>
-The configuration file (e.g., <code class="docutils literal notranslate"><span class="pre">./ChatQnA/benchmark_chatqna.yaml</span></code>) consists of two main sections: deployment and benchmarking. Required fields must be filled with valid values (like the Hugging Face token). For all other fields, you can either customize them according to your needs or leave them empty (“”) to use the default values from the <a class="reference external" href="https://github.com/opea-project/GenAIInfra/tree/main/helm-charts">helm charts</a>.</p></li>
+<li><p><strong>Configuration YAML</strong><br />
+The configuration file (e.g., <code class="docutils literal notranslate"><span class="pre">./ChatQnA/benchmark_chatqna.yaml</span></code>) consists of two main sections: deployment and benchmarking. Required fields with <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">mandatory</span></code> comment must be filled with valid values, such as <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>. For all other fields, you can either customize them according to our needs or leave them empty (“”) to use the default values from the <a class="reference external" href="https://github.com/opea-project/GenAIInfra/tree/main/helm-charts">helm charts</a>.</p>
+<p><strong>Default Models</strong>:</p>
+<ul class="simple">
+<li><p>LLM: <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code> (Required: must be specified as it’s shared between deployment and benchmarking phases)</p></li>
+<li><p>Embedding: <code class="docutils literal notranslate"><span class="pre">BAAI/bge-base-en-v1.5</span></code></p></li>
+<li><p>Reranking: <code class="docutils literal notranslate"><span class="pre">BAAI/bge-reranker-base</span></code></p></li>
+</ul>
+<p>You can customize which models to use by setting the <code class="docutils literal notranslate"><span class="pre">model_id</span></code> field in the corresponding service section. Note that the LLM model must be specified in the configuration as it is used by both deployment and benchmarking processes.</p>
+<p><strong>Important Notes</strong>:</p>
+<ul class="simple">
+<li><p>For Gaudi deployments:</p>
+<ul>
+<li><p>LLM service runs on Gaudi devices</p></li>
+<li><p>If enabled, the reranking service (teirerank) also runs on Gaudi devices</p></li>
+</ul>
+</li>
+<li><p><strong>Llama Model Access</strong>:</p>
+<ul>
+<li><p>Downloading Llama models requires both:</p>
+<ol class="arabic simple">
+<li><p>HuggingFace API token</p></li>
+<li><p>Special authorization from Meta</p></li>
+</ol>
+</li>
+<li><p>Please visit <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">meta-llama/Meta-Llama-3-8B-Instruct</a> to request access</p></li>
+<li><p>Deployment will fail if model download is unsuccessful due to missing authorization</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Node and Replica Configuration</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">node</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Number of nodes to deploy</span>
+<span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Must align with node configuration</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">replicaCount</span></code> values must align with the <code class="docutils literal notranslate"><span class="pre">node</span></code> configuration by index:</p>
+<ul class="simple">
+<li><p>When deploying on 1 node → uses replicaCount[0] = 1</p></li>
+<li><p>When deploying on 2 nodes → uses replicaCount[1] = 2</p></li>
+<li><p>When deploying on 4 nodes → uses replicaCount[2] = 4</p></li>
+<li><p>When deploying on 8 nodes → uses replicaCount[3] = 8</p></li>
+</ul>
+<p>Note: Model parameters that accept lists (e.g., <code class="docutils literal notranslate"><span class="pre">max_batch_size</span></code>, <code class="docutils literal notranslate"><span class="pre">max_num_seqs</span></code>) are deployment parameters that affect model service behavior but not the number of service instances. When these parameters are lists, each value will trigger a service upgrade followed by a new round of testing, while maintaining the same number of service instances.</p>
+</li>
+<li><p><strong>Install required Python packages</strong>
+Run the following command to install all necessary dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
 </ol>
 </section>
 <section id="data-preparation">
@@ -2273,43 +2319,141 @@ The configuration file (e.g., <code class="docutils literal notranslate"><span c
 <ol class="arabic">
 <li><p><strong>Prepare Test Data</strong></p>
 <ul>
-<li><p>Download the retrieval file:</p>
+<li><p>Testing for general benchmark target:</p>
+<p>Download the retrieval file using the command below for data ingestion in RAG:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/opea-project/GenAIEval/tree/main/evals/benchmark/data/upload_file.txt
 </pre></div>
 </div>
 </li>
-<li><p>For the <code class="docutils literal notranslate"><span class="pre">chatqna_qlist_pubmed</span></code> test case, prepare <code class="docutils literal notranslate"><span class="pre">pubmed_${max_lines}.txt</span></code> by following this <a class="reference internal" href="../GenAIEval/evals/benchmark/stresscli/README_Pubmed_qlist.html"><span class="std std-doc">README</span></a></p></li>
+<li><p>Testing for pubmed benchmark target:</p>
+<p>For the <code class="docutils literal notranslate"><span class="pre">chatqna_qlist_pubmed</span></code> test case, prepare <code class="docutils literal notranslate"><span class="pre">pubmed_${max_lines}.txt</span></code> by following this <a class="reference internal" href="../GenAIEval/evals/benchmark/stresscli/README_Pubmed_qlist.html"><span class="std std-doc">README</span></a></p>
+</li>
 </ul>
+<p>After the data is prepared, please update the <code class="docutils literal notranslate"><span class="pre">absolute</span> <span class="pre">path</span></code> of this file in the benchmark.yaml file. For example, in the <code class="docutils literal notranslate"><span class="pre">ChatQnA/benchmark_chatqna.yaml</span></code> file, <code class="docutils literal notranslate"><span class="pre">/home/sdp/upload_file.txt</span></code> should be replaced by your file path.</p>
 </li>
 <li><p><strong>Prepare Model Files (Recommended)</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;huggingface_hub[cli]&quot;</span>
 sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/models
 sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/mnt/models
-huggingface-cli<span class="w"> </span>download<span class="w"> </span>--cache-dir<span class="w"> </span>/mnt/models<span class="w"> </span>Intel/neural-chat-7b-v3-3
+huggingface-cli<span class="w"> </span>download<span class="w"> </span>--cache-dir<span class="w"> </span>/mnt/models<span class="w"> </span>meta-llama/Meta-Llama-3-8B-Instruct
 </pre></div>
 </div>
 </li>
 </ol>
 </section>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<section id="running-deploy-and-benchmark-tests">
+<h2>Running Deploy and Benchmark Tests<a class="headerlink" href="#running-deploy-and-benchmark-tests" title="Link to this heading">¶</a></h2>
 <p>The benchmarking process consists of two main components: deployment and benchmarking. We provide <code class="docutils literal notranslate"><span class="pre">deploy_and_benchmark.py</span></code> as a unified entry point that combines both steps.</p>
-<section id="using-deploy-and-benchmark-py-recommended">
-<h3>Using deploy_and_benchmark.py (Recommended)<a class="headerlink" href="#using-deploy-and-benchmark-py-recommended" title="Link to this heading">¶</a></h3>
-<p>The script <code class="docutils literal notranslate"><span class="pre">deploy_and_benchmark.py</span></code> serves as the main entry point. Here’s an example using ChatQnA configuration (you can replace it with any other example’s configuration YAML file):</p>
+<section id="running-the-tests">
+<h3>Running the Tests<a class="headerlink" href="#running-the-tests" title="Link to this heading">¶</a></h3>
+<p>The script <code class="docutils literal notranslate"><span class="pre">deploy_and_benchmark.py</span></code> serves as the main entry point. You can use any example’s configuration YAML file. Here are examples using ChatQnA configuration:</p>
 <ol class="arabic">
 <li><p>For a specific number of nodes:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml<span class="w"> </span>--target-node<span class="w"> </span><span class="m">1</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default OOB (Out of Box) mode</span>
+python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml<span class="w"> </span>--target-node<span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># Or specify test mode explicitly</span>
+python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml<span class="w"> </span>--target-node<span class="w"> </span><span class="m">1</span><span class="w"> </span>--test-mode<span class="w"> </span><span class="o">[</span>oob<span class="p">|</span>tune<span class="o">]</span>
 </pre></div>
 </div>
 </li>
 <li><p>For all node configurations:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default OOB (Out of Box) mode</span>
+python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml
+
+<span class="c1"># Or specify test mode explicitly</span>
+python<span class="w"> </span>deploy_and_benchmark.py<span class="w"> </span>./ChatQnA/benchmark_chatqna.yaml<span class="w"> </span>--test-mode<span class="w"> </span><span class="o">[</span>oob<span class="p">|</span>tune<span class="o">]</span>
 </pre></div>
 </div>
-<p>This will iterate through the node list in your configuration YAML file, performing deployment and benchmarking for each node count.</p>
+<p>This will process all node configurations defined in your YAML file.</p>
 </li>
 </ol>
+</section>
+<section id="test-modes">
+<h3>Test Modes<a class="headerlink" href="#test-modes" title="Link to this heading">¶</a></h3>
+<p>The script provides two test modes controlled by the <code class="docutils literal notranslate"><span class="pre">--test-mode</span></code> parameter:</p>
+<ol class="arabic">
+<li><p><strong>OOB (Out of Box) Mode</strong> - Default</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--test-mode<span class="w"> </span>oob<span class="w">  </span><span class="c1"># or omit the parameter</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Uses enabled configurations only:</p>
+<ul>
+<li><p>Resources: Only uses resources when <code class="docutils literal notranslate"><span class="pre">resources.enabled</span></code> is True</p></li>
+<li><p>Model parameters:</p>
+<ul>
+<li><p>Uses batch parameters when <code class="docutils literal notranslate"><span class="pre">batch_params.enabled</span></code> is True</p></li>
+<li><p>Uses token parameters when <code class="docutils literal notranslate"><span class="pre">token_params.enabled</span></code> is True</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Suitable for basic functionality testing with selected optimizations</p></li>
+</ul>
+</li>
+<li><p><strong>Tune Mode</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--test-mode<span class="w"> </span>tune
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Applies all configurations regardless of enabled status:</p>
+<ul>
+<li><p>Resource-related parameters:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">resources.cores_per_instance</span></code>: CPU cores allocation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resources.memory_capacity</span></code>: Memory allocation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resources.cards_per_instance</span></code>: GPU/Accelerator cards allocation</p></li>
+</ul>
+</li>
+<li><p>Model parameters:</p>
+<ul>
+<li><p>Batch parameters:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_batch_size</span></code>: Maximum batch size (TGI engine)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_num_seqs</span></code>: Maximum number of sequences (vLLM engine)</p></li>
+</ul>
+</li>
+<li><p>Token parameters:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_input_length</span></code>: Maximum input sequence length</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_total_tokens</span></code>: Maximum total tokens per request</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_batch_total_tokens</span></code>: Maximum total tokens in a batch</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_batch_prefill_tokens</span></code>: Maximum tokens in prefill phase</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>Choose “oob” mode when you want to selectively enable optimizations, or “tune” mode when you want to apply all available optimizations regardless of their enabled status.</p>
+</section>
+<section id="troubleshooting">
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h3>
+<p><strong>Helm Chart Directory Issues</strong></p>
+<ul>
+<li><p>During execution, the script downloads and extracts the Helm chart to a directory named after your example</p></li>
+<li><p>The directory name is derived from your input YAML file path</p>
+<ul class="simple">
+<li><p>For example: if your input is <code class="docutils literal notranslate"><span class="pre">./ChatQnA/benchmark_chatqna.yaml</span></code>, the extracted directory will be <code class="docutils literal notranslate"><span class="pre">chatqna/</span></code></p></li>
+</ul>
+</li>
+<li><p>In some error cases, this directory might not be properly cleaned up</p></li>
+<li><p>If you encounter deployment issues, check if there’s a leftover Helm chart directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: for ./ChatQnA/benchmark_chatqna.yaml</span>
+ls<span class="w"> </span>-la<span class="w"> </span>chatqna/
+
+<span class="c1"># Clean up if needed</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>chatqna/
+</pre></div>
+</div>
+</li>
+<li><p>After cleaning up the directory, try running the deployment again</p></li>
+</ul>
+<p>Note: Always ensure there are no leftover Helm chart directories from previous failed runs before starting a new deployment.</p>
 </section>
 </section>
 </section>
