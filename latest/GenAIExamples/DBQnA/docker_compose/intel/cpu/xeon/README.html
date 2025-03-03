@@ -2268,24 +2268,27 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
 <p>We set default model as “mistralai/Mistral-7B-Instruct-v0.3”, change “LLM_MODEL_ID” in following Environment Variables setting if you want to use other models.</p>
 <p>If use gated models, you also need to provide <a class="reference external" href="https://huggingface.co/docs/hub/security-tokens">huggingface token</a> to “HUGGINGFACEHUB_API_TOKEN” environment variable.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;xxx&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="setup-environment-variables">
 <h3>2.1 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
 <p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># your_ip should be your external IP address, do not use localhost.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># host_ip should be your external IP address, do not use localhost.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 
 <span class="c1"># Example: no_proxy=&quot;localhost,127.0.0.1,192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 
 <span class="c1"># If you are in a proxy environment, also set the proxy-related environment variables:</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
 
 <span class="c1"># Set other required variables</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">TGI_PORT</span><span class="o">=</span><span class="m">8008</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
@@ -2294,7 +2297,12 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <span class="nb">export</span><span class="w"> </span><span class="nv">text2sql_port</span><span class="o">=</span><span class="m">9090</span>
 </pre></div>
 </div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">your_ip</span></code> with your external IP address, do not use localhost.</p>
+<p>or
+edit the file set_env.sh to set those environment variables,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with your external IP address, do not use localhost.</p>
 </section>
 <section id="start-microservice-docker-containers">
 <h3>2.2 Start Microservice Docker Containers<a class="headerlink" href="#start-microservice-docker-containers" title="Link to this heading">¶</a></h3>
@@ -2344,7 +2352,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <h2>🚀 Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
 <section id="tgi-service">
 <h3>3.1 TGI Service<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:<span class="nv">$TGI_PORT</span>/generate<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="nv">$TGI_PORT</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
@@ -2356,17 +2364,17 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <p>Once Text-to-SQL microservice is started, user can use below command</p>
 <section id="test-the-database-connection">
 <h4>3.2.1 Test the Database connection<a class="headerlink" href="#test-the-database-connection" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--location<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/postgres/health<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--location<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/postgres/health<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--header<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--data<span class="w"> </span><span class="s1">&#39;{&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}&#39;</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s1">&#39;{&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="invoke-the-microservice">
 <h4>3.2.2 Invoke the microservice.<a class="headerlink" href="#invoke-the-microservice" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9090/v1/text2sql<span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/text2sql<span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2384,7 +2392,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </section>
 <section id="launch-the-react-ui">
 <h2>🚀 Launch the React UI<a class="headerlink" href="#launch-the-react-ui" title="Link to this heading">¶</a></h2>
-<p>Open this URL <code class="docutils literal notranslate"><span class="pre">http://{your_ip}:5174</span></code> in your browser to access the frontend.</p>
+<p>Open this URL <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5174</span></code> in your browser to access the frontend.</p>
 <p><img alt="project-screenshot" src="../../../../../../_images/dbQnA_ui_init.png" /></p>
 <p>Test DB Connection
 <img alt="project-screenshot" src="../../../../../../_images/dbQnA_ui_successful_db_connection.png" /></p>
