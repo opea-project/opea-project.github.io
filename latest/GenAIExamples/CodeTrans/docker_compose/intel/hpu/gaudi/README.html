@@ -2238,6 +2238,7 @@
   <section id="build-mega-service-of-codetrans-on-gaudi">
 <h1>Build Mega Service of CodeTrans on Gaudi<a class="headerlink" href="#build-mega-service-of-codetrans-on-gaudi" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a CodeTrans application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server. The steps include Docker image creation, container deployment via Docker Compose, and service execution using microservices <code class="docutils literal notranslate"><span class="pre">llm</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
+<p>The default pipeline deploys with vLLM as the LLM serving component. It also provides options of using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-microservice-docker-containers"><span class="xref myst">start-microservice-docker-containers</span></a> section in this page.</p>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it. This step can be ignored after the Docker images published to Docker hub.</p>
@@ -2297,6 +2298,36 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </tbody>
 </table>
 <p>Change the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> below for your needs.</p>
+<p>For users in China who are unable to download models directly from Huggingface, you can use <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> or a Huggingface mirror to download models. The vLLM/TGI can load the models either online or offline as described below:</p>
+<ol class="arabic">
+<li><p>Online</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
+<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+<span class="c1"># Start vLLM LLM Service</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+<span class="c1"># Start TGI LLM Service</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span>
+</pre></div>
+</div>
+</li>
+<li><p>Offline</p>
+<ul>
+<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://www.modelscope.cn/models/rubraAI/Mistral-7B-Instruct-v0.3/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">mistralai/Mistral-7B-Instruct-v0.3</span></code>.</p></li>
+<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">this</span> <span class="pre">model</span></code> button, and choose one way to download the model to your local path <code class="docutils literal notranslate"><span class="pre">/path/to/model</span></code>.</p></li>
+<li><p>Run the following command to start the LLM service.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
+<span class="c1"># Start vLLM LLM Service</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span>/data<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+<span class="c1"># Start TGI LLM Service</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span>/data
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
 </section>
 <section id="setup-environment-variables">
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
@@ -2329,14 +2360,36 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <section id="start-microservice-docker-containers">
 <h3>Start Microservice Docker Containers<a class="headerlink" href="#start-microservice-docker-containers" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeTrans/docker_compose/intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If use vLLM as the LLM serving backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If use TGI as the LLM serving backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
 <section id="validate-microservices">
 <h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
 <ol class="arabic">
-<li><p>TGI Service</p>
+<li><p>LLM backend Service</p>
+<p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.</p>
+<p>Try the command below to check whether the LLM serving is ready.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>codetrans-gaudi-vllm-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>codetrans-gaudi-tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
+</pre></div>
+</div>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
