@@ -1920,6 +1920,29 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_eval/README.html#acknowledgements">Acknowledgements</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html">RAG Pilot - A RAG Pipeline Tuning Tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#available-tuners">Available Tuners</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#online-rag-tuning">Online RAG Tuning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#dependencies-and-environment-setup">Dependencies and Environment Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#launch-rag-pilot-in-online-mode">Launch RAG Pilot in Online Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#offline-rag-tuning">Offline RAG Tuning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#environment-setup">Environment Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#launch-rag-pilot-in-offline-mode">Launch RAG Pilot in Offline Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#how-to-use-rag-pilot-to-tune-your-rag-solution">How to use RAG Pilot to tune your RAG solution</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#what-s-nodes-and-modules">What’s Nodes and Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#how-to-configure-nodes-and-modules">How to configure Nodes and Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../GenAIEval/evals/evaluation/rag_pilot/README.html#how-to-use-nodes-and-modules">How to use Nodes and Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../GenAIEval/evals/metrics/bleu/README.html">Metric Card for BLEU</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/metrics/bleu/README.html#metric-description">Metric Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../GenAIEval/evals/metrics/bleu/README.html#intended-uses">Intended Uses</a></li>
@@ -2345,7 +2368,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
 <span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
 <span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/root/.cache/huggingface/hub<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
 <span class="c1"># Start TGI LLM Service</span>
 docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span>
 </pre></div>
@@ -2359,7 +2382,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
 <span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span>/data<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/root/.cache/huggingface/hub<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span>/root/.cache/huggingface/hub<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
 <span class="c1"># Start TGI LLM Service</span>
 docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span>/data
 </pre></div>
