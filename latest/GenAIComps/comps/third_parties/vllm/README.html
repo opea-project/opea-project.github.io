@@ -2455,8 +2455,45 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 </section>
 </section>
+<section id="vllm-with-rocm-on-amd-gpu">
+<h3>2.4 vLLM with ROCm (on AMD GPU)<a class="headerlink" href="#vllm-with-rocm-on-amd-gpu" title="Link to this heading">¶</a></h3>
+<section id="build-docker-image-for-rocm-vllm">
+<h4>Build docker image for ROCm vLLM<a class="headerlink" href="#build-docker-image-for-rocm-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps/comps/third_parties/vllm/src
+docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>Dockerfile.amd_gpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-rocm:latest<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h4>Launch vLLM service with docker compose<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps/comps/third_parties/vllm/deployment/docker_compose
+<span class="c1"># IP port for vLLM service</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT</span><span class="o">=</span><span class="m">8011</span>
+<span class="c1"># HF token</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_hf_token&quot;</span>
+<span class="c1"># Cache dir</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_CACHE_DIR</span><span class="o">=</span><span class="s2">&quot;./data&quot;</span>
+<span class="c1"># Model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+<span class="c1"># Specify the number of GPUs used</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="m">1</span>
+<span class="c1"># Run deploy</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>vllm-rocm-server<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="checking-rocm-vllm-service">
+<h4>Checking ROCM vLLM service<a class="headerlink" href="#checking-rocm-vllm-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}]}&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="query-the-service">
-<h3>2.4 Query the service<a class="headerlink" href="#query-the-service" title="Link to this heading">¶</a></h3>
+<h3>2.5 Query the service<a class="headerlink" href="#query-the-service" title="Link to this heading">¶</a></h3>
 <p>And then you can make requests like below to check the service status:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
@@ -2469,8 +2506,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="set-up-llm-microservice">
 <h2>🚀3. Set up LLM microservice<a class="headerlink" href="#set-up-llm-microservice" title="Link to this heading">¶</a></h2>
 <p>Then we warp the VLLM service into LLM microservice.</p>
-<section id="id2">
-<h3>Build docker<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<section id="id3">
+<h3>Build docker<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>build_docker_microservice.sh
 </pre></div>
 </div>
