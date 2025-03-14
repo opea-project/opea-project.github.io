@@ -2301,14 +2301,62 @@
              
   <section id="agentqna">
 <h1>AgentQnA<a class="headerlink" href="#agentqna" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying AgentQnA service.</p>
+<p>Helm chart for deploying AgentQnA example. It demonstrates how agent works, using prepared data and questions. See <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/AgentQnA#overview">AgentQnA overview</a> for the details.</p>
+<p>Using different datasets, models and questions may get different results.</p>
+<p>Agent usually requires larger models to perform better, we used Llama-3.3-70B-Instruct for test, which requires 4x Gaudi devices for local deployment.</p>
+<p>With helm chart, we also provided option with smaller model (Meta-Llama-3-8B-Instruct) with compromised performance on Xeon CPU only environment for you to try.</p>
 <section id="deploy">
 <h2>Deploy<a class="headerlink" href="#deploy" title="Link to this heading">¶</a></h2>
-<p>helm install agentqna oci://ghcr.io/opea-project/charts/agentqna –set global.HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN} –set tgi.enabled=True</p>
+<p>The Deployment includes preparing tools and SQL data.</p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<p>A volume is required to put tools configuration used by agent, and the database data used by sqlagent.</p>
+<p>We’ll use hostPath in this readme, which is convenient for single worker node deployment. PVC is recommended in a bigger cluster. If you want to use a PVC, comment out the <code class="docutils literal notranslate"><span class="pre">toolHostPath</span></code> and replace with <code class="docutils literal notranslate"><span class="pre">toolPVC</span></code> in the <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code>.</p>
+<p>Create the directory <code class="docutils literal notranslate"><span class="pre">/mnt/tools</span></code> in the worker node, which is the default in <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code>. We use the same directory for all 3 agents for easy configuration.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">777</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span>
+</pre></div>
+</div>
+<p>Download tools and the configuration to <code class="docutils literal notranslate"><span class="pre">/mnt/tools</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># tools used by supervisor</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">AgentQnA</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">supervisor_agent_tools</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">supervisor_agent_tools</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">AgentQnA</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">tools</span><span class="o">.</span><span class="n">py</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">AgentQnA</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">pycragapi</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">pycragapi</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1"># tools used by rag agent</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">AgentQnA</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">worker_agent_tools</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">worker_agent_tools</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">AgentQnA</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">worker_agent_tools</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">worker_agent_tools</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Download the <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> database binary file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">lerocha</span><span class="o">/</span><span class="n">chinook</span><span class="o">-</span><span class="n">database</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">ChinookDatabase</span><span class="o">/</span><span class="n">DataSources</span><span class="o">/</span><span class="n">Chinook_Sqlite</span><span class="o">.</span><span class="n">sqlite</span> <span class="o">-</span><span class="n">O</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">Chinook_Sqlite</span><span class="o">.</span><span class="n">sqlite</span>
+</pre></div>
+</div>
+</section>
+<section id="deploy-with-helm-chart">
+<h3>Deploy with Helm chart<a class="headerlink" href="#deploy-with-helm-chart" title="Link to this heading">¶</a></h3>
+<p>Deploy everything on Gaudi enabled Kubernetes cluster:</p>
+<p>If you want to try with latest version, use <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">pull</span> <span class="pre">oci://ghcr.io/opea-project/charts/agentqna</span> <span class="pre">--version</span> <span class="pre">0-latest</span> <span class="pre">--untar</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HUGGINGFACEHUB_API_TOKEN=&quot;YourOwnToken&quot;
+helm pull oci://ghcr.io/opea-project/charts/agentqna --untar
+helm install agentqna agentqna -f agentqna/gaudi-values.yaml --set global.HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN}
+</pre></div>
+</div>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
+<section id="ingest-data-for-rag">
+<h3>Ingest data for RAG<a class="headerlink" href="#ingest-data-for-rag" title="Link to this heading">¶</a></h3>
+<p>Ingest data used by RAG.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/AgentQnA/retrieval_tool/index_data.py -O /mnt/tools/index_data.py
+wget https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/AgentQnA/example_data/test_docs_music.jsonl -O /mnt/tools/test_docs_music.jsonl
+host_ip=$(kubectl get svc -o jsonpath=&quot;{.items[].spec.clusterIP}&quot; --selector app.kubernetes.io/name=data-prep)
+python3 index_data.py --filedir /mnt/tools --filename test_docs_music.jsonl --host_ip $host_ip
+</pre></div>
+</div>
+</section>
 <section id="verify-the-workload-through-curl-command">
 <h3>Verify the workload through curl command<a class="headerlink" href="#verify-the-workload-through-curl-command" title="Link to this heading">¶</a></h3>
 <p>Run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/agentqna-supervisor</span> <span class="pre">9090:9090</span></code> to expose the service for access.</p>
@@ -2316,7 +2364,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9090/v1/chat/completions \</span>
 <span class="go">    -X POST \</span>
 <span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;query&quot;: &quot;Most recent album by Michael Jackson&quot;}&#39;</span>
+<span class="go">    -d &#39;{&quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;}&#39;</span>
 </pre></div>
 </div>
 </section>
