@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build MegaService of ChatQnA on Gaudi &mdash; OPEA™ 1.2 documentation</title>
+  <title>Example ChatQnA deployments on an Intel® Gaudi® Platform &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -260,7 +260,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_pinecone.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build MegaService of ChatQnA on Gaudi</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy ChatQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
@@ -2281,7 +2281,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build MegaService of ChatQnA on Gaudi</li>
+  <li>Example ChatQnA deployments on an Intel® Gaudi® Platform</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/README.md.txt" rel="nofollow"> View page source</a>
@@ -2301,85 +2301,96 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-megaservice-of-chatqna-on-gaudi">
-<h1>Build MegaService of ChatQnA on Gaudi<a class="headerlink" href="#build-megaservice-of-chatqna-on-gaudi" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
-<p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component. It also provides options of not using rerank in the pipeline, leveraging guardrails, or using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-all-the-services-docker-containers"><span class="xref myst">start-all-the-services-docker-containers</span></a> section in this page.</p>
-<p>Quick Start:</p>
+  <section id="example-chatqna-deployments-on-an-intel-gaudi-platform">
+<h1>Example ChatQnA deployments on an Intel® Gaudi® Platform<a class="headerlink" href="#example-chatqna-deployments-on-an-intel-gaudi-platform" title="Link to this heading">¶</a></h1>
+<p>This example covers the single-node on-premises deployment of the ChatQnA example using OPEA components. There are various ways to enable ChatQnA, but this example will focus on four options available for deploying the ChatQnA pipeline to Intel® Gaudi® AI Accelerators. This example begins with a Quick Start section and then documents how to modify deployments, leverage new models and configure the number of allocated devices.</p>
+<p>This example includes the following sections:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#chatqna-quick-start-deployment"><span class="xref myst">ChatQnA Quick Start Deployment</span></a>: Demonstrates how to quickly deploy a ChatQnA application/pipeline on a Intel® Gaudi® platform.</p></li>
+<li><p><a class="reference internal" href="#chatqna-docker-compose-files"><span class="xref myst">ChatQnA Docker Compose Files</span></a>: Describes some example deployments and their docker compose files.</p></li>
+<li><p><a class="reference internal" href="#chatqna-service-configuration"><span class="xref myst">ChatQnA Service Configuration</span></a>: Describes the services and possible configuration changes.</p></li>
+</ul>
+<p><strong>Note</strong> This example requires access to a properly installed Intel® Gaudi® platform with a functional Docker service configured to use the habanalabs-container-runtime. Please consult the <a class="reference external" href="https://docs.habana.ai/en/v1.20.0/Installation_Guide/Driver_Installation.html">Intel® Gaudi® software Installation Guide</a> for more information.</p>
+<section id="chatqna-quick-start-deployment">
+<h2>ChatQnA Quick Start Deployment<a class="headerlink" href="#chatqna-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the ChatQnA service manually on an Intel® Gaudi® platform. The basic steps are:</p>
 <ol class="arabic simple">
-<li><p>Set up the environment variables.</p></li>
-<li><p>Run Docker Compose.</p></li>
-<li><p>Consume the ChatQnA Service.</p></li>
+<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
 </ol>
-<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>. We now support running the latest DeepSeek models, including <a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</a> and <a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a> on Gaudi accelerators. To run <code class="docutils literal notranslate"><span class="pre">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</span></code>, update the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> and configure <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> to 8 in the <a class="reference internal" href="#./set_env.sh"><span class="xref myst">set_env.sh</span></a> script. To run <code class="docutils literal notranslate"><span class="pre">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span></code>, update the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> and configure <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> to 4 in the <a class="reference internal" href="#./set_env.sh"><span class="xref myst">set_env.sh</span></a> script.</p>
-<section id="quick-start-1-setup-environment-variable">
-<h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
-<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<section id="access-the-code">
+<h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
+<p>Clone the GenAIExample repository and access the ChatQnA Intel® Gaudi® platform Docker Compose files and supporting scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span>
 </pre></div>
 </div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,guardrails
+<p>Checkout a released version, such as v1.2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.2</span>
 </pre></div>
 </div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
-</pre></div>
-</div>
-</li>
-<li><p>Change Model for LLM serving</p>
-<p>By default, Meta-Llama-3-8B-Instruct is used for LLM serving, the default model can be changed to other validated LLM models.<br />
-Please pick a <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/src/text-generation#validated-llm-models">validated llm models</a> from the table.<br />
-To change the default model defined in set_env.sh, overwrite it by exporting LLM_MODEL_ID to the new model or by modifying set_env.sh, and then repeat step 3.<br />
-For example, change to DeepSeek-R1-Distill-Qwen-32B using the following command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;deepseek-ai/DeepSeek-R1-Distill-Qwen-32B&quot;</span>
-</pre></div>
-</div>
-<p>Please also check <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/src/text-generation#system-requirements-for-llm-models">required gaudi cards for different models</a> for new models.<br />
-It might be necessary to increase the number of Gaudi cards for the model by exporting NUM_CARDS to the new model or by modifying set_env.sh, and then repeating step 3. For example, increase the number of Gaudi cards for DeepSeek-R1-
-Distill-Qwen-32B using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NUM_CARDS</span><span class="o">=</span><span class="m">4</span>
-</pre></div>
-</div>
-</li>
-</ol>
 </section>
-<section id="quick-start-2-run-docker-compose">
-<h2>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h2>
+<section id="generate-a-huggingface-access-token">
+<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
+<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+</section>
+<section id="configure-the-deployment-environment">
+<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying ChatQnA services, source the <em>setup_env.sh</em> script in this directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">./</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The <em>set_env.sh</em> script will prompt for required and optional environment variables used to configure the ChatQnA services. If a value is not entered, the script will use a default value for the same. It will also generate a <em>.env</em> file defining the desired configuration. Consult the section on <a class="reference internal" href="#chatqna-service-configuration"><span class="xref myst">ChatQnA Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
+</section>
+<section id="deploy-the-services-using-docker-compose">
+<h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>To deploy the ChatQnA services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.</p>
-<blockquote>
-<div><p>NOTE : To get supported Grafana Dashboard, please run download_opea_dashboard.sh following below commands.</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./grafana/dashboards/download_opea_dashboard.sh
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<p>The ChatQnA docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the Intel® Gaudi® Platform:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 10/10
+ ✔ Network gaudi_default                   Created                                                                      0.1s
+ ✔ Container tei-reranking-gaudi-server    Started                                                                      0.7s
+ ✔ Container vllm-gaudi-server             Started                                                                      0.7s
+ ✔ Container tei-embedding-gaudi-server    Started                                                                      0.3s
+ ✔ Container redis-vector-db               Started                                                                      0.6s
+ ✔ Container retriever-redis-server        Started                                                                      1.1s
+ ✔ Container dataprep-redis-server         Started                                                                      1.1s
+ ✔ Container chatqna-gaudi-backend-server  Started                                                                      1.3s
+ ✔ Container chatqna-gaudi-ui-server       Started                                                                      1.7s
+ ✔ Container chatqna-gaudi-nginx-server    Started                                                                      1.9s
 </pre></div>
 </div>
-<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
-docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
-</pre></div>
-</div>
-<p>In following cases, you could build docker image from source by yourself.</p>
-<ul class="simple">
-<li><p>Failed to download the docker image.</p></li>
-<li><p>If you want to use a specific version of Docker image.</p></li>
-</ul>
-<p>Please refer to ‘Build Docker Images’ in below.</p>
 </section>
-<section id="quickstart-3-consume-the-chatqna-service">
-<h2>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h2>
+<section id="check-the-deployment-status">
+<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<p>For the default deployment, the following 10 containers should have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                                                           <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>                      <span class="n">PORTS</span>                                                                                  <span class="n">NAMES</span>
+<span class="mi">8365</span><span class="n">b0a6024d</span>   <span class="n">opea</span><span class="o">/</span><span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>                                                                               <span class="s2">&quot;/docker-entrypoint.…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                      <span class="n">chatqna</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">nginx</span><span class="o">-</span><span class="n">server</span>
+<span class="n">f090fe262c74</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                                                          <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="n">ec97d7651c96</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="p">:</span><span class="n">latest</span>                                                                             <span class="s2">&quot;python chatqna.py&quot;</span>      <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">a61fb7dc4fae</span>   <span class="n">opea</span><span class="o">/</span><span class="n">dataprep</span><span class="p">:</span><span class="n">latest</span>                                                                            <span class="s2">&quot;sh -c &#39;python $( [ …&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">5000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">5000</span><span class="o">/</span><span class="n">tcp</span>                                            <span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="n">d560c232b120</span>   <span class="n">opea</span><span class="o">/</span><span class="n">retriever</span><span class="p">:</span><span class="n">latest</span>                                                                           <span class="s2">&quot;python opea_retriev…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7000</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="n">a1d7ca2d3787</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">tei</span><span class="o">-</span><span class="n">gaudi</span><span class="p">:</span><span class="mf">1.5.0</span>                                                             <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                <span class="n">tei</span><span class="o">-</span><span class="n">reranking</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">9</span><span class="n">a9f3fd4fd4c</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="o">-</span><span class="n">gaudi</span><span class="p">:</span><span class="n">latest</span>                                                                          <span class="s2">&quot;python3 -m vllm.ent…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Exited</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>                                                                                           <span class="n">vllm</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">1</span><span class="n">ab9bbdf5182</span>   <span class="n">redis</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="mf">7.2.0</span><span class="o">-</span><span class="n">v9</span>                                                                      <span class="s2">&quot;/entrypoint.sh&quot;</span>         <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">redis</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
+<span class="mi">9</span><span class="n">ee0789d819e</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.5</span>                                           <span class="s2">&quot;text-embeddings-rou…&quot;</span>   <span class="mi">2</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">minutes</span>                <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8090</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8090</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                <span class="n">tei</span><span class="o">-</span><span class="n">embedding</span><span class="o">-</span><span class="n">gaudi</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+</div>
+</section>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+<p>Once the ChatQnA services are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -2387,464 +2398,379 @@ docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
 <span class="s1">    }&#39;</span>
 </pre></div>
 </div>
+<p><strong>Note</strong> The value of <em>host_ip</em> was set using the <em>set_env.sh</em> script and can be found in the <em>.env</em> file.</p>
 </section>
-<section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build Docker Images locally. This step can be ignored after the Docker images published to Docker hub.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
-<section id="build-retriever-image">
-<h3>1. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/src/Dockerfile<span class="w"> </span>.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 10/10
+ ✔ Container chatqna-gaudi-nginx-server    Removed                                                                                                 10.5s
+ ✔ Container dataprep-redis-server         Removed                                                                                                 10.5s
+ ✔ Container chatqna-gaudi-ui-server       Removed                                                                                                 10.3s
+ ✔ Container chatqna-gaudi-backend-server  Removed                                                                                                 10.3s
+ ✔ Container vllm-gaudi-server             Removed                                                                                                  0.0s
+ ✔ Container retriever-redis-server        Removed                                                                                                 10.4s
+ ✔ Container tei-reranking-gaudi-server    Removed                                                                                                  2.0s
+ ✔ Container tei-embedding-gaudi-server    Removed                                                                                                  1.2s
+ ✔ Container redis-vector-db               Removed                                                                                                  0.4s
+ ✔ Network gaudi_default                   Removed                                                                                                  0.4s
 </pre></div>
 </div>
-</section>
-<section id="build-dataprep-image">
-<h3>2. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-guardrails-docker-image-optional">
-<h3>3. Build Guardrails Docker Image (Optional)<a class="headerlink" href="#build-guardrails-docker-image-optional" title="Link to this heading">¶</a></h3>
-<p>To fortify AI initiatives in production, Guardrails microservice can secure model inputs and outputs, building Trustworthy, Safe, and Secure LLM-based Applications.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/guardrails:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/guardrails/src/guardrails/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-megaservice-docker-image">
-<h3>4. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>MegaService with Rerank</p>
-<p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</li>
-<li><p>MegaService with Guardrails</p>
-<p>If you want to enable guardrails microservice in the pipeline, please use the below command instead:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-guardrails:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.guardrails<span class="w"> </span>.
-</pre></div>
-</div>
-</li>
-<li><p>MegaService without Rerank</p>
-<p>To construct the Mega Service without Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna_without_rerank.py</span></code> Python script. Build MegaService Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-without-rerank:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.without_rerank<span class="w"> </span>.
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="build-ui-docker-image">
-<h3>5. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Construct the frontend Docker image using the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-conversational-react-ui-docker-image-optional">
-<h3>6. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
-<p>Build frontend Docker image that enables Conversational experience with ChatQnA megaservice via below command:</p>
-<p><strong>Export the value of the public IP address of your Gaudi node to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-nginx-docker-image">
-<h3>7. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/nginx/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/nginx:latest</span></code></p></li>
-</ul>
-<p>If Conversation React UI is built, you will find one more image:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-conversation-ui:latest</span></code></p></li>
-</ul>
-<p>If Guardrails docker image is built, you will find one more image:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/guardrails:latest</span></code></p></li>
-</ul>
+<p>All the ChatQnA containers will be stopped and then removed on completion of the “down” command.</p>
 </section>
 </section>
-<section id="start-microservices-and-megaservice">
-<h2>🚀 Start MicroServices and MegaService<a class="headerlink" href="#start-microservices-and-megaservice" title="Link to this heading">¶</a></h2>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>By default, the embedding, reranking and LLM models are set to a default value as listed below:</p>
+<section id="chatqna-docker-compose-files">
+<h2>ChatQnA Docker Compose Files<a class="headerlink" href="#chatqna-docker-compose-files" title="Link to this heading">¶</a></h2>
+<p>In the context of deploying a ChatQnA pipeline on an Intel® Gaudi® platform, the allocation and utilization of Gaudi devices across different services are important considerations for optimizing performance and resource efficiency. Each of the four example deployments, defined by the example Docker compose yaml files, demonstrates a unique approach to leveraging Gaudi hardware, reflecting different priorities and operational strategies.</p>
+<section id="compose-yaml-default-deployment">
+<h3>compose.yaml - Default Deployment<a class="headerlink" href="#compose-yaml-default-deployment" title="Link to this heading">¶</a></h3>
+<p>The default deployment utilizes Gaudi devices primarily for the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, which handles large language model (LLM) tasks. This service is configured to maximize the use of Gaudi’s capabilities, potentially allocating multiple devices to enhance parallel processing and throughput. The <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> also uses Gaudi hardware (1 card), however, indicating a balanced approach where both LLM processing and reranking tasks benefit from Gaudi’s performance enhancements.</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Service</p></th>
-<th class="head"><p>Model</p></th>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>Gaudi Use</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Embedding</p></td>
-<td><p>BAAI/bge-base-en-v1.5</p></td>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
 </tr>
-<tr class="row-odd"><td><p>Reranking</p></td>
-<td><p>BAAI/bge-reranker-base</p></td>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
 </tr>
-<tr class="row-even"><td><p>LLM</p></td>
-<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-service</p></td>
+<td><p>ghcr.io/huggingface/tei-gaudi:1.5.0</p></td>
+<td><p>1 card</p></td>
+</tr>
+<tr class="row-odd"><td><p>vllm-service</p></td>
+<td><p>opea/vllm-gaudi:latest</p></td>
+<td><p>Configurable</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
 </tr>
 </tbody>
 </table>
-<p>Change the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> below for your needs.</p>
-<p>For users in China who are unable to download models directly from Huggingface, you can use <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> or a Huggingface mirror to download models. The vLLM/TGI can load the models either online or offline as described below:</p>
-<ol class="arabic">
-<li><p>Online</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
-<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
-<span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8007</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>vllm-gaudi-server<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_TORCH_PROFILER_DIR</span><span class="o">=</span><span class="s2">&quot;/mnt&quot;</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--tensor-parallel-size<span class="w"> </span><span class="m">1</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span><span class="w"> </span>--block-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--max-num-seqs<span class="w"> </span><span class="m">256</span><span class="w"> </span>--max-seq_len-to-capture<span class="w"> </span><span class="m">2048</span>
-<span class="c1"># Start TGI LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8005</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-gaudi-server<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ENABLE_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LIMIT_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">USE_FLASH_ATTENTION</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">FLASH_ATTENTION_RECOMPUTE</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.6<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--max-input-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span>--max-total-tokens<span class="w"> </span><span class="m">2048</span>
-</pre></div>
-</div>
-</li>
-<li><p>Offline</p>
-<ul>
-<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://modelscope.cn/models/LLM-Research/Meta-Llama-3-8B-Instruct/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3-8B-Instruct</span></code>.</p></li>
-<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">this</span> <span class="pre">model</span></code> button, and choose one way to download the model to your local path <code class="docutils literal notranslate"><span class="pre">/path/to/model</span></code>.</p></li>
-<li><p>Run the following command to start the LLM service.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
-<span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8007</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>vllm-gaudi-server<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_TORCH_PROFILER_DIR</span><span class="o">=</span><span class="s2">&quot;/mnt&quot;</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--model<span class="w"> </span>/data<span class="w"> </span>--tensor-parallel-size<span class="w"> </span><span class="m">1</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span><span class="w"> </span>--block-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--max-num-seqs<span class="w"> </span><span class="m">256</span><span class="w"> </span>--max-seq_len-to-capture<span class="w"> </span><span class="m">2048</span>
-<span class="c1"># Start TGI LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8005</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi-gaudi-server<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ENABLE_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LIMIT_HPU_GRAPH</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">USE_FLASH_ATTENTION</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">FLASH_ATTENTION_RECOMPUTE</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tgi-gaudi:2.0.6<span class="w"> </span>--model-id<span class="w"> </span>/data<span class="w"> </span>--max-input-tokens<span class="w"> </span><span class="m">1024</span><span class="w"> </span>--max-total-tokens<span class="w"> </span><span class="m">2048</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ol>
 </section>
-<section id="setup-environment-variables">
-<h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-<span class="c1"># Example: NGINX_PORT=80</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-gaudi-ui-server,chatqna-gaudi-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,guardrails
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
+<section id="compose-tgi-yaml-tgi-deployment">
+<h3>compose_tgi.yaml - TGI Deployment<a class="headerlink" href="#compose-tgi-yaml-tgi-deployment" title="Link to this heading">¶</a></h3>
+<p>The TGI (Text Generation Inference) deployment and the default deployment differ primarily in their service configurations and specific focus on handling large language models (LLMs). The TGI deployment includes a unique <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, which utilizes the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image and is specifically configured to run on Gaudi hardware. This service is designed to handle LLM tasks with optimizations such as <code class="docutils literal notranslate"><span class="pre">ENABLE_HPU_GRAPH</span></code> and <code class="docutils literal notranslate"><span class="pre">USE_FLASH_ATTENTION</span></code>. The <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> in the TGI deployment depends on the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, whereas in the default deployment, it relies on the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>Gaudi Specific</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-service</p></td>
+<td><p>ghcr.io/huggingface/tei-gaudi:1.5.0</p></td>
+<td><p>1 card</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>tgi-service</strong></p></td>
+<td><p>ghcr.io/huggingface/tgi-gaudi:2.0.6</p></td>
+<td><p>Configurable</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p>This deployment may allocate more Gaudi resources to the tgi-service to optimize LLM tasks depending on the specific configuration and workload requirements.</p>
 </section>
-<section id="start-all-the-services-docker-containers">
-<h3>Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/
-</pre></div>
-</div>
-<p>If use vLLM as the LLM serving backend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ChatQnA with Rerank Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA without Rerank Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_without_rerank.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with Rerank Pipeline and Open Telemetry Tracing</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>If use TGI as the LLM serving backend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with Open Telemetry Tracing</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose_tgi.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>If you want to enable guardrails microservice in the pipeline, please follow the below command instead:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/hpu/gaudi/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_guardrails.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<blockquote>
-<div><p><strong><em>NOTE:</em></strong> Users need at least two Gaudi cards to run the ChatQnA successfully.</p>
-</div></blockquote>
+<section id="compose-without-rerank-yaml-no-rerank-deployment">
+<h3>compose_without_rerank.yaml - No ReRank Deployment<a class="headerlink" href="#compose-without-rerank-yaml-no-rerank-deployment" title="Link to this heading">¶</a></h3>
+<p>The <em>compose_without_rerank.yaml</em> Docker Compose file is distinct from the default deployment primarily due to the exclusion of the reranking service. In this version, the <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, which is typically responsible for providing reranking capabilities for text embeddings and is configured to run on Gaudi hardware, is absent. This omission simplifies the service architecture by removing a layer of processing that would otherwise enhance the ranking of text embeddings. Consequently, the <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> in this deployment uses a specialized image, <code class="docutils literal notranslate"><span class="pre">opea/chatqna-without-rerank:latest</span></code>, indicating that it is tailored to function without the reranking feature. As a result, the backend server’s dependencies are adjusted, without the need for the reranking service. This streamlined setup may impact the application’s functionality and performance by focusing on core operations without the additional processing layer provided by reranking, potentially making it more efficient for scenarios where reranking is not essential and freeing Intel® Gaudi® accelerators for other tasks.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>Gaudi Specific</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>vllm-service</p></td>
+<td><p>opea/vllm-gaudi:latest</p></td>
+<td><p>Configurable</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p><strong>opea/chatqna-without-rerank:latest</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p>This setup might allow for more Gaudi devices to be dedicated to the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, enhancing LLM processing capabilities and accommodating larger models. However, it also means that the benefits of reranking are sacrificed, which could impact the overall quality of the pipeline’s output.</p>
 </section>
-<section id="validate-microservices-and-megaservice">
-<h3>Validate MicroServices and MegaService<a class="headerlink" href="#validate-microservices-and-megaservice" title="Link to this heading">¶</a></h3>
-<p>Follow the instructions to validate MicroServices.
-For validation details, please refer to <a class="reference internal" href="how_to_validate_service.html"><span class="std std-doc">how-to-validate_service</span></a>.</p>
-<ol class="arabic">
-<li><p>TEI Embedding Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8090/embed<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<section id="compose-guardrails-yaml-guardrails-deployment">
+<h3>compose_guardrails.yaml - Guardrails Deployment<a class="headerlink" href="#compose-guardrails-yaml-guardrails-deployment" title="Link to this heading">¶</a></h3>
+<p>The <em>compose_guardrails.yaml</em> Docker Compose file introduces enhancements over the default deployment by incorporating additional services focused on safety and ChatQnA response control. Notably, it includes the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code> services. The <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image and is configured to run on Gaudi hardware, providing functionality to manage input constraints and ensure safe operations within defined limits. The guardrails service, using the <code class="docutils literal notranslate"><span class="pre">opea/guardrails:latest</span></code> image, acts as a safety layer that interfaces with the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> to enforce safety protocols and manage interactions with the large language model (LLM). Additionally, the <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> is updated to use the <code class="docutils literal notranslate"><span class="pre">opea/chatqna-guardrails:latest</span></code> image, indicating its design to integrate with these new guardrail services. This backend server now depends on the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code>, alongside existing dependencies like <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, and <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>. The environment configurations for the backend are also updated to include settings for the guardrail services.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>Gaudi Specific</p></th>
+<th class="head"><p>Uses LLM</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><em>tgi-guardrails-service</em></p></td>
+<td><p>ghcr.io/huggingface/tgi-gaudi:2.0.6</p></td>
+<td><p>1 card</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>guardrails</em></p></td>
+<td><p>opea/guardrails:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-service</p></td>
+<td><p>ghcr.io/huggingface/tei-gaudi:1.5.0</p></td>
+<td><p>1 card</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>vllm-service</p></td>
+<td><p>opea/vllm-gaudi:latest</p></td>
+<td><p>Configurable</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p>opea/chatqna-guardrails:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p>The deployment with guardrails introduces additional Gaudi-specific services, such as the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code>, which necessitates careful consideration of Gaudi allocation. This deployment aims to balance safety and performance, potentially requiring a strategic distribution of Gaudi devices between the guardrail services and the LLM tasks to maintain both operational safety and efficiency.</p>
+</section>
+<section id="telemetry-enablement-compose-telemetry-yaml-and-compose-tgi-telemetry-yaml">
+<h3>Telemetry Enablement - compose.telemetry.yaml and compose_tgi.telemetry.yaml<a class="headerlink" href="#telemetry-enablement-compose-telemetry-yaml-and-compose-tgi-telemetry-yaml" title="Link to this heading">¶</a></h3>
+<p>The telemetry Docker Compose files are incremental configurations designed to enhance existing deployments by integrating telemetry metrics, thereby providing valuable insights into the performance and behavior of certain services. This setup modifies specific services, such as the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, by adding a command-line argument that specifies an OpenTelemetry Protocol (OTLP) endpoint. This enables these services to export telemetry data to a designated endpoint, facilitating detailed monitoring and analysis. The <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> is configured with environment variables that enable telemetry and specify the telemetry endpoint, ensuring that the backend server’s operations are also monitored.</p>
+<p>Additionally, the telemetry files introduce a new service, <code class="docutils literal notranslate"><span class="pre">jaeger</span></code>, which uses the <code class="docutils literal notranslate"><span class="pre">jaegertracing/all-in-one:latest</span></code> image. Jaeger is a powerful open-source tool for tracing and monitoring distributed systems, offering a user-friendly interface for visualizing traces and understanding the flow of requests through the system.</p>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file needs to be merged along with default compose.yaml file on deployment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
-</li>
-<li><p>Retriever Microservice</p>
-<p>To consume the retriever microservice, you need to generate a mock embedding vector by Python script. The length of embedding vector
-is determined by the embedding model.
-Here we use the model <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;</span></code>, which vector size is 768.</p>
-<p>Check the vecotor dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equals to it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>TEI Reranking Service</p>
-<blockquote>
-<div><p>Skip for ChatQnA without Rerank pipeline</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8808/rerank<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>LLM backend Service</p>
-<p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.</p>
-<p>Try the command below to check whether the LLM serving is ready.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
-docker<span class="w"> </span>logs<span class="w"> </span>vllm-gaudi-server<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
-<span class="c1"># If the service is ready, you will get the response like below.</span>
-INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
-docker<span class="w"> </span>logs<span class="w"> </span>tgi-gaudi-server<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
-If<span class="w"> </span>the<span class="w"> </span>service<span class="w"> </span>is<span class="w"> </span>ready,<span class="w"> </span>you<span class="w"> </span>will<span class="w"> </span>get<span class="w"> </span>the<span class="w"> </span>response<span class="w"> </span>like<span class="w"> </span>below.
-<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
-</pre></div>
-</div>
-<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM Service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8007/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${LLM_MODEL_ID}, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8005/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${LLM_MODEL_ID}, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>MegaService</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">      &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">      }&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Nginx Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/chatqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Dataprep Microservice（Optional）</p></li>
-</ol>
-<p>If you want to update the default knowledge base, you can use the following commands:</p>
-<p>Update Knowledge Base via Local File Upload:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
-</pre></div>
-</div>
-<p>This command updates a knowledge base by uploading a local file for processing. Update the file path according to your environment.</p>
-<p>Add Knowledge Base via HTTP Links:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
-</pre></div>
-</div>
-<p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
-<p>Also, you are able to get the file/link list that you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-</pre></div>
-</div>
-<p>Then you will get the response JSON like this. Notice that the returned <code class="docutils literal notranslate"><span class="pre">name</span></code>/<code class="docutils literal notranslate"><span class="pre">id</span></code> of the uploaded link is <code class="docutils literal notranslate"><span class="pre">https://xxx.txt</span></code>.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nke-10k-2023.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nke-10k-2023.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://opea.dev.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://opea.dev.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<p>To delete the file/link you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete link</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-
-<span class="c1"># delete file</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-
-<span class="c1"># delete all uploaded files and links</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="8">
-<li><p>Guardrails (Optional)</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/guardrails<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;How do you buy a tiger in the US?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:32}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<p>For a TGI Deployment, this would become:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_tgi</span><span class="o">.</span><span class="n">yaml</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_tgi</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
 </section>
-<section id="profile-microservices">
-<h3>Profile Microservices<a class="headerlink" href="#profile-microservices" title="Link to this heading">¶</a></h3>
-<p>To further analyze MicroService Performance, users could follow the instructions to profile MicroServices.</p>
-<section id="vllm-backend-service">
-<h4>1. vLLM backend Service<a class="headerlink" href="#vllm-backend-service" title="Link to this heading">¶</a></h4>
-<p>Users could follow previous section to testing vLLM microservice or ChatQnA MegaService.<br />
-By default, vLLM profiling is not enabled. Users could start and stop profiling by following commands.</p>
-<section id="start-vllm-profiling">
-<h5>Start vLLM profiling<a class="headerlink" href="#start-vllm-profiling" title="Link to this heading">¶</a></h5>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/start_profile<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${LLM_MODEL_ID}}&#39;</span>
-</pre></div>
-</div>
-<p>Users would see below docker logs from vllm-service if profiling is started correctly.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>INFO<span class="w"> </span>api_server.py:361<span class="o">]</span><span class="w"> </span>Starting<span class="w"> </span>profiler...
-INFO<span class="w"> </span>api_server.py:363<span class="o">]</span><span class="w"> </span>Profiler<span class="w"> </span>started.
-INFO:<span class="w">     </span>x.x.x.x:35940<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;POST /start_profile HTTP/1.1&quot;</span><span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
-</pre></div>
-</div>
-<p>After vLLM profiling is started, users could start asking questions and get responses from vLLM MicroService<br />
-or ChatQnA MicroService.</p>
 </section>
-<section id="stop-vllm-profiling">
-<h5>Stop vLLM profiling<a class="headerlink" href="#stop-vllm-profiling" title="Link to this heading">¶</a></h5>
-<p>By following command, users could stop vLLM profliing and generate a *.pt.trace.json.gz file as profiling result<br />
-under /mnt folder in vllm-service docker instance.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM Service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/stop_profile<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: ${LLM_MODEL_ID}}&#39;</span>
-</pre></div>
-</div>
-<p>Users would see below docker logs from vllm-service if profiling is stopped correctly.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>INFO<span class="w"> </span>api_server.py:368<span class="o">]</span><span class="w"> </span>Stopping<span class="w"> </span>profiler...
-INFO<span class="w"> </span>api_server.py:370<span class="o">]</span><span class="w"> </span>Profiler<span class="w"> </span>stopped.
-INFO:<span class="w">     </span>x.x.x.x:41614<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;POST /stop_profile HTTP/1.1&quot;</span><span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
-</pre></div>
-</div>
-<p>After vllm profiling is stopped, users could use below command to get the *.pt.trace.json.gz file under /mnt folder.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>cp<span class="w">  </span>vllm-service:/mnt/<span class="w"> </span>.
-</pre></div>
-</div>
+<section id="chatqna-service-configuration">
+<h2>ChatQnA Service Configuration<a class="headerlink" href="#chatqna-service-configuration" title="Link to this heading">¶</a></h2>
+<p>The table provides a comprehensive overview of the ChatQnA services utilized across various deployments as illustrated in the example Docker Compose files. Each row in the table represents a distinct service, detailing its possible images used to enable it and a concise description of its function within the deployment architecture. These services collectively enable functionalities such as data storage and management, text embedding, retrieval, reranking, and large language model processing. Additionally, specialized services like <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code> are included to enhance text generation inference and ensure operational safety, respectively. The table also highlights the integration of telemetry through the <code class="docutils literal notranslate"><span class="pre">jaeger</span></code> service, which provides tracing and monitoring capabilities.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Possible Image Names</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+<td><p>Acts as a Redis database for storing and managing data.</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+<td><p>Prepares data and interacts with the Redis database.</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+<td><p>Provides text embedding services, often using Hugging Face models.</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+<td><p>Retrieves data from the Redis database and interacts with embedding services.</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-service</p></td>
+<td><p>ghcr.io/huggingface/tei-gaudi:1.5.0</p></td>
+<td><p>Yes</p></td>
+<td><p>Reranks text embeddings, typically using Gaudi hardware for enhanced performance.</p></td>
+</tr>
+<tr class="row-odd"><td><p>vllm-service</p></td>
+<td><p>opea/vllm-gaudi:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles large language model (LLM) tasks, utilizing Gaudi hardware.</p></td>
+</tr>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/tgi-gaudi:2.0.6</p></td>
+<td><p>Yes</p></td>
+<td><p>Specific to the TGI deployment, focuses on text generation inference using Gaudi hardware.</p></td>
+</tr>
+<tr class="row-odd"><td><p>tgi-guardrails-service</p></td>
+<td><p>ghcr.io/huggingface/tgi-gaudi:2.0.6</p></td>
+<td><p>Yes</p></td>
+<td><p>Provides guardrails functionality, ensuring safe operations within defined limits.</p></td>
+</tr>
+<tr class="row-even"><td><p>guardrails</p></td>
+<td><p>opea/guardrails:latest</p></td>
+<td><p>Yes</p></td>
+<td><p>Acts as a safety layer, interfacing with the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> to enforce safety protocols.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+<td><p>No</p></td>
+<td><p>Serves as the backend for the ChatQnA application, with variations depending on the deployment.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>opea/chatqna-without-rerank:latest</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>opea/chatqna-guardrails:latest</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+<td><p>Provides the user interface for the ChatQnA application.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
+<td><p>Acts as a reverse proxy, managing traffic between the UI and backend services.</p></td>
+</tr>
+<tr class="row-even"><td><p>jaeger</p></td>
+<td><p>jaegertracing/all-in-one:latest</p></td>
+<td><p>Yes</p></td>
+<td><p>Provides tracing and monitoring capabilities for distributed systems.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Many of these services provide pipeline support required for all ChatQnA deployments, and are not specific to supporting the Intel® Gaudi® platform. Therefore, while the <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code>, <code class="docutils literal notranslate"><span class="pre">dataprep-redis-service</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code>, <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-ui-server</span></code>, <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-nginx-server</span></code>, <code class="docutils literal notranslate"><span class="pre">jaeger</span></code> are configurable, they will not be covered by this example, which will focus on the configuration specifics of the services modified to support the Intel® Gaudi® platform.</p>
+<section id="vllm-service-tgi-service">
+<h3>vllm-service &amp; tgi-service<a class="headerlink" href="#vllm-service-tgi-service" title="Link to this heading">¶</a></h3>
+<p>In the configuration of the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, two variables play a primary role in determining the service’s performance and functionality: <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code>. Both can be set using the appropriate environment variables. The <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> parameter specifies the particular large language model (LLM) that the service will utilize, effectively determining the capabilities and characteristics of the language processing tasks it can perform. This model identifier ensures that the service is aligned with the specific requirements of the application, whether it involves text generation, comprehension, or other language-related tasks. The <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter dictates the number of Gaudi devices allocated to the service. A higher number of Gaudi devices can enhance parallel processing capabilities, reduce latency, and improve throughput.</p>
+<p>However, developers need to be aware of the models that have been tested with the respective service image supporting the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>. For example, documentation for the OPEA GenAIComps v1.0 release specify the list of <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/v1.0/comps/llms/text-generation/README.md#validated-llm-models">validated LLM models</a> for each Gaudi enabled service image. Specific models may have stringent requirements on the number of Intel® Gaudi® devices required to support them.</p>
+<section id="deepseek-model-support-for-intel-gaudi-platform-chatqna-pipeline">
+<h4>Deepseek Model Support for Intel® Gaudi® Platform ChatQnA pipeline<a class="headerlink" href="#deepseek-model-support-for-intel-gaudi-platform-chatqna-pipeline" title="Link to this heading">¶</a></h4>
+<p>ChatQnA now supports running the latest DeepSeek models, including <a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</a> and <a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a> on Gaudi accelerators. To run <code class="docutils literal notranslate"><span class="pre">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</span></code>, set the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> appropriately and the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> to 8. To run <code class="docutils literal notranslate"><span class="pre">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</span></code>, update the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> appropriately and set the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> to 4.</p>
 </section>
-<section id="check-profiling-result">
-<h5>Check profiling result<a class="headerlink" href="#check-profiling-result" title="Link to this heading">¶</a></h5>
-<p>Open a web browser and type “chrome://tracing” or “ui.perfetto.dev”, and then load the json.gz file, you should be able<br />
-to see the vLLM profiling result as below diagram.
-<img alt="image" src="https://github.com/user-attachments/assets/487c52c8-d187-46dc-ab3a-43f21d657d41" /></p>
-<p><img alt="image" src="https://github.com/user-attachments/assets/e3c51ce5-d704-4eb7-805e-0d88b0c158e3" /></p>
+</section>
+<section id="tei-embedding-service-tei-reranking-service">
+<h3>tei-embedding-service &amp; tei-reranking-service<a class="headerlink" href="#tei-embedding-service-tei-reranking-service" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</span></code> image supporting <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code> or <code class="docutils literal notranslate"><span class="pre">RERANK_MODEL_ID</span></code> environment variables respectively to specify the embedding model and reranking model used for converting text into vector representations and rankings. This choice impacts the quality and relevance of the embeddings rerankings for various applications. Unlike the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, the <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> each typically acquires only one Gaudi device and does not use the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter; embedding and reranking tasks generally do not require extensive parallel processing and one Gaudi per service is appropriate. The list of <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">supported embedding and reranking models</a> can be found at the the <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">huggingface/tei-gaudi</a> website.</p>
+</section>
+<section id="tgi-gaurdrails-service">
+<h3>tgi-gaurdrails-service<a class="headerlink" href="#tgi-gaurdrails-service" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">GUARDRAILS_MODEL_ID</span></code> parameter to select a <a class="reference external" href="https://github.com/huggingface/tgi-gaudi?tab=readme-ov-file#tested-models-and-configurations">supported model</a> for the associated <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image. Like the <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> services, it doesn’t use the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter.</p>
 </section>
 </section>
-</section>
-</section>
-<section id="launch-the-ui">
-<h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
-<section id="launch-with-origin-port">
-<h3>Launch with origin port<a class="headerlink" href="#launch-with-origin-port" title="Link to this heading">¶</a></h3>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chatqna-gaudi-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-ui:latest</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:5173&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="launch-with-nginx">
-<h3>Launch with Nginx<a class="headerlink" href="#launch-with-nginx" title="Link to this heading">¶</a></h3>
-<p>If you want to launch the UI using Nginx, open this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:${NGINX_PORT}</span></code> in your browser to access the frontend.</p>
-</section>
-</section>
-<section id="launch-the-conversational-ui-optional">
-<h2>🚀 Launch the Conversational UI (Optional)<a class="headerlink" href="#launch-the-conversational-ui-optional" title="Link to this heading">¶</a></h2>
-<p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-conversation-ui-server</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chatqna-gaudi-conversation-ui-server</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
-<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-gaudi-conversation-ui-server</span>
-<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
-<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
-<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-gaudi-backend-server</span>
-<span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
-<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
-</pre></div>
-</div>
-<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chatqna-gaudi-conversation-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
-</pre></div>
-</div>
-<p><img alt="project-screenshot" src="../../../../../../_images/chat_ui_init1.png" /></p>
-<p>Here is an example of running ChatQnA:</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/chat_ui_response2.png" /></p>
-<p>Here is an example of running ChatQnA with Conversational UI (React):</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/conversation_ui_response1.png" /></p>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<p>In examining the various services and configurations across different deployments, developers should gain a comprehensive understanding of how each component contributes to the overall functionality and performance of a ChatQnA pipeline on an Intel® Gaudi® platform. Key services such as the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, and <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> each consume Gaudi accelerators, leveraging specific models and hardware resources to optimize their respective tasks. The <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">RERANK_MODEL_ID</span></code>, and <code class="docutils literal notranslate"><span class="pre">GUARDRAILS_MODEL_ID</span></code> parameters specify the models used, directly impacting the quality and effectiveness of language processing, embedding, reranking, and safety operations.</p>
+<p>The allocation of Gaudi devices, affected by the Gaudi dependent services and the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter supporting the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> or <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, determines where computational power is utilized to enhance performance.</p>
+<p>Overall, the strategic configuration of these services, through careful selection of models and resource allocation, enables a balanced and efficient deployment. This approach ensures that the ChatQnA pipeline can meet diverse operational needs, from high-performance language model processing to robust safety protocols, all while optimizing the use of available hardware resources.</p>
 </section>
 </section>
 
