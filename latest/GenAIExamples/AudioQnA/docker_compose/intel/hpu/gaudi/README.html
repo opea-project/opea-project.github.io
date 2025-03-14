@@ -2304,6 +2304,8 @@
   <section id="build-mega-service-of-audioqna-on-gaudi">
 <h1>Build Mega Service of AudioQnA on Gaudi<a class="headerlink" href="#build-mega-service-of-audioqna-on-gaudi" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a AudioQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server.</p>
+<p>The default pipeline deploys with vLLM as the LLM serving component. It also provides options of using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-the-megaservice"><span class="xref myst">Start the MegaService</span></a> section in this page.</p>
+<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
 <section id="build-docker-images">
 <h2>🚀 Build Docker images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <section id="source-code-install-genaicomps">
@@ -2319,9 +2321,13 @@
 </pre></div>
 </div>
 </section>
-<section id="build-llm-image">
-<h3>3. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<p>Intel Xeon optimized image hosted in huggingface repo will be used for TGI service: ghcr.io/huggingface/tgi-gaudi:2.0.6 (https://github.com/huggingface/tgi-gaudi)</p>
+<section id="build-vllm-image">
+<h3>3. Build vLLM Image<a class="headerlink" href="#build-vllm-image" title="Link to this heading">¶</a></h3>
+<p>git clone https://github.com/HabanaAI/vllm-fork.git
+cd vllm-fork/
+VLLM_VER=$(git describe –tags “$(git rev-list –tags –max-count=1)”)
+git checkout ${VLLM_VER}
+docker build –no-cache –build-arg https_proxy=$https_proxy –build-arg http_proxy=$http_proxy -f Dockerfile.hpu -t opea/vllm-gaudi:latest –shm-size=128g .</p>
 </section>
 <section id="build-tts-image">
 <h3>4. Build TTS Image<a class="headerlink" href="#build-tts-image" title="Link to this heading">¶</a></h3>
@@ -2340,6 +2346,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have following images ready:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper-gaudi:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/vllm-gaudi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/speecht5-gaudi:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/audioqna:latest</span></code></p></li>
 </ol>
@@ -2351,7 +2358,12 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span>&lt;your<span class="w"> </span>External<span class="w"> </span>Public<span class="w"> </span>IP&gt;<span class="w">    </span><span class="c1"># export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;your<span class="w"> </span>HF<span class="w"> </span>token&gt;
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Intel/neural-chat-7b-v3-3
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
+<span class="c1"># set vLLM parameters</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NUM_CARDS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BLOCK_SIZE</span><span class="o">=</span><span class="m">128</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_SEQS</span><span class="o">=</span><span class="m">256</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_SEQ_LEN_TO_CAPTURE</span><span class="o">=</span><span class="m">2048</span>
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
@@ -2365,6 +2377,18 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/audioqna
 </pre></div>
 </div>
+<p>or use set_env.sh file to setup environment variables.</p>
+<p>Note:</p>
+<ul class="simple">
+<li><p>Please replace with host_ip with your external IP address, do not use localhost.</p></li>
+<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export http_proxy=&quot;Your_HTTP_Proxy&quot;
+export https_proxy=&quot;Your_HTTPs_Proxy&quot;
+# Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;
+export no_proxy=&quot;Your_No_Proxy&quot;,${host_ip},whisper-service,speecht5-service,tgi-service,vllm-service,audioqna-gaudi-backend-server,audioqna-gaudi-ui-server
+</pre></div>
+</div>
 </section>
 <section id="start-the-megaservice">
 <h2>🚀 Start the MegaService<a class="headerlink" href="#start-the-megaservice" title="Link to this heading">¶</a></h2>
@@ -2372,31 +2396,62 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <div><p><strong><em>NOTE:</em></strong> Users will need at least three Gaudi cards for AudioQnA.</p>
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/docker_compose/intel/hpu/gaudi/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If use vLLM as the LLM serving backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+</pre></div>
+</div>
+<p>If use TGI as the LLM serving backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose_tgi</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
 </section>
 <section id="test-microservices">
 <h2>🚀 Test MicroServices<a class="headerlink" href="#test-microservices" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># whisper service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
+<ol class="arabic">
+<li><p>Whisper Service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">WHISPER_SERVER_PORT</span><span class="si">}</span>/v1/asr<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># tgi service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3006/generate<span class="w"> </span><span class="se">\</span>
+</pre></div>
+</div>
+</li>
+<li><p>LLM backend Service</p>
+<p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready and the container (<code class="docutils literal notranslate"><span class="pre">vllm-gaudi-service</span></code> or <code class="docutils literal notranslate"><span class="pre">tgi-gaudi-service</span></code>) status shown via <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> will be <code class="docutils literal notranslate"><span class="pre">healthy</span></code>. Before that, the status will be <code class="docutils literal notranslate"><span class="pre">health:</span> <span class="pre">starting</span></code>.</p>
+<p>Or try the command below to check whether the LLM serving is ready.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>vllm-gaudi-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>tgi-gaudi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
+</pre></div>
+</div>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># either vLLM or TGI service</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LLM_SERVER_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># speecht5 service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7055/v1/tts<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+</li>
+<li><p>TTS Service</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># speecht5 service
+curl http://${host_ip}:${SPEECHT5_SERVER_PORT}/v1/tts
+  -X POST \
+  -d &#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39; \
+  -H &#39;Content-Type: application/json&#39;
+</pre></div>
+</div>
+</li>
+</ol>
 </section>
 <section id="test-megaservice">
 <h2>🚀 Test MegaService<a class="headerlink" href="#test-megaservice" title="Link to this heading">¶</a></h2>
