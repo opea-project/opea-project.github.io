@@ -2314,27 +2314,6 @@
 <p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage 4th Generation Intel Xeon Scalable processors. These instances are optimized for high-performance computing and demanding workloads.</p>
 <p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
 <p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
-<p><strong>Certain ports in the EC2 instance need to opened up in the security group, for the microservices to work with the curl commands</strong></p>
-<blockquote>
-<div><p>See one example below. Please open up these ports in the EC2 instance based on the IP addresses you want to allow</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">llava</span><span class="o">-</span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
-<span class="o">===========</span>
-<span class="n">Port</span> <span class="mi">8399</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">llm</span>
-<span class="o">===</span>
-<span class="n">Port</span> <span class="mi">9399</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">visualqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="o">==========================</span>
-<span class="n">Port</span> <span class="mi">8888</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">visualqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="o">=====================</span>
-<span class="n">Port</span> <span class="mi">5173</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-</pre></div>
-</div>
 </section>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
@@ -2365,14 +2344,18 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </pre></div>
 </div>
 </section>
-<section id="pull-tgi-xeon-image">
-<h3>4. Pull TGI Xeon Image<a class="headerlink" href="#pull-tgi-xeon-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu
+<section id="pull-vllm-tgi-xeon-image">
+<h3>4. Pull vLLM/TGI Xeon Image<a class="headerlink" href="#pull-vllm-tgi-xeon-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM</span>
+docker<span class="w"> </span>pull<span class="w"> </span>opea/vllm:latest
+<span class="c1"># TGI (Optional)</span>
+docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker Images:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/vllm:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span></code> (Optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/visualqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/visualqna-ui:latest</span></code></p></li>
@@ -2385,26 +2368,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <section id="setup-environment-variables">
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
 <p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<blockquote>
-<div><p>Change the External_Public_IP below with the actual IPV4 value</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-</pre></div>
-</div>
-<p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">your_no_proxy</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{your_no_proxy}</span><span class="s2">,$</span><span class="si">{host_ip}</span><span class="s2">&quot;</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;llava-hf/llava-v1.6-mistral-7b-hf&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8399&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_PORT</span><span class="o">=</span><span class="m">9399</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/visualqna&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>set_env.sh
 </pre></div>
 </div>
 <p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
@@ -2418,6 +2382,8 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># if use TGI as the LLM serving backend</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
