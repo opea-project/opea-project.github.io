@@ -254,7 +254,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#chatqna-application">ChatQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">ChatQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy_faqgen/README.html">FaqGen Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/kubernetes/intel/gaudi/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance_faqgen/README.html">FaqGen Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README.html">Build Mega Service of ChatQnA on Xeon</a></li>
@@ -322,18 +324,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../EdgeCraftRAG/README.html">Edge Craft Retrieval-Augmented Generation</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#faqgen-application">FaqGen Application</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/README.html">FAQ Generation Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/benchmark/accuracy/README.html">FaqGen Accuracy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/benchmark/performance/README.html">FaqGen Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/amd/gpu/rocm/README.html">Build and deploy FaqGen Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of FAQ Generation on Intel Xeon Processor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of FAQ Generation on Gaudi</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/kubernetes/helm/README.html">Deploy FaqGen on Kubernetes cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/ui/react/README.html">Doc Summary React</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#graphrag-application">GraphRAG Application</a><ul>
@@ -456,7 +446,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#docindexretriever">DocIndexRetriever</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#agentqna">AgentQnA</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#audioqna">AudioQnA</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#faqgen">FaqGen</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#multimodalqna">MultimodalQnA</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#productivitysuite">ProductivitySuite</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#dbqna">DBQnA</a></li>
@@ -2531,9 +2520,65 @@
 </table>
 <p>This deployment may allocate more Gaudi resources to the tgi-service to optimize LLM tasks depending on the specific configuration and workload requirements.</p>
 </section>
+<section id="compose-faqgen-yaml-faq-generation-deployment">
+<h3>compose_faqgen.yaml - FAQ generation Deployment<a class="headerlink" href="#compose-faqgen-yaml-faq-generation-deployment" title="Link to this heading">¶</a></h3>
+<p>The FAQs(frequently asked questions and answers) generation Deployment will generate FAQs instead of normally text generation. It add a new microservice called <code class="docutils literal notranslate"><span class="pre">llm-faqgen</span></code>, which is a microservice that interacts with the TGI/vLLM LLM server to generate FAQs from input text.</p>
+<p>The TGI (Text Generation Inference) deployment and the default deployment differ primarily in their service configurations and specific focus on handling large language models (LLMs). The TGI deployment includes a unique <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, which utilizes the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image and is specifically configured to run on Gaudi hardware. This service is designed to handle LLM tasks with optimizations such as <code class="docutils literal notranslate"><span class="pre">ENABLE_HPU_GRAPH</span></code> and <code class="docutils literal notranslate"><span class="pre">USE_FLASH_ATTENTION</span></code>. The <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> in the TGI deployment depends on the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, whereas in the default deployment, it relies on the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>Gaudi Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-service</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-embedding-service</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-service</p></td>
+<td><p>ghcr.io/huggingface/tei-gaudi:1.5.0</p></td>
+<td><p>1 card</p></td>
+</tr>
+<tr class="row-odd"><td><p>vllm-service</p></td>
+<td><p>opea/vllm-gaudi:latest</p></td>
+<td><p>Configurable</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>llm-faqgen</strong></p></td>
+<td><p><strong>opea/llm-faqgen:latest</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>chatqna-gaudi-ui-server</p></td>
+<td><p>opea/chatqna-ui:latest</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-gaudi-nginx-server</p></td>
+<td><p>opea/nginx:latest</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p>We also provided a TGI based deployment for FAQ generation <code class="docutils literal notranslate"><span class="pre">compose_faqgen_tgi.yaml</span></code>, which only replace <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> with <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>.</p>
+</section>
 <section id="compose-without-rerank-yaml-no-rerank-deployment">
 <h3>compose_without_rerank.yaml - No ReRank Deployment<a class="headerlink" href="#compose-without-rerank-yaml-no-rerank-deployment" title="Link to this heading">¶</a></h3>
-<p>The <em>compose_without_rerank.yaml</em> Docker Compose file is distinct from the default deployment primarily due to the exclusion of the reranking service. In this version, the <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, which is typically responsible for providing reranking capabilities for text embeddings and is configured to run on Gaudi hardware, is absent. This omission simplifies the service architecture by removing a layer of processing that would otherwise enhance the ranking of text embeddings. Consequently, the <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> in this deployment uses a specialized image, <code class="docutils literal notranslate"><span class="pre">opea/chatqna-without-rerank:latest</span></code>, indicating that it is tailored to function without the reranking feature. As a result, the backend server’s dependencies are adjusted, without the need for the reranking service. This streamlined setup may impact the application’s functionality and performance by focusing on core operations without the additional processing layer provided by reranking, potentially making it more efficient for scenarios where reranking is not essential and freeing Intel® Gaudi® accelerators for other tasks.</p>
+<p>The <em>compose_without_rerank.yaml</em> Docker Compose file is distinct from the default deployment primarily due to the exclusion of the reranking service. In this version, the <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, which is typically responsible for providing reranking capabilities for text embeddings and is configured to run on Gaudi hardware, is absent. This omission simplifies the service architecture by removing a layer of processing that would otherwise enhance the ranking of text embeddings. As a result, the backend server’s dependencies are adjusted, without the need for the reranking service. This streamlined setup may impact the application’s functionality and performance by focusing on core operations without the additional processing layer provided by reranking, potentially making it more efficient for scenarios where reranking is not essential and freeing Intel® Gaudi® accelerators for other tasks.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Service Name</p></th>
@@ -2563,7 +2608,7 @@
 <td><p>Configurable</p></td>
 </tr>
 <tr class="row-odd"><td><p>chatqna-gaudi-backend-server</p></td>
-<td><p><strong>opea/chatqna-without-rerank:latest</strong></p></td>
+<td><p>opea/chatqna:latest</p></td>
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p>chatqna-gaudi-ui-server</p></td>
@@ -2580,7 +2625,7 @@
 </section>
 <section id="compose-guardrails-yaml-guardrails-deployment">
 <h3>compose_guardrails.yaml - Guardrails Deployment<a class="headerlink" href="#compose-guardrails-yaml-guardrails-deployment" title="Link to this heading">¶</a></h3>
-<p>The <em>compose_guardrails.yaml</em> Docker Compose file introduces enhancements over the default deployment by incorporating additional services focused on safety and ChatQnA response control. Notably, it includes the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code> services. The <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image and is configured to run on Gaudi hardware, providing functionality to manage input constraints and ensure safe operations within defined limits. The guardrails service, using the <code class="docutils literal notranslate"><span class="pre">opea/guardrails:latest</span></code> image, acts as a safety layer that interfaces with the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> to enforce safety protocols and manage interactions with the large language model (LLM). Additionally, the <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> is updated to use the <code class="docutils literal notranslate"><span class="pre">opea/chatqna-guardrails:latest</span></code> image, indicating its design to integrate with these new guardrail services. This backend server now depends on the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code>, alongside existing dependencies like <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, and <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>. The environment configurations for the backend are also updated to include settings for the guardrail services.</p>
+<p>The <em>compose_guardrails.yaml</em> Docker Compose file introduces enhancements over the default deployment by incorporating additional services focused on safety and ChatQnA response control. Notably, it includes the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code> services. The <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.0.6</span></code> image and is configured to run on Gaudi hardware, providing functionality to manage input constraints and ensure safe operations within defined limits. The guardrails service, using the <code class="docutils literal notranslate"><span class="pre">opea/guardrails:latest</span></code> image, acts as a safety layer that interfaces with the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> to enforce safety protocols and manage interactions with the large language model (LLM). This backend server now depends on the <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> and <code class="docutils literal notranslate"><span class="pre">guardrails</span></code>, alongside existing dependencies like <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code>, and <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>. The environment configurations for the backend are also updated to include settings for the guardrail services.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Service Name</p></th>
@@ -2631,7 +2676,7 @@
 <td><p>Yes</p></td>
 </tr>
 <tr class="row-even"><td><p>chatqna-gaudi-backend-server</p></td>
-<td><p>opea/chatqna-guardrails:latest</p></td>
+<td><p>opea/chatqna:latest</p></td>
 <td><p>No</p></td>
 <td><p>No</p></td>
 </tr>
@@ -2724,16 +2769,6 @@
 <td><p>opea/chatqna:latest</p></td>
 <td><p>No</p></td>
 <td><p>Serves as the backend for the ChatQnA application, with variations depending on the deployment.</p></td>
-</tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>opea/chatqna-without-rerank:latest</p></td>
-<td><p></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p>opea/chatqna-guardrails:latest</p></td>
-<td><p></p></td>
-<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p>chatqna-gaudi-ui-server</p></td>
 <td><p>opea/chatqna-ui:latest</p></td>

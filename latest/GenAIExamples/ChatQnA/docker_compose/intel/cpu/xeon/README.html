@@ -254,7 +254,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#chatqna-application">ChatQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">ChatQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy_faqgen/README.html">FaqGen Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/kubernetes/intel/gaudi/README.html">ChatQnA Benchmarking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance_faqgen/README.html">FaqGen Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA on Xeon</a></li>
@@ -322,18 +324,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../EdgeCraftRAG/README.html">Edge Craft Retrieval-Augmented Generation</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#faqgen-application">FaqGen Application</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/README.html">FAQ Generation Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/benchmark/accuracy/README.html">FaqGen Accuracy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/benchmark/performance/README.html">FaqGen Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/amd/gpu/rocm/README.html">Build and deploy FaqGen Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of FAQ Generation on Intel Xeon Processor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of FAQ Generation on Gaudi</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/kubernetes/helm/README.html">Deploy FaqGen on Kubernetes cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/ui/react/README.html">Doc Summary React</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../FaqGen/ui/svelte/README.html">FAQ Generation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#graphrag-application">GraphRAG Application</a><ul>
@@ -456,7 +446,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#docindexretriever">DocIndexRetriever</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#agentqna">AgentQnA</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#audioqna">AudioQnA</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#faqgen">FaqGen</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#multimodalqna">MultimodalQnA</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#productivitysuite">ProductivitySuite</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../supported_examples.html#dbqna">DBQnA</a></li>
@@ -2308,7 +2297,7 @@
              
   <section id="build-mega-service-of-chatqna-on-xeon">
 <h1>Build Mega Service of ChatQnA on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
+<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>,<code class="docutils literal notranslate"><span class="pre">llm</span></code> and <code class="docutils literal notranslate"><span class="pre">faqgen</span></code>.</p>
 <p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component. It also provides options of not using rerank in the pipeline and using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-all-the-services-docker-containers"><span class="xref myst">start-all-the-services-docker-containers</span></a> section in this page. Besides, refer to <a class="reference internal" href="README_pinecone.html"><span class="std std-doc">Build with Pinecone VectorDB</span></a> and <a class="reference internal" href="README_qdrant.html"><span class="std std-doc">Build with Qdrant VectorDB</span></a> for other deployment variants.</p>
 <p>Quick Start:</p>
 <ol class="arabic simple">
@@ -2332,7 +2321,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
 <span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,llm-faqgen
 </pre></div>
 </div>
 </li>
@@ -2435,29 +2424,26 @@ docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
 </pre></div>
 </div>
 </section>
+<section id="build-faqgen-llm-image-optional">
+<h3>3. Build FaqGen LLM Image (Optional)<a class="headerlink" href="#build-faqgen-llm-image-optional" title="Link to this heading">¶</a></h3>
+<p>If you want to enable FAQ generation LLM in the pipeline, please use the below command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="nb">cd</span><span class="w"> </span>GenAIComps
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/llm-faqgen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/faq-generation/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
 <section id="build-megaservice-docker-image">
-<h3>3. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>MegaService with Rerank</p>
+<h3>4. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build MegaService Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-</li>
-<li><p>MegaService without Rerank</p>
-<p>To construct the Mega Service without Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna_without_rerank.py</span></code> Python script. Build MegaService Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-without-rerank:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile.without_rerank<span class="w"> </span>.
-</pre></div>
-</div>
-</li>
-</ol>
 </section>
 <section id="build-ui-docker-image">
-<h3>4. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>5. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
@@ -2465,7 +2451,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div>
 </section>
 <section id="build-conversational-react-ui-docker-image-optional">
-<h3>5. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
+<h3>6. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image that enables Conversational experience with ChatQnA megaservice via below command:</p>
 <p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
@@ -2474,7 +2460,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div>
 </section>
 <section id="build-nginx-docker-image">
-<h3>6. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
+<h3>7. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/nginx/src/Dockerfile<span class="w"> </span>.
 </pre></div>
@@ -2483,10 +2469,14 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code> or <code class="docutils literal notranslate"><span class="pre">opea/chatqna-without-rerank:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/nginx:latest</span></code></p></li>
 </ol>
+<p>If FaqGen related docker image is built, you will find one more image:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-faqgen:latest</span></code></p></li>
+</ul>
 </section>
 </section>
 <section id="start-microservices">
@@ -2586,12 +2576,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_without_rerank.yaml<span class="w"> </span>up<span class="w"> </span>-d
 <span class="c1"># Start ChatQnA with Rerank Pipeline and Open Telemetry Tracing</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># Start ChatQnA with FaqGen Pipeline</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_faqgen.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>If use TGI as the LLM serving backend.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 <span class="c1"># Start ChatQnA with Open Telemetry Tracing</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose_tgi.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># Start ChatQnA with FaqGen Pipeline</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_faqgen_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
@@ -2657,6 +2651,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </li>
+<li><p>FaqGen LLM Microservice (if enabled)</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LLM_SERVICE_PORT</span><span class="si">}</span>/v1/faqgen<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<ol class="arabic" start="6">
 <li><p>MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
