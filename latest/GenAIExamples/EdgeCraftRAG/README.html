@@ -2315,10 +2315,10 @@ quality and performance.</p>
 <section id="what-s-new-in-this-release">
 <h2>What’s New in this release?<a class="headerlink" href="#what-s-new-in-this-release" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Support image/url data retrieval and display in EC-RAG</p></li>
-<li><p>Support display of document source used by LLM in UI</p></li>
-<li><p>Support pipeline remove operation in RESTful API and UI</p></li>
-<li><p>Support RAG pipeline performance benchmark and display in UI</p></li>
+<li><p>A sleek new UI with enhanced user experience, built on Vue and Ant Design</p></li>
+<li><p>Support concurrent multi-requests handling on vLLM inference backend</p></li>
+<li><p>Support pipeline configuration through json file</p></li>
+<li><p>Support system prompt modification through API</p></li>
 <li><p>Fixed known issues in EC-RAG UI and server</p></li>
 </ul>
 </section>
@@ -2344,7 +2344,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span clas
 <section id="vllm-with-openvino-for-intel-arc-gpu">
 <h4>vLLM with OpenVINO for Intel Arc GPU<a class="headerlink" href="#vllm-with-openvino-for-intel-arc-gpu" title="Link to this heading">¶</a></h4>
 <p>You can also select “vLLM” as generation type, to enable this type, you’ll need to build the vLLM image for Intel Arc GPU before service bootstrap.
-Please follow this link <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/text-generation/vllm/langchain#build-docker-image">vLLM with OpenVINO</a> to build the vLLM image.</p>
+Please follow this link <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/vllm#vllm-with-openvino-on-intel-gpu-and-cpu">vLLM with OpenVINO</a> to build the vLLM image.</p>
 </section>
 </section>
 <section id="start-edge-craft-rag-services-with-docker-compose">
@@ -2353,12 +2353,12 @@ Please follow this link <a class="reference external" href="https://github.com/o
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;your model path for all your models&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="s2">&quot;your doc path for uploading a dir of files&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GRADIO_PATH</span><span class="o">=</span><span class="s2">&quot;your gradio cache path for transferring files&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">UI_TMPFILE_PATH</span><span class="o">=</span><span class="s2">&quot;your UI cache path for transferring files&quot;</span>
 <span class="c1"># If you have a specific prompt template, please uncomment the following line</span>
 <span class="c1"># export PROMPT_PATH=&quot;your prompt path for prompt templates&quot;</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${GRADIO_PATH}</span>
+<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${UI_TMPFILE_PATH}</span>
 <span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
 <span class="c1"># chown 1000:1000 $HOME/.cache</span>
 
@@ -2493,6 +2493,10 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <img alt="upload_data" src="../../_images/upload_data.png" /></p>
 <p>Then, you can submit messages in the chat box.
 <img alt="chat_with_rag" src="../../_images/chat_with_rag.png" /></p>
+<p>If you want to try Gradio UI, please launch service through compose_gradio.yaml, then access http://${HOST_IP}:8082 on your browser:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_gradio.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 </section>
 </section>
 <section id="advanced-user-guide">
@@ -2532,8 +2536,24 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 </pre></div>
 </div>
 </section>
+<section id="get-pipeline-json">
+<h4>Get pipeline json<a class="headerlink" href="#get-pipeline-json" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span>/json<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="import-pipeline-from-a-json-file">
+<h4>Import pipeline from a json file<a class="headerlink" href="#import-pipeline-from-a-json-file" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/import<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_test_pipeline_json_file.txt&quot;</span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="enable-and-check-benchmark-for-pipelines">
 <h4>Enable and check benchmark for pipelines<a class="headerlink" href="#enable-and-check-benchmark-for-pipelines" title="Link to this heading">¶</a></h4>
+<section id="notice">
+<h5>⚠️ NOTICE ⚠️<a class="headerlink" href="#notice" title="Link to this heading">¶</a></h5>
+<p>Benchmarking activities may significantly reduce system performance.</p>
+<p><strong>DO NOT</strong> perform benchmarking in a production environment.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ENABLE_BENCHMARK as true before launch services</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_BENCHMARK</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
 
@@ -2541,6 +2561,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>pipeline_name<span class="o">}</span>/benchmark<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 <section id="model-management">
@@ -2613,6 +2634,15 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <section id="update-a-file">
 <h4>Update a file<a class="headerlink" href="#update-a-file" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test.pdf<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR FILE WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="system-prompt-management">
+<h3>System Prompt Management<a class="headerlink" href="#system-prompt-management" title="Link to this heading">¶</a></h3>
+<section id="use-custom-system-prompt">
+<h4>Use custom system prompt<a class="headerlink" href="#use-custom-system-prompt" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span>
 </pre></div>
 </div>
 </section>
