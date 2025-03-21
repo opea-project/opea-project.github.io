@@ -2303,7 +2303,7 @@
 <h3>Build Images<a class="headerlink" href="#build-images" title="Link to this heading">¶</a></h3>
 <section id="build-llama-vision-model">
 <h4>Build Llama Vision Model<a class="headerlink" href="#build-llama-vision-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/lvm-llama-vision:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/src/integrations/dependency/llama-vision/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
@@ -2317,7 +2317,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="build-llama-vision-guard-model">
 <h4>Build Llama Vision Guard Model<a class="headerlink" href="#build-llama-vision-guard-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/lvm-llama-vision-guard:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/lvms/src/integrations/dependency/llama-vision/Dockerfile.guard<span class="w"> </span>.
 </pre></div>
 </div>
@@ -2337,7 +2337,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </s
 <p>If you need to run the 90B models, use the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">WORLD_SIZE</span><span class="o">=</span><span class="m">4</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhosst,127.0.0.1
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1
 docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>-p<span class="w"> </span><span class="m">9599</span>:9599<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Llama-3.2-90B-Vision-Instruct&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="nv">$HUGGINGFACEHUB_API_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">WORLD_SIZE</span><span class="o">=</span><span class="nv">$WORLD_SIZE</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>opea/lvm-llama-vision-tp:latest
 </pre></div>
 </div>
