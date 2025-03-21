@@ -2302,8 +2302,8 @@
 <li><p><a class="reference internal" href="../common/asr/README.html"><span class="std std-doc">asr</span></a></p></li>
 <li><p><a class="reference internal" href="../common/whisper/README.html"><span class="std std-doc">whisper</span></a></p></li>
 <li><p><a class="reference internal" href="../common/llm-uservice/README.html"><span class="std std-doc">llm-uservice</span></a></p></li>
-<li><p><a class="reference internal" href="../common/tgi/README.html"><span class="std std-doc">tgi</span></a></p></li>
-<li><p><a class="reference internal" href="../common/tts/README.html"><span class="std std-doc">tts</span></a></p></li>
+<li><p><a class="reference internal" href="../common/tgi/README.html"><span class="std std-doc">tgi</span></a> or <a class="reference internal" href="../common/vllm/README.html"><span class="std std-doc">vllm</span></a></p></li>
+<li><p><a class="reference internal" href="../common/tts/README.html"><span class="std std-doc">tts</span></a> or <a class="reference internal" href="../common/gpt-sovits/README.html"><span class="std std-doc">gpt-sovits</span></a></p></li>
 <li><p><a class="reference internal" href="../common/speecht5/README.html"><span class="std std-doc">speecht5</span></a></p></li>
 </ul>
 <section id="installing-the-chart">
@@ -2313,10 +2313,16 @@
 <span class="go">./update_dependency.sh</span>
 <span class="go">helm dependency update audioqna</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Xeon
-<span class="go">helm install audioqna audioqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN}</span>
-<span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Gaudi
-<span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/gaudi-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>vLLM
+<span class="go">helm install audioqna audioqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} -f audioqna/cpu-values.yaml</span>
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>TGI
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/cpu-tgi-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>with<span class="w"> </span>multilang<span class="w"> </span>tts
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>cpu-multilang-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>vLLM
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/gaudi-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>TGI
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>audioqna<span class="w"> </span>audioqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>audioqna/gaudi-tgi-values.yaml
 </pre></div>
 </div>
 <section id="important-note">
