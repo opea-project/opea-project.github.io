@@ -2302,7 +2302,7 @@
 <h1>Agents for Question Answering<a class="headerlink" href="#agents-for-question-answering" title="Link to this heading">¶</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram is shown below. The supervisor agent interfaces with the user and dispatch tasks to two worker agents to gather information and come up with answers. The worker RAG agent uses the retrieval tool to retrieve relevant documents from the knowledge base (a vector database). The worker SQL agent retrieve relevant data from the SQL database. Although not included in this example, but other tools such as a web search tool or a knowledge graph query tool can be used by the supervisor agent to gather information from additional sources.
+<p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram below shows a supervisor agent that interfaces with the user and dispatches tasks to two worker agents to gather information and come up with answers. The worker RAG agent uses the retrieval tool to retrieve relevant documents from a knowledge base - a vector database. The worker SQL agent retrieves relevant data from a SQL database. Although not included in this example by default, other tools such as a web search tool or a knowledge graph query tool can be used by the supervisor agent to gather information from additional sources.
 <img alt="Architecture Overview" src="../../_images/agent_qna_arch.png" /></p>
 <p>The AgentQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
@@ -2361,176 +2361,167 @@
     R_RET &lt;-.-&gt; VDB
     DP &lt;-.-&gt; VDB
 
-        </div><section id="why-agent-for-question-answering">
-<h3>Why Agent for question answering?<a class="headerlink" href="#why-agent-for-question-answering" title="Link to this heading">¶</a></h3>
+        </div><section id="why-should-ai-agents-be-used-for-question-answering">
+<h3>Why should AI Agents be used for question-answering?<a class="headerlink" href="#why-should-ai-agents-be-used-for-question-answering" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Improve relevancy of retrieved context.
-RAG agent can rephrase user queries, decompose user queries, and iterate to get the most relevant context for answering user’s questions. Compared to conventional RAG, RAG agent can significantly improve the correctness and relevancy of the answer.</p></li>
-<li><p>Expand scope of the agent.
-The supervisor agent can interact with multiple worker agents that specialize in different domains with different skills (e.g., retrieve documents, write SQL queries, etc.), and thus can answer questions in multiple domains.</p></li>
-<li><p>Hierarchical multi-agents can improve performance.
-Expert worker agents, such as RAG agent and SQL agent, can provide high-quality output for different aspects of a complex query, and the supervisor agent can aggregate the information together to provide a comprehensive answer. If we only use one agent and provide all the tools to this single agent, it may get overwhelmed and not able to provide accurate answers.</p></li>
+<li><p><strong>Improve relevancy of retrieved context.</strong>
+RAG agents can rephrase user queries, decompose user queries, and iterate to get the most relevant context for answering a user’s question. Compared to conventional RAG, RAG agents significantly improve the correctness and relevancy of the answer because of the iterations it goes through.</p></li>
+<li><p><strong>Expand scope of skills.</strong>
+The supervisor agent interacts with multiple worker agents that specialize in different skills (e.g., retrieve documents, write SQL queries, etc.). Thus, it can answer questions with different methods.</p></li>
+<li><p><strong>Hierarchical multi-agents improve performance.</strong>
+Expert worker agents, such as RAG agents and SQL agents, can provide high-quality output for different aspects of a complex query, and the supervisor agent can aggregate the information to provide a comprehensive answer. If only one agent is used and all tools are provided to this single agent, it can lead to large overhead or not use the best tool to provide accurate answers.</p></li>
 </ol>
 </section>
 </section>
 <section id="deploy-with-docker">
 <h2>Deploy with docker<a class="headerlink" href="#deploy-with-docker" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Build agent docker image [Optional]</p></li>
-</ol>
-<blockquote>
-<div><p>[!NOTE]
-the step is optional. The docker images will be automatically pulled when running the docker compose commands. This step is only needed if pulling images failed.</p>
-</div></blockquote>
-<p>First, clone the opea GenAIComps repo.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
-cd $WORKDIR
-git clone https://github.com/opea-project/GenAIComps.git
-</pre></div>
-</div>
-<p>Then build the agent docker image. Both the supervisor agent and the worker agent will use the same docker image, but when we launch the two agents we will specify different strategies and register different tools.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd GenAIComps
-docker build -t opea/agent:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/agent/src/Dockerfile .
-</pre></div>
-</div>
-<ol class="arabic" start="2">
-<li><p>Set up environment for this example </br></p>
-<p>First, clone this repo.</p>
+<section id="set-up-environment">
+<h3>1. Set up environment </br><a class="headerlink" href="#set-up-environment" title="Link to this heading">¶</a></h3>
+<section id="first-clone-the-genaiexamples-repo">
+<h4>First, clone the <code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code> repo.<a class="headerlink" href="#first-clone-the-genaiexamples-repo" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
 cd $WORKDIR
 git clone https://github.com/opea-project/GenAIExamples.git
 </pre></div>
 </div>
-<p>Second, set up env vars.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Example: host_ip=&quot;192.168.1.1&quot; or export host_ip=&quot;External_Public_IP&quot;
-export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
-# if you are in a proxy environment, also set the proxy-related environment variables
-export http_proxy=&quot;Your_HTTP_Proxy&quot;
-export https_proxy=&quot;Your_HTTPs_Proxy&quot;
-# Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;
-export no_proxy=&quot;Your_No_Proxy&quot;
-
-export TOOLSET_PATH=$WORKDIR/GenAIExamples/AgentQnA/tools/
-# for using open-source llms
-export HUGGINGFACEHUB_API_TOKEN=&lt;your-HF-token&gt;
-export HF_CACHE_DIR=&lt;directory-where-llms-are-downloaded&gt; #so that no need to redownload every time
-
-# optional: OPANAI_API_KEY if you want to use OpenAI models
-export OPENAI_API_KEY=&lt;your-openai-key&gt;
+</section>
+<section id="second-set-up-environment-variables">
+<h4>Second, set up environment variables.<a class="headerlink" href="#second-set-up-environment-variables" title="Link to this heading">¶</a></h4>
+<section id="for-proxy-environments-only">
+<h5>For proxy environments only<a class="headerlink" href="#for-proxy-environments-only" title="Link to this heading">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
 </pre></div>
 </div>
-</li>
-<li><p>Deploy the retrieval tool (i.e., DocIndexRetriever mega-service)</p>
-<p>First, launch the mega-service.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/retrieval_tool
-bash launch_retrieval_tool.sh
+</section>
+<section id="for-using-open-source-llms">
+<h5>For using open-source llms<a class="headerlink" href="#for-using-open-source-llms" title="Link to this heading">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">HF</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
+<span class="n">export</span> <span class="n">HF_CACHE_DIR</span><span class="o">=&lt;</span><span class="n">directory</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">llms</span><span class="o">-</span><span class="n">are</span><span class="o">-</span><span class="n">downloaded</span><span class="o">&gt;</span> <span class="c1">#so that no need to redownload every time</span>
 </pre></div>
 </div>
-<p>Then, ingest data into the vector database. Here we provide an example. You can ingest your own data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">run_ingest_data</span><span class="o">.</span><span class="n">sh</span>
+</section>
+<section id="optional-opanai-api-key-to-use-openai-models">
+<h5>[Optional] OPANAI_API_KEY to use OpenAI models<a class="headerlink" href="#optional-opanai-api-key-to-use-openai-models" title="Link to this heading">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OPENAI_API_KEY</span><span class="o">=&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">openai</span><span class="o">-</span><span class="n">key</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</li>
-<li><p>Prepare SQL database
-In this example, we will use the Chinook SQLite database. Run the commands below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Download data
-cd $WORKDIR
-git clone https://github.com/lerocha/chinook-database.git
-cp chinook-database/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite $WORKDIR/GenAIExamples/AgentQnA/tests/
+</section>
+</section>
+<section id="third-set-up-environment-variables-for-the-selected-hardware-using-the-corresponding-set-env-sh">
+<h4>Third, set up environment variables for the selected hardware using the corresponding <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code><a class="headerlink" href="#third-set-up-environment-variables-for-the-selected-hardware-using-the-corresponding-set-env-sh" title="Link to this heading">¶</a></h4>
+<section id="gaudi">
+<h5>Gaudi<a class="headerlink" href="#gaudi" title="Link to this heading">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/set_env.sh
 </pre></div>
 </div>
-</li>
-<li><p>Launch other tools. </br>
-In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
+</section>
+<section id="xeon">
+<h5>Xeon<a class="headerlink" href="#xeon" title="Link to this heading">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/set_env.sh
 </pre></div>
 </div>
-</li>
-<li><p>Launch multi-agent system. </br>
-We provide two options for <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs on Intel Gaudi2, 2. OpenAI models via API calls.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Gaudi" for="sd-tab-item-0">
-Gaudi</label><div class="sd-tab-content docutils">
-<p>On Gaudi2 we will serve <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> using vllm.</p>
-<p>First build vllm-gaudi docker image.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
-<span class="nb">cd</span><span class="w"> </span>./vllm
-git<span class="w"> </span>checkout<span class="w"> </span>v0.6.6
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
-</pre></div>
-</div>
-<p>Then launch vllm on Gaudi2 with the command below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">vllm_port</span><span class="o">=</span><span class="m">8086</span>
-<span class="nv">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3.1-70B-Instruct&quot;</span>
-<span class="nv">vllm_volume</span><span class="o">=</span><span class="nv">$HF_CACHE_DIR</span><span class="w"> </span><span class="c1"># you should have set this env var in previous step</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;vllm-gaudi-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span>-p<span class="w"> </span><span class="nv">$vllm_port</span>:8000<span class="w"> </span>-v<span class="w"> </span><span class="nv">$vllm_volume</span>:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HUGGING_FACE_HUB_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span>/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">PT_HPU_ENABLE_LAZY_COLLECTIVES</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">VLLM_SKIP_WARMUP</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--model<span class="w"> </span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>--max-seq-len-to-capture<span class="w"> </span><span class="m">16384</span><span class="w"> </span>--tensor-parallel-size<span class="w"> </span><span class="m">4</span>
-</pre></div>
-</div>
-<p>Then launch Agent microservices.</p>
+</section>
+</section>
+</section>
+<section id="launch-the-multi-agent-system">
+<h3>3. Launch the multi-agent system. </br><a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
+<p>Two options are provided for the <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs on Gaudi, 2. OpenAI models via API calls.</p>
+<section id="id1">
+<h4>Gaudi<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<p>On Gaudi, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> will be served using vllm.
+By default, both the RAG agent and SQL agent will be launched to support the React Agent.<br />
+The React Agent requires the DocIndexRetriever’s <a class="reference internal" href="#../DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code></span></a> file, so two <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> files need to be run with docker compose to start the multi-agent system.</p>
+<blockquote>
+<div><p><strong>Note</strong>: To enable the web search tool, skip this step and proceed to the “[Optional] Web Search Tool Support” section.</p>
+</div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
-bash<span class="w"> </span>launch_agent_service_gaudi.sh
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-</div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Xeon" for="sd-tab-item-1">
-Xeon</label><div class="sd-tab-content docutils">
-<p>To use OpenAI models, run commands below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export OPENAI_API_KEY=&lt;your-openai-key&gt;
-cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
-bash launch_agent_service_openai.sh
+<section id="optional-web-search-tool-support">
+<h5>[Optional] Web Search Tool Support<a class="headerlink" href="#optional-web-search-tool-support" title="Link to this heading">¶</a></h5>
+<details>
+<summary> Instructions </summary>
+A web search tool is supported in this example and can be enabled by running docker compose with the `compose.webtool.yaml` file.  
+The Google Search API is used. Follow the [instructions](https://python.langchain.com/docs/integrations/tools/google_search) to create an API key and enable the Custom Search API on a Google account. The environment variables `GOOGLE_CSE_ID` and `GOOGLE_API_KEY` need to be set.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_CSE_ID</span><span class="o">=</span><span class="s2">&quot;YOUR_ID&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_API_KEY</span><span class="o">=</span><span class="s2">&quot;YOUR_API_KEY&quot;</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.webtool.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-</div>
-</div>
-</li>
-</ol>
+</details>
 </section>
-<section id="deploy-agentqna-ui">
-<h2>Deploy AgentQnA UI<a class="headerlink" href="#deploy-agentqna-ui" title="Link to this heading">¶</a></h2>
-<p>The AgentQnA UI can be deployed locally or using Docker.</p>
-<p>For detailed instructions on deploying AgentQnA UI, refer to the <a class="reference internal" href="ui/svelte/README.html"><span class="std std-doc">AgentQnA UI Guide</span></a>.</p>
 </section>
-<section id="deploy-using-helm-chart">
-<h2>Deploy using Helm Chart<a class="headerlink" href="#deploy-using-helm-chart" title="Link to this heading">¶</a></h2>
+<section id="id2">
+<h4>Xeon<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<p>On Xeon, only OpenAI models are supported.
+By default, both the RAG Agent and SQL Agent will be launched to support the React Agent.<br />
+The React Agent requires the DocIndexRetriever’s <a class="reference internal" href="#../DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code></span></a> file, so two <code class="docutils literal notranslate"><span class="pre">compose</span> <span class="pre">yaml</span></code> files need to be run with docker compose to start the multi-agent system.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>&lt;your-openai-key&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose_openai.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ingest-data-into-the-vector-database">
+<h3>4. Ingest Data into the vector database<a class="headerlink" href="#ingest-data-into-the-vector-database" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_ingest_data.sh</span></code> script will use an example jsonl file to ingest example documents into a vector database. Other ways to ingest data and other types of documents supported can be found in the OPEA dataprep microservice located in the opea-project/GenAIComps repo.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w">  </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/retrieval_tool/
+bash<span class="w"> </span>run_ingest_data.sh
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note</strong>: This is a one-time operation.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="launch-the-ui">
+<h2>Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
+<p>Open a web browser to http://localhost:5173 to access the UI. Ensure the environment variable <code class="docutils literal notranslate"><span class="pre">AGENT_URL</span></code> is set to http://$ip_address:9090/v1/chat/completions in <a class="reference internal" href="#./ui/svelte/.env"><span class="xref myst">ui/svelte/.env</span></a> or else the UI may not work properly.</p>
+<p>The AgentQnA UI can be deployed locally or using Docker. To customize deployment, refer to the <a class="reference internal" href="ui/svelte/README.html"><span class="std std-doc">AgentQnA UI Guide</span></a>.</p>
+</section>
+<section id="optional-deploy-using-helm-charts">
+<h2>[Optional] Deploy using Helm Charts<a class="headerlink" href="#optional-deploy-using-helm-charts" title="Link to this heading">¶</a></h2>
 <p>Refer to the <a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">AgentQnA helm chart</span></a> for instructions on deploying AgentQnA on Kubernetes.</p>
 </section>
 <section id="validate-services">
-<h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
+<h2>Validate Services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>First look at logs of the agent docker containers:</p></li>
+<li><p>First look at logs for each of the agent docker containers:</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker RAG agent</span>
+docker<span class="w"> </span>logs<span class="w"> </span>rag-agent-endpoint
 
 <span class="c1"># worker SQL agent</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">sql</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+docker<span class="w"> </span>logs<span class="w"> </span>sql-agent-endpoint
+
+<span class="c1"># supervisor agent</span>
+docker<span class="w"> </span>logs<span class="w"> </span>react-agent-endpoint
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">react</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
-</pre></div>
-</div>
-<p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
+<p>Look for the message “HTTP server setup successful” to confirm the agent docker container has started successfully.</p></p>
 <ol class="arabic simple" start="2">
-<li><p>You can use python to validate the agent system</p></li>
+<li><p>Use python to validate each agent is working properly:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># RAG worker agent</span>
-python<span class="w"> </span>tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;Tell me about Michael Jackson song Thriller&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9095</span>
+python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;Tell me about Michael Jackson song Thriller&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9095</span>
 
 <span class="c1"># SQL agent</span>
-python<span class="w"> </span>tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;How many employees in company&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9096</span>
+python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;How many employees in company&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9096</span>
 
 <span class="c1"># supervisor agent: this will test a two-turn conversation</span>
-python<span class="w"> </span>tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9090</span>
+python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="m">9090</span>
 </pre></div>
 </div>
 </section>
-<section id="how-to-register-your-own-tools-with-agent">
-<h2>How to register your own tools with agent<a class="headerlink" href="#how-to-register-your-own-tools-with-agent" title="Link to this heading">¶</a></h2>
-<p>You can take a look at the tools yaml and python files in this example. For more details, please refer to the “Provide your own tools” section in the instructions <a class="reference internal" href="../../GenAIComps/comps/agent/src/README.html"><span class="std std-doc">here</span></a>.</p>
+<section id="how-to-register-other-tools-with-the-ai-agent">
+<h2>How to register other tools with the AI agent<a class="headerlink" href="#how-to-register-other-tools-with-the-ai-agent" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="#./tools"><span class="xref myst">tools</span></a> folder contains YAML and Python files for additional tools for the supervisor and worker agents. Refer to the “Provide your own tools” section in the instructions <a class="reference internal" href="../../GenAIComps/comps/agent/src/README.html"><span class="std std-doc">here</span></a> to add tools and customize the AI agents.</p>
 </section>
 </section>
 
