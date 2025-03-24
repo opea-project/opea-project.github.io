@@ -238,6 +238,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/README.html">AudioQnA Benchmarking</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of AudioQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Build Mega Service of AudioQnA on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README_vllm.html">Deploy AudioQnA application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Build Mega Service of AudioQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy AudioQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/helm/README.html">Deploy AudioQnA on Kubernetes cluster</a></li>
@@ -2311,98 +2312,300 @@
 <p>This document outlines the deployment process for a AudioQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice
 pipeline on server on AMD ROCm GPU platform.</p>
 <section id="build-docker-images">
-<h2>🚀 Build Docker images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<ul>
+<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/audioqna-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>audioqna-install
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+</pre></div>
+</div>
+<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version:</p>
+</li>
+<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/audioqna-install/GenAIExamples/AudioQnA/docker_image_build
+</pre></div>
+</div>
+</li>
+<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
+This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
+</li>
+</ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
 </pre></div>
 </div>
-</section>
-<section id="build-asr-image">
-<h3>2. Build ASR Image<a class="headerlink" href="#build-asr-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
+<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
+<ul>
+<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
+<p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
+<h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;vllm-rocm whisper speecht5 audioqna audioqna-ui&quot;</span>
 </pre></div>
 </div>
-</section>
-<section id="build-llm-image">
-<h3>3. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<p>For compose for ROCm example AMD optimized image hosted in huggingface repo will be used for TGI service: ghcr.io/huggingface/text-generation-inference:2.3.1-rocm (https://github.com/huggingface/text-generation-inference)</p>
-</section>
-<section id="build-tts-image">
-<h3>4. Build TTS Image<a class="headerlink" href="#build-tts-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/src/integrations/dependency/speecht5/Dockerfile<span class="w"> </span>.
+<h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;whisper speecht5 audioqna audioqna-ui&quot;</span>
 </pre></div>
 </div>
-</section>
-<section id="build-megaservice-docker-image">
-<h3>5. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">audioqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/audioqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</li>
+<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-want-to-use-tgi">Optional. Pull TGI Docker Image (Do this if you want to use TGI)</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have following images ready:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/speecht5:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/audioqna:latest</span></code></p></li>
-</ol>
-</section>
-</section>
-<section id="set-the-environment-variables">
-<h2>🚀 Set the environment variables<a class="headerlink" href="#set-the-environment-variables" title="Link to this heading">¶</a></h2>
-<p>Before starting the services with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code>, you have to recheck the following environment variables.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span>&lt;your<span class="w"> </span>External<span class="w"> </span>Public<span class="w"> </span>IP&gt;<span class="w">    </span><span class="c1"># export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;your<span class="w"> </span>HF<span class="w"> </span>token&gt;
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Intel/neural-chat-7b-v3-3
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_PORT</span><span class="o">=</span><span class="m">7066</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_PORT</span><span class="o">=</span><span class="m">7055</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_PORT</span><span class="o">=</span><span class="m">3006</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/audioqna
+</li>
+<li><h4 class="rubric" id="id1">Build Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
 </pre></div>
 </div>
-<p>or use set_env.sh file to setup environment variables.</p>
-<p>Note: Please replace with host_ip with your external IP address, do not use localhost.</p>
-<p>Note: In order to limit access to a subset of GPUs, please pass each device individually using one or more -device /dev/dri/rendered, where is the card index, starting from 128. (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
-<p>Example for set isolation for 1 GPU</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  - /dev/dri/card0:/dev/dri/card0
-  - /dev/dri/renderD128:/dev/dri/renderD128
+<p>After the build, we check the list of images with the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
 </pre></div>
 </div>
-<p>Example for set isolation for 2 GPUs</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  - /dev/dri/card0:/dev/dri/card0
-  - /dev/dri/renderD128:/dev/dri/renderD128
-  - /dev/dri/card0:/dev/dri/card0
-  - /dev/dri/renderD129:/dev/dri/renderD129
-</pre></div>
-</div>
-<p>Please find more information about accessing and restricting AMD GPUs in the link (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
-</section>
-<section id="start-the-megaservice">
-<h2>🚀 Start the MegaService<a class="headerlink" href="#start-the-megaservice" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/docker_compose/amd/gpu/rocm/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>In following cases, you could build docker image from source by yourself.</p>
+<p>The list of images should include:</p>
+<h5 class="rubric" id="id2">vLLM-based application:</h5>
 <ul class="simple">
-<li><p>Failed to download the docker image.</p></li>
-<li><p>If you want to use a specific version of Docker image.</p></li>
+<li><p>opea/vllm-rocm:latest</p>
+<ul>
+<li><p>opea/whisper:latest</p></li>
+<li><p>opea/speecht5:latest</p></li>
+<li><p>opea/audioqna:latest</p></li>
 </ul>
-<p>Please refer to ‘Build Docker Images’ in below.</p>
+</li>
+</ul>
+<h5 class="rubric" id="id3">TGI-based application:</h5>
+<ul class="simple">
+<li><p>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm</p>
+<ul>
+<li><p>opea/whisper:latest</p></li>
+<li><p>opea/speecht5:latest</p></li>
+<li><p>opea/audioqna:latest</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </section>
-<section id="consume-the-audioqna-service">
-<h2>🚀 Consume the AudioQnA Service<a class="headerlink" href="#consume-the-audioqna-service" title="Link to this heading">¶</a></h2>
+</section>
+<hr class="docutils" />
+<section id="deploy-the-audioqna-application">
+<h2>Deploy the AudioQnA Application<a class="headerlink" href="#deploy-the-audioqna-application" title="Link to this heading">¶</a></h2>
+<section id="docker-compose-configuration-for-amd-gpus">
+<h3>Docker Compose Configuration for AMD GPUs<a class="headerlink" href="#docker-compose-configuration-for-amd-gpus" title="Link to this heading">¶</a></h3>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/:/dev/dri/</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
+</section>
+<section id="set-deploy-environment-variables">
+<h3>Set deploy environment variables<a class="headerlink" href="#set-deploy-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="setting-variables-in-the-operating-system-environment">
+<h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
+<section id="set-variable-huggingfacehub-api-token">
+<h5>Set variable HUGGINGFACEHUB_API_TOKEN:<a class="headerlink" href="#set-variable-huggingfacehub-api-token" title="Link to this heading">¶</a></h5>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="set-variables-value-in-set-env-sh-file">
+<h4>Set variables value in set_env****.sh file:<a class="headerlink" href="#set-variables-value-in-set-env-sh-file" title="Link to this heading">¶</a></h4>
+<p>Go to Docker Compose directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/audioqna-install/GenAIExamples/AudioQnA/docker_compose/amd/gpu/rocm
+</pre></div>
+</div>
+<p>The example uses the Nano text editor. You can use any convenient text editor:</p>
+</section>
+<section id="if-you-use-vllm">
+<h4>If you use vLLM<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env_vllm.sh
+</pre></div>
+</div>
+</section>
+<section id="if-you-use-tgi">
+<h4>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+<p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
+</section>
+<section id="set-variables-with-script-set-env-sh">
+<h4>Set variables with script set_env****.sh<a class="headerlink" href="#set-variables-with-script-set-env-sh" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id4">
+<h4>If you use vLLM<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env_vllm.sh
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h4>If you use TGI<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-the-services">
+<h3>Start the services:<a class="headerlink" href="#start-the-services" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>If you use vLLM<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h4>If you use TGI<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>All containers should be running and should not restart:</p>
+<section id="id8">
+<h5>If you use vLLM:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>audioqna-vllm-service</p></li>
+<li><p>whisper-service</p></li>
+<li><p>speecht5-service</p></li>
+<li><p>audioqna-backend-server</p></li>
+<li><p>audioqna-ui-server</p></li>
+</ul>
+</section>
+<section id="id9">
+<h5>If you use TGI:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>audioqna-tgi-service</p></li>
+<li><p>whisper-service</p></li>
+<li><p>speecht5-service</p></li>
+<li><p>audioqna-backend-server</p></li>
+<li><p>audioqna-ui-server</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validate-the-services">
+<h2>Validate the Services<a class="headerlink" href="#validate-the-services" title="Link to this heading">¶</a></h2>
+<section id="validate-the-vllm-tgi-service">
+<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>If you use vLLM:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3t&quot;, &#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;: 256}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-142f34ef35b64a8db3deedd170fed951&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742270316</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">322</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the vLLM service to be successfully launched</p>
+</section>
+<section id="id11">
+<h4>If you use TGI:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; &quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
+</section>
+</section>
+<section id="validate-megaservices">
+<h3>2. Validate MegaServices<a class="headerlink" href="#validate-megaservices" title="Link to this heading">¶</a></h3>
 <p>Test the AudioQnA megaservice by recording a .wav file, encoding the file into the base64 format, and then sending the
 base64 string to the megaservice endpoint. The megaservice will return a spoken response as a base64 string. To listen
 to the response, decode the base64 string and save it as a .wav file.</p>
@@ -2414,18 +2617,12 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </section>
-<section id="test-microservices">
-<h2>🚀 Test MicroServices<a class="headerlink" href="#test-microservices" title="Link to this heading">¶</a></h2>
+<section id="validate-microservices">
+<h3>3. Validate MicroServices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># whisper service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># tgi service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3006/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 
 <span class="c1"># speecht5 service</span>
@@ -2435,6 +2632,24 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+</section>
+<section id="stop-application">
+<h3>4. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<section id="id12">
+<h4>If you use vLLM<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/audioqna-install/GenAIExamples/AudioQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h4>If you use TGI<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/audioqna-install/GenAIExamples/AudioQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 
