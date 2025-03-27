@@ -1649,6 +1649,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">VisualQnA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installing-the-chart">Installing the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 </ul>
@@ -2344,8 +2345,29 @@
 <p>Helm chart for deploying VisualQnA service. VisualQnA depends on the following services:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../common/lvm-uservice/README.html"><span class="std std-doc">lvm-uservice</span></a></p></li>
-<li><p><a class="reference internal" href="../common/tgi/README.html"><span class="std std-doc">tgi</span></a></p></li>
+<li><p><a class="reference internal" href="../common/vllm/README.html"><span class="std std-doc">vllm</span></a></p></li>
 </ul>
+<section id="installing-the-chart">
+<h2>Installing the Chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
+<p>To install the chart, run the following:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/</span>
+<span class="go">./update_dependency.sh</span>
+<span class="go">helm dependency update visualqna</span>
+<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
+<span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>vLLM
+<span class="go">helm install visualqna visualqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR}</span>
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>with<span class="w"> </span>vLLM
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>visualqna<span class="w"> </span>visualqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>visualqna/gaudi-values.yaml
+</pre></div>
+</div>
+<section id="important-note">
+<h3>IMPORTANT NOTE<a class="headerlink" href="#important-note" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Make sure your <code class="docutils literal notranslate"><span class="pre">MODELDIR</span></code> exists on the node where your workload is scheduled so you can cache the downloaded model for next time use. Otherwise, set <code class="docutils literal notranslate"><span class="pre">global.modelUseHostPath</span></code> to ‘null’ if you don’t want to cache the model.</p></li>
+</ol>
+</section>
+</section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>To verify the installation, run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">pod</span></code> to make sure all pods are running.</p>
@@ -2391,7 +2413,7 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;8888&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>tgi.LLM_MODEL_ID</p></td>
+<tr class="row-even"><td><p>vllm.LLM_MODEL_ID</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;llava-hf/llava-v1.6-mistral-7b-hf&quot;</span></code></p></td>
 <td><p>Models id from https://huggingface.co/, or predownloaded model directory</p></td>
