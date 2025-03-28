@@ -2345,6 +2345,7 @@
   <section id="build-megaservice-of-document-summarization-on-gaudi">
 <h1>Build MegaService of Document Summarization on Gaudi<a class="headerlink" href="#build-megaservice-of-document-summarization-on-gaudi" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a Document Summarization application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Gaudi server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">llm</span></code>. We will publish the Docker images to Docker Hub soon, which will simplify the deployment process for this service.</p>
+<p>The default pipeline deploys with vLLM as the LLM serving component. It also provides options of using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-microservice-docker-containers"><span class="xref myst">start-microservice-docker-containers</span></a> section in this page.</p>
 <section id="build-docker-images">
 <h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <section id="build-microservice-docker-image">
@@ -2442,7 +2443,14 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <section id="start-microservice-docker-containers">
 <h3>Start Microservice Docker Containers<a class="headerlink" href="#start-microservice-docker-containers" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If use vLLM as the LLM serving backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If use TGI as the LLM serving backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>You will have the following Docker Images:</p>
@@ -2456,8 +2464,24 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="validate-microservices">
 <h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
 <ol class="arabic">
-<li><p>TGI Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
+<li><p>LLM backend Service</p>
+<p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.
+Try the command below to check whether the LLM serving is ready.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>docsum-xeon-vllm-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>docsum-xeon-tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
+</pre></div>
+</div>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command below to validate services.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># either vLLM or TGI service</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
