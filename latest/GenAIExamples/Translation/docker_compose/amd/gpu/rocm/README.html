@@ -136,6 +136,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html">AudioQnA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#key-implementation-details">Key Implementation Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#deployment">Deployment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../tutorial/AudioQnA/AudioQnA_Guide.html#single-node">Single Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../tutorial/ChatQnA/ChatQnA_Guide.html">ChatQnA</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/ChatQnA/ChatQnA_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../tutorial/ChatQnA/ChatQnA_Guide.html#purpose">Purpose</a></li>
@@ -379,7 +390,6 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#translation-application">Translation Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Translation Application</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Build and deploy Translation Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#validate-the-microservices-and-megaservice">Validate the MicroServices and MegaService</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Build Mega Service of Translation on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Build MegaService of Translation on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy Translation in a Kubernetes Cluster</a></li>
@@ -2344,46 +2354,106 @@
              
   <section id="build-and-deploy-translation-application-on-amd-gpu-rocm">
 <h1>Build and deploy Translation Application on AMD GPU (ROCm)<a class="headerlink" href="#build-and-deploy-translation-application-on-amd-gpu-rocm" title="Link to this heading">¶</a></h1>
-<section id="build-images">
-<h2>Build images<a class="headerlink" href="#build-images" title="Link to this heading">¶</a></h2>
-<section id="build-the-llm-docker-image">
-<h3>Build the LLM Docker Image<a class="headerlink" href="#build-the-llm-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Cloning repo</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-
-<span class="c1">### Build Docker image</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/llm-textgen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/text-generation/Dockerfile<span class="w"> </span>.
+<section id="build-docker-images">
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<ul>
+<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/translation-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>translation-install
 </pre></div>
 </div>
-</section>
-<section id="build-the-megaservice-docker-image">
-<h3>Build the MegaService Docker Image<a class="headerlink" href="#build-the-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Cloning repo</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/Translation/
-
-<span class="c1">### Build Docker image</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/translation:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 </pre></div>
 </div>
-</section>
-<section id="build-the-ui-docker-image">
-<h3>Build the UI Docker Image<a class="headerlink" href="#build-the-ui-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/Translation/ui
-<span class="c1">### Build UI Docker image</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/translation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
+<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
 </pre></div>
 </div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version:</p>
+</li>
+<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/translation-install/GenAIExamples/Translation/docker_image_build
+</pre></div>
+</div>
+</li>
+<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
+This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+</pre></div>
+</div>
+<p>If you use a specific tag of the GenAIExamples repository,
+then you should also use the corresponding tag for GenAIComps. (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIComps<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
+</li>
+<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
+<p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
+<h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;vllm-rocm translation translation-ui llm-textgen nginx&quot;</span>
+</pre></div>
+</div>
+<h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;translation translation-ui llm-textgen nginx&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-want-to-use-tgi">Optional. Pull TGI Docker Image (Do this if you want to use TGI)</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="id1">Build Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
+</pre></div>
+</div>
+<p>After the build, we check the list of images with the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
+</pre></div>
+</div>
+<p>The list of images should include:</p>
+<h5 class="rubric" id="id2">vLLM-based application:</h5>
+<ul class="simple">
+<li><p>opea/vllm-rocm:latest</p>
+<ul>
+<li><p>opea/llm-textgen:latest</p></li>
+<li><p>opea/nginx:latest</p></li>
+<li><p>opea/translation:latest</p></li>
+<li><p>opea/translation-ui:latest</p></li>
+</ul>
+</li>
+</ul>
+<h5 class="rubric" id="id3">TGI-based application:</h5>
+<ul class="simple">
+<li><p>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm</p>
+<ul>
+<li><p>opea/llm-textgen:latest</p></li>
+<li><p>opea/nginx:latest</p></li>
+<li><p>opea/translation:latest</p></li>
+<li><p>opea/translation-ui:latest</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </section>
-</section>
-<section id="deploy-translation-application">
-<h2>Deploy Translation Application<a class="headerlink" href="#deploy-translation-application" title="Link to this heading">¶</a></h2>
-<section id="features-of-docker-compose-for-amd-gpus">
-<h3>Features of Docker compose for AMD GPUs<a class="headerlink" href="#features-of-docker-compose-for-amd-gpus" title="Link to this heading">¶</a></h3>
-<ol class="arabic simple">
-<li><p>Added forwarding of GPU devices to the container TGI service with instructions:</p></li>
-</ol>
+<hr class="docutils" />
+<section id="docker-compose-configuration-for-amd-gpus">
+<h3>Docker Compose Configuration for AMD GPUs<a class="headerlink" href="#docker-compose-configuration-for-amd-gpus" title="Link to this heading">¶</a></h3>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
 <span class="nt">devices</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
@@ -2396,13 +2466,12 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
 </pre></div>
 </div>
-<p>In this case, all GPUs are thrown. To reset a specific GPU, you need to use specific device names cardN and renderN.</p>
-<p>For example:</p>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
 <span class="nt">devices</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/renderD128:/dev/dri/renderD128</span>
 <span class="nt">cap_add</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
 <span class="nt">group_add</span><span class="p">:</span>
@@ -2411,64 +2480,294 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
 </pre></div>
 </div>
-<p>To find out which GPU device IDs cardN and renderN correspond to the same GPU, use the GPU driver utility</p>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
 </section>
-<section id="go-to-the-directory-with-the-docker-compose-file">
-<h3>Go to the directory with the Docker compose file<a class="headerlink" href="#go-to-the-directory-with-the-docker-compose-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/Translation/docker_compose/amd/gpu/rocm
-</pre></div>
-</div>
-</section>
-<section id="set-environments">
-<h3>Set environments<a class="headerlink" href="#set-environments" title="Link to this heading">¶</a></h3>
-<p>In the file “GenAIExamples/Translation/docker_compose/amd/gpu/rocm/set_env.sh “ it is necessary to set the required values. Parameter assignments are specified in the comments for each variable setting command</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>set_env.sh
-.<span class="w"> </span>set_env.sh
-</pre></div>
-</div>
-</section>
-<section id="run-services">
-<h3>Run services<a class="headerlink" href="#run-services" title="Link to this heading">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+<section id="set-deploy-environment-variables">
+<h3>Set deploy environment variables<a class="headerlink" href="#set-deploy-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="setting-variables-in-the-operating-system-environment">
+<h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
+<section id="set-variable-huggingfacehub-api-token">
+<h5>Set variable HUGGINGFACEHUB_API_TOKEN:<a class="headerlink" href="#set-variable-huggingfacehub-api-token" title="Link to this heading">¶</a></h5>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
+<section id="set-variables-value-in-set-env-sh-file">
+<h4>Set variables value in set_env****.sh file:<a class="headerlink" href="#set-variables-value-in-set-env-sh-file" title="Link to this heading">¶</a></h4>
+<p>Go to Docker Compose directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/translation-install/GenAIExamples/Translation/docker_compose/amd/gpu/rocm
+</pre></div>
+</div>
+<p>The example uses the Nano text editor. You can use any convenient text editor:</p>
 </section>
-<section id="validate-the-microservices-and-megaservice">
-<h1>Validate the MicroServices and MegaService<a class="headerlink" href="#validate-the-microservices-and-megaservice" title="Link to this heading">¶</a></h1>
-<section id="validate-tgi-service">
-<h2>Validate TGI service<a class="headerlink" href="#validate-tgi-service" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">TRANSLATION_HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATIONS_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+<section id="if-you-use-vllm">
+<h4>If you use vLLM<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env_vllm.sh
+</pre></div>
+</div>
+</section>
+<section id="if-you-use-tgi">
+<h4>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+<p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
+</section>
+<section id="set-variables-with-script-set-env-sh">
+<h4>Set variables with script set_env****.sh<a class="headerlink" href="#set-variables-with-script-set-env-sh" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id4">
+<h4>If you use vLLM<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env_vllm.sh
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h4>If you use TGI<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-the-services">
+<h3>Start the services:<a class="headerlink" href="#start-the-services" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>If you use vLLM<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h4>If you use TGI<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>All containers should be running and should not restart:</p>
+<section id="id8">
+<h5>If you use vLLM:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>translationn-vllm-service</p></li>
+<li><p>translation-tgi-service</p></li>
+<li><p>translation-llm</p></li>
+<li><p>translation-backend-server</p></li>
+<li><p>translation-ui-server</p></li>
+<li><p>translation-nginx-server</p></li>
+</ul>
+</section>
+<section id="id9">
+<h5>If you use TGI:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>translation-tgi-service</p></li>
+<li><p>translation-llm</p></li>
+<li><p>translation-backend-server</p></li>
+<li><p>translation-ui-server</p></li>
+<li><p>translation-nginx-server</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validate-the-services">
+<h2>Validate the Services<a class="headerlink" href="#validate-the-services" title="Link to this heading">¶</a></h2>
+<section id="validate-the-vllm-tgi-service">
+<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>If you use vLLM:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;haoranxu/ALMA-13B&quot;, &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;: 100, &quot;temperature&quot;: 0}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cmpl-059dd7fb311a46c2b807e0b3315e730c&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1743063706</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;haoranxu/ALMA-13B&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Deep Learning is a subset of machine learning. It attempts to mimic the way the human brain learns. Deep Learning is a subset of machine learning. It attempts to mimic the way the human brain learns. Deep Learning is a subset of machine learning. It attempts to mimic the way the human brain learns. Deep Learning is a subset of machine learning. It attempts to mimic the way the human brain learns. Deep Learning is a subset of machine learning&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">106</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the vLLM service to be successfully launched</p>
 </section>
-<section id="validate-llm-service">
-<h2>Validate LLM service<a class="headerlink" href="#validate-llm-service" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">TRANSLATION_HOST_IP</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<section id="id11">
+<h4>If you use TGI:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Translate this from Chinese to English:\nChinese: 我爱机器翻译。\nEnglish:&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\n\n What can it Do? What&#39;s the Hype? What Should You Do If&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
 </section>
-<section id="validate-megaservice">
-<h2>Validate MegaService<a class="headerlink" href="#validate-megaservice" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">TRANSLATION_HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_BACKEND_SERVICE_PORT</span><span class="si">}</span>/v1/translation<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;language_from&quot;: &quot;Chinese&quot;,&quot;language_to&quot;: &quot;English&quot;,&quot;source_language&quot;: &quot;我爱机器翻译。&quot;}&#39;</span>
+</section>
+<section id="validate-the-llm-service">
+<h3>2. Validate the LLM Service<a class="headerlink" href="#validate-the-llm-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;max_tokens&quot;:32,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;repetition_penalty&quot;:1.03,&quot;stream&quot;:false}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Deep Learning is a subset of machine learning. It attempts to mimic the way the human brain learns. Deep Learning is a subset of machine learning.&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742978568</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;haoranxu/ALMA-13B&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;system_fingerprint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.3.1-sha-a094729-rocm&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">38</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;completion_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
 <section id="validate-nginx-service">
-<h2>Validate Nginx service<a class="headerlink" href="#validate-nginx-service" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">TRANSLATION_HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_NGINX_PORT</span><span class="si">}</span>/v1/translation<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Chinese&quot;,&quot;language_to&quot;: &quot;English&quot;,&quot;source_language&quot;: &quot;我爱机器翻译。&quot;}&#39;</span>
+<h3>3. Validate Nginx Service<a class="headerlink" href="#validate-nginx-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Chinese&quot;,&quot;language_to&quot;: &quot;English&quot;,&quot;source_language&quot;: &quot;我爱机器翻译。&quot;}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/translation<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; I&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; love&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; machine&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; translation&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;.&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;eos_token&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;&lt;/s&gt;&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:{&quot;completion_tokens&quot;:6,&quot;prompt_tokens&quot;:3071,&quot;total_tokens&quot;:3077,&quot;completion_tokens_details&quot;:null,&quot;prompt_tokens_details&quot;:null}}
+
+data: [DONE]
+</pre></div>
+</div>
+</section>
+<section id="validate-megaservice">
+<h3>4. Validate MegaService<a class="headerlink" href="#validate-megaservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Chinese&quot;,&quot;language_to&quot;: &quot;English&quot;,&quot;source_language&quot;: &quot;我爱机器翻译。&quot;}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_BACKEND_SERVICE_PORT</span><span class="si">}</span>/v1/translation<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; I&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; love&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; machine&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; translation&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;.&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+
+data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;eos_token&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;&lt;/s&gt;&quot;}],&quot;created&quot;:1742978968,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:{&quot;completion_tokens&quot;:6,&quot;prompt_tokens&quot;:3071,&quot;total_tokens&quot;:3077,&quot;completion_tokens_details&quot;:null,&quot;prompt_tokens_details&quot;:null}}
+
+data: [DONE]
+
+</pre></div>
+</div>
+<p>If the response text is similar to the one above, then we consider the service verification successful.</p>
+</section>
+<section id="validate-frontend">
+<h3>5. Validate Frontend<a class="headerlink" href="#validate-frontend" title="Link to this heading">¶</a></h3>
+<p>To access the UI, use the URL - http://${EXTERNAL_HOST_IP}:${TRANSLATION_FRONTEND_SERVICE_PORT} A page should open when you click through to this address:
+<img alt="UI start page" src="../../../../../../_images/translation-ui-starting-page.png" /></p>
+<p>If a page of this type has opened, then we believe that the service is running and responding, and we can proceed to functional UI testing.</p>
+<p>Let’s enter the task for the service in the “Input” field. For example, “我爱机器翻译” with selected “German” as language source and press Enter. After that, a page with the result of the task should open:</p>
+<p><img alt="UI start page" src="../../../../../../_images/translation-ui-response-example.png" />
+If the result shown on the page is correct, then we consider the verification of the UI service to be successful.</p>
+</section>
+<section id="stop-application">
+<h3>6. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<section id="id12">
+<h4>If you use vLLM<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/translation-install/GenAIExamples/Translation/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h4>If you use TGI<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/translation-install/GenAIExamples/Translation/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 
@@ -2486,7 +2785,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Mar 28, 2025.</span>
+<span class="lastupdated">Published on Mar 31, 2025.</span>
 
   </div>
 
