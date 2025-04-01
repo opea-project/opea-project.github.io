@@ -2415,7 +2415,7 @@ It enables us to host our own reranker endpoint seamlessly.</p>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;reranking-tei-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True<span class="w">  </span>-p<span class="w"> </span><span class="m">10700</span>:8000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_RERANKING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w">  </span>-e<span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_TEI_RERANKING&quot;</span><span class="w">  </span>opea/reranking:comps
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;reranking-tei-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True<span class="w">  </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_RERANKING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w">  </span>-e<span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_TEI_RERANKING&quot;</span><span class="w">  </span>opea/reranking:comps
 </pre></div>
 </div>
 </li>
@@ -2430,7 +2430,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <li><p>Set environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_PORT</span><span class="o">=</span><span class="m">12005</span>
-<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_PORT</span><span class="o">=</span><span class="m">10700</span>
+<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_PORT</span><span class="o">=</span><span class="m">8000</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span>comps
@@ -2463,7 +2463,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <h3>🔹 3.1 Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p>Verify the reranking service is running:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>curl<span class="w"> </span>http://localhost:10700/v1/health_check<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>curl<span class="w"> </span>http://localhost:8000/v1/health_check<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
@@ -2475,7 +2475,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <h3>🔹 3.2 Use the Reranking Service API<a class="headerlink" href="#use-the-reranking-service-api" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p>Execute reranking process by providing query and documents</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:10700/v1/reranking<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8000/v1/reranking<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
@@ -2484,7 +2484,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <ul class="simple">
 <li><p>You can add the parameter <code class="docutils literal notranslate"><span class="pre">top_n</span></code> to specify the return number of the reranker model, default value is 1.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:10700/v1/reranking<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8000/v1/reranking<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}], &quot;top_n&quot;:2}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
