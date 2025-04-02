@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Single node on-prem deployment with Docker Compose on AMD GPU &mdash; OPEA™ 1.2 documentation</title>
+  <title>Build Mega Service of AgentQnA on AMD ROCm GPU &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -235,7 +235,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../../examples/examples.html">Examples</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#agentqna-application">AgentQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Agents for Question Answering</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Single node on-prem deployment with Docker Compose on AMD GPU</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of AgentQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Single node on-prem deployment with Docker Compose on Xeon Scalable processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Single node on-prem deployment AgentQnA on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/helm/README.html">Deploy AgentQnA on Kubernetes cluster</a></li>
@@ -2337,7 +2337,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Single node on-prem deployment with Docker Compose on AMD GPU</li>
+  <li>Build Mega Service of AgentQnA on AMD ROCm GPU</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm/README.md.txt" rel="nofollow"> View page source</a>
@@ -2357,97 +2357,322 @@
   
            <div itemprop="articleBody">
              
-  <section id="single-node-on-prem-deployment-with-docker-compose-on-amd-gpu">
-<h1>Single node on-prem deployment with Docker Compose on AMD GPU<a class="headerlink" href="#single-node-on-prem-deployment-with-docker-compose-on-amd-gpu" title="Link to this heading">¶</a></h1>
-<p>This example showcases a hierarchical multi-agent system for question-answering applications. We deploy the example on Xeon. For LLMs, we use OpenAI models via API calls. For instructions on using open-source LLMs, please refer to the deployment guide <a class="reference internal" href="../../../../README.html"><span class="std std-doc">here</span></a>.</p>
-<section id="deployment-with-docker">
-<h2>Deployment with docker<a class="headerlink" href="#deployment-with-docker" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>First, clone this repo.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
-cd $WORKDIR
-git clone https://github.com/opea-project/GenAIExamples.git
+  <section id="build-mega-service-of-agentqna-on-amd-rocm-gpu">
+<h1>Build Mega Service of AgentQnA on AMD ROCm GPU<a class="headerlink" href="#build-mega-service-of-agentqna-on-amd-rocm-gpu" title="Link to this heading">¶</a></h1>
+<section id="build-docker-images">
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<ul>
+<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/agentqna-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>agentqna-install
 </pre></div>
 </div>
 </li>
-<li><p>Set up environment for this example </br></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Example: host_ip=&quot;192.168.1.1&quot; or export host_ip=&quot;External_Public_IP&quot;
-export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
-# if you are in a proxy environment, also set the proxy-related environment variables
-export http_proxy=&quot;Your_HTTP_Proxy&quot;
-export https_proxy=&quot;Your_HTTPs_Proxy&quot;
-# Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;
-export no_proxy=&quot;Your_No_Proxy&quot;
+<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+</pre></div>
+</div>
+<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version:</p>
+</li>
+<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_image_build
+</pre></div>
+</div>
+</li>
+<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
+This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
+</li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
+<ul>
+<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
+<p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
+<h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;vllm-rocm agent agent-ui&quot;</span>
+</pre></div>
+</div>
+<h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;agent agent-ui&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-want-to-use-tgi">Optional. Pull TGI Docker Image (Do this if you want to use TGI)</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="id1">Build Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="build-docindexretriever-docker-images">Build DocIndexRetriever Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/DocIndexRetriever/docker_image_build/
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;doc-index-retriever dataprep embedding retriever reranking&quot;</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="pull-docindexretriever-docker-images">Pull DocIndexRetriever Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>redis/redis-stack:7.2.0-v9
+docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5
+</pre></div>
+</div>
+<p>After the build, we check the list of images with the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
+</pre></div>
+</div>
+<p>The list of images should include:</p>
+<h5 class="rubric" id="id2">vLLM-based application:</h5>
+<ul class="simple">
+<li><p>opea/vllm-rocm:latest</p></li>
+<li><p>opea/agent:latest</p></li>
+<li><p>redis/redis-stack:7.2.0-v9</p></li>
+<li><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></li>
+<li><p>opea/embedding:latest</p></li>
+<li><p>opea/retriever:latest</p></li>
+<li><p>opea/reranking:latest</p></li>
+<li><p>opea/doc-index-retriever:latest</p></li>
+</ul>
+<h5 class="rubric" id="id3">TGI-based application:</h5>
+<ul class="simple">
+<li><p>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm</p></li>
+<li><p>opea/agent:latest</p></li>
+<li><p>redis/redis-stack:7.2.0-v9</p></li>
+<li><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</p></li>
+<li><p>opea/embedding:latest</p></li>
+<li><p>opea/retriever:latest</p></li>
+<li><p>opea/reranking:latest</p></li>
+<li><p>opea/doc-index-retriever:latest</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="deploy-the-agentqna-application">
+<h2>Deploy the AgentQnA Application<a class="headerlink" href="#deploy-the-agentqna-application" title="Link to this heading">¶</a></h2>
+<section id="docker-compose-configuration-for-amd-gpus">
+<h3>Docker Compose Configuration for AMD GPUs<a class="headerlink" href="#docker-compose-configuration-for-amd-gpus" title="Link to this heading">¶</a></h3>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri:/dev/dri</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
+</section>
+<section id="set-deploy-environment-variables">
+<h3>Set deploy environment variables<a class="headerlink" href="#set-deploy-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="setting-variables-in-the-operating-system-environment">
+<h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;server_address&#39; with your local server IP address</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s1">&#39;server_address&#39;</span>
+<span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
+<span class="c1">### Replace the string &#39;your_langchain_api_key&#39; with your LANGCHAIN API KEY.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGCHAIN_API_KEY</span><span class="o">=</span><span class="s1">&#39;your_langchain_api_key&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGCHAIN_TRACING_V2</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-the-services">
+<h3>Start the services:<a class="headerlink" href="#start-the-services" title="Link to this heading">¶</a></h3>
+<section id="if-you-use-vllm">
+<h4>If you use vLLM<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
+bash<span class="w"> </span>launch_agent_service_vllm_rocm.sh
+</pre></div>
+</div>
+</section>
+<section id="if-you-use-tgi">
+<h4>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
+bash<span class="w"> </span>launch_agent_service_tgi_rocm.sh
+</pre></div>
+</div>
+<p>All containers should be running and should not restart:</p>
+<section id="id4">
+<h5>If you use vLLM:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>dataprep-redis-server</p></li>
+<li><p>doc-index-retriever-server</p></li>
+<li><p>embedding-server</p></li>
+<li><p>rag-agent-endpoint</p></li>
+<li><p>react-agent-endpoint</p></li>
+<li><p>redis-vector-db</p></li>
+<li><p>reranking-tei-xeon-server</p></li>
+<li><p>retriever-redis-server</p></li>
+<li><p>sql-agent-endpoint</p></li>
+<li><p>tei-embedding-server</p></li>
+<li><p>tei-reranking-server</p></li>
+<li><p>vllm-service</p></li>
+</ul>
+</section>
+<section id="id5">
+<h5>If you use TGI:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>agentqna-tgi-service</p></li>
+<li><p>whisper-service</p></li>
+<li><p>speecht5-service</p></li>
+<li><p>agentqna-backend-server</p></li>
+<li><p>agentqna-ui-server</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validate-the-services">
+<h2>Validate the Services<a class="headerlink" href="#validate-the-services" title="Link to this heading">¶</a></h2>
+<section id="validate-the-vllm-tgi-service">
+<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>If you use vLLM:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3t&quot;, &#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;: 256}&#39;</span>
 
-export TOOLSET_PATH=$WORKDIR/GenAIExamples/AgentQnA/tools/
-#OPANAI_API_KEY if you want to use OpenAI models
-export OPENAI_API_KEY=&lt;your-openai-key&gt;
-# Set AMD GPU settings
-export AGENTQNA_CARD_ID=&quot;card1&quot;
-export AGENTQNA_RENDER_ID=&quot;renderD136&quot;
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p>Deploy the retrieval tool (i.e., DocIndexRetriever mega-service)</p>
-<p>First, launch the mega-service.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/retrieval_tool
-bash launch_retrieval_tool.sh
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-142f34ef35b64a8db3deedd170fed951&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742270316</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">322</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>Then, ingest data into the vector database. Here we provide an example. You can ingest your own data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">run_ingest_data</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</li>
-<li><p>Launch Tool service
-In this example, we will use some of the mock APIs provided in the Meta CRAG KDD Challenge to demonstrate the benefits of gaining additional context from mock knowledge graphs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">p</span><span class="o">=</span><span class="mi">8080</span><span class="p">:</span><span class="mi">8000</span> <span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">aicrowd</span><span class="o">/</span><span class="n">kdd</span><span class="o">-</span><span class="n">cup</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="n">mock</span><span class="o">-</span><span class="n">api</span><span class="p">:</span><span class="n">v0</span>
-</pre></div>
-</div>
-</li>
-<li><p>Launch <code class="docutils literal notranslate"><span class="pre">Agent</span></code> service</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
-bash launch_agent_service_tgi_rocm.sh
-</pre></div>
-</div>
-</li>
-<li><p>[Optional] Build <code class="docutils literal notranslate"><span class="pre">Agent</span></code> docker image if pulling images failed.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIComps</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">GenAIComps</span>
-<span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">opea</span><span class="o">/</span><span class="n">agent</span><span class="p">:</span><span class="n">latest</span> <span class="o">-</span><span class="n">f</span> <span class="n">comps</span><span class="o">/</span><span class="n">agent</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">Dockerfile</span> <span class="o">.</span>
-</pre></div>
-</div>
-</li>
-</ol>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the vLLM service to be successfully launched</p>
 </section>
-<section id="validate-services">
-<h2>Validate services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
-<p>First look at logs of the agent docker containers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># worker agent</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">rag</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+<section id="id7">
+<h4>If you use TGI:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># supervisor agent</span>
-<span class="n">docker</span> <span class="n">logs</span> <span class="n">react</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; &quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>You should see something like “HTTP server setup successful” if the docker containers are started successfully.</p></p>
-<p>Second, validate worker agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9095/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
-    }&#39;
-</pre></div>
-</div>
-<p>Third, validate supervisor agent:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl http://${host_ip}:9090/v1/chat/completions -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{
-     &quot;query&quot;: &quot;Most recent album by Taylor Swift&quot;
-    }&#39;
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
+</section>
+</section>
+<section id="validate-megaservices">
+<h3>2. Validate MegaServices<a class="headerlink" href="#validate-megaservices" title="Link to this heading">¶</a></h3>
+<p>Test the AgentQnA megaservice by recording a .wav file, encoding the file into the base64 format, and then sending the
+base64 string to the megaservice endpoint. The megaservice will return a spoken response as a base64 string. To listen
+to the response, decode the base64 string and save it as a .wav file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># voice can be &quot;default&quot; or &quot;male&quot;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/agentqna<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;, &quot;max_tokens&quot;:64, &quot;voice&quot;:&quot;default&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^&quot;//;s/&quot;$//&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>output.wav
 </pre></div>
 </div>
 </section>
-<section id="how-to-register-your-own-tools-with-agent">
-<h2>How to register your own tools with agent<a class="headerlink" href="#how-to-register-your-own-tools-with-agent" title="Link to this heading">¶</a></h2>
-<p>You can take a look at the tools yaml and python files in this example. For more details, please refer to the “Provide your own tools” section in the instructions <a class="reference internal" href="../../../../../../GenAIComps/comps/agent/src/README.html"><span class="std std-doc">here</span></a>.</p>
+<section id="validate-microservices">
+<h3>3. Validate MicroServices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># whisper service</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+
+<span class="c1"># speecht5 service</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7055/v1/tts<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="stop-application">
+<h3>4. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h4>If you use vLLM<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h4>If you use TGI<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 
