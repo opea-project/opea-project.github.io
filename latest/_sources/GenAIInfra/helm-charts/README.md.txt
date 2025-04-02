@@ -32,7 +32,6 @@ AI application examples you can run directly on Xeon and Gaudi. You can also ref
 | [codegen](./codegen/README.md)     | [Code Generation](/GenAIExamples/CodeGen/README.md)       | An example of copilot designed for code generation in Visual Studio Code.                       |
 | [codetrans](./codetrans/README.md) | [Code Translation](/GenAIExamples/CodeTrans/README.md)    | An example of programming language code translation.                                            |
 | [docsum](./docsum/README.md)       | [Document Summarization](/GenAIExamples/DocSum/README.md) | An example of document summarization.                                                           |
-| [faqgen](./faqgen/README.md)       | [FAQ generator](/GenAIExamples/FaqGen/README.md)          | An example to generate FAQs.                                                                    |
 | [visualqna](./audioqna/README.md)  | [Visual QnA](/GenAIExamples/VisualQnA/README.md)          | An example of answering open-ended questions based on an image.                                 |
 
 ### Components

@@ -1641,11 +1641,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../docsum/README.html#values">Values</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../faqgen/README.html">FaqGen</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../faqgen/README.html#verify">Verify</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../faqgen/README.html#values">Values</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../searchqna/README.html">SearchQnA</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../searchqna/README.html#installing-the-chart">Installing the Chart</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../searchqna/README.html#verify">Verify</a></li>
@@ -2357,7 +2352,7 @@
              
   <section id="chatqna">
 <h1>ChatQnA<a class="headerlink" href="#chatqna" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying ChatQnA service. ChatQnA depends on the following services:</p>
+<p>Helm chart for deploying ChatQnA/FaqGen service. ChatQnA depends on the following services:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../common/data-prep/README.html"><span class="std std-doc">data-prep</span></a></p></li>
 <li><p><a class="reference internal" href="../common/embedding-usvc/README.html"><span class="std std-doc">embedding-usvc</span></a></p></li>
@@ -2395,7 +2390,10 @@
 <span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>chatqna<span class="w"> </span>chatqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>vllm.LLM_MODEL_ID<span class="o">=</span><span class="si">${</span><span class="nv">MODELNAME</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>redis-vector-db.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>redis-vector-db.resources.limits.memory<span class="o">=</span>4Gi<span class="w"> </span>--set<span class="w"> </span>retriever-usvc.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>retriever-usvc.resources.limits.memory<span class="o">=</span>7Gi<span class="w"> </span>--set<span class="w"> </span>tei.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>tei.resources.limits.memory<span class="o">=</span>4Gi<span class="w"> </span>--set<span class="w"> </span>teirerank.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>teirerank.resources.limits.memory<span class="o">=</span>6Gi<span class="w"> </span>--set<span class="w"> </span>nginx.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>chatqna-ui.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>chatqna-ui.resources.limits.memory<span class="o">=</span>2Gi<span class="w"> </span>--set<span class="w"> </span>data-prep.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>data-prep.resources.limits.memory<span class="o">=</span>11Gi<span class="w"> </span>--set<span class="w"> </span>vllm.tdxEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--set<span class="w"> </span>vllm.resources.limits.memory<span class="o">=</span>80Gi
 
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>vLLM<span class="w"> </span>with<span class="w"> </span>Qdrant<span class="w"> </span>DB
-<span class="go">helm install chatqna chatqna --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR} --set vllm.LLM_MODEL_ID=${MODELNAME} -f chatqna/cpu-qdrant-values.yaml</span>
+<span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>chatqna<span class="w"> </span>chatqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>vllm.LLM_MODEL_ID<span class="o">=</span><span class="si">${</span><span class="nv">MODELNAME</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>chatqna/cpu-qdrant-values.yaml
+
+<span class="gp"># </span>To<span class="w"> </span>deploy<span class="w"> </span>FaqGen
+<span class="gp">#</span>helm<span class="w"> </span>install<span class="w"> </span>faqgen<span class="w"> </span>chatqna<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>-f<span class="w"> </span>chatqna/faqgen-cpu-values.yaml
 </pre></div>
 </div>
 <section id="important-note">
