@@ -2437,8 +2437,18 @@ rm<span class="w"> </span>-rf<span class="w"> </span>vllm-fork
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_PORT</span><span class="o">=</span><span class="m">11507</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:<span class="nv">$VLLM_PORT</span>
+
+<span class="c1"># llava (option 1)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>llava-hf/llava-1.5-7b-hf
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>comps/lvms/deployment/docker_compose/compose.yaml<span class="w"> </span>up<span class="w"> </span>vllm-service<span class="w"> </span>lvm-vllm<span class="w"> </span>-d
+<span class="nb">export</span><span class="w"> </span><span class="nv">CHAT_TEMPLATE</span><span class="o">=</span>examples/template_llava.jinja
+<span class="c1"># UI-TARS (option 2)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>bytedance-research/UI-TARS-7B-DPO
+<span class="nb">export</span><span class="w"> </span><span class="nv">TP_SIZE</span><span class="o">=</span><span class="m">1</span><span class="w">    </span><span class="c1"># change to 4 or 8 if using UI-TARS-72B-DPO</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CHAT_TEMPLATE</span><span class="o">=</span>None
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SKIP_WARMUP</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="c1"># skip the warmup-phase will start the vLLM server quickly on Gaudi, but increase runtime inference time when meeting unseen HPU shape</span>
+
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>comps/lvms/deployment/docker_compose/compose.yaml<span class="w"> </span>up<span class="w"> </span>vllm-gaudi-service<span class="w"> </span>lvm-vllm-gaudi<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
