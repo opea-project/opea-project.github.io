@@ -2368,11 +2368,11 @@
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
 <span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
 <span class="go">export MODELNAME=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-<span class="go">helm install docsum docsum --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR} --set tgi.LLM_MODEL_ID=${MODELNAME}</span>
-<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>TGI
-<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-tgi-values.yaml<span class="w"> </span>...
+<span class="go">helm install docsum docsum --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR} --set llm-uservice.LLM_MODEL_ID=${MODELNAME} --set vllm.LLM_MODEL_ID=${MODELNAME}</span>
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>vLLM
-<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-vllm-values.yaml<span class="w"> </span>..
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-values.yaml<span class="w"> </span>...
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>TGI
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-tgi-values.yaml<span class="w"> </span>..
 </pre></div>
 </div>
 </section>
@@ -2426,12 +2426,17 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;8888&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>tgi.LLM_MODEL_ID</p></td>
+<tr class="row-even"><td><p>llm-uservice.LLM_MODEL_ID</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Intel/neural-chat-7b-v3-3&quot;</span></code></p></td>
+<td><p>Models id from https://huggingface.co/, or predownloaded model directory, must be consistent with vllm.LLM_MODEL_ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>vllm.LLM_MODEL_ID</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;Intel/neural-chat-7b-v3-3&quot;</span></code></p></td>
 <td><p>Models id from https://huggingface.co/, or predownloaded model directory</p></td>
 </tr>
-<tr class="row-odd"><td><p>global.monitoring</p></td>
+<tr class="row-even"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>Enable usage metrics for the service components. See ../monitoring.md before enabling!</p></td>

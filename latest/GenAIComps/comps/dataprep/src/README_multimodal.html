@@ -2424,7 +2424,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <p>This microservice provides 3 different ways for users to ingest files into Redis vector store corresponding to the 3 use cases.</p>
 <section id="consume-ingest-api">
 <h3>3.1 Consume <em>ingest</em> API<a class="headerlink" href="#consume-ingest-api" title="Link to this heading">¶</a></h3>
-<p><strong>Use case:</strong> This API is used for videos accompanied by transcript files (<code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format), images accompanied by text caption files (<code class="docutils literal notranslate"><span class="pre">.txt</span></code> format), and PDF files containing a mix of text and images.</p>
+<p><strong>Use case:</strong> This API is used for videos accompanied by transcript files (<code class="docutils literal notranslate"><span class="pre">.vtt</span></code> format), images accompanied by text caption files (<code class="docutils literal notranslate"><span class="pre">.txt</span></code> format), images accompanied by a spoken audio caption (<code class="docutils literal notranslate"><span class="pre">.wav</span></code> or <code class="docutils literal notranslate"><span class="pre">.mp3</span></code>), and PDF files containing a mix of text and images.</p>
 <p><strong>Important notes:</strong></p>
 <ul class="simple">
 <li><p>Make sure the file paths after <code class="docutils literal notranslate"><span class="pre">files=&#64;</span></code> are correct.</p></li>
@@ -2443,10 +2443,24 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="single-image-caption-pair-upload">
 <h4>Single image-caption pair upload<a class="headerlink" href="#single-image-caption-pair-upload" title="Link to this heading">¶</a></h4>
+<p>Text caption file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
+</pre></div>
+</div>
+<p>Spoken audio caption file:</p>
+<blockquote>
+<div><p>Note: When an audio caption file is provided, the speech is translated to text using the
+<a class="reference external" href="https://openai.com/index/whisper/">whisper model</a>. The translated text is then embedded with the image, and ingested
+into the vector store.</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.jpg&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./image.wav&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
