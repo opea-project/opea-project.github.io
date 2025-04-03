@@ -2548,11 +2548,18 @@ bash<span class="w"> </span>launch_agent_service_tgi_rocm.sh
 <section id="id5">
 <h5>If you use TGI:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h5>
 <ul class="simple">
-<li><p>agentqna-tgi-service</p></li>
-<li><p>whisper-service</p></li>
-<li><p>speecht5-service</p></li>
-<li><p>agentqna-backend-server</p></li>
-<li><p>agentqna-ui-server</p></li>
+<li><p>dataprep-redis-server</p></li>
+<li><p>doc-index-retriever-server</p></li>
+<li><p>embedding-server</p></li>
+<li><p>rag-agent-endpoint</p></li>
+<li><p>react-agent-endpoint</p></li>
+<li><p>redis-vector-db</p></li>
+<li><p>reranking-tei-xeon-server</p></li>
+<li><p>retriever-redis-server</p></li>
+<li><p>sql-agent-endpoint</p></li>
+<li><p>tei-embedding-server</p></li>
+<li><p>tei-reranking-server</p></li>
+<li><p>tgi-service</p></li>
 </ul>
 </section>
 </section>
@@ -2568,7 +2575,7 @@ bash<span class="w"> </span>launch_agent_service_tgi_rocm.sh
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3t&quot;, &#39;</span><span class="se">\</span>
 <span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;: 256}&#39;</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
@@ -2606,7 +2613,7 @@ then we consider the vLLM service to be successfully launched</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
 <span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">AUDIOQNA_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
@@ -2622,48 +2629,48 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 then we consider the TGI service to be successfully launched</p>
 </section>
 </section>
-<section id="validate-megaservices">
-<h3>2. Validate MegaServices<a class="headerlink" href="#validate-megaservices" title="Link to this heading">¶</a></h3>
-<p>Test the AgentQnA megaservice by recording a .wav file, encoding the file into the base64 format, and then sending the
-base64 string to the megaservice endpoint. The megaservice will return a spoken response as a base64 string. To listen
-to the response, decode the base64 string and save it as a .wav file.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># voice can be &quot;default&quot; or &quot;male&quot;</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/agentqna<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;, &quot;max_tokens&quot;:64, &quot;voice&quot;:&quot;default&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^&quot;//;s/&quot;$//&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>output.wav
+<section id="validate-agent-services">
+<h3>2. Validate Agent Services<a class="headerlink" href="#validate-agent-services" title="Link to this heading">¶</a></h3>
+<section id="validate-rag-agent-service">
+<h4>Validate Rag Agent Service<a class="headerlink" href="#validate-rag-agent-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKER_RAG_AGENT_PORT</span><span class="si">}</span>
+<span class="nv">prompt</span><span class="o">=</span><span class="s2">&quot;Tell me about Michael Jackson song Thriller&quot;</span>
+python3<span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$prompt</span><span class="s2">&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span>
 </pre></div>
 </div>
+<p>The response must contain the meaningful text of the response to the request from the “prompt” variable</p>
 </section>
-<section id="validate-microservices">
-<h3>3. Validate MicroServices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># whisper service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># speecht5 service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7055/v1/tts<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<section id="validate-sql-agent-service">
+<h4>Validate Sql Agent Service<a class="headerlink" href="#validate-sql-agent-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKER_SQL_AGENT_PORT</span><span class="si">}</span>
+<span class="nv">prompt</span><span class="o">=</span><span class="s2">&quot;How many employees are there in the company?&quot;</span>
+python3<span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$prompt</span><span class="s2">&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span>
 </pre></div>
 </div>
+<p>The answer should make sense - “8 employees in the company”</p>
+</section>
+<section id="validate-react-supervisor-agent-service">
+<h4>Validate React (Supervisor) Agent Service<a class="headerlink" href="#validate-react-supervisor-agent-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="si">${</span><span class="nv">SUPERVISOR_REACT_AGENT_PORT</span><span class="si">}</span>
+python3<span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--stream
+</pre></div>
+</div>
+<p>The response should contain “Iron Maiden”</p>
+</section>
 </section>
 <section id="stop-application">
-<h3>4. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<h3>3. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
 <section id="id8">
 <h4>If you use vLLM<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+bash<span class="w"> </span>stop_agent_service_vllm_rocm.sh
 </pre></div>
 </div>
 </section>
 <section id="id9">
 <h4>If you use TGI<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/agentqna-install/GenAIExamples/AgentQnA/docker_compose/amd/gpu/rocm
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+bash<span class="w"> </span>stop_agent_service_tgi_rocm.sh
 </pre></div>
 </div>
 </section>
