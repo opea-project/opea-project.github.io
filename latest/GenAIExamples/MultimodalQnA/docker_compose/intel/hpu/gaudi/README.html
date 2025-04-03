@@ -2360,19 +2360,16 @@
 <p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
 <p><strong>Export the value of the public IP address of your Gaudi server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
 <blockquote>
-<div><p>Change the External_Public_IP below with the actual IPV4 value</p>
+<div><p>Change the External_Public_IP below with the actual IPv4 value when setting the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> value (do not use localhost).</p>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
 </pre></div>
 </div>
 <p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="s2">&quot;External_Public_IP&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
@@ -2405,9 +2402,9 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span><span class="s2">/v1/multimodalqna&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">UI_PORT</span><span class="o">=</span><span class="m">5173</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">UI_TIMEOUT</span><span class="o">=</span><span class="m">240</span>
 </pre></div>
 </div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
 <blockquote>
 <div><p>Note: The <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> environment variable is used to specify the maximum number of images that will be sent from the LVM service to the LLaVA server.
 If an image list longer than <code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code> is sent to the LVM server, a shortened image list will be sent to the LLaVA service. If the image list
@@ -2461,8 +2458,15 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </pre></div>
 </div>
 </section>
+<section id="build-tts-server-image">
+<h3>6. Build TTS Server Image<a class="headerlink" href="#build-tts-server-image" title="Link to this heading">¶</a></h3>
+<p>Build TTS server image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/speecht5:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/src/integrations/dependency/speecht5/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
 <section id="build-megaservice-docker-image">
-<h3>6. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
+<h3>7. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
 <p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <a class="reference internal" href="#../../../../multimodalqna.py"><span class="xref myst">multimodalqna.py</span></a> Python script. Build MegaService Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA
@@ -2471,7 +2475,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </div>
 </section>
 <section id="build-ui-docker-image">
-<h3>6. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
+<h3>8. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
 <p>Build frontend Docker image via below command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w">  </span>GenAIExamples/MultimodalQnA/ui/
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
@@ -2484,6 +2488,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.3.1</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/speech5:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/redis-vector-db</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-bridgetower:latest</span></code></p></li>
@@ -2559,7 +2564,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <li><p>retriever-multimodal-redis</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(512)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">REDIS_RETRIEVER_PORT</span><span class="si">}</span>/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span>
@@ -2584,6 +2589,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
+<li><p>tts</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">TTS_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
 <li><p>lvm</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
@@ -2605,10 +2619,10 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Multimodal Dataprep Microservice</p></li>
 </ol>
-<p>Download a sample video, image, PDF, and audio file and create a caption</p>
+<p>Download a sample video (.mp4), image (.png, .gif, .jpg), pdf, and audio file (.wav, .mp3) and create a caption</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">video_fn</span><span class="o">=</span><span class="s2">&quot;WeAreGoingOnBullrun.mp4&quot;</span>
 wget<span class="w"> </span>http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span>
 
@@ -2625,7 +2639,7 @@ wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAI
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>Test dataprep microservice with generating transcript. This command updates a knowledge base by uploading a local video .mp4 and an audio .wav file.</p>
+<p>Test dataprep microservice with generating transcript. This command updates a knowledge base by uploading a local video .mp4 and an audio .wav or .mp3 file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
@@ -2641,7 +2655,7 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Now, test the microservice with posting a custom caption along with an image and a PDF containing images and text.</p>
+<p>Now, test the microservice with posting a custom caption along with an image and a PDF containing images and text. The image caption can be provided as a text (<code class="docutils literal notranslate"><span class="pre">.txt</span></code>) or as spoken audio (<code class="docutils literal notranslate"><span class="pre">.wav</span></code> or <code class="docutils literal notranslate"><span class="pre">.mp3</span></code>).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
@@ -2673,7 +2687,7 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="si">}</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>MegaService</p></li>
 </ol>
 <p>Test the MegaService with a text query:</p>
@@ -2695,10 +2709,10 @@ wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transfo
 <span class="w">    </span>-d<span class="w">  </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Green bananas in a tree&quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;http://images.cocodataset.org/test-stuff2017/000000004248.jpg&quot;}}]}]}&#39;</span>
 </pre></div>
 </div>
-<p>Test the MegaService with a back and forth conversation between the user and assistant:</p>
+<p>Test the MegaService with a back and forth conversation between the user and assistant including a text to speech response from the assistant using <code class="docutils literal notranslate"><span class="pre">&quot;modalities&quot;:</span> <span class="pre">[&quot;text&quot;,</span> <span class="pre">&quot;audio&quot;]'</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MEGA_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
 <span class="w">	</span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">	</span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;hello, &quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;}}]}, {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;opea project! &quot;}, {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;chao, &quot;}], &quot;max_tokens&quot;: 10}&#39;</span>
+<span class="w">	</span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;hello, &quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;}}]}, {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;opea project! &quot;}, {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;chao, &quot;}], &quot;max_tokens&quot;: 10, &quot;modalities&quot;: [&quot;text&quot;, &quot;audio&quot;]}&#39;</span>
 </pre></div>
 </div>
 </section>
