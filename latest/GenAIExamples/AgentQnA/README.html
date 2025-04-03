@@ -2356,6 +2356,16 @@
              
   <section id="agents-for-question-answering">
 <h1>Agents for Question Answering<a class="headerlink" href="#agents-for-question-answering" title="Link to this heading">¶</a></h1>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-with-docker"><span class="xref myst">Deploy with Docker</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-ui"><span class="xref myst">Launch the UI</span></a></p></li>
+<li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p></li>
+<li><p><a class="reference internal" href="#how-to-register-other-tools-with-the-ai-agent"><span class="xref myst">Register Tools</span></a></p></li>
+</ol>
+</section>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>This example showcases a hierarchical multi-agent system for question-answering applications. The architecture diagram below shows a supervisor agent that interfaces with the user and dispatches tasks to two worker agents to gather information and come up with answers. The worker RAG agent uses the retrieval tool to retrieve relevant documents from a knowledge base - a vector database. The worker SQL agent retrieves relevant data from a SQL database. Although not included in this example by default, other tools such as a web search tool or a knowledge graph query tool can be used by the supervisor agent to gather information from additional sources.
@@ -2483,7 +2493,7 @@ git clone https://github.com/opea-project/GenAIExamples.git
 </section>
 </section>
 <section id="launch-the-multi-agent-system">
-<h3>3. Launch the multi-agent system. </br><a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
+<h3>2. Launch the multi-agent system. </br><a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
 <p>Two options are provided for the <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs on Gaudi, 2. OpenAI models via API calls.</p>
 <section id="id1">
 <h4>Gaudi<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
@@ -2497,11 +2507,17 @@ The React Agent requires the DocIndexRetriever’s <a class="reference internal"
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.
+Gaudi example with Open Telemetry feature:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <section id="optional-web-search-tool-support">
 <h5>[Optional] Web Search Tool Support<a class="headerlink" href="#optional-web-search-tool-support" title="Link to this heading">¶</a></h5>
 <details>
 <summary> Instructions </summary>
-A web search tool is supported in this example and can be enabled by running docker compose with the `compose.webtool.yaml` file.  
+A web search tool is supported in this example and can be enabled by running docker compose with the `compose.webtool.yaml` file.
 The Google Search API is used. Follow the [instructions](https://python.langchain.com/docs/integrations/tools/google_search) to create an API key and enable the Custom Search API on a Google account. The environment variables `GOOGLE_CSE_ID` and `GOOGLE_API_KEY` need to be set.
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
 <span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_CSE_ID</span><span class="o">=</span><span class="s2">&quot;YOUR_ID&quot;</span>
@@ -2525,7 +2541,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 </section>
 <section id="ingest-data-into-the-vector-database">
-<h3>4. Ingest Data into the vector database<a class="headerlink" href="#ingest-data-into-the-vector-database" title="Link to this heading">¶</a></h3>
+<h3>3. Ingest Data into the vector database<a class="headerlink" href="#ingest-data-into-the-vector-database" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">run_ingest_data.sh</span></code> script will use an example jsonl file to ingest example documents into a vector database. Other ways to ingest data and other types of documents supported can be found in the OPEA dataprep microservice located in the opea-project/GenAIComps repo.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w">  </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/retrieval_tool/
 bash<span class="w"> </span>run_ingest_data.sh
@@ -2595,7 +2611,7 @@ python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/Age
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Apr 02, 2025.</span>
+<span class="lastupdated">Published on Apr 03, 2025.</span>
 
   </div>
 
