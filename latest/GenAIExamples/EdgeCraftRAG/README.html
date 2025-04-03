@@ -323,7 +323,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#docsum-application">DocSum Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/README.html">Document Summarization Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/amd/gpu/rocm/README.html">Build and deploy DocSum Application on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/amd/gpu/rocm/README.html">Build and Deploy DocSum Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/kubernetes/gmc/README.html">Deploy DocSum in Kubernetes Cluster</a></li>
@@ -2372,7 +2372,7 @@ quality and performance.</p>
 <h2>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading">¶</a></h2>
 <section id="optional-build-docker-images-for-mega-service-server-and-ui-by-your-own">
 <h3>(Optional) Build Docker Images for Mega Service, Server and UI by your own<a class="headerlink" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own" title="Link to this heading">¶</a></h3>
-<p>If you want to build the images by your own, please follow the steps:</p>
+<p><strong>All the docker images can be automatically‌ pulled</strong>, If you want to build the images by your own, please follow the steps:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG
 
 docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
@@ -2450,6 +2450,23 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="c1">#your HF token</span>
 
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service">
+<h4>Launch services with vLLM for multi Intel Arc GPUs inference service<a class="headerlink" href="#launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service" title="Link to this heading">¶</a></h4>
+<p>The docker file can be pulled automatically‌, you can also pull the image manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>intelanalytics/ipex-llm-serving-xpu:latest
+</pre></div>
+</div>
+<p>Set up Additional Environment Variables and start with compose_vllm_multi-arc.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT</span><span class="o">=</span><span class="m">8008</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VLLM_SERVICE_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_PATH</span><span class="o">=</span><span class="c1">#your model path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="c1">#your Intel Arc GPU number to do inference</span>
+
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm_multi-arc.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>

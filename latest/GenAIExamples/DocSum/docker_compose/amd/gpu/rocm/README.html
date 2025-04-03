@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build and deploy DocSum Application on AMD GPU (ROCm) &mdash; OPEA™ 1.2 documentation</title>
+  <title>Build and Deploy DocSum Application on AMD GPU (ROCm) &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -323,7 +323,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#docsum-application">DocSum Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Document Summarization Application</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build and deploy DocSum Application on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Build and Deploy DocSum Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy DocSum in Kubernetes Cluster</a></li>
@@ -2332,7 +2332,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build and deploy DocSum Application on AMD GPU (ROCm)</li>
+  <li>Build and Deploy DocSum Application on AMD GPU (ROCm)</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/DocSum/docker_compose/amd/gpu/rocm/README.md.txt" rel="nofollow"> View page source</a>
@@ -2353,164 +2353,374 @@
            <div itemprop="articleBody">
              
   <section id="build-and-deploy-docsum-application-on-amd-gpu-rocm">
-<h1>Build and deploy DocSum Application on AMD GPU (ROCm)<a class="headerlink" href="#build-and-deploy-docsum-application-on-amd-gpu-rocm" title="Link to this heading">¶</a></h1>
-<section id="build-images">
-<h2>Build images<a class="headerlink" href="#build-images" title="Link to this heading">¶</a></h2>
-</section>
+<h1>Build and Deploy DocSum Application on AMD GPU (ROCm)<a class="headerlink" href="#build-and-deploy-docsum-application-on-amd-gpu-rocm" title="Link to this heading">¶</a></h1>
 <section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build Docker Images locally and install the python package of it.</p>
-<section id="build-llm-image">
-<h3>1. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<ul>
+<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/docsum-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>docsum-install
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+</pre></div>
+</div>
+<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version:</p>
+</li>
+<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-install/GenAIExamples/DocSum/docker_image_build
+</pre></div>
+</div>
+</li>
+<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
+This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/llm-docsum-tgi:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/doc-summarization/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following four Docker Images:</p>
+<p>If you use a specific tag of the GenAIExamples repository,
+then you should also use the corresponding tag for GenAIComps. (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIComps<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
+</li>
+<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
+<p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
+<h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;docsum docsum-gradio-ui whisper llm-docsum vllm-rocm&quot;</span>
+</pre></div>
+</div>
+<h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;docsum docsum-gradio-ui whisper llm-docsum&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-want-to-use-tgi">Optional. Pull TGI Docker Image (Do this if you want to use TGI)</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="id1">Build Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
+</pre></div>
+</div>
+<p>After the build, we check the list of images with the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
+</pre></div>
+</div>
+<p>The list of images should include:</p>
+<h5 class="rubric" id="id2">vLLM-based application:</h5>
+<ul class="simple">
+<li><p>opea/vllm-rocm:latest</p></li>
+<li><p>opea/llm-docsum:latest</p></li>
+<li><p>opea/whisper:latest</p></li>
+<li><p>opea/docsum:latest</p></li>
+<li><p>opea/docsum-gradio-ui:latest</p></li>
+</ul>
+<h5 class="rubric" id="id3">TGI-based application:</h5>
+<ul class="simple">
+<li><p>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm</p></li>
+<li><p>opea/llm-docsum:latest</p></li>
+<li><p>opea/whisper:latest</p></li>
+<li><p>opea/docsum:latest</p></li>
+<li><p>opea/docsum-gradio-ui:latest</p></li>
+</ul>
+</li>
+</ul>
 </section>
-<section id="build-megaservice-docker-image">
-<h3>2. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">docsum.py</span></code> Python script. Build the MegaService Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</section>
+<hr class="docutils" />
+<section id="deploy-the-docsum-application">
+<h2>Deploy the DocSum Application<a class="headerlink" href="#deploy-the-docsum-application" title="Link to this heading">¶</a></h2>
+<section id="docker-compose-configuration-for-amd-gpus">
+<h3>Docker Compose Configuration for AMD GPUs<a class="headerlink" href="#docker-compose-configuration-for-amd-gpus" title="Link to this heading">¶</a></h3>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/:/dev/dri/</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
+</section>
+<section id="set-deploy-environment-variables">
+<h3>Set deploy environment variables<a class="headerlink" href="#set-deploy-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="setting-variables-in-the-operating-system-environment">
+<h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
+<section id="set-variable-huggingfacehub-api-token">
+<h5>Set variable HUGGINGFACEHUB_API_TOKEN:<a class="headerlink" href="#set-variable-huggingfacehub-api-token" title="Link to this heading">¶</a></h5>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="build-ui-docker-image">
-<h3>3. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build the frontend Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
+</section>
+<section id="set-variables-value-in-set-env-sh-file">
+<h4>Set variables value in set_env****.sh file:<a class="headerlink" href="#set-variables-value-in-set-env-sh-file" title="Link to this heading">¶</a></h4>
+<p>Go to Docker Compose directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-install/GenAIExamples/DocSum/docker_compose/amd/gpu/rocm
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker Images:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-docsum-tgi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-ui:latest</span></code></p></li>
-</ol>
+<p>The example uses the Nano text editor. You can use any convenient text editor:</p>
 </section>
-<section id="build-react-ui-docker-image">
-<h3>4. Build React UI Docker Image<a class="headerlink" href="#build-react-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build the frontend Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/ui
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/docsum&quot;</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-react-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-react-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w">  </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker Images:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-docsum-tgi:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-ui:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-react-ui:latest</span></code></p></li>
-</ol>
-</section>
-</section>
-<section id="start-microservices-and-megaservice">
-<h2>🚀 Start Microservices and MegaService<a class="headerlink" href="#start-microservices-and-megaservice" title="Link to this heading">¶</a></h2>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>Default model is “Intel/neural-chat-7b-v3-3”. Change “LLM_MODEL_ID” in environment variables below if you want to use another model.
-For gated models, you also need to provide <a class="reference external" href="https://huggingface.co/docs/hub/security-tokens">HuggingFace token</a> in “HUGGINGFACEHUB_API_TOKEN” environment variable.</p>
-</section>
-<section id="setup-environment-variables">
-<h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_TGI_IMAGE</span><span class="o">=</span><span class="s2">&quot;ghcr.io/huggingface/text-generation-inference:2.4.1-rocm&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_TGI_SERVICE_PORT</span><span class="o">=</span><span class="s2">&quot;18882&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DOCSUM_TGI_SERVICE_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_LLM_SERVER_PORT</span><span class="o">=</span><span class="s2">&quot;8008&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="o">=</span><span class="s2">&quot;8888&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_FRONTEND_PORT</span><span class="o">=</span><span class="s2">&quot;5173&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DocSum_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaDocSumTgi&quot;</span>
-</pre></div>
-</div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with your external IP address, do not use localhost.</p>
-<p>Note: In order to limit access to a subset of GPUs, please pass each device individually using one or more -device /dev/dri/rendered<node>, where <node> is the card index, starting from 128. (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
-<p>Example for set isolation for 1 GPU</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span>
-</pre></div>
-</div>
-<p>Example for set isolation for 2 GPUs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card1</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card1</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD129</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD129</span>
-</pre></div>
-</div>
-<p>Please find more information about accessing and restricting AMD GPUs in the link (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
-</section>
-<section id="start-microservice-docker-containers">
-<h3>Start Microservice Docker Containers<a class="headerlink" href="#start-microservice-docker-containers" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/amd/gpu/rocm
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<section id="if-you-use-vllm">
+<h4>If you use vLLM<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env_vllm.sh
 </pre></div>
 </div>
 </section>
-<section id="validate-microservices">
-<h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>TGI Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
+<section id="if-you-use-tgi">
+<h4>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+<p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
+</section>
+<section id="set-variables-with-script-set-env-sh">
+<h4>Set variables with script set_env****.sh<a class="headerlink" href="#set-variables-with-script-set-env-sh" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id4">
+<h4>If you use vLLM<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env_vllm.sh
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h4>If you use TGI<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env.sh
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-the-services">
+<h3>Start the services:<a class="headerlink" href="#start-the-services" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>If you use vLLM<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h4>If you use TGI<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>All containers should be running and should not restart:</p>
+<section id="id8">
+<h5>If you use vLLM:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>docsum-vllm-service</p></li>
+<li><p>docsum-llm-server</p></li>
+<li><p>whisper-service</p></li>
+<li><p>docsum-backend-server</p></li>
+<li><p>docsum-ui-server</p></li>
+</ul>
+</section>
+<section id="id9">
+<h5>If you use TGI:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>docsum-tgi-service</p></li>
+<li><p>docsum-llm-server</p></li>
+<li><p>whisper-service</p></li>
+<li><p>docsum-backend-server</p></li>
+<li><p>docsum-ui-server</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validate-the-services">
+<h2>Validate the Services<a class="headerlink" href="#validate-the-services" title="Link to this heading">¶</a></h2>
+<section id="validate-the-vllm-tgi-service">
+<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>If you use vLLM:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQGEN_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/completions<span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">    &quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;,</span>
+<span class="s1">    &quot;prompt&quot;: &quot;What is a Deep Learning?&quot;,</span>
+<span class="s1">    &quot;max_tokens&quot;: 30,</span>
+<span class="s1">    &quot;temperature&quot;: 0</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cmpl-0844e21b824c4472b77f2851a177eca2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742385979</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Deep learning is a subset of machine learning that involves the use of artificial neural networks to analyze and interpret data. It is called \&quot;deep\&quot; because it&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">37</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.text” key,
+then we consider the vLLM service to be successfully launched</p>
+</section>
+<section id="id11">
+<h4>If you use TGI:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQGEN_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:64, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p>LLM Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; In-Depth Explanation\nDeep Learning involves the use of artificial neural networks (ANNs) with multiple layers to analyze and interpret complex data. In this article, we will explore what is deep learning, its types, and how it works.\n\n### What is Deep Learning?\n\nDeep Learning is a subset of Machine Learning that involves&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-</li>
-<li><p>MegaService</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,&quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;, &quot;stream&quot;:false</span>
-<span class="s1">     }&#39;</span>
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
+</section>
+</section>
+<section id="validate-the-llm-service">
+<h3>2. Validate the LLM Service<a class="headerlink" href="#validate-the-llm-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQGEN_LLM_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-</ol>
-</section>
-</section>
-<section id="launch-the-svelte-ui">
-<h2>🚀 Launch the Svelte UI<a class="headerlink" href="#launch-the-svelte-ui" title="Link to this heading">¶</a></h2>
-<p>Open this URL <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5173</span></code> in your browser to access the frontend.</p>
-<p><img alt="project-screenshot" src="https://github.com/intel-ai-tce/GenAIExamples/assets/21761437/93b1ed4b-4b76-4875-927e-cc7818b4825b" /></p>
-<p>Here is an example for summarizing a article.</p>
-<p><img alt="image" src="https://github.com/intel-ai-tce/GenAIExamples/assets/21761437/67ecb2ec-408d-4e81-b124-6ded6b833f55" /></p>
-</section>
-<section id="launch-the-react-ui-optional">
-<h2>🚀 Launch the React UI (Optional)<a class="headerlink" href="#launch-the-react-ui-optional" title="Link to this heading">¶</a></h2>
-<p>To access the React-based frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">docsum-rocm-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">docsum-rocm-react-ui-server</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">docsum-rocm-react-ui-server</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-react-ui:${TAG:-latest}</span>
-<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-rocm-react-ui-server</span>
-<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-rocm-backend-server</span>
-<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
-<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_proxy=${no_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https_proxy=${https_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_proxy=${http_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DOC_BASE_URL=${BACKEND_SERVICE_ENDPOINT}</span>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1e47daf13a8bc73495dbfd9836eaa7e4&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Q: What is Deep Learning?\n         A: Deep Learning is a subset of Machine Learning that involves the use of artificial neural networks to analyze and interpret data. It is called \&quot;deep\&quot; because it involves multiple layers of interconnected nodes or \&quot;neurons\&quot; that process and transform the data.\n\n         Q: What is the main difference between Deep Learning and Machine Learning?\n         A: The main difference between Deep Learning and Machine Learning is the complexity of the models used. Machine Learning models are typically simpler and more linear, while Deep Learning models are more complex and non-linear, allowing them to learn and represent more abstract and nuanced patterns in data.\n\n         Q: What are some common applications of Deep Learning?\n         A: Some common applications of Deep Learning include image and speech recognition, natural language processing, recommender systems, and autonomous vehicles.\n\n         Q: Is Deep Learning a new field?\n         A: Deep Learning is not a new field, but it has gained significant attention and popularity in recent years due to advances in computing power, data storage, and algorithms.\n\n         Q: Can Deep Learning be used for any type of data?\n         A: Deep Learning can be used for any type of data that can be represented as a numerical array, such as images, audio, text, and time series data.\n\n         Q: Is Deep Learning a replacement for traditional Machine Learning?\n         A: No, Deep Learning is not a replacement for traditional Machine Learning. Instead, it is a complementary technology that can be used in conjunction with traditional Machine Learning techniques to solve complex problems.\n\n         Q: What are some of the challenges associated with Deep Learning?\n         A: Some of the challenges associated with Deep Learning include the need for large amounts of data, the risk of overfitting, and the difficulty of interpreting the results of the models.\n\n         Q: Can Deep Learning be used for real-time applications?\n         A: Yes, Deep Learning can be used for real-time applications, such as image and speech recognition, and autonomous vehicles.\n\n         Q: Is Deep Learning a field that requires a lot of mathematical knowledge?\n         A: While some mathematical knowledge is helpful, it is not necessary to have a deep understanding of mathematics to work with Deep Learning. Many Deep Learning libraries and frameworks provide pre-built functions and tools that can be used to implement Deep Learning models.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;prompt&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What is Deep Learning?&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>Open this URL <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5175</span></code> in your browser to access the frontend.</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/docsum-ui-react.png" /></p>
+<p>If the service response has a meaningful response in the value of the “text” key,
+then we consider the vLLM service to be successfully launched</p>
+</section>
+<section id="validate-the-megaservice">
+<h3>3. Validate the MegaService<a class="headerlink" href="#validate-the-megaservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQGEN_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=What is Deep Learning?&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=100&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;stream=False&quot;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-tjwp8giP2vyvRRxnqzc3FU&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742386156</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;docsum&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Q: What is Deep Learning?\n         A: Deep Learning is a subset of Machine Learning that involves the use of artificial neural networks to analyze and interpret data. It is called \&quot;deep\&quot; because it involves multiple layers of interconnected nodes or \&quot;neurons\&quot; that process and transform the data.\n\n         Q: What is the main difference between Deep Learning and Machine Learning?\n         A: The main difference between Deep Learning and Machine Learning is the complexity of the models used. Machine Learning models are typically simpler and&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the MegaService to be successfully launched</p>
+</section>
+<section id="validate-the-frontend-ui">
+<h3>4. Validate the Frontend (UI)<a class="headerlink" href="#validate-the-frontend-ui" title="Link to this heading">¶</a></h3>
+<p>To access the UI, use the URL - http://${EXTERNAL_HOST_IP}:${FAGGEN_UI_PORT}
+A page should open when you click through to this address:</p>
+<p><img alt="UI start page" src="../../../../../../_images/ui-starting-page1.png" /></p>
+<p>If a page of this type has opened, then we believe that the service is running and responding,
+and we can proceed to functional UI testing.</p>
+<p>For example, let’s take the description of water from the Wiki.
+Copy the first few paragraphs from the Wiki and put them in the text field and then click Generate FAQs.
+After that, a page with the result of the task should open:</p>
+<p><img alt="UI result page" src="../../../../../../_images/ui-result-page1.png" /></p>
+<p>If the result shown on the page is correct, then we consider the verification of the UI service to be successful.</p>
+</section>
+<section id="stop-application">
+<h3>5. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<section id="id12">
+<h4>If you use vLLM<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-install/GenAIExamples/DocSum/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h4>If you use TGI<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-install/GenAIExamples/DocSum/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 
