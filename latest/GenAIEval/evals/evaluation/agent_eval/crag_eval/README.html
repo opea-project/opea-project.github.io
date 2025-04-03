@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
     <link rel="next" title="AutoRAG to evaluate the RAG system performance" href="../../autorag/evaluation/README.html" />
-    <link rel="prev" title="HELMET: How to Evaluate Long-context Language Models Effectively and Thoroughly" href="../../HELMET/README.html" /> 
+    <link rel="prev" title="TAG-Bench for evaluating SQL agents" href="../TAG-Bench/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -1799,6 +1799,21 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../doc/platform-optimization/README.html#nri-topology-aware-resource-policy">NRI topology-aware resource policy</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../docker/README.html">GenAIEval Dockerfiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../docker/README.html#gaudi-requirements">Gaudi Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../docker/README.html#run-genaieval-on-gaudi">Run GenAIEval on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../docker/README.html#docker-build">Docker Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../docker/README.html#docker-run">Docker Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../docker/README.html#benchmarking-opea-examples-on-intel-gaudi-ai-processor-and-xeon-processor">Benchmarking OPEA Examples on Intel® Gaudi® AI Processor and Xeon® Processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../docker/README.html#id1">Docker Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../docker/README.html#run-a-opea-example-using-docker-compose">Run a OPEA Example using docker compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../docker/README.html#id2">Docker Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../benchmark/README.html">OPEA Benchmark Tool</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../benchmark/README.html#features">Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../benchmark/README.html#table-of-contents">Table of Contents</a></li>
@@ -1883,11 +1898,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../HELMET/README.html#citation">Citation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html">Benchmarks for agentic applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../TAG-Bench/README.html">TAG-Bench for evaluating SQL agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../TAG-Bench/README.html#overview-of-tag-bench">Overview of TAG-Bench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../TAG-Bench/README.html#getting-started">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../TAG-Bench/README.html#launch-your-sql-agent">Launch your SQL agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../TAG-Bench/README.html#run-the-benchmark">Run the benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../TAG-Bench/README.html#benchmark-results">Benchmark results</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">CRAG Benchmark for Agent QnA systems</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting started</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crag-dataset">CRAG dataset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#launch-agent-qna-system">Launch agent QnA system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launch-agent-qna-system">Launch Agent QnA system</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-crag-benchmark">Run CRAG benchmark</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-llm-as-judge-to-grade-the-answers">Use LLM-as-judge to grade the answers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#validation-of-llm-as-judge">Validation of LLM-as-judge</a></li>
@@ -2361,32 +2385,47 @@
 <ol class="arabic simple">
 <li><p>Setup a work directory and download this repo into your work directory.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export $WORKDIR=&lt;your-work-directory&gt;
-cd $WORKDIR
-git clone https://github.com/opea-project/GenAIEval.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">$WORKDIR</span><span class="o">=</span>&lt;your-work-directory&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIEval.git
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>Build docker image</p></li>
+<li><p>Create a conda environment</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/docker/
-bash build_image.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>agent-eval-env<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+conda<span class="w"> </span>activate<span class="w"> </span>agent-eval-env
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/docker/requirements.txt
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Set environment vars for downloading models from Huggingface</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $WORKDIR/hf_cache 
-export HF_CACHE_DIR=$WORKDIR/hf_cache
-export HF_HOME=$HF_CACHE_DIR
-export HUGGINGFACEHUB_API_TOKEN=&lt;your-hf-api-token&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span><span class="nv">$WORKDIR</span>/hf_cache<span class="w"> </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_CACHE_DIR</span><span class="o">=</span><span class="nv">$WORKDIR</span>/hf_cache
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span><span class="nv">$HF_CACHE_DIR</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;your-hf-api-token&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$PYTHONPATH</span>:<span class="nv">$WORKDIR</span>/GenAIEval/
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li><p>Start docker container
-This container will be used to preprocess dataset and run benchmark scripts.</p></li>
+<li><p>Start vllm container on Intel Gaudi2.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">launch_eval_container</span><span class="o">.</span><span class="n">sh</span>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> model will be served using 4 Gaudi cards. This LLM will be used by agent as well as used as LLM-judge in scoring agent’s answers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># First build vllm image for Gaudi</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/vllm-gaudi
+bash<span class="w"> </span>build_image.sh
+</pre></div>
+</div>
+<p>Then launch vllm endpoint. The default model is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>launch_vllm_gaudi.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Validate vllm endpoint is working properly.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>test_vllm_endpoint.py
 </pre></div>
 </div>
 </section>
@@ -2396,73 +2435,75 @@ This container will be used to preprocess dataset and run benchmark scripts.</p>
 <li><p>Download original data and process it with commands below.
 You need to create an account on the Meta CRAG challenge <a class="reference external" href="https://www.aicrowd.com/challenges/meta-comprehensive-rag-benchmark-kdd-cup-2024">website</a>. After login, go to this <a class="reference external" href="https://www.aicrowd.com/challenges/meta-comprehensive-rag-benchmark-kdd-cup-2024/problems/meta-kdd-cup-24-crag-end-to-end-retrieval-augmented-generation/dataset_files">link</a> and download the <code class="docutils literal notranslate"><span class="pre">crag_task_3_dev_v4.tar.bz2</span></code> file. Then make a <code class="docutils literal notranslate"><span class="pre">datasets</span></code> directory in your work directory using the commands below.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR
-mkdir datasets
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+mkdir<span class="w"> </span>datasets
 </pre></div>
 </div>
 <p>Then put the <code class="docutils literal notranslate"><span class="pre">crag_task_3_dev_v4.tar.bz2</span></code> file in the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> directory, and decompress it by running the command below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/datasets
-tar -xf crag_task_3_dev_v4.tar.bz2
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/datasets
+tar<span class="w"> </span>-xf<span class="w"> </span>crag_task_3_dev_v4.tar.bz2
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Preprocess the CRAG data
 Data preprocessing directly relates to the quality of retrieval corpus and thus can have significant impact on the agent QnA system. Here, we provide one way of preprocessing the data where we simply extracts all the web search snippets as-is from the dataset per domain. We also extract all the query-answer pairs along with other meta data per domain. You can run the command below to use our method. The data processing will take some time to finish.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/preprocess_data
-bash run_data_preprocess.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/crag_eval/preprocess_data
+bash<span class="w"> </span>run_data_preprocess.sh
 </pre></div>
 </div>
 <p><strong>Note</strong>: This is an example of data processing. You can develop and optimize your own data processing for this benchmark.
 3. (Optional) Sample queries for benchmark
 The CRAG dataset has more than 4000 queries, and running all of them can be very expensive and time-consuming. You can sample a subset for benchmark. Here we provide a script to sample up to 5 queries per question_type per dynamism in each domain. For example, we were able to get 92 queries from the music domain using the script.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">run_sample_data</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>run_sample_data.sh
 </pre></div>
 </div>
 </section>
 <section id="launch-agent-qna-system">
-<h2>Launch agent QnA system<a class="headerlink" href="#launch-agent-qna-system" title="Link to this heading">¶</a></h2>
+<h2>Launch Agent QnA system<a class="headerlink" href="#launch-agent-qna-system" title="Link to this heading">¶</a></h2>
 <p>Here we showcase an agent system in OPEA GenAIExamples repo. Please refer to the README in the <a class="reference internal" href="../../../../../GenAIExamples/AgentQnA/README.html"><span class="std std-doc">AgentQnA example</span></a> for more details.</p>
 <blockquote>
 <div><p><strong>Please note</strong>: This is an example. You can build your own agent systems using OPEA components, then expose your own systems as an endpoint for this benchmark.</p>
 </div></blockquote>
-<p>To launch the agent in our AgentQnA example on Intel Gaudi accelerators, open another terminal and follow the instructions below.</p>
+<p>To launch the agent in our AgentQnA example on Intel Gaudi accelerators, follow the instructions below.</p>
 <ol class="arabic simple">
 <li><p>Build images</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export $WORKDIR=&lt;your-work-directory&gt;
-cd $WORKDIR
-git clone https://github.com/opea-project/GenAIExamples.git
-cd GenAIExamples/AgentQnA/tests/
-bash step1_build_images.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">$WORKDIR</span><span class="o">=</span>&lt;your-work-directory&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/AgentQnA/tests/
+bash<span class="w"> </span>step1_build_images.sh
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Start retrieval tool</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">step2_start_retrieval_tool</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>step2_start_retrieval_tool.sh
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Ingest data into vector database and validate retrieval tool</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># As an example, we will use the index_data.py script in AgentQnA example.
-# You can write your own script to ingest data.
-# As an example, We will ingest the docs of the music domain.
-# We will use the crag-eval docker container to run the index_data.py script.
-# The index_data.py is a client script.
-# it will send data-indexing requests to the dataprep server that is part of the retrieval tool.
-# So you need to switch back to the terminal where the crag-eval container is running.
-cd $WORKDIR/GenAIExamples/AgentQnA/retrieval_tool/
-python3 index_data.py --host_ip $host_ip --filedir ${WORKDIR}/datasets/crag_docs/ --filename crag_docs_music.jsonl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># As an example, we will use the index_data.py script in AgentQnA example.</span>
+<span class="c1"># You can write your own script to ingest data.</span>
+<span class="c1"># As an example, We will ingest the docs of the music domain.</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/retrieval_tool/
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+python3<span class="w"> </span>index_data.py<span class="w"> </span>--host_ip<span class="w"> </span><span class="nv">$host_ip</span><span class="w"> </span>--filedir<span class="w"> </span><span class="si">${</span><span class="nv">WORKDIR</span><span class="si">}</span>/datasets/crag_docs/<span class="w"> </span>--filename<span class="w"> </span>crag_docs_music.jsonl
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li><p>Launch and validate agent endpoint</p></li>
+<li><p>Start CRAG API container</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Go to the terminal where you launched the AgentQnA example
-cd $WORKDIR/GenAIExamples/AgentQnA/tests/
-bash step4_launch_and_validate_agent_gaudi.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--name<span class="o">=</span>kdd-cup-24-crag-service<span class="w"> </span>-p<span class="o">=</span><span class="m">8080</span>:8000<span class="w"> </span>docker.io/aicrowd/kdd-cup-24-crag-mock-api:v0
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Launch the agent microservices</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/crag_eval/opea_rag_agent/
+bash<span class="w"> </span>launch_agent.sh
 </pre></div>
 </div>
 <p>Note: There are two agents in the agent system: a RAG agent (as the worker agent) and a ReAct agent (as the supervisor agent). We can evaluate both agents - just need to specify the agent endpoint url in the scripts - see instructions below.</p>
@@ -2470,44 +2511,17 @@ bash step4_launch_and_validate_agent_gaudi.sh
 <section id="run-crag-benchmark">
 <h2>Run CRAG benchmark<a class="headerlink" href="#run-crag-benchmark" title="Link to this heading">¶</a></h2>
 <p>Once you have your agent system up and running, the next step is to generate answers with agent. Change the variables in the script below and run the script. By default, it will run the entire set of queries in the music domain (in total 373 queries). You can choose to run other domains or just run a sampled subset of music domain.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Come back to the interactive crag-eval docker container
-cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark
-# Remember to specify the agent endpoint url in the script.
-bash run_generate_answer.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark
+<span class="c1"># Remember to specify the agent endpoint url in the script.</span>
+bash<span class="w"> </span>run_generate_answer.sh
 </pre></div>
 </div>
 </section>
 <section id="use-llm-as-judge-to-grade-the-answers">
 <h2>Use LLM-as-judge to grade the answers<a class="headerlink" href="#use-llm-as-judge-to-grade-the-answers" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Launch llm endpoint with HF TGI: in another terminal, run the command below. By default, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> is used as the LLM judge.</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">llm_judge</span>
-<span class="n">bash</span> <span class="n">launch_llm_judge_endpoint</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Validate that the llm endpoint is working properly.</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)
-curl ${host_ip}:8085/generate_stream \
-    -X POST \
-    -d &#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:20}}&#39; \
-    -H &#39;Content-Type: application/json&#39;
-</pre></div>
-</div>
-<p>And then go back to the interactive crag-eval docker, run command below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Inside the crag-eval container
-cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark/llm_judge/
-python3 test_llm_endpoint.py
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p>Grade the answer correctness using LLM judge. We use <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> metrics from <a class="reference external" href="https://github.com/explodinggradients/ragas/blob/main/src/ragas/metrics/_answer_correctness.py">ragas</a>.</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Inside the crag-eval container
-cd $WORKDIR/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark/
-bash run_grading.sh
+<p>Grade the answer correctness using LLM judge. We use <code class="docutils literal notranslate"><span class="pre">answer_correctness</span></code> metrics from <a class="reference external" href="https://github.com/explodinggradients/ragas/blob/main/src/ragas/metrics/_answer_correctness.py">ragas</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIEval/evals/evaluation/agent_eval/crag_eval/run_benchmark/
+bash<span class="w"> </span>run_grading.sh
 </pre></div>
 </div>
 <section id="validation-of-llm-as-judge">
@@ -2611,7 +2625,7 @@ bash run_grading.sh
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../HELMET/README.html" class="btn btn-neutral float-left" title="HELMET: How to Evaluate Long-context Language Models Effectively and Thoroughly" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../TAG-Bench/README.html" class="btn btn-neutral float-left" title="TAG-Bench for evaluating SQL agents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../autorag/evaluation/README.html" class="btn btn-neutral float-right" title="AutoRAG to evaluate the RAG system performance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -1799,6 +1799,21 @@
 <li class="toctree-l3"><a class="reference internal" href="doc/platform-optimization/README.html#nri-topology-aware-resource-policy">NRI topology-aware resource policy</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="docker/README.html">GenAIEval Dockerfiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docker/README.html#gaudi-requirements">Gaudi Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docker/README.html#run-genaieval-on-gaudi">Run GenAIEval on Gaudi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="docker/README.html#docker-build">Docker Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker/README.html#docker-run">Docker Run</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="docker/README.html#benchmarking-opea-examples-on-intel-gaudi-ai-processor-and-xeon-processor">Benchmarking OPEA Examples on Intel® Gaudi® AI Processor and Xeon® Processor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="docker/README.html#id1">Docker Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker/README.html#run-a-opea-example-using-docker-compose">Run a OPEA Example using docker compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker/README.html#id2">Docker Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="evals/benchmark/README.html">OPEA Benchmark Tool</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="evals/benchmark/README.html#features">Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="evals/benchmark/README.html#table-of-contents">Table of Contents</a></li>
@@ -1883,11 +1898,20 @@
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/HELMET/README.html#citation">Citation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="evals/evaluation/agent_eval/README.html">Benchmarks for agentic applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html">TAG-Bench for evaluating SQL agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html#overview-of-tag-bench">Overview of TAG-Bench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html#getting-started">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html#launch-your-sql-agent">Launch your SQL agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html#run-the-benchmark">Run the benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/TAG-Bench/README.html#benchmark-results">Benchmark results</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html">CRAG Benchmark for Agent QnA systems</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#getting-started">Getting started</a></li>
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#crag-dataset">CRAG dataset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#launch-agent-qna-system">Launch agent QnA system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#launch-agent-qna-system">Launch Agent QnA system</a></li>
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#run-crag-benchmark">Run CRAG benchmark</a></li>
 <li class="toctree-l3"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#use-llm-as-judge-to-grade-the-answers">Use LLM-as-judge to grade the answers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="evals/evaluation/agent_eval/crag_eval/README.html#validation-of-llm-as-judge">Validation of LLM-as-judge</a></li>
@@ -2515,7 +2539,18 @@ optimization</span></a>.</p>
 </div>
 <p>This ensures the system can handle high concurrency by allowing more open files and connections.</p>
 <p><strong>Run the benchmark script</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>evals/benchmark/benchmark.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>evals/benchmark/
+python<span class="w"> </span>benchmark.py
+</pre></div>
+</div>
+<blockquote>
+<div><p>NOTE: benchmark.py will take benchmark.yaml file as test case data.<br />
+By giving a –yaml argument with a custom yaml file, benchmark.py could take a custom test case data.</p>
+</div></blockquote>
+<p>e.g.
+Test data for the examples starting by docker compose on HPU.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>evals/benchmark/
+python<span class="w"> </span>benchmark.py<span class="w"> </span>--yaml<span class="w"> </span>docker.hpu.benchmark.yaml
 </pre></div>
 </div>
 <p>Results will be saved in the directory specified by <code class="docutils literal notranslate"><span class="pre">test_output_dir</span></code> in the configuration.</p>
