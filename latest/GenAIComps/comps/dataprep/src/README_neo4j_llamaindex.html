@@ -642,8 +642,8 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Dataprep Microservice with Neo4J</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#setup-environment-variables">Setup Environment Variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-docker">🚀Start Microservice with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setup-environment-variables">2. Setup Environment Variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#invoke-microservice">Invoke Microservice</a></li>
 </ul>
 </li>
@@ -2483,8 +2483,18 @@
 </ul>
 <p>This microservice follows the graphRAG approached defined by Microsoft paper <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/from-local-to-global-a-graph-rag-approach-to-query-focused-summarization/">“From Local to Global: A Graph RAG Approach to Query-Focused Summarization”</a> with some differences such as: 1) no node degree prioritization is used in populating the LLM context window for community summaries, 2) no ranking of sub-communities is applied in generating higher level communities summaries.</p>
 <p>This dataprep microservice ingests the input files and uses LLM (TGI, VLLM or OpenAI model when OPENAI_API_KEY is set) to extract entities, relationships and descriptions of those to build a graph-based text index. Compose yaml file deploys TGI but works also with vLLM inference endpoint.</p>
+<section id="start-microservice-with-docker">
+<h2>🚀Start Microservice with Docker<a class="headerlink" href="#start-microservice-with-docker" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/dataprep:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+</section>
 <section id="setup-environment-variables">
-<h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
+<h2>2. Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Manually set private environment settings</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hostname</span><span class="p"> IP</span><span class="si">}</span><span class="w">  </span><span class="c1"># local IP</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="w">  </span><span class="c1"># important to add {host_ip} for containers communication</span>
@@ -2505,47 +2515,20 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">MAX_INPUT_TOKENS</span><span class="o">=</span><span class="m">4096</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MAX_TOTAL_TOKENS</span><span class="o">=</span><span class="m">8192</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDER_PORT</span><span class="o">=</span><span class="m">11633</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDER_PORT</span><span class="o">=</span><span class="m">8090</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_EMBEDDER_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT_PORT</span><span class="o">=</span><span class="m">11634</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT_PORT</span><span class="o">=</span><span class="m">8008</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_AUTH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NEO4J_USERNAME</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">NEO4J_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PORT1</span><span class="o">=</span><span class="m">7474</span><span class="w">   </span><span class="c1"># 11631</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PORT2</span><span class="o">=</span><span class="m">7687</span><span class="w">   </span><span class="c1"># 11632</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PORT1</span><span class="o">=</span><span class="m">7474</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PORT2</span><span class="o">=</span><span class="m">7687</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URI</span><span class="o">=</span><span class="s2">&quot;bolt://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NEO4J_PORT2</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URL</span><span class="o">=</span><span class="s2">&quot;bolt://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NEO4J_PORT2</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6004/v1/dataprep&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_PORT</span><span class="o">=</span><span class="m">5000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True
 </pre></div>
 </div>
-</section>
-<section id="start-microservice-with-docker">
-<h2>🚀Start Microservice with Docker<a class="headerlink" href="#start-microservice-with-docker" title="Link to this heading">¶</a></h2>
-<section id="build-docker-image">
-<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/dataprep-neo4j-llamaindex:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="id1">
-<h3>2. Setup Environment Variables<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set private environment settings</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hostname</span><span class="p"> IP</span><span class="si">}</span><span class="w">  </span><span class="c1"># local IP</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="w">  </span><span class="c1"># important to add {host_ip} for containers communication</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URI</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_url</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_username</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_password</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">path_to_comps</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_openai_api_key</span><span class="si">}</span><span class="w">  </span><span class="c1"># optional, when not provided will use smaller models TGI/TEI</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
-<span class="c1"># set additional environment settings</span>
-<span class="nb">source</span><span class="w"> </span>./set_env.sh
-</pre></div>
-</div>
-</section>
 <section id="run-docker-with-docker-compose">
 <h3>3. Run Docker with Docker Compose<a class="headerlink" href="#run-docker-with-docker-compose" title="Link to this heading">¶</a></h3>
 <p>Docker compose will start 4 microservices: dataprep-neo4j-llamaindex, neo4j-apoc, tgi-gaudi-service and tei-embedding-service. The reason TGI and TEI are needed is because dataprep relies on LLM to extract entities and relationships from text to build the graph and Neo4j Property Graph Index. Neo4j database supports embeddings natively so we do not need a separate vector store. Checkout the blog <a class="reference external" href="https://www.llamaindex.ai/blog/introducing-the-property-graph-index-a-powerful-new-way-to-build-knowledge-graphs-with-llms">Introducing the Property Graph Index: A Powerful New Way to Build Knowledge Graphs with LLMs</a> for a better understanding of Property Graph Store and Index.</p>
@@ -2561,7 +2544,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6004/v1/dataprep/ingest
+<span class="w">    </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span>/v1/dataprep/ingest
 </pre></div>
 </div>
 <p>You can specify chunk_size and chunk_size by the following commands.</p>
@@ -2570,7 +2553,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_size=1500&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_overlap=100&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6004/v1/dataprep/ingest
+<span class="w">    </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span>/v1/dataprep/ingest
 </pre></div>
 </div>
 <p>Please note that clustering of extracted entities and summarization happens in this data preparation step. The result of this is:</p>
@@ -2586,7 +2569,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./your_file.pdf&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;process_table=true&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;table_strategy=hq&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>http://localhost:6004/v1/dataprep/ingest
+<span class="w">    </span>http://localhost:<span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span>/v1/dataprep/ingest
 </pre></div>
 </div>
 </section>
