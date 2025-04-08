@@ -2485,7 +2485,7 @@
 </section>
 <section id="build-asr-image">
 <h3>2. Build ASR Image<a class="headerlink" href="#build-asr-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/whisper/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2501,10 +2501,10 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </section>
 <section id="build-tts-image">
 <h3>4. Build TTS Image<a class="headerlink" href="#build-tts-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/src/integrations/dependency/speecht5/Dockerfile<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/speecht5/src/Dockerfile<span class="w"> </span>.
 
 <span class="c1"># multilang tts (optional)</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/gpt-sovits:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/tts/src/integrations/dependency/gpt-sovits/Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/gpt-sovits:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/gpt-sovits/src/Dockerfile<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -2631,7 +2631,7 @@ curl http://${host_ip}:${GPT_SOVITS_SERVER_PORT}/v1/audio/speech -XPOST -d &#39;
 base64 string to the megaservice endpoint. The megaservice will return a spoken response as a base64 string. To listen
 to the response, decode the base64 string and save it as a .wav file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if you are using speecht5 as the tts service, voice can be &quot;default&quot; or &quot;male&quot;</span>
-<span class="c1"># if you are using gpt-sovits for the tts service, you can set the reference audio following https://github.com/opea-project/GenAIComps/blob/main/comps/tts/src/integrations/dependency/gpt-sovits/README.md</span>
+<span class="c1"># if you are using gpt-sovits for the tts service, you can set the reference audio following https://github.com/opea-project/GenAIComps/blob/main/comps/third_parties/gpt-sovits/src/README.md</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/audioqna<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;, &quot;max_tokens&quot;:64, &quot;voice&quot;:&quot;default&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
