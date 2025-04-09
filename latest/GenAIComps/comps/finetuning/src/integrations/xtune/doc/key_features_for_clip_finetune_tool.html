@@ -754,6 +754,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../README.html#installation">Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#data-preparation">Data Preparation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#fine-tuning-with-llama-board-gui-powered-by-gradio">Fine-Tuning with LLaMA Board GUI (powered by Gradio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../README.html#fine-tuning-with-shell-instead-of-gui">Fine-Tuning with Shell instead of GUI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#xtune-examples"><code class="docutils literal notranslate"><span class="pre">Xtune</span></code> Examples</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#citation">Citation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#acknowledgement">Acknowledgement</a></li>
@@ -775,6 +776,7 @@
 <li class="toctree-l3"><a class="reference internal" href="adaclip_readme.html#prepare-datasets">Prepare Datasets</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="adaclip_readme.html#datasets">Datasets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="adaclip_readme.html#frame-extraction">Frame Extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaclip_readme.html#dataset-json-prepare">Dataset JSON prepare</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="adaclip_readme.html#implemented-finetune-methods">Implemented finetune methods</a><ul>
@@ -798,6 +800,13 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">The core features for clip finetune tool:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-config-features-for-clip-finetune-tool">How to config features for clip finetune tool:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-yaml-for-vit-b16-yaml">Basic yaml for vit_b16.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#angle-based-selection-for-full-finetune">Angle-Based Selection for full-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customize-trained-layer-for-partial-finetune">customize trained layer for partial-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fixed-cache-size-for-tip-adapter">fixed cache size for tip-adapter</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../../microservices/index.html#guardrails-microservice">Guardrails Microservice</a><ul>
@@ -2506,6 +2515,85 @@
     <tr>
 </table>
 </section>
+<section id="how-to-config-features-for-clip-finetune-tool">
+<h1>How to config features for clip finetune tool:<a class="headerlink" href="#how-to-config-features-for-clip-finetune-tool" title="Link to this heading">¶</a></h1>
+<section id="basic-yaml-for-vit-b16-yaml">
+<h2>Basic yaml for vit_b16.yaml<a class="headerlink" href="#basic-yaml-for-vit-b16-yaml" title="Link to this heading">¶</a></h2>
+<p>see this in src/llamafactory/clip_finetune/configs/clip_finetune/vit_b16.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DATALOADER:
+<span class="w">  </span>TRAIN_X:
+<span class="w">    </span>BATCH_SIZE:<span class="w"> </span><span class="m">32</span>
+<span class="w">  </span>TEST:
+<span class="w">    </span>BATCH_SIZE:<span class="w"> </span><span class="m">100</span>
+<span class="w">  </span>NUM_WORKERS:<span class="w"> </span><span class="m">4</span>
+
+INPUT:
+<span class="w">  </span>SIZE:<span class="w"> </span><span class="o">(</span><span class="m">224</span>,<span class="w"> </span><span class="m">224</span><span class="o">)</span>
+<span class="w">  </span>INTERPOLATION:<span class="w"> </span><span class="s2">&quot;bicubic&quot;</span>
+<span class="w">  </span>PIXEL_MEAN:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.48145466,<span class="w"> </span><span class="m">0</span>.4578275,<span class="w"> </span><span class="m">0</span>.40821073<span class="o">]</span>
+<span class="w">  </span>PIXEL_STD:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.26862954,<span class="w"> </span><span class="m">0</span>.26130258,<span class="w"> </span><span class="m">0</span>.27577711<span class="o">]</span>
+<span class="w">  </span>TRANSFORMS:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;random_resized_crop&quot;</span>,<span class="w"> </span><span class="s2">&quot;random_flip&quot;</span>,<span class="w"> </span><span class="s2">&quot;normalize&quot;</span><span class="o">]</span>
+
+OPTIM:
+<span class="w">  </span>NAME:<span class="w"> </span><span class="s2">&quot;sgd&quot;</span>
+<span class="w">  </span>LR:<span class="w"> </span><span class="m">0</span>.02
+<span class="w">  </span>MAX_EPOCH:<span class="w"> </span><span class="m">50</span>
+<span class="w">  </span>LR_SCHEDULER:<span class="w"> </span><span class="s2">&quot;cosine&quot;</span>
+<span class="w">  </span>WARMUP_EPOCH:<span class="w"> </span><span class="m">1</span>
+<span class="w">  </span>WARMUP_TYPE:<span class="w"> </span><span class="s2">&quot;constant&quot;</span>
+<span class="w">  </span>WARMUP_CONS_LR:<span class="w"> </span>1e-5
+
+TRAIN:
+<span class="w">  </span>PRINT_FREQ:<span class="w"> </span><span class="m">1</span><span class="w">             </span><span class="c1"># print acc after $PRINT_FREQ iteration</span>
+
+MODEL:
+<span class="w">  </span>BACKBONE:
+<span class="w">    </span>NAME:<span class="w"> </span><span class="s2">&quot;ViT-B/16&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="angle-based-selection-for-full-finetune">
+<h2>Angle-Based Selection for full-finetune<a class="headerlink" href="#angle-based-selection-for-full-finetune" title="Link to this heading">¶</a></h2>
+<p>Add below line in src/llamafactory/clip_finetune/configs/clip_finetune/vit_b16.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>MODEL:
+<span class="w">  </span>ABS:<span class="w"> </span>True
+<span class="w">  </span>ABS_TOP:<span class="w"> </span>True<span class="w">                     </span><span class="c1"># True: select top ABS_KEEP layer  False: select bottom ABS_KEEP layer</span>
+<span class="w">  </span>ABS_GROUP:<span class="w"> </span>True<span class="w">                   </span><span class="c1"># True: select top ABS_KEEP layer in each group False: select bottom ABS_KEEP layer</span>
+<span class="w">  </span>ABS_GROUP_NAME:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;k_proj&quot;</span>,<span class="w"> </span><span class="s2">&quot;v_proj&quot;</span>,<span class="w"> </span><span class="s2">&quot;q_proj&quot;</span><span class="o">]</span><span class="w">    </span><span class="c1"># How to divide layer into GTOUP, this means divide layers into 4 group. Each layer has k_proj in its name will into group 0, v_proj into group1, q_proj into group 2, other into group 3</span>
+<span class="w">  </span>ABS_KEEP:<span class="w"> </span><span class="m">5</span><span class="w">                       </span><span class="c1"># keep layer number</span>
+<span class="w">  </span>BACKBONE:
+<span class="w">    </span>NAME:<span class="w"> </span><span class="s2">&quot;ViT-B/16&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="customize-trained-layer-for-partial-finetune">
+<h2>customize trained layer for partial-finetune<a class="headerlink" href="#customize-trained-layer-for-partial-finetune" title="Link to this heading">¶</a></h2>
+<p>Add below line in src/llamafactory/clip_finetune/configs/clip_finetune/vit_b16.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>MODEL:
+<span class="w">  </span>BACKBONE:
+<span class="w">    </span>NAME:<span class="w"> </span><span class="s2">&quot;ViT-B/16&quot;</span>
+BIAS:
+<span class="w">  </span>BIAS_TERMS:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;layer_norm&quot;</span>,<span class="w"> </span><span class="s2">&quot;layernorm&quot;</span><span class="o">]</span><span class="w">   </span><span class="c1"># which layer you want to train</span>
+<span class="w">  </span>BIAS_TERMS_EXCLUDE:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;layernorm&quot;</span><span class="o">]</span><span class="w">         </span><span class="c1"># which layer you don&#39;t want to train</span>
+</pre></div>
+</div>
+</section>
+<section id="fixed-cache-size-for-tip-adapter">
+<h2>fixed cache size for tip-adapter<a class="headerlink" href="#fixed-cache-size-for-tip-adapter" title="Link to this heading">¶</a></h2>
+<p>Add below line in src/llamafactory/clip_finetune/configs/clip_finetune/vit_b16.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TRAINER:
+<span class="w">  </span>TIP:
+<span class="w">    </span>LOAD_CACHE:<span class="w"> </span>True<span class="w">                    </span><span class="c1"># whether to use cache data trained with tip-adapter before</span>
+<span class="w">    </span>beta:<span class="w"> </span><span class="m">1</span>.0<span class="w">                           </span><span class="c1"># hyper param in origin paper</span>
+<span class="w">    </span>alpha:<span class="w"> </span><span class="m">3</span>.0<span class="w">                          </span><span class="c1"># hyper param in origin paper</span>
+<span class="w">    </span>AUGMENT_EPOCH:<span class="w"> </span><span class="m">10</span><span class="w">                   </span><span class="c1"># train cache epoch</span>
+<span class="w">    </span>search_best:<span class="w"> </span>True<span class="w">                   </span><span class="c1"># whether to search the best beta and alpha</span>
+<span class="w">    </span>NEW:<span class="w"> </span>False<span class="w">                          </span><span class="c1"># whether to use fixed cache size. True: all dataset cache will merge into one tensor [100, hidden_size]   False: each dataset will has it&#39;s own cache [num_dataset * 100, hidden_size]</span>
+<span class="w">    </span>NEW_DATASET:<span class="w"> </span>False<span class="w">                  </span><span class="c1"># Whether to train this dataset from scratch</span>
+</pre></div>
+</div>
+</section>
+</section>
 
 
            </div>
@@ -2521,7 +2609,7 @@
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Apr 08, 2025.</span>
+<span class="lastupdated">Published on Apr 09, 2025.</span>
 
   </div>
 

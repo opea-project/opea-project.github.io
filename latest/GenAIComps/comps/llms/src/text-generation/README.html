@@ -754,6 +754,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#installation">Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#data-preparation">Data Preparation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#fine-tuning-with-llama-board-gui-powered-by-gradio">Fine-Tuning with LLaMA Board GUI (powered by Gradio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#fine-tuning-with-shell-instead-of-gui">Fine-Tuning with Shell instead of GUI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#xtune-examples"><code class="docutils literal notranslate"><span class="pre">Xtune</span></code> Examples</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#citation">Citation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/README.html#acknowledgement">Acknowledgement</a></li>
@@ -775,6 +776,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/adaclip_readme.html#prepare-datasets">Prepare Datasets</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/adaclip_readme.html#datasets">Datasets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/adaclip_readme.html#frame-extraction">Frame Extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/adaclip_readme.html#dataset-json-prepare">Dataset JSON prepare</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/adaclip_readme.html#implemented-finetune-methods">Implemented finetune methods</a><ul>
@@ -798,6 +800,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html">The core features for clip finetune tool:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html#how-to-config-features-for-clip-finetune-tool">How to config features for clip finetune tool:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html#basic-yaml-for-vit-b16-yaml">Basic yaml for vit_b16.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html#angle-based-selection-for-full-finetune">Angle-Based Selection for full-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html#customize-trained-layer-for-partial-finetune">customize trained layer for partial-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../finetuning/src/integrations/xtune/doc/key_features_for_clip_finetune_tool.html#fixed-cache-size-for-tip-adapter">fixed cache size for tip-adapter</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../microservices/index.html#guardrails-microservice">Guardrails Microservice</a><ul>
@@ -2486,10 +2495,12 @@
 <th class="head"><p>vLLM-CPU</p></th>
 <th class="head"><p>vLLM-Gaudi</p></th>
 <th class="head"><p>OVMS</p></th>
+<th class="head"><p>Optimum-Habana</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a></p></td>
+<td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
@@ -2500,14 +2511,17 @@
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
+<td><p>✓</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/meta-llama/Llama-2-70b-chat-hf">meta-llama/Llama-2-70b-chat-hf</a></p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">meta-llama/Meta-Llama-3-8B-Instruct</a></p></td>
+<td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
@@ -2518,36 +2532,63 @@
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/collections/microsoft/phi-3-6626e15e9585a200d2d761e3">Phi-3</a></p></td>
 <td><p>x</p></td>
 <td><p>Limit 4K</p></td>
 <td><p>Limit 4K</p></td>
 <td><p>Limit 4K</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/collections/microsoft/phi-4-677e9380e514feb5577a40e4">Phi-4</a></p></td>
+<td><p>x</p></td>
+<td><p>x</p></td>
+<td><p>x</p></td>
+<td><p>x</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B">deepseek-ai/DeepSeek-R1-Distill-Llama-8B</a></p></td>
+<td><p>✓</p></td>
+<td><p>-</p></td>
+<td><p>✓</p></td>
+<td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</a></p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B">deepseek-ai/DeepSeek-R1-Distill-Qwen-14B</a></p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501">mistralai/Mistral-Small-24B-Instruct-2501</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a></p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">mistralai/Mistral-Large-Instruct-2411</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501">mistralai/Mistral-Small-24B-Instruct-2501</a></p></td>
+<td><p>✓</p></td>
+<td><p>-</p></td>
+<td><p>✓</p></td>
+<td><p>-</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">mistralai/Mistral-Large-Instruct-2411</a></p></td>
 <td><p>x</p></td>
 <td><p>-</p></td>
 <td><p>✓</p></td>
 <td><p>-</p></td>
+<td><p>✓</p></td>
 </tr>
 </tbody>
 </table>
@@ -2578,16 +2619,25 @@
 <tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/collections/microsoft/phi-3-6626e15e9585a200d2d761e3">Phi-3</a></p></td>
 <td><p>x</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/collections/microsoft/phi-4-677e9380e514feb5577a40e4">Phi-4</a></p></td>
+<td><p>x</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B">deepseek-ai/DeepSeek-R1-Distill-Llama-8B</a></p></td>
+<td><p>1</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">deepseek-ai/DeepSeek-R1-Distill-Llama-70B</a></p></td>
 <td><p>8</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B">deepseek-ai/DeepSeek-R1-Distill-Qwen-14B</a></p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</a></p></td>
 <td><p>4</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501">mistralai/Mistral-Small-24B-Instruct-2501</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Small-24B-Instruct-2501">mistralai/Mistral-Small-24B-Instruct-2501</a></p></td>
 <td><p>1</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">mistralai/Mistral-Large-Instruct-2411</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">mistralai/Mistral-Large-Instruct-2411</a></p></td>
 <td><p>4</p></td>
 </tr>
 </tbody>
@@ -2754,7 +2804,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Apr 08, 2025.</span>
+<span class="lastupdated">Published on Apr 09, 2025.</span>
 
   </div>
 

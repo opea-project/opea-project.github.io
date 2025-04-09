@@ -754,6 +754,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fine-tuning-with-llama-board-gui-powered-by-gradio">Fine-Tuning with LLaMA Board GUI (powered by Gradio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fine-tuning-with-shell-instead-of-gui">Fine-Tuning with Shell instead of GUI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xtune-examples"><code class="docutils literal notranslate"><span class="pre">Xtune</span></code> Examples</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#citation">Citation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#acknowledgement">Acknowledgement</a></li>
@@ -775,6 +776,7 @@
 <li class="toctree-l3"><a class="reference internal" href="doc/adaclip_readme.html#prepare-datasets">Prepare Datasets</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="doc/adaclip_readme.html#datasets">Datasets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="doc/adaclip_readme.html#frame-extraction">Frame Extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/adaclip_readme.html#dataset-json-prepare">Dataset JSON prepare</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="doc/adaclip_readme.html#implemented-finetune-methods">Implemented finetune methods</a><ul>
@@ -798,6 +800,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html">The core features for clip finetune tool:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html#how-to-config-features-for-clip-finetune-tool">How to config features for clip finetune tool:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html#basic-yaml-for-vit-b16-yaml">Basic yaml for vit_b16.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html#angle-based-selection-for-full-finetune">Angle-Based Selection for full-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html#customize-trained-layer-for-partial-finetune">customize trained layer for partial-finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html#fixed-cache-size-for-tip-adapter">fixed cache size for tip-adapter</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../microservices/index.html#guardrails-microservice">Guardrails Microservice</a><ul>
@@ -2510,24 +2519,19 @@ Installation is mandatory.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>xtune<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10<span class="w"> </span>-y
 conda<span class="w"> </span>activate<span class="w"> </span>xtune
 apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>rsync
+<span class="c1"># open webui as default</span>
 bash<span class="w"> </span>prepare_xtune.sh
+<span class="c1"># this way it will not open webui</span>
+<span class="c1"># bash prepare_xtune.sh false</span>
 </pre></div>
 </div>
 <p>Blow command is in prepare_xtune.sh. You can ignore it if you don’t want to update lib manually.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-<span class="c1"># if you want to run on NVIDIA GPU</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if you want to run on NVIDIA GPU</span>
 <span class="w">    </span>conda<span class="w"> </span>install<span class="w"> </span>pytorch<span class="w"> </span>torchvision<span class="w"> </span><span class="nv">cudatoolkit</span><span class="o">=</span><span class="m">10</span>.2<span class="w"> </span>-c<span class="w"> </span>pytorch
 <span class="c1"># else run on A770</span>
-<span class="c1"># You can refer to https://github.com/intel/intel-extension-for-pytorch for latest command</span>
+<span class="c1"># You can refer to https://github.com/intel/intel-extension-for-pytorch for latest command to update lib</span>
 <span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.5.1+cxx11.abi<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.20.1+cxx11.abi<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.5.1+cxx11.abi<span class="w">  </span>--extra-index-url<span class="w"> </span>https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
-
-<span class="nb">cd</span><span class="w"> </span>src/llamafactory/clip_finetune/dassl
-python<span class="w"> </span>setup.py<span class="w"> </span>develop
-<span class="nb">cd</span><span class="w"> </span>../../../..
-pip<span class="w"> </span>install<span class="w"> </span>matplotlib
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[metrics]&quot;</span>
-pip<span class="w"> </span>install<span class="w"> </span>--no-deps<span class="w"> </span><span class="nv">transformers</span><span class="o">==</span><span class="m">4</span>.45.0<span class="w"> </span><span class="nv">datasets</span><span class="o">==</span><span class="m">2</span>.21.0<span class="w"> </span><span class="nv">accelerate</span><span class="o">==</span><span class="m">0</span>.34.2<span class="w"> </span><span class="nv">peft</span><span class="o">==</span><span class="m">0</span>.12.0
-python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>intel-extension-for-pytorch<span class="o">==</span><span class="m">2</span>.5.10+xpu<span class="w"> </span><span class="nv">oneccl_bind_pt</span><span class="o">==</span><span class="m">2</span>.5.0+xpu<span class="w"> </span>--extra-index-url<span class="w"> </span>https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+<span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>intel-extension-for-pytorch<span class="o">==</span><span class="m">2</span>.5.10+xpu<span class="w"> </span><span class="nv">oneccl_bind_pt</span><span class="o">==</span><span class="m">2</span>.5.0+xpu<span class="w"> </span>--extra-index-url<span class="w"> </span>https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
 </pre></div>
 </div>
 </section>
@@ -2577,6 +2581,10 @@ make <code class="docutils literal notranslate"><span class="pre">caltech101.jso
 </section>
 <section id="fine-tuning-with-llama-board-gui-powered-by-gradio">
 <h2>Fine-Tuning with LLaMA Board GUI (powered by <a class="reference external" href="https://github.com/gradio-app/gradio">Gradio</a>)<a class="headerlink" href="#fine-tuning-with-llama-board-gui-powered-by-gradio" title="Link to this heading">¶</a></h2>
+<p>When run with prepare_xtune.sh, it will automatic run ZE_AFFINITY_MASK=0 llamafactory-cli webui.</p>
+<p>If you see “server start successfully” in terminal.
+You can access in web through http://localhost:7860/</p>
+<p>The UI component information can be seen in doc/ui_component.md after run with prepare_xtune.sh.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>Run<span class="w"> </span>with<span class="w"> </span>A100:
 <span class="w"> </span><span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>llamafactory-cli<span class="w"> </span>webui
 <span class="w"> </span>Run<span class="w"> </span>with<span class="w"> </span>ARC770:
@@ -2585,6 +2593,124 @@ make <code class="docutils literal notranslate"><span class="pre">caltech101.jso
 <span class="w"> </span>Then<span class="w"> </span>access<span class="w"> </span><span class="k">in</span><span class="w"> </span>web<span class="w"> </span>through<span class="w"> </span>http://localhost:7860/
 </pre></div>
 </div>
+</section>
+<section id="fine-tuning-with-shell-instead-of-gui">
+<h2>Fine-Tuning with Shell instead of GUI<a class="headerlink" href="#fine-tuning-with-shell-instead-of-gui" title="Link to this heading">¶</a></h2>
+<p>After run <code class="docutils literal notranslate"><span class="pre">prepare_xtune.sh</span></code>, it will download all related file. And open webui as default.</p>
+<p>You can run <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">prepare_xtune.sh</span> <span class="pre">false</span></code> to close webui. Then you can run fine-tune with shell.</p>
+<p>Below are examples.</p>
+<section id="clip">
+<h3>CLIP<a class="headerlink" href="#clip" title="Link to this heading">¶</a></h3>
+<p>Please see <a class="reference internal" href="doc/key_features_for_clip_finetune_tool.html"><span class="std std-doc">doc</span></a> for how to config feature</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>src/llamafactory/clip_finetune
+<span class="c1"># Please see README.md in src/llamafactory/clip_finetune for detail</span>
+</pre></div>
+</div>
+</section>
+<section id="adaclip">
+<h3>AdaCLIP<a class="headerlink" href="#adaclip" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>src/llamafactory/adaclip_finetune
+<span class="c1"># Please see README.md in src/llamafactory/adaclip_finetune for detail</span>
+</pre></div>
+</div>
+</section>
+<section id="deepseek-r1-distillation-not-main-function">
+<h3>DeepSeek-R1 Distillation(not main function)<a class="headerlink" href="#deepseek-r1-distillation-not-main-function" title="Link to this heading">¶</a></h3>
+<p>Please see <a class="reference internal" href="#./doc/DeepSeek-R1_distillation_best_practice-v1.1.pdf"><span class="xref myst">doc</span></a> for details</p>
+<section id="step-1-download-existing-cot-synthetic-dataset-from-huggingface">
+<h4>Step 1: Download existing CoT synthetic dataset from huggingface<a class="headerlink" href="#step-1-download-existing-cot-synthetic-dataset-from-huggingface" title="Link to this heading">¶</a></h4>
+<p>Dataset link: https://huggingface.co/datasets/Magpie-Align/Magpie-Reasoning-V2-250K-CoT-Deepseek-R1-Llama-70B</p>
+</section>
+<section id="step-2-convert-to-sharegpt-format">
+<h4>Step 2: Convert to sharegpt format<a class="headerlink" href="#step-2-convert-to-sharegpt-format" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>data
+import<span class="w"> </span>json
+from<span class="w"> </span>datasets<span class="w"> </span>import<span class="w"> </span>load_dataset
+<span class="c1"># Load the dataset</span>
+<span class="nv">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>load_dataset<span class="o">(</span><span class="s2">&quot;Magpie-Align/Magpie-Reasoning-V2-&quot;&quot;250K-CoT-Deepseek-R1-Llama-70B&quot;</span><span class="o">)</span>
+<span class="nv">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dataset<span class="o">[</span><span class="s2">&quot;train&quot;</span><span class="o">]</span>
+<span class="c1"># Filter dataset</span>
+<span class="c1">## Change the filter conditions according to your needs</span>
+<span class="nv">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>dataset.filter<span class="o">(</span>lambda<span class="w"> </span>example:<span class="w"> </span>len<span class="o">(</span>example<span class="o">[</span><span class="s1">&#39;response&#39;</span><span class="o">])</span><span class="w"> </span>&lt;<span class="o">=</span><span class="w"> </span><span class="m">1024</span><span class="o">)</span>
+<span class="c1"># Save as sharegpt format</span>
+with<span class="w"> </span>open<span class="o">(</span><span class="s2">&quot;Magpie-Reasoning-V2-250K-CoT-Deepseek-R1-Llama-70B-response1024.json&quot;</span>,
+<span class="s1">&#39;w&#39;</span><span class="o">)</span><span class="w"> </span>as<span class="w"> </span>f:
+<span class="w">  </span>json.dump<span class="o">(</span>list<span class="o">(</span>dataset<span class="o">)</span>,<span class="w"> </span>f,<span class="w"> </span><span class="nv">ensure_ascii</span><span class="o">=</span>False,<span class="w"> </span><span class="nv">indent</span><span class="o">=</span><span class="m">4</span><span class="o">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-register-cot-dataset-llama-factory-dataset-info-json">
+<h4>Step 3: Register CoT dataset LLAMA-Factory dataset_info.json<a class="headerlink" href="#step-3-register-cot-dataset-llama-factory-dataset-info-json" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>data
+vim<span class="w"> </span>dataset_info.json
+
+<span class="c1"># make sure the file is put under `xtune/data`</span>
+<span class="s2">&quot;deepseek-r1-distill-sample&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;file_name&quot;</span>:<span class="w"> </span><span class="s2">&quot;Magpie-Reasoning-V2-250K-CoT-Deepseek-R1-Llama-70B-response1024.json&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;formatting&quot;</span>:<span class="w"> </span><span class="s2">&quot;sharegpt&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;columns&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;messages&quot;</span>:<span class="w"> </span><span class="s2">&quot;conversations&quot;</span>
+<span class="w">  </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-use-the-accelerate-command-to-enable-training-on-xpu-plugin">
+<h4>Step 4: Use the accelerate command to enable training on XPU plugin<a class="headerlink" href="#step-4-use-the-accelerate-command-to-enable-training-on-xpu-plugin" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>accelerate config
+
+For Single GPU:
+  Which type of machine are you using?
+  No distributed training
+  Do you want to run your training on CPU only (even if a GPU / Apple Silicon / Ascend NPU device is available)? [yes/NO]:NO
+  Do you want to use XPU plugin to speed up training on XPU? [yes/NO]:yes
+  Do you wish to optimize your script with torch dynamo?[yes/NO]:NO
+  Do you want to use DeepSpeed? [yes/NO]: NO
+  What GPU(s) (by id) should be used for training on this machine as a comma-seperated list? [all]:all
+  Would you like to enable numa efficiency? (Currently only supported on NVIDIA hardware). [yes/NO]:
+  Do you wish to use mixed precision?
+  bf16
+For Multi-GPU with FSDP:
+  Which type of machine are you using?
+  multi-XPU
+  How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+  Should distributed operations be checked while running for errors? This can avoid timeout issues but will be slower. [yes/NO]: NO
+  Do you want to use XPU plugin to speed up training on XPU? [yes/NO]:yes
+  Do you wish to optimize your script with torch dynamo?[yes/NO]:NO
+  Do you want to use DeepSpeed? [yes/NO]: NO
+  Do you want to use FullyShardedDataParallel? [yes/NO]: yes
+  What should be your sharding strategy?
+  FULL_SHARD
+  Do you want to offload parameters and gradients to CPU? [yes/NO]: NO
+  What should be your auto wrap policy?
+  TRANSFORMER_BASED_WRAP
+  Do you want to use the model&#39;s `_no_split_modules` to wrap. Only applicable for Transformers [yes/NO]: yes
+  What should be your FSDP&#39;s backward prefetch policy?
+  BACKWARD_PRE
+  What should be your FSDP&#39;s state dict type?
+  SHARDED_STATE_DICT
+  Do you want to enable FSDP&#39;s forward prefetch policy? [yes/NO]: yes
+  Do you want to enable FSDP&#39;s `use_orig_params` feature? [YES/no]: yes
+  Do you want to enable CPU RAM efficient model loading? Only applicable for Transformers models. [YES/no]: yes
+  Do you want to enable FSDP activation checkpointing? [yes/NO]: yes
+  How many GPU(s) should be used for distributed training? [1]:2
+  Do you wish to use mixed precision?
+  bf16
+</pre></div>
+</div>
+</section>
+<section id="step-5-run-with-train-script-as-follows">
+<h4>Step 5: Run with train script as follows<a class="headerlink" href="#step-5-run-with-train-script-as-follows" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">&quot;level_zero:0&quot;</span>
+<span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">&quot;microsoft/Phi-3-mini-4k-instruct&quot;</span>
+<span class="nv">EXP_NAME</span><span class="o">=</span><span class="s2">&quot;Phi-3-mini-4k-instruct-r1-distill-finetuned&quot;</span>
+<span class="nv">DATASET_NAME</span><span class="o">=</span><span class="s2">&quot;deepseek-r1-distill-sample&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OUTPUT_DIR</span><span class="o">=</span><span class="s2">&quot;where to put output&quot;</span>
+accelerate<span class="w"> </span>launch<span class="w"> </span>src/train.py<span class="w"> </span>--stage<span class="w"> </span>sft<span class="w"> </span>--do_train<span class="w"> </span>--use_fast_tokenizer<span class="w"> </span>--new_special_tokens<span class="w"> </span><span class="s2">&quot;&lt;think&gt;,&lt;/think&gt;&quot;</span><span class="w"> </span>--resize_vocab<span class="w"> </span>--flash_attn<span class="w"> </span>auto<span class="w"> </span>--model_name_or_path<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_ID</span><span class="si">}</span><span class="w"> </span>--dataset<span class="w"> </span><span class="si">${</span><span class="nv">DATASET_NAME</span><span class="si">}</span><span class="w"> </span>--template<span class="w"> </span>phi<span class="w"> </span>--finetuning_type<span class="w"> </span>lora<span class="w"> </span>--lora_rank<span class="w"> </span><span class="m">8</span><span class="w"> </span>--lora_alpha<span class="w"> </span><span class="m">16</span><span class="w"> </span>--lora_target<span class="w"> </span>q_proj,v_proj,k_proj,o_proj<span class="w"> </span>--additional_target<span class="w"> </span>lm_head,embed_tokens<span class="w"> </span>--output_dir<span class="w"> </span><span class="nv">$OUTPUT_DIR</span><span class="w"> </span>--overwrite_cache<span class="w"> </span>--overwrite_output_dir<span class="w"> </span>--warmup_steps<span class="w"> </span><span class="m">100</span><span class="w"> </span>--weight_decay<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>--per_device_train_batch_size<span class="w"> </span><span class="m">1</span><span class="w"> </span>--gradient_accumulation_steps<span class="w"> </span><span class="m">4</span><span class="w"> </span>--ddp_timeout<span class="w"> </span><span class="m">9000</span><span class="w"> </span>--learning_rate<span class="w"> </span>5e-6<span class="w"> </span>--lr_scheduler_type<span class="w"> </span>cosine<span class="w"> </span>--logging_steps<span class="w"> </span><span class="m">1</span><span class="w"> </span>--save_steps<span class="w"> </span><span class="m">1000</span><span class="w"> </span>--plot_loss<span class="w"> </span>--num_train_epochs<span class="w"> </span><span class="m">3</span><span class="w"> </span>--torch_empty_cache_steps<span class="w"> </span><span class="m">10</span><span class="w"> </span>--bf16
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 <section id="xtune-examples">
 <h2><code class="docutils literal notranslate"><span class="pre">Xtune</span></code> Examples<a class="headerlink" href="#xtune-examples" title="Link to this heading">¶</a></h2>
@@ -2624,7 +2750,7 @@ make <code class="docutils literal notranslate"><span class="pre">caltech101.jso
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Apr 08, 2025.</span>
+<span class="lastupdated">Published on Apr 09, 2025.</span>
 
   </div>
 
