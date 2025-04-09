@@ -586,6 +586,7 @@
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Telemetry for OPEA</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#metrics">Metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tracing">Tracing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#visualization">Visualization</a></li>
 </ul>
@@ -1915,6 +1916,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/doc/platform-optimization/README.html#validate-cpu-affinity-and-hardware-alignment-in-containers">Validate CPU affinity and hardware alignment in containers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/doc/platform-optimization/README.html#remove-a-policy">Remove a policy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/doc/platform-optimization/README.html#nri-topology-aware-resource-policy">NRI topology-aware resource policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../GenAIEval/doc/platform-optimization/README.html#recommendations">Recommendations</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../GenAIEval/docker/README.html">GenAIEval Dockerfiles</a><ul>
@@ -2497,6 +2499,22 @@
 <h1>Telemetry for OPEA<a class="headerlink" href="#telemetry-for-opea" title="Link to this heading">¶</a></h1>
 <p>OPEA Comps currently provides telemetry functionalities for metrics and tracing using Prometheus, Grafana, and Jaeger. Here’s a basic introduction to these tools:</p>
 <p><img alt="opea telemetry" src="../../../../_images/opea_telemetry.jpg" /></p>
+<p>Contents:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#metrics"><span class="xref myst">Metrics</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#http-metrics"><span class="xref myst">HTTP metrics</span></a></p></li>
+<li><p><a class="reference internal" href="#megaservice-e2e-metrics"><span class="xref myst">Megaservice E2E metrics</span></a></p></li>
+<li><p><a class="reference internal" href="#inferencing-metrics"><span class="xref myst">Inferencing metrics</span></a></p></li>
+<li><p><a class="reference internal" href="#metrics-collection"><span class="xref myst">Metrics collection</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#statistics"><span class="xref myst">Statistics</span></a></p></li>
+<li><p><a class="reference internal" href="#tracing"><span class="xref myst">Tracing</span></a></p></li>
+<li><p><a class="reference internal" href="#visualization"><span class="xref myst">Visualization</span></a></p></li>
+<li><p><a class="reference internal" href="#visualize-metrics"><span class="xref myst">Visualize metrics</span></a></p></li>
+<li><p><a class="reference internal" href="#visualize-tracing"><span class="xref myst">Visualize tracing</span></a></p></li>
+</ul>
 <section id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Link to this heading">¶</a></h2>
 <p>OPEA microservice metrics are exported in Prometheus format under <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint.</p>
@@ -2511,7 +2529,7 @@
 </pre></div>
 </div>
 <section id="http-metrics">
-<h3>HTTP Metrics<a class="headerlink" href="#http-metrics" title="Link to this heading">¶</a></h3>
+<h3>HTTP metrics<a class="headerlink" href="#http-metrics" title="Link to this heading">¶</a></h3>
 <p>Metrics output looks following:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">HELP http_requests_total Total number of requests by method, status and handler.</span>
 <span class="l l-Scalar l-Scalar-Plain"># TYPE http_requests_total counter</span>
@@ -2542,7 +2560,7 @@
 <p>They are available only for <em>stream</em> requests using LLM. Pending count accounts for all requests.</p>
 </section>
 <section id="inferencing-metrics">
-<h3>Inferencing Metrics<a class="headerlink" href="#inferencing-metrics" title="Link to this heading">¶</a></h3>
+<h3>Inferencing metrics<a class="headerlink" href="#inferencing-metrics" title="Link to this heading">¶</a></h3>
 <p>For example, you can <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">localhost:6006/metrics</span></code> to retrieve the TEI embedding metrics, and the output should look like follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># TYPE te_embed_count counter</span>
 <span class="l l-Scalar l-Scalar-Plain">te_embed_count 7</span>
@@ -2608,6 +2626,11 @@
 </tbody>
 </table>
 </section>
+</section>
+<section id="statistics">
+<h2>Statistics<a class="headerlink" href="#statistics" title="Link to this heading">¶</a></h2>
+<p>Additionally, GenAIComps microservices provide separate <code class="docutils literal notranslate"><span class="pre">/v1/statistics</span></code> endpoint, which outputs P50, P99 and average metrics
+for response times, and first token latencies, if microservice processes them.</p>
 </section>
 <section id="tracing">
 <h2>Tracing<a class="headerlink" href="#tracing" title="Link to this heading">¶</a></h2>
