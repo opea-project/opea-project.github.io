@@ -313,6 +313,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Build MegaService of CodeGen on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy CodeGen in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/helm/README.html">Deploy CodeGen on Kubernetes cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../ui/gradio/README.html">Document Summary</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/react/README.html">Code Gen</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/svelte/README.html">Code Gen</a></li>
 </ul>
@@ -2502,26 +2503,66 @@
 <p>The default pipeline deploys with vLLM as the LLM serving component. It also provides options of using TGI backend for LLM microservice.</p>
 <section id="start-microservices-and-megaservice">
 <h2>🚀 Start MicroServices and MegaService<a class="headerlink" href="#start-microservices-and-megaservice" title="Link to this heading">¶</a></h2>
-<p>The CodeGen megaservice manages a single microservice called LLM within a Directed Acyclic Graph (DAG). In the diagram above, the LLM microservice is a language model microservice that generates code snippets based on the user’s input query. The TGI service serves as a text generation interface, providing a RESTful API for the LLM microservice. The CodeGen Gateway acts as the entry point for the CodeGen application, invoking the Megaservice to generate code snippets in response to the user’s input query.</p>
+<p>The CodeGen megaservice manages a several microservices including ‘Embedding MicroService’, ‘Retrieval MicroService’ and ‘LLM MicroService’ within a Directed Acyclic Graph (DAG). In the diagram below, the LLM microservice is a language model microservice that generates code snippets based on the user’s input query. The TGI service serves as a text generation interface, providing a RESTful API for the LLM microservice. Data Preparation allows users to save/update documents or online resources to the vector database. Users can upload files or provide URLs, and manage their saved resources. The CodeGen Gateway acts as the entry point for the CodeGen application, invoking the Megaservice to generate code snippets in response to the user’s input query.</p>
 <p>The mega flow of the CodeGen application, from user’s input query to the application’s output response, is as follows:</p>
 <div class="mermaid">
             flowchart LR
-    subgraph CodeGen
+    %% Colors %%
+    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
+    classDef invisible fill:transparent,stroke:transparent;
+    style CodeGen-MegaService stroke:#000000
+    %% Subgraphs %%
+    subgraph CodeGen-MegaService[&quot;CodeGen-MegaService&quot;]
         direction LR
-        A[User] --&gt; |Input query| B[CodeGen Gateway]
-        B --&gt; |Invoke| Megaservice
-        subgraph Megaservice[&quot;Megaservice&quot;]
-            direction TB
-            C((LLM&lt;br&gt;9000)) -. Post .-&gt; D{{TGI Service&lt;br&gt;8028}}
-        end
-        Megaservice --&gt; |Output| E[Response]
+        EM([Embedding&lt;br&gt;MicroService]):::blue
+        RET([Retrieval&lt;br&gt;MicroService]):::blue
+        RER([Agents]):::blue
+        LLM([LLM&lt;br&gt;MicroService]):::blue
+    end
+    subgraph User Interface
+        direction LR
+        a([Submit Query Tab]):::orchid
+        UI([UI server]):::orchid
+        Ingest([Manage Resources]):::orchid
     end
 
-    subgraph Legend
-        direction LR
-        G([Microservice]) ==&gt; H([Microservice])
-        I([Microservice]) -.-&gt; J{{Server API}}
-    end
+    CLIP_EM{{Embedding&lt;br&gt;service}}
+    VDB{{Vector DB}}
+    V_RET{{Retriever&lt;br&gt;service}}
+    Ingest{{Ingest data}}
+    DP([Data Preparation]):::blue
+    LLM_gen{{TGI Service}}
+    GW([CodeGen GateWay]):::orange
+
+    %% Data Preparation flow
+    %% Ingest data flow
+    direction LR
+    Ingest[Ingest data] --&gt; UI
+    UI --&gt; DP
+    DP &lt;-.-&gt; CLIP_EM
+
+    %% Questions interaction
+    direction LR
+    a[User Input Query] --&gt; UI
+    UI --&gt; GW
+    GW &lt;==&gt; CodeGen-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+    RER ==&gt; LLM
+
+
+    %% Embedding service flow
+    direction LR
+    EM &lt;-.-&gt; CLIP_EM
+    RET &lt;-.-&gt; V_RET
+    LLM &lt;-.-&gt; LLM_gen
+
+    direction TB
+    %% Vector DB interaction
+    V_RET &lt;-.-&gt;VDB
+    DP &lt;-.-&gt;VDB
         </div><section id="setup-environment-variables">
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
 <p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
@@ -2537,10 +2578,10 @@ Please replace the <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>Set Netowork Proxy</p></li>
+<li><p>Set Network Proxy</p></li>
 </ol>
 <p><strong>If you access public network through proxy, set the network proxy, otherwise, skip this step</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_https_proxy</span><span class="si">}</span>
 </pre></div>
@@ -2548,21 +2589,90 @@ Please replace the <code class="docutils literal notranslate"><span class="pre">
 </section>
 <section id="start-the-docker-containers-for-all-services">
 <h3>Start the Docker Containers for All Services<a class="headerlink" href="#start-the-docker-containers-for-all-services" title="Link to this heading">¶</a></h3>
-<p>CodeGen support TGI service and vLLM service, you can choose start either one of them.</p>
-<p>Start CodeGen based on TGI service:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose
-<span class="nb">source</span><span class="w"> </span>set_env.sh
-<span class="nb">cd</span><span class="w"> </span>intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-tgi<span class="w"> </span>up<span class="w"> </span>-d
+<p>Find the corresponding <a class="reference internal" href="#./compose.yaml"><span class="xref myst">compose.yaml</span></a>. User could start CodeGen based on TGI or vLLM service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose/intel/hpu/gaudi
 </pre></div>
 </div>
-<p>Start CodeGen based on vLLM service:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose
-<span class="nb">source</span><span class="w"> </span>set_env.sh
-<span class="nb">cd</span><span class="w"> </span>intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-vllm<span class="w"> </span>up<span class="w"> </span>-d
+<section id="tgi-service">
+<h4>TGI service:<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-tgi<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker images:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen-gradio-ui</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-textgen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">redis/redis-stack</span></code></p></li>
+</ul>
+</section>
+<section id="vllm-service">
+<h4>vLLM service:<a class="headerlink" href="#vllm-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-vllm<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker images:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-embeddings-inference:cpu-1.5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen-gradio-ui</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-textgen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">redis/redis-stack</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/vllm</span></code></p></li>
+</ul>
+<p>Refer to the <a class="reference internal" href="#"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
+</section>
+</section>
+<section id="building-the-docker-image-locally">
+<h3>Building the Docker image locally<a class="headerlink" href="#building-the-docker-image-locally" title="Link to this heading">¶</a></h3>
+<p>Should the Docker image you seek not yet be available on Docker Hub, you can build the Docker image locally.
+In order to build the Docker image locally follow the instrustion provided below.</p>
+<section id="build-the-megaservice-docker-image">
+<h4>Build the MegaService Docker Image<a class="headerlink" href="#build-the-megaservice-docker-image" title="Link to this heading">¶</a></h4>
+<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">codegen.py</span></code> Python script. Build the MegaService Docker image via the command below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/codegen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="build-the-ui-gradio-image">
+<h4>Build the UI Gradio Image<a class="headerlink" href="#build-the-ui-gradio-image" title="Link to this heading">¶</a></h4>
+<p>Build the frontend Gradio image via the command below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/ui
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/codegen-gradio-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.gradio<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="dataprep-microservice-with-redis">
+<h4>Dataprep Microservice with Redis<a class="headerlink" href="#dataprep-microservice-with-redis" title="Link to this heading">¶</a></h4>
+<p>Follow the instrustion provided here: <a class="reference external" href="https://github.com/MSCetin37/GenAIComps/blob/main/comps/dataprep/src/README_redis.md">opea/dataprep</a></p>
+</section>
+<section id="embedding-microservice-with-tei">
+<h4>Embedding Microservice with TEI<a class="headerlink" href="#embedding-microservice-with-tei" title="Link to this heading">¶</a></h4>
+<p>Follow the instrustion provided here: <a class="reference external" href="https://github.com/MSCetin37/GenAIComps/blob/main/comps/embeddings/src/README_tei.md">opea/embedding</a></p>
+</section>
+<section id="llm-text-generation-microservice">
+<h4>LLM text generation Microservice<a class="headerlink" href="#llm-text-generation-microservice" title="Link to this heading">¶</a></h4>
+<p>Follow the instrustion provided here: <a class="reference external" href="https://github.com/MSCetin37/GenAIComps/tree/main/comps/llms/src/text-generation">opea/llm-textgen</a></p>
+</section>
+<section id="retriever-microservice">
+<h4>Retriever Microservice<a class="headerlink" href="#retriever-microservice" title="Link to this heading">¶</a></h4>
+<p>Follow the instrustion provided here: <a class="reference external" href="https://github.com/MSCetin37/GenAIComps/blob/main/comps/retrievers/src/README_redis.md">opea/retriever</a></p>
+</section>
+<section id="start-redis-server">
+<h4>Start Redis server<a class="headerlink" href="#start-redis-server" title="Link to this heading">¶</a></h4>
+<p>Follow the instrustion provided here: <a class="reference external" href="https://github.com/MSCetin37/GenAIComps/tree/main/comps/third_parties/redis/src">redis/redis-stack</a></p>
+</section>
 </section>
 <section id="validate-the-microservices-and-megaservice">
 <h3>Validate the MicroServices and MegaService<a class="headerlink" href="#validate-the-microservices-and-megaservice" title="Link to this heading">¶</a></h3>
@@ -2570,31 +2680,60 @@ docker<span class="w"> </span>compose<span class="w"> </span>--profile<span clas
 <li><p>LLM Service (for TGI, vLLM)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8028/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}], &quot;max_tokens&quot;:32}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}], &quot;max_tokens&quot;:32}&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p>LLM Microservices</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;,&quot;max_tokens&quot;:256,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;stream&quot;:true}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;,&quot;max_tokens&quot;:256,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&quot;repetition_penalty&quot;:1.03,&quot;stream&quot;:true}&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Dataprep Microservice</p>
+<p>Make sure to replace the file name placeholders with your correct file name</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6007/v1/dataprep/ingest<span class="w"> </span><span class="se">\</span>
+-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+-F<span class="w"> </span><span class="s2">&quot;files=@./file1.pdf&quot;</span><span class="w"> </span><span class="se">\</span>
+-F<span class="w"> </span><span class="s2">&quot;files=@./file2.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+-F<span class="w"> </span><span class="s2">&quot;index_name=my_API_document&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>MegaService</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;</span>
-<span class="s1">     }&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>CodeGen service with RAG and Agents activated based on an index.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>$:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;agents_flag&quot;: &quot;True&quot;, &quot;index_name&quot;: &quot;my_API_document&quot;, &quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}&#39;</span>
 </pre></div>
 </div>
 </li>
 </ol>
 </section>
 </section>
-<section id="launch-the-svelte-based-ui">
-<h2>🚀 Launch the Svelte Based UI<a class="headerlink" href="#launch-the-svelte-based-ui" title="Link to this heading">¶</a></h2>
+<section id="launch-the-gradio-based-ui-recommended">
+<h2>🚀 Launch the Gradio Based UI (Recommended)<a class="headerlink" href="#launch-the-gradio-based-ui-recommended" title="Link to this heading">¶</a></h2>
+<p>To access the Gradio frontend URL, follow the steps in <a class="reference internal" href="../../../../ui/gradio/README.html"><span class="std std-doc">this README</span></a></p>
+<p>Code Generation Tab
+<img alt="project-screenshot" src="../../../../../../_images/codegen_gradio_ui_main.png" /></p>
+<p>Resource Management Tab
+<img alt="project-screenshot" src="../../../../../../_images/codegen_gradio_ui_main.png" /></p>
+<p>Uploading a Knowledge Index</p>
+<p><img alt="project-screenshot" src="../../../../../../_images/codegen_gradio_ui_dataprep.png" /></p>
+<p>Here is an example of running a query in the Gradio UI using an Index:</p>
+<p><img alt="project-screenshot" src="../../../../../../_images/codegen_gradio_ui_query.png" /></p>
+</section>
+<section id="launch-the-svelte-based-ui-optional">
+<h2>🚀 Launch the Svelte Based UI (Optional)<a class="headerlink" href="#launch-the-svelte-based-ui-optional" title="Link to this heading">¶</a></h2>
 <p>To access the frontend, open the following URL in your browser: <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5173</span></code>. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">codegen-gaudi-ui-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/codegen-ui:latest</span>
@@ -2688,51 +2827,6 @@ For example:</p>
 <li><p>Ask question and get answer</p></li>
 </ul>
 <p><img alt="qna" src="../../../../../../_images/codegen_qna.png" /></p>
-</section>
-</section>
-<section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build the Docker images locally. This step can be ignored after the Docker images published to the Docker Hub.</p>
-<section id="build-the-llm-docker-image">
-<h3>1. Build the LLM Docker Image<a class="headerlink" href="#build-the-llm-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/llm-textgen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/text-generation/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-the-megaservice-docker-image">
-<h3>2. Build the MegaService Docker Image<a class="headerlink" href="#build-the-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">codegen.py</span></code> Python script. Build the MegaService Docker image via the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/codegen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-the-ui-docker-image">
-<h3>3. Build the UI Docker Image<a class="headerlink" href="#build-the-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Construct the frontend Docker image via the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/codegen-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-codegen-react-ui-docker-image-optional">
-<h3>4. Build CodeGen React UI Docker Image (Optional)<a class="headerlink" href="#build-codegen-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
-<p>Build react frontend Docker image via below command:</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/codegen-react-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker images:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-textgen:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen-ui:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/codegen-react-ui:latest</span></code></p></li>
-</ul>
 </section>
 </section>
 </section>

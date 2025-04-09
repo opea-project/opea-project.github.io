@@ -313,6 +313,7 @@
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build MegaService of CodeGen on Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy CodeGen in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/helm/README.html">Deploy CodeGen on Kubernetes cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui/gradio/README.html">Document Summary</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/react/README.html">Code Gen</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/svelte/README.html">Code Gen</a></li>
 </ul>
@@ -2498,7 +2499,7 @@
              
   <section id="code-generation-application">
 <h1>Code Generation Application<a class="headerlink" href="#code-generation-application" title="Link to this heading">¶</a></h1>
-<p>Code Generation (CodeGen) Large Language Models (LLMs) are specialized AI models designed for the task of generating computer code. Such models undergo training with datasets that encompass repositories, specialized documentation, programming code, relevant web content, and other related data. They possess a deep understanding of various programming languages, coding patterns, and software development concepts. CodeGen LLMs are engineered to assist developers and programmers. When these LLMs are seamlessly integrated into the developer’s Integrated Development Environment (IDE), they possess a comprehensive understanding of the coding context, which includes elements such as comments, function names, and variable names. This contextual awareness empowers them to provide more refined and contextually relevant coding suggestions.</p>
+<p>Code Generation (CodeGen) Large Language Models (LLMs) are specialized AI models designed for the task of generating computer code. Such models undergo training with datasets that encompass repositories, specialized documentation, programming code, relevant web content, and other related data. They possess a deep understanding of various programming languages, coding patterns, and software development concepts. CodeGen LLMs are engineered to assist developers and programmers. When these LLMs are seamlessly integrated into the developer’s Integrated Development Environment (IDE), they possess a comprehensive understanding of the coding context, which includes elements such as comments, function names, and variable names. This contextual awareness empowers them to provide more refined and contextually relevant coding suggestions. Additionally Retrieval-Augmented Generation (RAG) and Agents are parts of the CodeGen example which provide an additional layer of intelligence and adaptability, ensuring that the generated code is not only relevant but also accurate, efficient, and tailored to the specific needs of the developers and programmers.</p>
 <p>The capabilities of CodeGen LLMs include:</p>
 <ul class="simple">
 <li><p>Code Generation: Streamline coding through Code Generation, enabling non-programmers to describe tasks for code creation.</p></li>
@@ -2521,33 +2522,56 @@
     classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
     classDef invisible fill:transparent,stroke:transparent;
     style CodeGen-MegaService stroke:#000000
-
     %% Subgraphs %%
-    subgraph CodeGen-MegaService[&quot;CodeGen MegaService &quot;]
+    subgraph CodeGen-MegaService[&quot;CodeGen-MegaService&quot;]
         direction LR
-        LLM([LLM MicroService]):::blue
+        EM([Embedding&lt;br&gt;MicroService]):::blue
+        RET([Retrieval&lt;br&gt;MicroService]):::blue
+        RER([Agents]):::blue
+        LLM([LLM&lt;br&gt;MicroService]):::blue
     end
-    subgraph UserInterface[&quot; User Interface &quot;]
+    subgraph User Interface
         direction LR
-        a([User Input Query]):::orchid
-        UI([UI server&lt;br&gt;]):::orchid
+        a([Submit Query Tab]):::orchid
+        UI([UI server]):::orchid
+        Ingest([Manage Resources]):::orchid
     end
 
+    CLIP_EM{{Embedding&lt;br&gt;service}}
+    VDB{{Vector DB}}
+    V_RET{{Retriever&lt;br&gt;service}}
+    Ingest{{Ingest data}}
+    DP([Data Preparation]):::blue
+    LLM_gen{{TGI Service}}
+    GW([CodeGen GateWay]):::orange
 
-    LLM_gen{{LLM Service &lt;br&gt;}}
-    GW([CodeGen GateWay&lt;br&gt;]):::orange
-
+    %% Data Preparation flow
+    %% Ingest data flow
+    direction LR
+    Ingest[Ingest data] --&gt; UI
+    UI --&gt; DP
+    DP &lt;-.-&gt; CLIP_EM
 
     %% Questions interaction
     direction LR
     a[User Input Query] --&gt; UI
     UI --&gt; GW
     GW &lt;==&gt; CodeGen-MegaService
+    EM ==&gt; RET
+    RET ==&gt; RER
+    RER ==&gt; LLM
 
 
     %% Embedding service flow
     direction LR
+    EM &lt;-.-&gt; CLIP_EM
+    RET &lt;-.-&gt; V_RET
     LLM &lt;-.-&gt; LLM_gen
+
+    direction TB
+    %% Vector DB interaction
+    V_RET &lt;-.-&gt;VDB
+    DP &lt;-.-&gt;VDB
         </div><section id="automated-terraform-deployment-using-intel-optimized-cloud-modules-for-terraform">
 <h2>🤖 Automated Terraform Deployment using Intel® Optimized Cloud Modules for <strong>Terraform</strong><a class="headerlink" href="#automated-terraform-deployment-using-intel-optimized-cloud-modules-for-terraform" title="Link to this heading">¶</a></h2>
 <table class="docutils align-default">
@@ -2605,12 +2629,12 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>LLM_MODEL_ID</p></td>
-<td><p><a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct">Qwen/Qwen2.5-Coder-7B-Instruct</a></p></td>
+<td><p><a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct">Qwen/Qwen2.5-Coder-32B-Instruct</a></p></td>
 </tr>
 </tbody>
 </table>
-<p><a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct">Qwen/Qwen2.5-Coder-7B-Instruct</a> may be a gated model that requires submitting an access request through Hugging Face. You can replace it with another model.
-Change the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> below for your needs, such as: <a class="reference external" href="https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct">deepseek-ai/deepseek-coder-6.7b-instruct</a></p>
+<p><a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct">Qwen/Qwen2.5-Coder-32B-Instruct</a> may be a gated model that requires submitting an access request through Hugging Face. You can replace it with another model for m.
+Change the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> below for your needs, such as: <a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct">Qwen/Qwen2.5-Coder-7B-Instruct</a>, <a class="reference external" href="https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct">deepseek-ai/deepseek-coder-6.7b-instruct</a></p>
 <p>If you choose to use <code class="docutils literal notranslate"><span class="pre">meta-llama/CodeLlama-7b-hf</span></code> as LLM model, you will need to visit <a class="reference external" href="https://huggingface.co/meta-llama/CodeLlama-7b-hf">here</a>, click the <code class="docutils literal notranslate"><span class="pre">Expand</span> <span class="pre">to</span> <span class="pre">review</span> <span class="pre">and</span> <span class="pre">access</span></code> button to ask for model access.</p>
 </section>
 <section id="setup-environment-variable">
@@ -2643,18 +2667,32 @@ Change the <code class="docutils literal notranslate"><span class="pre">LLM_MODE
 <h3>Deploy CodeGen using Docker<a class="headerlink" href="#deploy-codegen-using-docker" title="Link to this heading">¶</a></h3>
 <section id="deploy-codegen-on-gaudi">
 <h4>Deploy CodeGen on Gaudi<a class="headerlink" href="#deploy-codegen-on-gaudi" title="Link to this heading">¶</a></h4>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
+<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>. User could start CodeGen based on TGI or vLLM service:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose/intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>TGI service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-tgi<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>vLLM service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-vllm<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
 </section>
 <section id="deploy-codegen-on-xeon">
 <h4>Deploy CodeGen on Xeon<a class="headerlink" href="#deploy-codegen-on-xeon" title="Link to this heading">¶</a></h4>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
+<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>. User could start CodeGen based on TGI or vLLM service:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>TGI service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-xeon-tgi<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>vLLM service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-xeon-vllm<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for more instructions on building docker images from source.</p>
@@ -2673,6 +2711,12 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>If the user wants a CodeGen service with RAG and Agents based on dedicated documentation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;agents_flag&quot;: &quot;True&quot;, &quot;index_name&quot;: &quot;my_API_document&quot;, &quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. The API takes as input an operation request and updates the TODO list in place. If the request is invalid, raise an exception.&quot;}&#39;</span>
 </pre></div>
 </div>
 </li>
