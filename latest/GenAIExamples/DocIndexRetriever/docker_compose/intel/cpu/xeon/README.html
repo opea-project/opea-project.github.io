@@ -370,7 +370,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of MultimodalQnA for AMD ROCm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/amd/gpu/rocm/README.html">Build and Deploy MultimodalQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
@@ -2333,6 +2333,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/24-11-25-GenAIExamples-Ollama_support_for_cpu_server.html">24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-03-GenAIComponents-001-Routing-Agent.html">Routing AgentRFC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-07-OPEA-001-OIM-Operator.html">RFC: OPEA Inference Microservices (OIM)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-14-GenAIExample-001-CodeTrans-with-Agents.html">25-03-14-GenAIExamples-001-CodeTrans-with-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html">25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-19-03-GenAIExamples-HybridRag-personal_assistant.html">HybridRAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs.html#rfc-template">RFC Template</a></li>
@@ -2594,9 +2595,6 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8889/v1/retrievaltool<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">     &quot;messages&quot;: &quot;Explain the OPEA project?&quot;</span>
 <span class="s1">     }&#39;</span>
-
-<span class="c1"># expected output</span>
-<span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;354e62c703caac8c547b3061433ec5e8&quot;</span>,<span class="s2">&quot;reranked_docs&quot;</span>:<span class="o">[{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;06d5a5cefc06cf9a9e0b5fa74a9f233c&quot;</span>,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;Close SearchsearchMenu WikiNewsCommunity Daysx-twitter linkedin github searchStreamlining implementation of enterprise-grade Generative AIEfficiently integrate secure, performant, and cost-effective Generative AI workflows into business value.TODAYOPEA...&quot;</span><span class="o">}]</span>,<span class="s2">&quot;initial_query&quot;</span>:<span class="s2">&quot;Explain the OPEA project?&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">messages</span></code> is the required field. You can also pass in parameters for the retriever and reranker in the request. The parameters that can changed are listed below.</p>
@@ -2625,7 +2623,7 @@ docker<span class="w"> </span>container<span class="w"> </span>logs<span class="
 <span class="c1"># embedding microservice</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6000/v1/embeddings<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Explain the OPEA project&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Explain the OPEA project&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>query
 docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>embedding-server
 

@@ -372,7 +372,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#multimodalqna-application">MultimodalQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../MultimodalQnA/README.html">MultimodalQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../MultimodalQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of MultimodalQnA for AMD ROCm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../MultimodalQnA/docker_compose/amd/gpu/rocm/README.html">Build and Deploy MultimodalQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../MultimodalQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
@@ -2335,6 +2335,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/24-11-25-GenAIExamples-Ollama_support_for_cpu_server.html">24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/25-03-03-GenAIComponents-001-Routing-Agent.html">Routing AgentRFC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/25-03-07-OPEA-001-OIM-Operator.html">RFC: OPEA Inference Microservices (OIM)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/25-03-14-GenAIExample-001-CodeTrans-with-Agents.html">25-03-14-GenAIExamples-001-CodeTrans-with-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html">25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs/25-19-03-GenAIExamples-HybridRag-personal_assistant.html">HybridRAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../community/rfcs.html#rfc-template">RFC Template</a></li>
@@ -2575,11 +2576,24 @@
 <p>Example usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">{host_ip}</span><span class="s2">:</span><span class="si">{port}</span><span class="s2">/v1/retrievaltool&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="o">=</span><span class="n">host_ip</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
 <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>  <span class="c1"># must be a string, this is a required field</span>
     <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># retriever top k</span>
     <span class="s2">&quot;top_n&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># reranker top n</span>
 <span class="p">}</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">messages</span></code> is the required field. You can also pass in parameters for the retriever and reranker in the request. The parameters that can changed are listed below.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1. retriever
+* search_type: str = &quot;similarity&quot;
+* k: int = 4
+* distance_threshold: Optional[float] = None
+* fetch_k: int = 20
+* lambda_mult: float = 0.5
+* score_threshold: float = 0.2
+
+2. reranker
+* top_n: int = 1
 </pre></div>
 </div>
 </section>

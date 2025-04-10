@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of MultimodalQnA for AMD ROCm &mdash; OPEA™ 1.2 documentation</title>
+  <title>Build and Deploy MultimodalQnA Application on AMD GPU (ROCm) &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -370,7 +370,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#multimodalqna-application">MultimodalQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">MultimodalQnA Application</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of MultimodalQnA for AMD ROCm</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Build and Deploy MultimodalQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Build Mega Service of MultimodalQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Build Mega Service of MultimodalQnA on Gaudi</a></li>
 </ul>
@@ -2333,6 +2333,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/24-11-25-GenAIExamples-Ollama_support_for_cpu_server.html">24-11-25-GenAIExamples-Ollama_Support_for_CPU_Server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-03-GenAIComponents-001-Routing-Agent.html">Routing AgentRFC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-07-OPEA-001-OIM-Operator.html">RFC: OPEA Inference Microservices (OIM)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-03-14-GenAIExample-001-CodeTrans-with-Agents.html">25-03-14-GenAIExamples-001-CodeTrans-with-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents.html">25-15-01-GenAIExamples-001-Code-Generation-Using-RAG-and-Agents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs/25-19-03-GenAIExamples-HybridRag-personal_assistant.html">HybridRAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../community/rfcs.html#rfc-template">RFC Template</a></li>
@@ -2485,7 +2486,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of MultimodalQnA for AMD ROCm</li>
+  <li>Build and Deploy MultimodalQnA Application on AMD GPU (ROCm)</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/MultimodalQnA/docker_compose/amd/gpu/rocm/README.md.txt" rel="nofollow"> View page source</a>
@@ -2505,93 +2506,201 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-multimodalqna-for-amd-rocm">
-<h1>Build Mega Service of MultimodalQnA for AMD ROCm<a class="headerlink" href="#build-mega-service-of-multimodalqna-for-amd-rocm" title="Link to this heading">¶</a></h1>
+  <section id="build-and-deploy-multimodalqna-application-on-amd-gpu-rocm">
+<h1>Build and Deploy MultimodalQnA Application on AMD GPU (ROCm)<a class="headerlink" href="#build-and-deploy-multimodalqna-application-on-amd-gpu-rocm" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a MultimodalQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on AMD server with ROCm GPUs. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">multimodal_embedding</span></code> that employs <a class="reference external" href="https://huggingface.co/BridgeTower/bridgetower-large-itm-mlm-gaudi">BridgeTower</a> model as embedding model, <code class="docutils literal notranslate"><span class="pre">multimodal_retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">lvm</span></code>, and <code class="docutils literal notranslate"><span class="pre">multimodal-data-prep</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
 <p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
 <p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
-<section id="setup-environment-variables">
-<h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
-<p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<p>Please use <code class="docutils literal notranslate"><span class="pre">./set_env.sh</span></code> (. set_env.sh) script to set up all needed Environment Variables.</p>
-<p><strong>Export the value of the public IP address of your server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
-</section>
 <section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<section id="build-embedding-multimodal-bridgetower-image">
-<h3>1. Build embedding-multimodal-bridgetower Image<a class="headerlink" href="#build-embedding-multimodal-bridgetower-image" title="Link to this heading">¶</a></h3>
-<p>Build embedding-multimodal-bridgetower docker image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding-multimodal-bridgetower:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$EMBEDDER_PORT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/bridgetower/src/Dockerfile<span class="w"> </span>.
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<section id="build-docker-image">
+<h3>1. Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
+<ul>
+<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/multimodalqna-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>multimodalqna-install
 </pre></div>
 </div>
-<p>Build embedding microservice image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-lvm-images">
-<h3>2. Build LVM Images<a class="headerlink" href="#build-lvm-images" title="Link to this heading">¶</a></h3>
-<p>Build lvm-llava image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/lvm-llava:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/whisper/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-retriever-multimodal-redis-image">
-<h3>3. Build retriever-multimodal-redis Image<a class="headerlink" href="#build-retriever-multimodal-redis-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-dataprep-multimodal-redis-image">
-<h3>4. Build dataprep-multimodal-redis Image<a class="headerlink" href="#build-dataprep-multimodal-redis-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-megaservice-docker-image">
-<h3>5. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <a class="reference internal" href="#../../../../multimodalqna.py"><span class="xref myst">multimodalqna.py</span></a> Python script. Build MegaService Docker image via below command:</p>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../..
+</pre></div>
+</div>
+<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version:</p>
+</li>
+<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/multimodalqna-install/GenAIExamples/MultimodalQnA/docker_image_build
+</pre></div>
+</div>
+</li>
+<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
+This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+</pre></div>
+</div>
+<p>If you use a specific tag of the GenAIExamples repository,
+then you should also use the corresponding tag for GenAIComps. (v1.3 replace with its own value):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIComps<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
+<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
+</li>
+<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
+<p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
+<h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;multimodalqna multimodalqna-ui embedding-multimodal-bridgetower embedding retriever lvm dataprep whisper vllm-rocm&quot;</span>
+</pre></div>
+</div>
+<h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;multimodalqna multimodalqna-ui embedding-multimodal-bridgetower embedding retriever lvm dataprep whisper&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-want-to-use-tgi">Optional. Pull TGI Docker Image (Do this if you want to use TGI)</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
+</pre></div>
+</div>
+</li>
+<li><h4 class="rubric" id="id1">Build Docker Images</h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
+</pre></div>
+</div>
+<p>After the build, we check the list of images with the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
+</pre></div>
+</div>
+<p>The list of images should include:</p>
+<h5 class="rubric" id="id2">vLLM-based application:</h5>
+<ul class="simple">
+<li><p>opea/vllm-rocm:latest</p>
+<ul>
+<li><p>opea/lvm:latest</p></li>
+<li><p>opea/multimodalqna:latest</p></li>
+<li><p>opea/multimodalqna-ui:latest</p></li>
+<li><p>opea/dataprep:latest</p></li>
+<li><p>opea/embedding:latest</p></li>
+<li><p>opea/embedding-multimodal-bridgetower:latest</p></li>
+<li><p>opea/retriever:latest</p></li>
+<li><p>opea/whisper:latest</p></li>
+</ul>
+</li>
+</ul>
+<h5 class="rubric" id="id3">TGI-based application:</h5>
+<ul class="simple">
+<li><p>ghcr.io/huggingface/text-generation-inference:2.4.1-rocm</p>
+<ul>
+<li><p>opea/lvm:latest</p></li>
+<li><p>opea/multimodalqna:latest</p></li>
+<li><p>opea/multimodalqna-ui:latest</p></li>
+<li><p>opea/dataprep:latest</p></li>
+<li><p>opea/embedding:latest</p></li>
+<li><p>opea/embedding-multimodal-bridgetower:latest</p></li>
+<li><p>opea/retriever:latest</p></li>
+<li><p>opea/whisper:latest</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="deploy-the-multimodalqna-application">
+<h2>Deploy the MultimodalQnA Application<a class="headerlink" href="#deploy-the-multimodalqna-application" title="Link to this heading">¶</a></h2>
+<section id="docker-compose-configuration-for-amd-gpus">
+<h3>Docker Compose Configuration for AMD GPUs<a class="headerlink" href="#docker-compose-configuration-for-amd-gpus" title="Link to this heading">¶</a></h3>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/:/dev/dri/</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/renderD128:/dev/dri/renderD128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
+</section>
+<section id="set-deploy-environment-variables">
+<h3>Set deploy environment variables<a class="headerlink" href="#set-deploy-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="setting-variables-in-the-operating-system-environment">
+<h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
+<section id="set-variable-huggingfacehub-api-token">
+<h5>Set variable HUGGINGFACEHUB_API_TOKEN:<a class="headerlink" href="#set-variable-huggingfacehub-api-token" title="Link to this heading">¶</a></h5>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="build-ui-docker-image">
-<h3>6. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build frontend Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA/ui/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/multimodalqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>../../../
+</section>
+<section id="set-variables-value-in-set-env-sh-file">
+<h4>Set variables value in set_env****.sh file:<a class="headerlink" href="#set-variables-value-in-set-env-sh-file" title="Link to this heading">¶</a></h4>
+<p>Go to Docker Compose directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/multimodalqna-install/GenAIExamples/MultimodalQnA/docker_compose/amd/gpu/rocm
+</pre></div>
+</div>
+<p>The example uses the Nano text editor. You can use any convenient text editor:</p>
+</section>
+<section id="if-you-use-vllm">
+<h4>If you use vLLM<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env_vllm.sh
 </pre></div>
 </div>
 </section>
-<section id="pull-tgi-amd-rocm-image">
-<h3>7. Pull TGI AMD ROCm Image<a class="headerlink" href="#pull-tgi-amd-rocm-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1-rocm
+<section id="if-you-use-tgi">
+<h4>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env.sh
 </pre></div>
 </div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.1-rocm</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-bridgetower:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/multimodalqna:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/multimodalqna-ui:latest</span></code></p></li>
-</ol>
+<p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+</pre></div>
+</div>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
 </section>
-</section>
-<section id="start-microservices">
-<h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
 <section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
+<h4>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h4>
 <p>By default, the multimodal-embedding and LVM models are set to a default value as listed below:</p>
 <table class="docutils align-default">
 <thead>
@@ -2614,181 +2723,263 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p>Note:</p>
 <p>For AMD ROCm System “Xkev/Llama-3.2V-11B-cot” is recommended to run on ghcr.io/huggingface/text-generation-inference:2.4.1-rocm</p>
 </section>
-<section id="start-all-the-services-docker-containers">
-<h3>Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h3>
-<blockquote>
-<div><p>Before running the docker compose command, you need to be in the folder that has the docker compose yaml file</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/MultimodalQnA/docker_compose/amd/gpu/rocm
-.<span class="w"> </span>set_env.sh
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<section id="set-variables-with-script-set-env-sh">
+<h4>Set variables with script set_env****.sh<a class="headerlink" href="#set-variables-with-script-set-env-sh" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id4">
+<h4>If you use vLLM<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env_vllm.sh
 </pre></div>
 </div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with your external IP address, do not use localhost.</p>
-<p>Note: In order to limit access to a subset of GPUs, please pass each device individually using one or more -device /dev/dri/rendered<node>, where <node> is the card index, starting from 128. (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
-<p>Example for set isolation for 1 GPU</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span>
+</section>
+<section id="id5">
+<h4>If you use TGI<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env.sh
 </pre></div>
 </div>
-<p>Example for set isolation for 2 GPUs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card0</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card1</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">card1</span>
-      <span class="o">-</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD129</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD129</span>
+</section>
+</section>
+<section id="start-the-services">
+<h3>Start the services:<a class="headerlink" href="#start-the-services" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>If you use vLLM<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>Please find more information about accessing and restricting AMD GPUs in the link (https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#docker-restrict-gpus)</p>
+</section>
+<section id="id7">
+<h4>If you use TGI<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>All containers should be running and should not restart:</p>
+<section id="id8">
+<h5>If you use vLLM:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>multimodalqna-vllm-service</p></li>
+<li><p>multimodalqna-lvm</p></li>
+<li><p>multimodalqna-backend-server</p></li>
+<li><p>multimodalqna-gradio-ui-server</p></li>
+<li><p>whisper-service</p></li>
+<li><p>embedding-multimodal-bridgetower</p></li>
+<li><p>redis-vector-db</p></li>
+<li><p>embedding</p></li>
+<li><p>retriever-redis</p></li>
+<li><p>dataprep-multimodal-redis</p></li>
+</ul>
+</section>
+<section id="id9">
+<h5>If you use TGI:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>tgi-llava-rocm-server</p></li>
+<li><p>multimodalqna-lvm</p></li>
+<li><p>multimodalqna-backend-server</p></li>
+<li><p>multimodalqna-gradio-ui-server</p></li>
+<li><p>whisper-service</p></li>
+<li><p>embedding-multimodal-bridgetower</p></li>
+<li><p>redis-vector-db</p></li>
+<li><p>embedding</p></li>
+<li><p>retriever-redis</p></li>
+<li><p>dataprep-multimodal-redis</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validate-the-services">
+<h2>Validate the Services<a class="headerlink" href="#validate-the-services" title="Link to this heading">¶</a></h2>
+<section id="validate-the-vllm-tgi-service">
+<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>If you use vLLM:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Xkev/Llama-3.2V-11B-cot&quot;, &#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;: 256}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MULTIMODALQNA_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-a3761920c4034131b3cab073b8e8b841&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742959065</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Deep Learning refers to a modern approach of Artificial Intelligence that aims to replicate the way human brains process information by teaching computers to learn from data without extensive programming&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the vLLM service to be successfully launched</p>
+</section>
+<section id="id11">
+<h4>If you use TGI:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
+
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MULTIMODALQNA_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\n\nDeep Learning is a subset of machine learning, which focuses on developing methods inspired by the functioning of the human brain; more specifically, the way it processes and acquires various types of knowledge and information. To enable deep learning, the networks are composed of multiple processing layers that form a hierarchy, with each layer learning more complex and abstraction levels of data representation.\n\nThe principle of Deep Learning is to emulate the structure of neurons in the human brain to construct artificial neural networks capable to accomplish complicated pattern recognition tasks more effectively and accurately. Therefore, these neural networks contain a series of hierarchical components, where units in earlier layers receive simple inputs and are activated by these inputs. The activation of the units in later layers are the results of multiple nonlinear transformations generated from reconstructing and integrating the information in previous layers. In other words, by combining various pieces of information at each layer, a Deep Learning network can extract the input features that best represent the structure of data, providing their outputs at the last layer or final level of abstraction.\n\nThe main idea of using these &#39;deep&#39; networks in contrast to regular algorithms is that they are capable of representing hierarchical relationships that exist within the data and learn these representations by&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
+</section>
+</section>
+<section id="validate-the-lvm-service">
+<h3>2. Validate the LVM Service<a class="headerlink" href="#validate-the-lvm-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MULTIMODALQNA_LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;downstream_black_list&quot;:[],&quot;id&quot;:&quot;1b17e903e8c773be909bde0e7cfdb53f&quot;,&quot;text&quot;:&quot; I will analyze the image and provide a detailed description based on its visual characteristics. I will then compare these characteristics to the standard answer provided to ensure accuracy.\n\n1. **Examine the Image**: The image is a solid color, which appears to be a shade of yellow. There are no additional elements or patterns present in the image.\n\n2. **Compare with Standard Answer**: The standard answer describes the image as a \&quot;yellow image\&quot; without any additional details or context. This matches the observed characteristics of the image being a single, uniform yellow color.\n\n3. **Conclusion**: Based on the visual analysis and comparison with the standard answer, the image can be accurately described as a \&quot;yellow image.\&quot; There are no other features or elements present that would alter this description.\n\nFINAL ANSWER: The image is a yellow image.&quot;,&quot;metadata&quot;:{&quot;video_id&quot;:&quot;8c7461df-b373-4a00-8696-9a2234359fe0&quot;,&quot;source_video&quot;:&quot;WeAreGoingOnBullrun_8c7461df-b373-4a00-8696-9a2234359fe0.mp4&quot;,&quot;time_of_frame_ms&quot;:&quot;37000000&quot;,&quot;transcript_for_inference&quot;:&quot;yellow image&quot;}}
+</pre></div>
+</div>
+<p>If the service response has a meaningful response in the value of the “choices.text” key,
+then we consider the vLLM service to be successfully launched</p>
 </section>
 <section id="validate-microservices">
-<h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<ol class="arabic simple">
-<li><p>embedding-multimodal-bridgetower</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<h3>3. Validate MicroServices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
+<section id="embedding-multimodal-bridgetower">
+<h4>embedding-multimodal-bridgetower<a class="headerlink" href="#embedding-multimodal-bridgetower" title="Link to this heading">¶</a></h4>
+<p>Text example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;embedding&quot;:[0.036936961114406586,-0.0022056063171476126,0.0891181230545044,-0.019263656809926033,-0.049174826592206955,-0.05129311606287956,-0.07172256708145142,0.04365323856472969,0.03275766223669052,0.0059910244308412075,-0.0301326...,-0.0031989417038857937,0.042092420160770416]}
+</pre></div>
+</div>
+<p>Image example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;, &quot;img_b64_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>embedding</p></li>
-</ol>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;embedding&quot;:[0.024372786283493042,-0.003916610032320023,0.07578050345182419,...,-0.046543147414922714]}
+</pre></div>
+</div>
+</section>
+<section id="embedding">
+<h4>embedding<a class="headerlink" href="#embedding" title="Link to this heading">¶</a></h4>
+<p>Text example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="nv">$MM_EMBEDDING_PORT_MICROSERVICE</span>/v1/embeddings<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot; : &quot;This is some sample text.&quot;}&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="nv">$MM_EMBEDDING_PORT_MICROSERVICE</span>/v1/embeddings<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: {&quot;text&quot; : &quot;This is some sample text.&quot;}, &quot;image&quot; : {&quot;url&quot;: &quot;https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true&quot;}}&#39;</span>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;:&quot;4fb722012a2719e38188190e1cb37ed3&quot;,&quot;text&quot;:&quot;This is some sample text.&quot;,&quot;embedding&quot;:[0.043303076177835464,-0.051807764917612076,...,-0.0005179636646062136,-0.0027774290647357702],&quot;search_type&quot;:&quot;similarity&quot;,&quot;k&quot;:4,&quot;distance_threshold&quot;:null,&quot;fetch_k&quot;:20,&quot;lambda_mult&quot;:0.5,&quot;score_threshold&quot;:0.2,&quot;constraints&quot;:null,&quot;url&quot;:null,&quot;base64_image&quot;:null}
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
-<li><p>retriever-multimodal-redis</p></li>
-</ol>
+<p>Image example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">EMM_BRIDGETOWER_PORT</span><span class="si">}</span>/v1/encode<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;This is example&quot;, &quot;img_b64_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;:&quot;cce4eab623255c4c632fb920e277dcf7&quot;,&quot;text&quot;:&quot;This is some sample text.&quot;,&quot;embedding&quot;:[0.02613169699907303,-0.049398183822631836,...,0.03544217720627785],&quot;search_type&quot;:&quot;similarity&quot;,&quot;k&quot;:4,&quot;distance_threshold&quot;:null,&quot;fetch_k&quot;:20,&quot;lambda_mult&quot;:0.5,&quot;score_threshold&quot;:0.2,&quot;constraints&quot;:null,&quot;url&quot;:&quot;https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true&quot;,&quot;base64_image&quot;:&quot;iVBORw0KGgoAAAANSUhEUgAAAoEAAAJqCAMAAABjDmrLAAAABGdBTUEAALGPC/.../BCU5wghOc4AQnOMEJTnCCE5zgBCc4wQlOcILzqvO/ARWd2ns+lvHkAAAAAElFTkSuQmCC&quot;}
+</pre></div>
+</div>
+</section>
+<section id="retriever-multimodal-redis">
+<h4>retriever-multimodal-redis<a class="headerlink" href="#retriever-multimodal-redis" title="Link to this heading">¶</a></h4>
+<p>set “your_embedding” variable:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(512)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+</pre></div>
+</div>
+<p>Test Redis retriever</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">REDIS_RETRIEVER_PORT</span><span class="si">}</span>/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><p>lvm-llava</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LLAVA_SERVER_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type:application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;:&quot;Describe the image please.&quot;, &quot;img_b64_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;}&#39;</span>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;:&quot;80a4f3fc5f5d5cd31ab1e3912f6b6042&quot;,&quot;retrieved_docs&quot;:[],&quot;initial_query&quot;:&quot;test&quot;,&quot;top_n&quot;:1,&quot;metadata&quot;:[]}
 </pre></div>
 </div>
-<ol class="arabic simple" start="5">
-<li><p>lvm</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [{&quot;b64_img_str&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;transcript_for_inference&quot;: &quot;yellow image&quot;, &quot;video_id&quot;: &quot;8c7461df-b373-4a00-8696-9a2234359fe0&quot;, &quot;time_of_frame_ms&quot;:&quot;37000000&quot;, &quot;source_video&quot;:&quot;WeAreGoingOnBullrun_8c7461df-b373-4a00-8696-9a2234359fe0.mp4&quot;}], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
+</section>
+<section id="whisper-service">
+<h4>whisper service<a class="headerlink" href="#whisper-service" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w">  </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39;</span>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;asr_result&quot;:&quot;you&quot;}
 </pre></div>
 </div>
-<p>Also, validate LVM Microservice with empty retrieval results</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retrieved_docs&quot;: [], &quot;initial_query&quot;: &quot;What is this?&quot;, &quot;top_n&quot;: 1, &quot;metadata&quot;: [], &quot;chat_template&quot;:&quot;The caption of the image is: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;{context}&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;. {question}&quot;}&#39;</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="6">
-<li><p>dataprep-multimodal-redis</p></li>
-</ol>
-<p>Download a sample video, image, and audio file and create a caption</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">video_fn</span><span class="o">=</span><span class="s2">&quot;WeAreGoingOnBullrun.mp4&quot;</span>
-wget<span class="w"> </span>http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span>
+</section>
+</section>
+<section id="validate-the-megaservice">
+<h3>4. Validate the MegaService<a class="headerlink" href="#validate-the-megaservice" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;audio&quot;, &quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}]}]}&#39;</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">image_fn</span><span class="o">=</span><span class="s2">&quot;apple.png&quot;</span>
-wget<span class="w"> </span>https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">caption_fn</span><span class="o">=</span><span class="s2">&quot;apple.txt&quot;</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This is an apple.&quot;</span><span class="w">  </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">audio_fn</span><span class="o">=</span><span class="s2">&quot;AudioSample.wav&quot;</span>
-wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav<span class="w"> </span>-O<span class="w"> </span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MULTIMODALQNA_BACKEND_SERVICE_PORT</span><span class="si">}</span>/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Test dataprep microservice with generating transcript. This command updates a knowledge base by uploading a local video .mp4 and an audio .wav file.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_TRANSCRIPT_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">video_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">audio_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+<p>Checking the response from the service. The response should be similar to text:</p>
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;:&quot;chatcmpl-75aK2KWCfxZmVcfh5tiiHj&quot;,&quot;object&quot;:&quot;chat.completion&quot;,&quot;created&quot;:1743568232,&quot;model&quot;:&quot;multimodalqna&quot;,&quot;choices&quot;:[{&quot;index&quot;:0,&quot;message&quot;:{&quot;role&quot;:&quot;assistant&quot;,&quot;content&quot;:&quot;There is no video segments retrieved given the query!&quot;},&quot;finish_reason&quot;:&quot;stop&quot;,&quot;metadata&quot;:{&quot;audio&quot;:&quot;you&quot;}}],&quot;usage&quot;:{&quot;prompt_tokens&quot;:0,&quot;total_tokens&quot;:0,&quot;completion_tokens&quot;:0}}
 </pre></div>
 </div>
-<p>Also, test dataprep microservice with generating an image caption using lvm microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GEN_CAPTION_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+<p>If the output lines in the “choices.text” keys contain words (tokens) containing meaning, then the service is considered launched successfully.</p>
+</section>
+<section id="stop-application">
+<h3>5. Stop application<a class="headerlink" href="#stop-application" title="Link to this heading">¶</a></h3>
+<section id="id12">
+<h4>If you use vLLM<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/multimodalqna-install/GenAIExamples/MultimodalQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
 </pre></div>
 </div>
-<p>Now, test the microservice with posting a custom caption along with an image</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--silent<span class="w"> </span>--write-out<span class="w"> </span><span class="s2">&quot;HTTPSTATUS:%{http_code}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: multipart/form-data&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">image_fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@./</span><span class="si">${</span><span class="nv">caption_fn</span><span class="si">}</span><span class="s2">&quot;</span>
+</section>
+<section id="id13">
+<h4>If you use TGI<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/multimodalqna-install/GenAIExamples/MultimodalQnA/docker_compose/amd/gpu/rocm
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
 </pre></div>
 </div>
-<p>Also, you are able to get the list of all files that you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="si">}</span>
-</pre></div>
-</div>
-<p>Then you will get the response python-style LIST like this. Notice the name of each uploaded file e.g., <code class="docutils literal notranslate"><span class="pre">videoname.mp4</span></code> will become <code class="docutils literal notranslate"><span class="pre">videoname_uuid.mp4</span></code> where <code class="docutils literal notranslate"><span class="pre">uuid</span></code> is a unique ID for each uploaded file. The same files that are uploaded twice will have different <code class="docutils literal notranslate"><span class="pre">uuid</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>
-<span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_7ac553a1-116c-40a2-9fc5-deccbb89b507.mp4&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;WeAreGoingOnBullrun_6d13cf26-8ba2-4026-a3a9-ab2e5eb73a29.mp4&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;apple_fcade6e6-11a5-44a2-833a-3e534cbe4419.png&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;AudioSample_976a85a6-dc3e-43ab-966c-9d81beef780c.wav</span>
-<span class="s2">]</span>
-</pre></div>
-</div>
-<p>To delete all uploaded files along with data indexed with <code class="docutils literal notranslate"><span class="pre">$INDEX_NAME</span></code> in REDIS.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="si">${</span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="si">}</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="7">
-<li><p>MegaService</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/multimodalqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;hello, &quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;}}]}, {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;opea project! &quot;}, {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;chao, &quot;}], &quot;max_tokens&quot;: 10}&#39;</span>
-</pre></div>
-</div>
+</section>
 </section>
 </section>
 </section>
