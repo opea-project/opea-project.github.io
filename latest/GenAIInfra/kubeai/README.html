@@ -2540,8 +2540,9 @@
 </ul>
 <p>The following models are included.</p>
 <ul class="simple">
-<li><p>Text generation model (llama-3.1-8b) for vLLM (CPU and Gaudi) using PVC</p></li>
-<li><p>Text embedding model (BAII/BGE) for vLLM (CPU) using PVC</p></li>
+<li><p>Text generation model (llama-3.1-8b) for vLLM (CPU and Gaudi)</p></li>
+<li><p>Text generation model (llama-3.3-70b) for vLLM (Gaudi)</p></li>
+<li><p>Text embedding model (BAII/BGE) for vLLM (CPU)</p></li>
 <li><p>Text generation model (qwen-2.5-0.5b) for OLlama (CPU)</p></li>
 </ul>
 </section>
@@ -2553,7 +2554,7 @@
 <ul class="simple">
 <li><p>Kubernetes cluster</p></li>
 <li><p>Helm</p></li>
-<li><p>HF_TOKEN environment variable defined</p></li>
+<li><p>HF_TOKEN (<a class="reference external" href="https://huggingface.co/docs/hub/security-tokens">HuggingFace</a>) token</p></li>
 <li><p>Dynamic Volume Provisioning (optional)</p></li>
 <li><p>Nodes with Gaudi accelerator (optional)</p></li>
 </ul>
@@ -2602,11 +2603,14 @@ kubectl create namespace $NAMESPACE
 </section>
 <section id="text-generation-with-llama-3-on-gaudi">
 <h2>Text Generation with Llama-3 on Gaudi<a class="headerlink" href="#text-generation-with-llama-3-on-gaudi" title="Link to this heading">¶</a></h2>
-<p>The following command will deploy the <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3.1-8B-Instruct</span></code> model with vLLM engine using Gaudi accelerator.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kubect apply -f models/llama-3.1-8b-instruct-gaudi.yaml -n $NAMESPACE
+<p>The following commands will deploy <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3.1-8B-Instruct</span></code> and <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3.3-70B-Instruct</span></code> models with the vLLM engine using Gaudi accelerators.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Meta-Llama-3.1-8B-Instruct model
+kubect apply -f models/llama-3.1-8b-instruct-gaudi.yaml -n $NAMESPACE
+# Meta-Llama-3.3-70B-Instruct model
+kubect apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 </pre></div>
 </div>
-<p>The rest is the same as in the previous example. You should see a pod running with the name <code class="docutils literal notranslate"><span class="pre">model-llama-3.1-8b-instruct-gpu-xxxx</span></code>.</p>
+<p>The rest is the same as in the previous example. You should see a pod running with the name <code class="docutils literal notranslate"><span class="pre">model-llama-3.1-8b-instruct-gpu-xxxx</span></code> and/or <code class="docutils literal notranslate"><span class="pre">model-llama-3.3-70b-instruct-gpu-xxxx</span></code>.</p>
 </section>
 <section id="text-embeddings-with-bge-on-cpu">
 <h2>Text Embeddings with BGE on CPU<a class="headerlink" href="#text-embeddings-with-bge-on-cpu" title="Link to this heading">¶</a></h2>
