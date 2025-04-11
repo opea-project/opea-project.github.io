@@ -2533,7 +2533,7 @@
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
 <li><p><a class="reference internal" href="#deploy-with-docker"><span class="xref myst">Deploy with Docker</span></a></p></li>
-<li><p><a class="reference internal" href="#launch-the-ui"><span class="xref myst">Launch the UI</span></a></p></li>
+<li><p><a class="reference internal" href="#how-to-interact-with-the-agent-system-with-ui"><span class="xref myst">How to interact with the agent system with UI</span></a></p></li>
 <li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p></li>
 <li><p><a class="reference internal" href="#how-to-register-other-tools-with-the-ai-agent"><span class="xref myst">Register Tools</span></a></p></li>
 </ol>
@@ -2666,19 +2666,17 @@ git clone https://github.com/opea-project/GenAIExamples.git
 </section>
 <section id="launch-the-multi-agent-system">
 <h3>2. Launch the multi-agent system. </br><a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
-<p>Two options are provided for the <code class="docutils literal notranslate"><span class="pre">llm_engine</span></code> of the agents: 1. open-source LLMs on Gaudi, 2. OpenAI models via API calls.</p>
-<section id="id1">
-<h4>Gaudi<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
-<p>On Gaudi, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.1-70B-Instruct</span></code> will be served using vllm.
-By default, both the RAG agent and SQL agent will be launched to support the React Agent.<br />
-The React Agent requires the DocIndexRetriever’s <a class="reference internal" href="#../DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code></span></a> file, so two <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> files need to be run with docker compose to start the multi-agent system.</p>
-<blockquote>
-<div><p><strong>Note</strong>: To enable the web search tool, skip this step and proceed to the “[Optional] Web Search Tool Support” section.</p>
-</div></blockquote>
+<p>We make it convenient to launch the whole system with docker compose, which includes microservices for LLM, agents, UI, retrieval tool, vector database, dataprep, and telemetry. There are 3 docker compose files, which make it easy for users to pick and choose. Users can choose a different retrieval tool other than the <code class="docutils literal notranslate"><span class="pre">DocIndexRetriever</span></code> example provided in our GenAIExamples repo. Users can choose not to launch the telemetry containers.</p>
+<section id="launch-on-gaudi">
+<h4>Launch on Gaudi<a class="headerlink" href="#launch-on-gaudi" title="Link to this heading">¶</a></h4>
+<p>On Gaudi, <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3.3-70B-Instruct</span></code> will be served using vllm. The command below will launch the multi-agent system with the <code class="docutils literal notranslate"><span class="pre">DocIndexRetriever</span></code> as the retrieval tool for the Worker RAG agent.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<blockquote>
+<div><p><strong>Note</strong>: To enable the web search tool, skip this step and proceed to the “[Optional] Web Search Tool Support” section.</p>
+</div></blockquote>
 <p>To enable Open Telemetry Tracing, compose.telemetry.yaml file need to be merged along with default compose.yaml file.
 Gaudi example with Open Telemetry feature:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/
@@ -2700,11 +2698,9 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </details>
 </section>
 </section>
-<section id="id2">
-<h4>Xeon<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
-<p>On Xeon, only OpenAI models are supported.
-By default, both the RAG Agent and SQL Agent will be launched to support the React Agent.<br />
-The React Agent requires the DocIndexRetriever’s <a class="reference internal" href="#../DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code></span></a> file, so two <code class="docutils literal notranslate"><span class="pre">compose</span> <span class="pre">yaml</span></code> files need to be run with docker compose to start the multi-agent system.</p>
+<section id="launch-on-xeon">
+<h4>Launch on Xeon<a class="headerlink" href="#launch-on-xeon" title="Link to this heading">¶</a></h4>
+<p>On Xeon, only OpenAI models are supported. The command below will launch the multi-agent system with the <code class="docutils literal notranslate"><span class="pre">DocIndexRetriever</span></code> as the retrieval tool for the Worker RAG agent.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>&lt;your-openai-key&gt;
 <span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose_openai.yaml<span class="w"> </span>up<span class="w"> </span>-d
@@ -2724,9 +2720,10 @@ bash<span class="w"> </span>run_ingest_data.sh
 </div></blockquote>
 </section>
 </section>
-<section id="launch-the-ui">
-<h2>Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
-<p>Open a web browser to http://localhost:5173 to access the UI.</p>
+<section id="how-to-interact-with-the-agent-system-with-ui">
+<h2>How to interact with the agent system with UI<a class="headerlink" href="#how-to-interact-with-the-agent-system-with-ui" title="Link to this heading">¶</a></h2>
+<p>The UI microservice is launched in the previous step with the other microservices.
+To see the UI, open a web browser to <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:5173</span></code> to access the UI. Note the <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here is the host IP of the UI microservice.</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">create</span> <span class="pre">Admin</span> <span class="pre">Account</span></code> with a random value</p></li>
 <li><p>add opea agent endpoint <code class="docutils literal notranslate"><span class="pre">http://$ip_address:9090/v1</span></code> which is a openai compatible api</p></li>
