@@ -2540,7 +2540,7 @@
 
 <span class="n">embedding</span>
 <span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">6000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
+<span class="n">Port</span> <span class="mi">6990</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
 <span class="n">retriever</span>
 <span class="o">=========</span>
@@ -2556,13 +2556,13 @@
 
 <span class="n">lvm</span>
 <span class="o">===</span>
-<span class="n">Port</span> <span class="mi">9000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
+<span class="n">Port</span> <span class="mi">9399</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
-<span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">videoqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
 <span class="o">==========================</span>
 <span class="n">Port</span> <span class="mi">8888</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 
-<span class="n">chaqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="n">videoqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
 <span class="o">=====================</span>
 <span class="n">Port</span> <span class="mi">5173</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
 </pre></div>
@@ -2624,17 +2624,13 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </pre></div>
 </div>
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 8 Docker Images:</p>
-<ol class="arabic">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
+<ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/embedding-multimodal-clip:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/video-llama-lvm-server:latest</span></code></p></li>
-<li><h1 class="rubric" id="opea-lvm-video-llama-latest"><code class="docutils literal notranslate"><span class="pre">opea/lvm-video-llama:latest</span></code></h1>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/reranking-tei:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm-video-llama:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/lvm:latest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/videoqna:latest</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opea/videoqna-ui:latest</span></code></p></li>
 </ol>
@@ -2652,41 +2648,67 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
 </pre></div>
 </div>
-<p><strong>Export the value of your Huggingface API token to the <code class="docutils literal notranslate"><span class="pre">your_hf_api_token</span></code> environment variable</strong></p>
+<p><strong>Export the value of your Huggingface API token to the <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code> environment variable</strong></p>
 <blockquote>
 <div><p>Change the <code class="docutils literal notranslate"><span class="pre">Your_Huggingface_API_Token</span></code> below with your actual Huggingface API Token value</p>
 </div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">your_hf_api_token</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 </pre></div>
 </div>
 <p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">your_no_proxy</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{your_no_proxy}</span><span class="s2">,$</span><span class="si">{host_ip}</span><span class="s2">&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{your_no_proxy}</span><span class="s2">,$</span><span class="si">{host_ip}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 <p>Then you can run below commands or <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">set_env.sh</span></code> to set all the variables</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:9009&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/videoqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_HEALTH_CHECK_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/health_check&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_VIDEO_LIST_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get_videos&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_PORT</span><span class="o">=</span><span class="m">8001</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mega-videoqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_DOWNLOAD</span><span class="o">=</span><span class="s2">&quot;True&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_DOWNLOAD</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="w"> </span><span class="c1"># Set to &quot;False&quot; before redeploy LVM server to avoid model download</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_VIDEO_RERANKING&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_VIDEO_LLAMA_LVM&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_CLIP_EMBEDDING&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">USECLIP</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_PORT</span><span class="o">=</span><span class="m">8888</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_PORT</span><span class="o">=</span><span class="m">6007</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">6990</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MULTIMODAL_CLIP_EMBEDDER_PORT</span><span class="o">=</span><span class="m">6991</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RERANKING_PORT</span><span class="o">=</span><span class="m">8000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_PORT</span><span class="o">=</span><span class="m">7000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">UI_PORT</span><span class="o">=</span><span class="m">5173</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_PORT</span><span class="o">=</span><span class="m">8001</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_LLAMA_PORT</span><span class="o">=</span><span class="m">9009</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_HEALTH_CHECK_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">BACKEND_PORT</span><span class="si">}</span><span class="s2">/v1/health_check&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">BACKEND_PORT</span><span class="si">}</span><span class="s2">/v1/videoqna&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIP_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">MULTIMODAL_CLIP_EMBEDDER_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_VIDEO_LIST_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get_videos&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/ingest&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span><span class="s2">/v1/embeddings&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">FRONTEND_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">UI_PORT</span><span class="si">}</span><span class="s2">/_stcore/health&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VIDEO_LLAMA_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_VIDEO_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VIDEO_LLAMA_PORT</span><span class="si">}</span><span class="s2">/generate&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">RERANKING_PORT</span><span class="si">}</span><span class="s2">/v1/reranking&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">RETRIEVER_PORT</span><span class="si">}</span><span class="s2">/v1/retrieval&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">UI_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">UI_PORT</span><span class="si">}</span><span class="s2">/_stcore/health&quot;</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span><span class="s2">,</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">,vdms-vector-db,dataprep-vdms-server,clip-embedding-server,reranking-tei-server,retriever-vdms-server,lvm-video-llama,lvm,videoqna-xeon-backend-server,videoqna-xeon-ui-server&quot;</span>
 </pre></div>
 </div>
 <p>Note: Replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
@@ -2702,12 +2724,13 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p>In the deploy steps, you need to start the VDMS DB and dataprep firstly, then insert some sample data into it. After that you could get the megaservice up.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/VideoQnA/docker_compose/intel/cpu/xeon/
 
-docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>video-llama-model
+docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>video-llama-
+docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>videoqna-cache
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>vdms-vector-db<span class="w"> </span>dataprep<span class="w"> </span>-d
-sleep<span class="w"> </span>1m<span class="w"> </span><span class="c1"># wait for the services ready</span>
+sleep<span class="w"> </span>30s
 
 <span class="c1"># Insert some sample data to the DB</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6007/v1/dataprep/ingest<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;files=@./data/op_1_0320241830.mp4&quot;</span>
 
@@ -2723,11 +2746,12 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <li><p>Dataprep Microservice</p>
 <p>Once the microservice is up, ingest the videos files into vector store using dataprep microservice. Both single and multiple file(s) uploads are supported.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single file upload</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.mp4&quot;</span>
+
 <span class="c1"># Multiple file upload</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file2.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2737,15 +2761,16 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <p>Use below method to check and download available videos the microservice. The download endpoint is also used for LVM and UI.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># List available videos</span>
 curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;GET&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_GET_VIDEO_LIST_ENDPOINT</span><span class="si">}</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span>
+
 <span class="c1"># Download available video</span>
 curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;GET&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="si">}</span>/video_name.mp4<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Embedding Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6000/v1/embeddings<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;Sample text&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:&quot;What is the man doing?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2756,15 +2781,15 @@ is determined by the embedding model.
 Here we use the model <code class="docutils literal notranslate"><span class="pre">openai/clip-vit-base-patch32</span></code>, which vector size is 512.</p>
 <p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equals to it.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(512)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span><span class="si">${</span><span class="nv">RETRIEVER_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the man doing?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">,\&quot;search_type\&quot;:\&quot;mmr\&quot;, \&quot;k\&quot;:4}&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Reranking Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8000/v1/reranking<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">RERANKING_ENDPOINT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
@@ -2783,7 +2808,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>In first startup, this service will take times to download the LLM file. After it’s finished, the service will be ready.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">lvm-video-llama</span></code> to check if the download is finished.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:9009/generate?video_url=silence_girl.mp4&amp;start=0.0&amp;duration=9&amp;prompt=What%20is%20the%20person%20doing%3F&amp;max_new_tokens=150&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">LVM_VIDEO_ENDPOINT</span><span class="si">}</span><span class="s2">?video_url=silence_girl.mp4&amp;start=0.0&amp;duration=9&amp;prompt=What%20is%20the%20person%20doing%3F&amp;max_new_tokens=150&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;accept: */*&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;&#39;</span>
 </pre></div>
@@ -2794,9 +2819,9 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </li>
 <li><p>LVM Microservice</p>
 <p>This service depends on above LLM backend service startup. It will be ready after long time, to wait for them being ready in first startup.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/lvm<span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;video_url&quot;:&quot;https://github.com/DAMO-NLP-SG/Video-LLaMA/raw/main/examples/silence_girl.mp4&quot;,&quot;chunk_start&quot;: 0,&quot;chunk_duration&quot;: 7,&quot;prompt&quot;:&quot;What is the person doing?&quot;,&quot;max_new_tokens&quot;: 50}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;video_url&quot;:&quot;https://github.com/DAMO-NLP-SG/Video-LLaMA/raw/main/examples/silence_girl.mp4&quot;,&quot;chunk_start&quot;: 0,&quot;chunk_duration&quot;: 7,&quot;prompt&quot;:&quot;What is the man doing?&quot;,&quot;max_new_tokens&quot;: 50}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2805,7 +2830,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div></blockquote>
 </li>
 <li><p>MegaService</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/videoqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="si">}</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">      &quot;messages&quot;: &quot;What is the man doing?&quot;,</span>
 <span class="s1">      &quot;stream&quot;: &quot;True&quot;</span>
 <span class="s1">      }&#39;</span>
@@ -2840,6 +2865,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>If you plan to restart the service in the future, the above command is enough. The model file is saved in docker volume <code class="docutils literal notranslate"><span class="pre">video-llama-model</span></code> and will be reserved on your server. Next time when you restart the service, set <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">LLM_DOWNLOAD=&quot;False&quot;</span></code> before start to reuse the volume.</p>
 <p>To clean the volume:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>video-llama-model
+docker<span class="w"> </span>volume<span class="w"> </span>rm<span class="w"> </span>videoqna-cache
 </pre></div>
 </div>
 </section>
