@@ -356,6 +356,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/EdgeCraftRAG/README.html">Edge Craft Retrieval-Augmented Generation</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/FinanceAgent/README.html">Finance Agent</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#graphrag-application">GraphRAG Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/GraphRAG/README.html">GraphRAG Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../GenAIExamples/GraphRAG/ui/react/README.html">ChatQnA Conversational UI</a></li>
@@ -2524,8 +2528,17 @@
              
   <section id="codegen">
 <h1>CodeGen<a class="headerlink" href="#codegen" title="Link to this heading">¶</a></h1>
-<p>Helm chart for deploying CodeGen service.</p>
-<p>CodeGen depends on LLM and tgi microservice, refer to <a class="reference internal" href="../common/llm-uservice/README.html"><span class="std std-doc">llm-uservice</span></a> and <a class="reference internal" href="../common/tgi/README.html"><span class="std std-doc">tgi</span></a> for more config details.</p>
+<p>Helm chart for deploying CodeGen service. CodeGen depends on the following services:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../common/tgi/README.html"><span class="std std-doc">tgi</span></a></p></li>
+<li><p><a class="reference internal" href="../common/vllm/README.html"><span class="std std-doc">vllm</span></a></p></li>
+<li><p><a class="reference internal" href="../common/llm-uservice/README.html"><span class="std std-doc">llm-uservice</span></a></p></li>
+<li><p><a class="reference internal" href="../common/tei/README.html"><span class="std std-doc">tei</span></a></p></li>
+<li><p><a class="reference internal" href="../common/embedding-usvc/README.html"><span class="std std-doc">embedding-usvc</span></a></p></li>
+<li><p><a class="reference internal" href="../common/redis-vector-db/README.html"><span class="std std-doc">redis-vector-db</span></a></p></li>
+<li><p><a class="reference internal" href="../common/data-prep/README.html"><span class="std std-doc">data-prep</span></a></p></li>
+<li><p><a class="reference internal" href="../common/retriever-usvc/README.html"><span class="std std-doc">retriever-usvc</span></a></p></li>
+</ul>
 <section id="installing-the-chart">
 <h2>Installing the Chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
 <p>To install the chart, run the following:</p>
@@ -2568,8 +2581,11 @@
 </section>
 <section id="verify-the-workload-through-ui">
 <h3>Verify the workload through UI<a class="headerlink" href="#verify-the-workload-through-ui" title="Link to this heading">¶</a></h3>
-<p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with the NGINX port. You can find the NGINX port using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>codegen-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with codegen-ui service nodePort (if using the default codegen gradio UI) or along with the NGINX service nodePort. You can find the corresponding port using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For codgen gradio UI</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>codegen-codegen-ui<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<span class="c1"># For other codegen UI</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>codegen-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$port</span>
 </pre></div>
 </div>
