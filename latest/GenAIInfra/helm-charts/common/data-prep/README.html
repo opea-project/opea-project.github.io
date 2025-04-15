@@ -2562,6 +2562,31 @@
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>data-prep<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">DATAPREP_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">DATAPREP_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">QDRANT_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>,QDRANT_PORT<span class="o">=</span><span class="m">6333</span>,COLLECTION_NAME<span class="o">=</span>rag_qdrant
 </pre></div>
 </div>
+<section id="install-the-microservice-in-air-gapped-offline-mode">
+<h3>Install the microservice in air gapped(offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
+<p>To support running this microservice in an air gapped environment, users are required to download the offline data including the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data and model <code class="docutils literal notranslate"><span class="pre">unstructuredio/yolo_x_layout</span></code> to a shared storage. Below is an example for using node level local directory to download the offline data:</p>
+<p>Assuming the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/nltk_data</span></code>, and the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
+export MODELDIR=/mnt/opea-models
+export NLTKDATA=/mnt/nltk_data
+# Download nltk data, assumes Python nltk module(s) are already installed
+python -m nltk.downloader -d $NLTKDATA all &amp;&amp; chmod -R a+r $NLTKDATA
+# Download model,  assumes Python huggingface_hub[cli] module are already installed
+huggingface-cli download unstructuredio/yolo_x_layout --local-dir ${MODELDIR}/unstructuredio/yolo_x_layout &amp;&amp; chmod -R a+r ${MODELDIR}/unstructuredio/yolo_x_layout
+
+# Install using Helm with the following additional parameters:
+# helm install ... ... --set global.offline=true,global.modelUseHostPath=${MODELDIR},global.nltkDataUseHostPath=${NLTKDATA}
+</pre></div>
+</div>
+<p>Assuming we share the offline data on cluster level using a persistent volume(PV), first we need to create the persistent volume claim(PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store model data, the PVC with name <code class="docutils literal notranslate"><span class="pre">opea-nltk-pvc</span></code> to store nltk data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download nltk data and model into the root and `unstructuredio/yolo_x_layout` directory at the root of the corresponding PVs respectively</span>
+<span class="c1"># Install using Helm with the following additional parameters:</span>
+<span class="c1"># export MODELPVC=opea-model-pvc</span>
+<span class="c1"># export NLTKPVC=opea-nltk-pvc</span>
+<span class="c1"># helm install ... ... --set global.offline=true,global.modelUsePVC=${MOELPVC},global.nltkDataUsePVC=${NLTKPVC}</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
