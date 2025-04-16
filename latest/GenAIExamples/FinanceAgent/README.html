@@ -2551,13 +2551,16 @@
 <h1>Finance Agent<a class="headerlink" href="#finance-agent" title="Link to this heading">¶</a></h1>
 <section id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>The architecture of this Finance Agent example is shown in the figure below. The agent has 3 main functions:</p>
+<p>The architecture of this Finance Agent example is shown in the figure below. The agent is a hierarchical multi-agent system and has 3 main functions:</p>
 <ol class="arabic simple">
-<li><p>Summarize long financial documents and provide key points.</p></li>
-<li><p>Answer questions over financial documents, such as SEC filings.</p></li>
-<li><p>Conduct research of a public company and provide an investment report of the company.</p></li>
+<li><p>Summarize long financial documents and provide key points (using OPEA DocSum).</p></li>
+<li><p>Answer questions over financial documents, such as SEC filings (using a worker agent).</p></li>
+<li><p>Conduct research of a public company and provide an investment report of the company (using a worker agent).</p></li>
 </ol>
+<p>The user interacts with the supervisor agent through the graphical UI. The supervisor agent gets the requests from the user and dispatches tasks to worker agents or to the summarization microservice. The user can also uploads documents through the UI.</p>
 <p><img alt="Finance Agent Architecture" src="../../_images/finance_agent_arch.png" /></p>
+<p>The architectural diagram of the <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice is shown below. We use <a class="reference external" href="https://github.com/docling-project/docling">docling</a> to extract text from PDFs and URLs into markdown format. Both the full document content and tables are extracted. We then use an LLM to extract metadata from the document, including the company name, year, quarter, document type, and document title. The full document markdown then gets chunked, and LLM is used to summarize each chunk, and the summaries are embedded and saved to a vector database. Each table is also summarized by LLM and the summaries are embedded and saved to the vector database. The chunks and tables are also saved into a KV store. The pipeline is designed as such to improve retrieval accuracy of the <code class="docutils literal notranslate"><span class="pre">search_knowledge_base</span></code> tool used by the Question Answering worker agent.</p>
+<p><img alt="dataprep architecture" src="../../_images/fin_agent_dataprep.png" /></p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice can ingest financial documents in two formats:</p>
 <ol class="arabic simple">
 <li><p>PDF documents stored locally, such as SEC filings saved in local directory.</p></li>
@@ -2568,6 +2571,8 @@
 <li><p>Each financial document should be about one company.</p></li>
 <li><p>URLs ending in <code class="docutils literal notranslate"><span class="pre">.htm</span></code> are not supported.</p></li>
 </ol>
+<p>The Question Answering worker agent uses <code class="docutils literal notranslate"><span class="pre">search_knowledge_base</span></code> tool to get relevant information. The tool uses a dense retriever and a BM25 retriever to get many pieces of information including financial statement tables. Then an LLM is used to extract useful information related to the query from the retrieved documents. Refer to the diagram below. We found that using this method significantly improves agent performance.</p>
+<p><img alt="finqa search tool arch" src="../../_images/finqa_tool.png" /></p>
 </section>
 <section id="getting-started">
 <h2>2. Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
@@ -2575,8 +2580,8 @@
 <h3>2.1 Download repos<a class="headerlink" href="#download-repos" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>/path/to/your/workspace/
 <span class="nb">export</span><span class="w"> </span><span class="nv">WORKDIR</span><span class="o">=</span>/path/to/your/workspace/
-genaicomps
-genaiexamples
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 </pre></div>
 </div>
 </section>
@@ -2584,13 +2589,18 @@ genaiexamples
 <h3>2.2 Set up env vars<a class="headerlink" href="#set-up-env-vars" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_CACHE_DIR</span><span class="o">=</span>/path/to/your/model/cache/
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span>&lt;you-hf-token&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">FINNHUB_API_KEY</span><span class="o">=</span>&lt;your-finnhub-api-key&gt;<span class="w"> </span><span class="c1"># go to https://finnhub.io/ to get your free api key</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">FINANCIAL_DATASETS_API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;<span class="w"> </span><span class="c1"># go to https://docs.financialdatasets.ai/ to get your free api key</span>
 </pre></div>
 </div>
 </section>
-<section id="build-docker-images">
-<h3>2.3 Build docker images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h3>
-<p>Build docker images for dataprep, agent, agent-ui.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/FinanceAgent/docker_image_build
+<section id="optional-build-docker-images">
+<h3>2.3 [Optional] Build docker images<a class="headerlink" href="#optional-build-docker-images" title="Link to this heading">¶</a></h3>
+<p>Only needed when docker pull failed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/docker_image_build
+<span class="c1"># get GenAIComps repo</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+<span class="c1"># build the images</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span>--no-cache
 </pre></div>
 </div>
@@ -2633,6 +2643,7 @@ python<span class="w"> </span><span class="nv">$WORKPATH</span>/tests/test_redis
 </section>
 <section id="launch-the-multi-agent-system">
 <h3>3.3 Launch the multi-agent system<a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
+<p>The command below will launch 3 agent microservices, 1 docsum microservice, 1 UI microservice.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># inside $WORKDIR/GenAIExamples/FinanceAgent/docker_compose/intel/hpu/gaudi/</span>
 bash<span class="w"> </span>launch_agents.sh
 </pre></div>
@@ -2652,12 +2663,12 @@ python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/Fi
 python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$prompt</span><span class="s2">&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--tool_choice<span class="w"> </span><span class="s2">&quot;get_current_date&quot;</span><span class="w"> </span>--tool_choice<span class="w"> </span><span class="s2">&quot;get_share_performance&quot;</span>
 </pre></div>
 </div>
-<p>Supervisor ReAct Agent:</p>
+<p>Supervisor Agent single turns:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="s2">&quot;9090&quot;</span>
 python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--stream
 </pre></div>
 </div>
-<p>Supervisor ReAct Agent Multi turn:</p>
+<p>Supervisor Agent multi turn:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--multi-turn<span class="w"> </span>--stream
 </pre></div>
 </div>
@@ -2667,13 +2678,28 @@ python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/Fi
 <h2>How to interact with the agent system with UI<a class="headerlink" href="#how-to-interact-with-the-agent-system-with-ui" title="Link to this heading">¶</a></h2>
 <p>The UI microservice is launched in the previous step with the other microservices.
 To see the UI, open a web browser to <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:5175</span></code> to access the UI. Note the <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here is the host IP of the UI microservice.</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">create</span> <span class="pre">Admin</span> <span class="pre">Account</span></code> with a random value</p></li>
-<li><p>use an opea agent endpoint, for example, the <code class="docutils literal notranslate"><span class="pre">Research</span> <span class="pre">Agent</span></code> endpoint <code class="docutils literal notranslate"><span class="pre">http://$ip_address:9096/v1</span></code>, which is a openai compatible api</p></li>
+<ol class="arabic">
+<li><p>Create Admin Account with a random value</p></li>
+<li><p>Enter the endpoints in the <code class="docutils literal notranslate"><span class="pre">Connections</span></code> settings</p>
+<p>First, click on the user icon in the upper right corner to open <code class="docutils literal notranslate"><span class="pre">Settings</span></code>. Click on <code class="docutils literal notranslate"><span class="pre">Admin</span> <span class="pre">Settings</span></code>. Click on <code class="docutils literal notranslate"><span class="pre">Connections</span></code>.</p>
+<p>Then, enter the supervisor agent endpoint in the <code class="docutils literal notranslate"><span class="pre">OpenAI</span> <span class="pre">API</span></code> section: <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:9090/v1</span></code>. Enter the API key as “empty”. Add an arbitrary model id in <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">IDs</span></code>, for example, “opea_agent”. The <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here should be the host ip of the agent microservice.</p>
+<p>Then, enter the dataprep endpoint in the <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">File</span> <span class="pre">API</span></code> section. You first need to enable <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">File</span> <span class="pre">API</span></code> by clicking on the button on the right to turn it into green and then enter the endpoint url, for example, <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:6007/v1</span></code>. The <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here should be the host ip of the dataprep microservice.</p>
+<p>You should see screen like the screenshot below when the settings are done.</p>
+</li>
 </ol>
-<p><img alt="opea-agent-setting" src="../../_images/opea-agent-setting.png" /></p>
-<ol class="arabic simple" start="3">
-<li><p>test opea agent with ui</p></li>
+<p><img alt="opea-agent-setting" src="../../_images/ui_connections_settings.png" /></p>
+<ol class="arabic" start="3">
+<li><p>Upload documents with UI</p>
+<p>Click on the <code class="docutils literal notranslate"><span class="pre">Workplace</span></code> icon in the top left corner. Click <code class="docutils literal notranslate"><span class="pre">Knowledge</span></code>. Click on the “+” sign to the right of <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">Knowledge</span></code>. You can paste an url in the left hand side of the pop-up window, or upload a local file by click on the cloud icon on the right hand side of the pop-up window. Then click on the <code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">Confirm</span></code> button. Wait till the processing is done and the pop-up window will be closed on its own when the data ingestion is done. See the screenshot below.</p>
+<p>Note: the data ingestion may take a few minutes depending on the length of the document. Please wait patiently and do not close the pop-up window.</p>
+</li>
+</ol>
+<p><img alt="upload-doc-ui" src="../../_images/upload_doc_ui.png" /></p>
+<ol class="arabic" start="4">
+<li><p>Test agent with UI</p>
+<p>After the settings are done and documents are ingested, you can start to ask questions to the agent. Click on the <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Chat</span></code> icon in the top left corner, and type in your questions in the text box in the middle of the UI.</p>
+<p>The UI will stream the agent’s response tokens. You need to expand the <code class="docutils literal notranslate"><span class="pre">Thinking</span></code> tab to see the agent’s reasoning process. After the agent made tool calls, you would also see the tool output after the tool returns output to the agent. Note: it may take a while to get the tool output back if the tool execution takes time.</p>
+</li>
 </ol>
 <p><img alt="opea-agent-test" src="../../_images/opea-agent-test.png" /></p>
 </section>
