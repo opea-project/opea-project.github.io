@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of ChatQnA on Xeon &mdash; OPEA™ 1.2 documentation</title>
+  <title>Deploying ChatQnA on Intel® Xeon® Processors &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -303,13 +303,15 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#chatqna-application">ChatQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">ChatQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../README_miscellaneous.html">Table of contents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy_faqgen/README.html">FaqGen Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/kubernetes/intel/gaudi/README.html">ChatQnA Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance_faqgen/README.html">FaqGen Benchmarking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and Deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA on Xeon</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README_pinecone.html">Build Mega Service of ChatQnA on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
@@ -2527,7 +2529,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of ChatQnA on Xeon</li>
+  <li>Deploying ChatQnA on Intel® Xeon® Processors</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README.md.txt" rel="nofollow"> View page source</a>
@@ -2547,54 +2549,62 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-chatqna-on-xeon">
-<h1>Build Mega Service of ChatQnA on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>,<code class="docutils literal notranslate"><span class="pre">llm</span></code> and <code class="docutils literal notranslate"><span class="pre">faqgen</span></code>.</p>
-<p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component. It also provides options of not using rerank in the pipeline and using TGI backend for LLM microservice, please refer to <a class="reference internal" href="#start-all-the-services-docker-containers"><span class="xref myst">start-all-the-services-docker-containers</span></a> section in this page. Besides, refer to <a class="reference internal" href="README_pinecone.html"><span class="std std-doc">Build with Pinecone VectorDB</span></a> and <a class="reference internal" href="README_qdrant.html"><span class="std std-doc">Build with Qdrant VectorDB</span></a> for other deployment variants.</p>
-<p>Quick Start:</p>
-<ol class="arabic simple">
-<li><p>Set up the environment variables.</p></li>
-<li><p>Run Docker Compose.</p></li>
-<li><p>Consume the ChatQnA Service.</p></li>
-</ol>
-<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
-<section id="quick-start-1-setup-environment-variable">
-<h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
-<p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,llm-faqgen
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
-</pre></div>
-</div>
-</li>
-<li><p>Change Model for LLM serving</p>
-<p>By default, Meta-Llama-3-8B-Instruct is used for LLM serving, the default model can be changed to other validated LLM models.<br />
-Please pick a <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/src/text-generation#validated-llm-models">validated llm models</a> from the table.<br />
-To change the default model defined in set_env.sh, overwrite it by exporting LLM_MODEL_ID to the new model or by modifying set_env.sh, and then repeat step 3.<br />
-For example, change to Llama-2-7b-chat-hf using the following command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Llama-2-7b-chat-hf&quot;</span>
-</pre></div>
-</div>
-</li>
-</ol>
+  <section id="deploying-chatqna-on-intel-xeon-processors">
+<h1>Deploying ChatQnA on Intel® Xeon® Processors<a class="headerlink" href="#deploying-chatqna-on-intel-xeon-processors" title="Link to this heading">¶</a></h1>
+<p>This document outlines the single node deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservices on Intel Xeon server. The steps include pulling Docker images, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code> and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
 </section>
-<section id="quick-start-2-run-docker-compose">
-<h2>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h2>
+<section id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#chatqna-quick-start-Deployment"><span class="xref myst">ChatQnA Quick Start Deployment</span></a></p></li>
+<li><p><a class="reference internal" href="#chatqna-docker-compose-files"><span class="xref myst">ChatQnA Docker Compose file Options</span></a></p></li>
+<li><p><a class="reference internal" href="#chatqna-with-conversational-ui-optional"><span class="xref myst">ChatQnA with Conversational UI</span></a></p></li>
+</ol>
+<section id="chatqna-quick-start-deployment">
+<h2>ChatQnA Quick Start Deployment<a class="headerlink" href="#chatqna-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the ChatQnA service manually on an Intel® Xeon® processor. The basic steps are:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
+</ol>
+<section id="access-the-code">
+<h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
+<p>Clone the GenAIExample repository and access the ChatQnA Intel® Gaudi® platform Docker Compose files and supporting scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ChatQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Checkout a released version, such as v1.2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.2</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-a-huggingface-access-token">
+<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
+<p>Some HuggingFace resources, such as some models, are only accessible if the developer have an access token. In the absence of a HuggingFace access token, the developer can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+</section>
+<section id="configure-the-deployment-environment">
+<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying ChatQnA services, set up some parameters specific to the deployment environment and source the <em>setup_env.sh</em> script in this directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export host_ip=&quot;External_Public_IP&quot;           #ip address of the node
+export HUGGINGFACEHUB_API_TOKEN=&quot;Your_Huggingface_API_Token&quot;
+export http_proxy=&quot;Your_HTTP_Proxy&quot;           #http proxy if any
+export https_proxy=&quot;Your_HTTPs_Proxy&quot;         #https proxy if any
+export no_proxy=localhost,127.0.0.1,$host_ip  #additional no proxies if needed
+export no_proxy=$no_proxy,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service,llm-faqgen
+source ./set_env.sh
+</pre></div>
+</div>
+<p>Consult the section on <a class="reference internal" href="#chatqna-configuration"><span class="xref myst">ChatQnA Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
+</section>
+<section id="deploy-the-services-using-docker-compose">
+<h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>To deploy the ChatQnA services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute the command below. It uses the ‘compose.yaml’ file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
@@ -2607,21 +2617,70 @@ CPU example with Open Telemetry feature:</p>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
-docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
+<p><strong>Note</strong>: developers should build docker image from source when:</p>
+<ul class="simple">
+<li><p>Developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
+<li><p>Unable to download the docker image.</p></li>
+<li><p>Use a specific version of Docker image.</p></li>
+</ul>
+<p>Please refer to the table below to build different microservices from source:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Microservice</p></th>
+<th class="head"><p>Deployment Guide</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Dataprep</p></td>
+<td><p>https://github.com/opea-project/GenAIComps/tree/main/comps/dataprep</p></td>
+</tr>
+<tr class="row-odd"><td><p>Embedding</p></td>
+<td><p>https://github.com/opea-project/GenAIComps/tree/main/comps/embeddings</p></td>
+</tr>
+<tr class="row-even"><td><p>Retriever</p></td>
+<td><p>https://github.com/opea-project/GenAIComps/tree/main/comps/retrievers</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reranker</p></td>
+<td><p>https://github.com/opea-project/GenAIComps/tree/main/comps/rerankings</p></td>
+</tr>
+<tr class="row-even"><td><p>LLM</p></td>
+<td><p>https://github.com/opea-project/GenAIComps/tree/main/comps/llms</p></td>
+</tr>
+<tr class="row-odd"><td><p>Megaservice</p></td>
+<td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-megaservice-docker-image"><span class="std std-ref">Megaservice build guide</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>UI</p></td>
+<td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-ui-docker-image"><span class="std std-ref">Basic UI build guide</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="check-the-deployment-status">
+<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
-<p>NB: You should build docker image from source by yourself if:</p>
-<ul class="simple">
-<li><p>You are developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
-<li><p>You can’t download the docker image.</p></li>
-<li><p>You want to use a specific version of Docker image.</p></li>
-</ul>
-<p>Please refer to <a class="reference internal" href="#%F0%9F%9A%80-build-docker-images"><span class="xref myst">‘Build Docker Images’</span></a> in below.</p>
+<p>For the default deployment, the following 10 containers should have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONTAINER ID   IMAGE                                                   COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
+3b5fa9a722da   opea/chatqna-ui:${RELEASE_VERSION}                                  &quot;docker-entrypoint.s…&quot;   32 hours ago   Up 2 hours   0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                              chatqna-xeon-ui-server
+d3b37f3d1faa   opea/chatqna:${RELEASE_VERSION}                                     &quot;python chatqna.py&quot;      32 hours ago   Up 2 hours   0.0.0.0:8888-&gt;8888/tcp, :::8888-&gt;8888/tcp                                              chatqna-xeon-backend-server
+b3e1388fa2ca   opea/reranking-tei:${RELEASE_VERSION}                               &quot;python reranking_te…&quot;   32 hours ago   Up 2 hours   0.0.0.0:8000-&gt;8000/tcp, :::8000-&gt;8000/tcp                                              reranking-tei-xeon-server
+24a240f8ad1c   opea/retriever-redis:${RELEASE_VERSION}                             &quot;python retriever_re…&quot;   32 hours ago   Up 2 hours   0.0.0.0:7000-&gt;7000/tcp, :::7000-&gt;7000/tcp                                              retriever-redis-server
+9c0d2a2553e8   opea/embedding-tei:${RELEASE_VERSION}                               &quot;python embedding_te…&quot;   32 hours ago   Up 2 hours   0.0.0.0:6000-&gt;6000/tcp, :::6000-&gt;6000/tcp                                              embedding-tei-server
+24cae0db1a70   opea/llm-vllm:${RELEASE_VERSION}                                    &quot;bash entrypoint.sh&quot;     32 hours ago   Up 2 hours   0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              llm-vllm-server
+ea3986c3cf82   opea/dataprep-redis:${RELEASE_VERSION}                              &quot;python prepare_doc_…&quot;   32 hours ago   Up 2 hours   0.0.0.0:6007-&gt;6007/tcp, :::6007-&gt;6007/tcp                                              dataprep-redis-server
+e10dd14497a8   redis/redis-stack:7.2.0-v9                              &quot;/entrypoint.sh&quot;         32 hours ago   Up 2 hours   0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp   redis-vector-db
+b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                        &quot;python3 -m vllm.ent…&quot;   32 hours ago   Up 2 hours   0.0.0.0:9009-&gt;80/tcp, :::9009-&gt;80/tcp                                                  vllm-service
+79276cf45a47   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   &quot;text-embeddings-rou…&quot;   32 hours ago   Up 2 hours   0.0.0.0:6006-&gt;80/tcp, :::6006-&gt;80/tcp                                                  tei-embedding-server
+4943e5f6cd80   ghcr.io/huggingface/text-embeddings-inference:cpu-1.2   &quot;text-embeddings-rou…&quot;   32 hours ago   Up 2 hours   0.0.0.0:8808-&gt;80/tcp, :::8808-&gt;80/tcp
+</pre></div>
+</div>
+<p>If any issues are encountered during deployment, refer to the <a class="reference internal" href="../../../../README_miscellaneous.html##troubleshooting"><span class="std std-ref">troubleshooting</span></a> section.</p>
 </section>
-<section id="quickstart-3-consume-the-chatqna-service">
-<h2>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h2>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+<p>Once the ChatQnA services are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -2629,218 +2688,82 @@ docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
 <span class="s1">    }&#39;</span>
 </pre></div>
 </div>
+<p><strong>Note</strong> : Access the ChatQnA UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservie used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate microservicess</span></a> section.</p>
 </section>
-<section id="apply-xeon-server-on-aws">
-<h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
-<p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage 4th Generation Intel Xeon Scalable processors that are optimized for demanding workloads.</p>
-<p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
-<p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
-<section id="network-port-security">
-<h3>Network Port &amp; Security<a class="headerlink" href="#network-port-security" title="Link to this heading">¶</a></h3>
-<ul>
-<li><p>Access the ChatQnA UI by web browser</p>
-<p>It supports to access by <code class="docutils literal notranslate"><span class="pre">80</span></code> port. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall of EC2 instance.</p>
-</li>
-<li><p>Access the microservice by tool or API</p>
-<ol class="arabic">
-<li><p>Login to the EC2 instance and access by <strong>local IP address</strong> and port.</p>
-<p>It’s recommended and do nothing of the network port setting.</p>
-</li>
-<li><p>Login to a remote client and access by <strong>public IP address</strong> and port.</p>
-<p>You need to open the port of the microservice in the security group setting of firewall of EC2 instance setting.</p>
-<p>For detailed guide, please refer to <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a>.</p>
-<p>Note, it will increase the risk of security, so please confirm before do it.</p>
-</li>
-</ol>
-</li>
-</ul>
-</section>
-</section>
-<section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build Docker Images locally and install the python package of it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-<section id="build-retriever-image">
-<h3>1. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/src/Dockerfile<span class="w"> </span>.
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
 </section>
-<section id="build-dataprep-image">
-<h3>2. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>..
-</pre></div>
-</div>
 </section>
-<section id="build-faqgen-llm-image-optional">
-<h3>3. Build FaqGen LLM Image (Optional)<a class="headerlink" href="#build-faqgen-llm-image-optional" title="Link to this heading">¶</a></h3>
-<p>If you want to enable FAQ generation LLM in the pipeline, please use the below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/llm-faqgen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/faq-generation/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-megaservice-docker-image">
-<h3>4. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build MegaService Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-ui-docker-image">
-<h3>5. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build frontend Docker image via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-conversational-react-ui-docker-image-optional">
-<h3>6. Build Conversational React UI Docker Image (Optional)<a class="headerlink" href="#build-conversational-react-ui-docker-image-optional" title="Link to this heading">¶</a></h3>
-<p>Build frontend Docker image that enables Conversational experience with ChatQnA megaservice via below command:</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-conversation-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-nginx-docker-image">
-<h3>7. Build Nginx Docker Image<a class="headerlink" href="#build-nginx-docker-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/nginx:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/nginx/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following 5 Docker Images:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/dataprep:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/retriever:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/chatqna-ui:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/nginx:latest</span></code></p></li>
-</ol>
-<p>If FaqGen related docker image is built, you will find one more image:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/llm-faqgen:latest</span></code></p></li>
-</ul>
-</section>
-</section>
-<section id="start-microservices">
-<h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>By default, the embedding, reranking and LLM models are set to a default value as listed below:</p>
+<section id="chatqna-docker-compose-files">
+<h2>ChatQnA Docker Compose Files<a class="headerlink" href="#chatqna-docker-compose-files" title="Link to this heading">¶</a></h2>
+<p>In the context of deploying a ChatQnA pipeline on an Intel® Xeon® platform, we can pick and choose different vector databases, large language model serving frameworks, and remove pieces of the pipeline such as the reranker. The table below outlines the various configurations that are available as part of the application. These configurations can be used as templates and can be extended to different components available in <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a>.</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Service</p></th>
-<th class="head"><p>Model</p></th>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Embedding</p></td>
-<td><p>BAAI/bge-base-en-v1.5</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose.yaml"><span class="xref myst">compose.yaml</span></a></p></td>
+<td><p>Default compose file using vllm as serving framework and redis as vector database</p></td>
 </tr>
-<tr class="row-odd"><td><p>Reranking</p></td>
-<td><p>BAAI/bge-reranker-base</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose_milvus.yaml"><span class="xref myst">compose_milvus.yaml</span></a></p></td>
+<td><p>The vector database utilized is Milvus. All other configurations remain the same as the default</p></td>
 </tr>
-<tr class="row-even"><td><p>LLM</p></td>
-<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose_pinecone.yaml"><span class="xref myst">compose_pinecone.yaml</span></a></p></td>
+<td><p>The vector database utilized is Pinecone. All other configurations remain the same as the default</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose_qdrant.yaml"><span class="xref myst">compose_qdrant.yaml</span></a></p></td>
+<td><p>The vector database utilized is Qdrant. All other configurations remain the same as the default</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose_tgi.yaml"><span class="xref myst">compose_tgi.yaml</span></a></p></td>
+<td><p>The LLM serving framework is TGI. All other configurations remain the same as the default</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose_without_rerank.yaml"><span class="xref myst">compose_without_rerank.yaml</span></a></p></td>
+<td><p>Default configuration without the reranker</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose.telemetry.yaml"><span class="xref myst">compose.telemetry.yaml</span></a></p></td>
+<td><p>Helper file for telemetry features for vllm. Can be used along with any compose files that serves vllm</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose_tgi.telemetry.yaml"><span class="xref myst">compose_tgi.telemetry.yaml</span></a></p></td>
+<td><p>Helper file for telemetry features for tgi. Can be used along with any compose files that serves tgi</p></td>
 </tr>
 </tbody>
 </table>
-<p>Change the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> below for your needs.</p>
-<p>For users in China who are unable to download models directly from Huggingface, you can use <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a> or a Huggingface mirror to download models. The vLLM/TGI can load the models either online or offline as described below:</p>
-<ol class="arabic">
-<li><p>Online</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://hf-mirror.com&quot;</span>
-<span class="nv">model_name</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
-<span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/root/.cache/huggingface/hub<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span><span class="nv">$model_name</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
-<span class="c1"># Start TGI LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="nv">$HF_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model_name</span>
-</pre></div>
-</div>
-</li>
-<li><p>Offline</p>
-<ul>
-<li><p>Search your model name in ModelScope. For example, check <a class="reference external" href="https://modelscope.cn/models/LLM-Research/Meta-Llama-3-8B-Instruct/files">this page</a> for model <code class="docutils literal notranslate"><span class="pre">Meta-Llama-3-8B-Instruct</span></code>.</p></li>
-<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">this</span> <span class="pre">model</span></code> button, and choose one way to download the model to your local path <code class="docutils literal notranslate"><span class="pre">/path/to/model</span></code>.</p></li>
-<li><p>Run the following command to start the LLM service.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">model_path</span><span class="o">=</span><span class="s2">&quot;/path/to/model&quot;</span>
-<span class="c1"># Start vLLM LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/root/.cache/huggingface/hub<span class="w"> </span>--name<span class="w"> </span>vllm-service<span class="w"> </span>--shm-size<span class="w"> </span>128g<span class="w"> </span>opea/vllm:latest<span class="w"> </span>--model<span class="w"> </span>/root/.cache/huggingface/hub<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
-<span class="c1"># Start TGI LLM Service</span>
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8008</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$model_path</span>:/data<span class="w"> </span>--name<span class="w"> </span>tgi-service<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w"> </span>--model-id<span class="w"> </span>/data
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-</ol>
 </section>
-<section id="setup-environment-variables">
-<h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-<span class="c1"># Example: NGINX_PORT=80</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
+<section id="chatqna-with-conversational-ui-optional">
+<h2>ChatQnA with Conversational UI (Optional)<a class="headerlink" href="#chatqna-with-conversational-ui-optional" title="Link to this heading">¶</a></h2>
+<p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose</span></code> file used to deploy. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
+<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-conversation-ui-server</span>
+<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
+<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chaqna-xeon-backend-server</span>
+<span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
+<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
 </pre></div>
 </div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-redis-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
+<p>Once the services are up, open the following URL in the browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If the developer prefers to use a different host port to access the frontend, it can be modiied by port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-conversation-ui-server</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
 </pre></div>
 </div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="start-all-the-services-docker-containers">
-<h3>Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h3>
-<blockquote>
-<div><p>Before running the docker compose command, you need to be in the folder that has the docker compose yaml file</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
-</pre></div>
-</div>
-<p>If use vLLM as the LLM serving backend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start ChatQnA with Rerank Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA without Rerank Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_without_rerank.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with Rerank Pipeline and Open Telemetry Tracing</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with FaqGen Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_faqgen.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>If use TGI as the LLM serving backend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with Open Telemetry Tracing</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose_tgi.telemetry.yaml<span class="w"> </span>up<span class="w"> </span>-d
-<span class="c1"># Start ChatQnA with FaqGen Pipeline</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_faqgen_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
+<p>Here is an example of running ChatQnA (default UI):</p>
+<p><img alt="project-screenshot" src="../../../../../../_images/chat_ui_response2.png" /></p>
+<p>Here is an example of running ChatQnA with Conversational UI (React):</p>
+<p><img alt="project-screenshot" src="../../../../../../_images/conversation_ui_response1.png" /></p>
 <section id="validate-microservices">
 <h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
 <p>Note, when verify the microservices by curl or API from remote client, please make sure the <strong>ports</strong> of the microservices are opened in the firewall of the cloud node.<br />
@@ -2903,15 +2826,6 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </li>
-<li><p>FaqGen LLM Microservice (if enabled)</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">LLM_SERVICE_PORT</span><span class="si">}</span>/v1/faqgen<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-<ol class="arabic" start="6">
 <li><p>MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
@@ -3043,54 +2957,9 @@ to see the vLLM profiling result as below diagram.
 </section>
 </section>
 </section>
-<section id="launch-the-ui">
-<h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
-<section id="launch-with-origin-port">
-<h3>Launch with origin port<a class="headerlink" href="#launch-with-origin-port" title="Link to this heading">¶</a></h3>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-ui:latest</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:5173&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="launch-with-nginx">
-<h3>Launch with Nginx<a class="headerlink" href="#launch-with-nginx" title="Link to this heading">¶</a></h3>
-<p>If you want to launch the UI using Nginx, open this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:${NGINX_PORT}</span></code> in your browser to access the frontend.</p>
-</section>
-</section>
-<section id="launch-the-conversational-ui-optional">
-<h2>🚀 Launch the Conversational UI (Optional)<a class="headerlink" href="#launch-the-conversational-ui-optional" title="Link to this heading">¶</a></h2>
-<p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
-<span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-conversation-ui-server</span>
-<span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
-<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
-<span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chaqna-xeon-backend-server</span>
-<span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
-<span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
-</pre></div>
-</div>
-<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-conversation-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
-</pre></div>
-</div>
-<p><img alt="project-screenshot" src="../../../../../../_images/chat_ui_init1.png" /></p>
-<p>Here is an example of running ChatQnA:</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/chat_ui_response2.png" /></p>
-<p>Here is an example of running ChatQnA with Conversational UI (React):</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/conversation_ui_response1.png" /></p>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<p>This guide should enable developer to deploy the default configuration or any of the other compose yaml files for different configurations. It also highlights the configurable parameters that can be set before deployment.</p>
 </section>
 </section>
 
