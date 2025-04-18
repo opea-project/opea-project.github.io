@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Single node on-prem deployment with TGI on Xeon Scalable processors &mdash; OPEA™ 1.2 documentation</title>
+  <title>Single node on-prem deployment on Xeon Scalable processors &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,8 +28,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="# Single node on-prem deployment with TGI on Gaudi AI Accelerator" href="gaudi.html" />
-    <link rel="prev" title="Code Translations" href="../CodeTrans_Guide.html" /> 
+    <link rel="next" title="Single node on-prem deployment on Gaudi AI Accelerator" href="gaudi.html" />
+    <link rel="prev" title="Code Translation" href="../CodeTrans_Guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -195,7 +195,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="reference internal" href="../CodeTrans_Guide.html">Code Translations</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../CodeTrans_Guide.html">Code Translation</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../CodeTrans_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../CodeTrans_Guide.html#purpose">Purpose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../CodeTrans_Guide.html#how-it-works">How It Works</a></li>
@@ -2532,9 +2532,9 @@
   
      <li><a href="../../index.html">OPEA Tutorial</a> &raquo;</li>
   
-     <li><a href="../CodeTrans_Guide.html">Code Translations</a> &raquo;</li>
+     <li><a href="../CodeTrans_Guide.html">Code Translation</a> &raquo;</li>
   
-  <li>Single node on-prem deployment with TGI on Xeon Scalable processors</li>
+  <li>Single node on-prem deployment on Xeon Scalable processors</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/tutorial/CodeTrans/deploy/xeon.md.txt" rel="nofollow"> View page source</a>
@@ -2554,128 +2554,62 @@
   
            <div itemprop="articleBody">
              
-  <section id="single-node-on-prem-deployment-with-tgi-on-xeon-scalable-processors">
-<h1>Single node on-prem deployment with TGI on Xeon Scalable processors<a class="headerlink" href="#single-node-on-prem-deployment-with-tgi-on-xeon-scalable-processors" title="Link to this heading">¶</a></h1>
-<p>This deployment section covers the single-node on-prem deployment of the CodeTrans example with OPEA comps using the Text Generation service based on TGI. The solution demonstrates building a code translation service using the <code class="docutils literal notranslate"><span class="pre">mistralai/Mistral-7B-Instruct-v0.3</span></code> model deployed on Intel® Xeon® Scalable processors. To quickly learn about OPEA in just 5 minutes and set up the required hardware and software, please follow the instructions in the <a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a> section.</p>
+  <section id="single-node-on-prem-deployment-on-xeon-scalable-processors">
+<h1>Single node on-prem deployment on Xeon Scalable processors<a class="headerlink" href="#single-node-on-prem-deployment-on-xeon-scalable-processors" title="Link to this heading">¶</a></h1>
+<p>This section covers single-node on-prem deployment of the CodeTrans example. It will show how to deploy an end-to-end code translation service with the <code class="docutils literal notranslate"><span class="pre">mistralai/Mistral-7B-Instruct-v0.3</span></code> model running on Intel® Xeon® Scalable processors. To quickly learn about OPEA and set up the required hardware and software, follow the instructions in the <a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a> section.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>In this tutorial, we will walk through how to enable the following microservices from OPEA GenAIComps to deploy a single node Text Generation megaservice solution for code translation:</p>
-<ol class="arabic simple">
-<li><p>LLM with TGI</p></li>
-<li><p>Nginx Service</p></li>
-</ol>
-<p>The solution demonstrates using the Mistral-7B-Instruct-v0.3 model on Intel Xeon Scalable processors to translate code between different programming languages. We will go through setting up Docker containers to start the microservices and megaservice. Users can input code in one programming language and get it translated to another. The solution is deployed with a basic UI accessible through both direct port and Nginx.</p>
+<p>The CodeTrans use case uses a single LLM microservice for code translation with model serving done on vLLM or TGI.</p>
+<p>This solution is designed to demonstrate the use of the <code class="docutils literal notranslate"><span class="pre">Mistral-7B-Instruct-v0.3</span></code> model on the Intel® Xeon® Scalable processors to translate code between different programming languages. The steps will involve setting up Docker containers, taking code in one programming language as input, and generating code in another programming language. The solution is deployed with a basic UI accessible through both a direct port and Nginx.</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>TThe first step is to clone the GenAIExamples and GenAIComps projects. GenAIComps are
-fundamental necessary components used to build the examples you find in
-GenAIExamples and deploy them as microservices. Set an environment
-variable for the desired release version with the <strong>number only</strong>
-(i.e. 1.0, 1.1, etc) and checkout using the tag with that version.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set workspace</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;path&gt;
+<p>To run the UI on a web browser external to the host machine such as a laptop, the following port(s) need to be port forwarded when using SSH to log in to the host machine:</p>
+<ul class="simple">
+<li><p>7777: CodeTrans megaservice port</p></li>
+</ul>
+<p>This port is used for <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> defined in the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for this example inside the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> folder. Specifically, for CodeTrans, append the following to the ssh command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="w"> </span><span class="m">7777</span>:localhost:7777
+</pre></div>
+</div>
+<p>Set up a workspace and clone the <a class="reference external" href="https://github.com/opea-project/GenAIExamples">GenAIExamples</a> GitHub repo.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;Path&gt;
 <span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>
-
-<span class="c1"># Set desired release version - number only</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;insert-release-version&gt;
-
-<span class="c1"># GenAIComps</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
-<span class="nb">cd</span><span class="w"> </span>..
-
-<span class="c1"># GenAIExamples</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="c1"># GenAIExamples</span>
+</pre></div>
+</div>
+<p><strong>Optional</strong> It is recommended to use a stable release version by setting <code class="docutils literal notranslate"><span class="pre">RELEASE_VERSION</span></code> to a <strong>number only</strong> (i.e. 1.0, 1.1, etc) and checkout that version using the tag. Otherwise, by default, the main branch with the latest updates will be used.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;Release_Version&gt;<span class="w"> </span><span class="c1"># Set desired release version - number only</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples
 git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
 <span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
-<p>The examples utilize model weights from HuggingFace.
-Set up your <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and
-apply for model access to <code class="docutils literal notranslate"><span class="pre">Mistral-7B-Instruct-v0.3</span></code> which is a gated model. To obtain access for using the model, visit the <a class="reference external" href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3">model site</a> and click on <code class="docutils literal notranslate"><span class="pre">Agree</span> <span class="pre">and</span> <span class="pre">access</span> <span class="pre">repository</span></code>.</p>
-<p>Next, generate <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
-<p>Setup the HuggingFace token</p>
+<p>The example utilizes model weights from HuggingFace. Set up a <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and apply for model access to <code class="docutils literal notranslate"><span class="pre">Mistral-7B-Instruct-v0.3</span></code> which is a gated model. To obtain access for using the model, visit the <a class="reference external" href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3">model site</a> and click on <code class="docutils literal notranslate"><span class="pre">Agree</span> <span class="pre">and</span> <span class="pre">access</span> <span class="pre">repository</span></code>.</p>
+<p>Next, generate a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+<p>Set the <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code> environment variable to the value of the Hugging Face token by executing the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 </pre></div>
 </div>
-<p>The example requires you to set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> to deploy the microservices on the endpoint enabled with ports. Set the host_ip env variable.</p>
+<p>Set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable to deploy the microservices on the endpoints enabled with ports:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 </pre></div>
 </div>
-<p>Make sure to set Proxies if you are behind a firewall.</p>
+<p>Set up a desired port for Nginx:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: NGINX_PORT=80</span>
+<span class="nb">export</span><span class="w">  </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>For machines behind a firewall, set up the proxy environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="nv">$host_ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
-<section id="prepare-building-pulling-docker-images">
-<h2>Prepare (Building / Pulling) Docker images<a class="headerlink" href="#prepare-building-pulling-docker-images" title="Link to this heading">¶</a></h2>
-<p>This step involves either building or pulling four required Docker images. Each image serves a specific purpose in the CodeTrans architecture.</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Pull" for="sd-tab-item-0">
-Pull</label><div class="sd-tab-content docutils">
-<p>If you decide to pull the docker containers and not build them locally, you can proceed to the next step where all the necessary containers will be pulled in from Docker Hub.</p>
-</div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Build" for="sd-tab-item-1">
-Build</label><div class="sd-tab-content docutils">
-<p>Follow the steps below to build the docker images from within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder.
-<strong>Note:</strong> For RELEASE_VERSIONS older than 1.0, you will need to add a ‘v’ in front
-of ${RELEASE_VERSION} to reference the correct image on Docker Hub.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIComps
-</pre></div>
-</div>
-<h3 class="rubric" id="build-llm-image">Build LLM Image</h3>
-<p>First, build the Text Generation LLM service image:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w">  </span>opea/llm-textgen:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">  </span>--build-arg<span class="w">  </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w">  </span><span class="se">\</span>
---build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/text-generation/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<blockquote>
-<div><p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">llm-textgen</span></code> uses Text Generation Inference (TGI) which is pulled automatically via the docker compose file in the next steps.</p>
-</div></blockquote>
-<h3 class="rubric" id="build-nginx-image">Build Nginx Image</h3>
-<p>Build the Nginx service image that will handle routing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w">  </span>opea/nginx:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">  </span>--build-arg<span class="w">  </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w">  </span><span class="se">\</span>
---build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/nginx/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="build-megaservice-image">Build MegaService Image</h3>
-<p>The Megaservice is a pipeline that channels data through different microservices, each performing varied tasks. We define the different microservices and the flow of data between them in the  <code class="docutils literal notranslate"><span class="pre">code_translation.py</span></code>  file, in this example, CodeTrans MegaService formats the input code and language parameters into a prompt template, sends it to the LLM microservice, and returns the translated code. You can also add newer or remove some microservices and customize the megaservice to suit the needs.</p>
-<p>Build the megaservice image for this use case.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w">  </span>opea/codetrans:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">  </span>--build-arg<span class="w">  </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w">  </span><span class="se">\</span>
---build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="build-ui-image">Build UI Image</h3>
-<p>Build the UI service image:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans/ui
-docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w">  </span>opea/codetrans-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">  </span>--build-arg<span class="w">  </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w">  </span><span class="se">\</span>
---build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="sanity-check">Sanity Check</h3>
-<p>Before proceeding, verify that you have all required Docker images by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>. You should see the following images:</p>
-<ul class="simple">
-<li><p>opea/llm-textgen:${RELEASE_VERSION}</p></li>
-<li><p>opea/codetrans:${RELEASE_VERSION}</p></li>
-<li><p>opea/codetrans-ui:${RELEASE_VERSION}</p></li>
-<li><p>opea/nginx:${RELEASE_VERSION}</p></li>
-</ul>
-</div>
-</div>
-</section>
 <section id="use-case-setup">
 <h2>Use Case Setup<a class="headerlink" href="#use-case-setup" title="Link to this heading">¶</a></h2>
-<p>The use case will use the following combination of the GenAIComps with the tools.</p>
+<p>CodeTrans will utilize the following GenAIComps services and associated tools. The tools and models listed in the table can be configured via environment variables in either the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script or the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Use Case Components</p></th>
@@ -2686,7 +2620,7 @@ docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w"> 
 </thead>
 <tbody>
 <tr class="row-even"><td><p>LLM</p></td>
-<td><p>TGI</p></td>
+<td><p>vLLM or TGI</p></td>
 <td><p>mistralai/Mistral-7B-Instruct-v0.3</p></td>
 <td><p>OPEA Microservice</p></td>
 </tr>
@@ -2702,98 +2636,114 @@ docker<span class="w">  </span>build<span class="w">  </span>-t<span class="w"> 
 </tr>
 </tbody>
 </table>
-<p>Tools and models mentioned in the table are configurable either through the environment variable or <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code></p>
-<p>Set the necessary environment variables to setup the use case by running the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.
-Here is where the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is set, and you can change it to another model
-by specifying the HuggingFace model card ID.</p>
-<p><strong>Note:</strong> If you wish to run the UI on a web browser on your laptop, you will need to modify <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_IP</span></code> to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> or <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> inside <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for the backend to properly receive data from the UI. Additionally, you will need to port-forward the port used for <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_IP</span></code>. Specifically, for CodeTrans, append the following to your ssh command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="w"> </span><span class="m">7777</span>:localhost:7777
-</pre></div>
-</div>
+<p>Set the necessary environment variables to set up the use case. To swap out models, modify <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> before running it. For example, the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> can be changed to another model by specifying the HuggingFace model card ID.</p>
+<p>To run the UI on a web browser on a laptop, modify <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> or <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> inside <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for the backend to properly receive data from the UI.</p>
 <p>Run the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans/docker_compose
 <span class="nb">source</span><span class="w"> </span>./set_env.sh
 </pre></div>
 </div>
-<p>Set up a desired port for Nginx:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: NGINX_PORT=80</span>
-<span class="nb">export</span><span class="w">  </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
-</pre></div>
-</div>
 </section>
 <section id="deploy-the-use-case">
-<h2>Deploy the use case<a class="headerlink" href="#deploy-the-use-case" title="Link to this heading">¶</a></h2>
-<p>In this tutorial, we will be deploying via docker compose with the provided YAML file. The docker compose instructions should start all the above-mentioned services as containers.</p>
+<h2>Deploy the Use Case<a class="headerlink" href="#deploy-the-use-case" title="Link to this heading">¶</a></h2>
+<p>Navigate to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> directory for this hardware platform.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<section id="validate-microservice">
-<h3>Validate microservice<a class="headerlink" href="#validate-microservice" title="Link to this heading">¶</a></h3>
+<p>Run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> with the provided YAML file to start all the services mentioned above as containers. The vLLM or TGI service can be used for CodeTrans.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-0">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-1">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</div>
+</div>
 <section id="check-env-variables">
-<h4>Check Env Variables<a class="headerlink" href="#check-env-variables" title="Link to this heading">¶</a></h4>
-<p>Check the startup log by <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">./compose.yaml</span> <span class="pre">logs</span></code>.
-The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
+<h3>Check Env Variables<a class="headerlink" href="#check-env-variables" title="Link to this heading">¶</a></h3>
+<p>After running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code>, check for warning messages for environment variables that are <strong>NOT</strong> set. Address them if needed.</p>
 <p>ubuntu&#64;xeon-vm:~/GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon$ docker compose -f ./compose.yaml up -d</p>
 <p>WARN[0000] The “no_proxy” variable is not set. Defaulting to a blank string.
 WARN[0000] The “http_proxy” variable is not set. Defaulting to a blank string.</p>
-</section>
-<section id="check-the-container-status">
-<h4>Check the container status<a class="headerlink" href="#check-the-container-status" title="Link to this heading">¶</a></h4>
-<p>Check if all the containers launched via docker compose have started.
-For example, the CodeTrans example starts 5 docker containers (services), check these docker containers are all running, i.e., all the containers <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> are <code class="docutils literal notranslate"><span class="pre">Up</span></code>.</p>
-<p>To do a quick sanity check, try <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> to see if all the containers are running.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">|</span><span class="w"> </span>CONTAINER<span class="w"> </span>ID<span class="w"> </span><span class="p">|</span><span class="w"> </span>IMAGE<span class="w">                                                             </span><span class="p">|</span><span class="w"> </span>COMMAND<span class="w">                   </span><span class="p">|</span><span class="w"> </span>CREATED<span class="w">         </span><span class="p">|</span><span class="w"> </span>STATUS<span class="w">                            </span><span class="p">|</span><span class="w"> </span>PORTS<span class="w">                                      </span><span class="p">|</span><span class="w"> </span>NAMES<span class="w">                           </span><span class="p">|</span>
-<span class="p">|</span>--------------<span class="p">|</span>-------------------------------------------------------------------<span class="p">|</span>---------------------------<span class="p">|</span>----------------<span class="p">|</span>------------------------------------<span class="p">|</span>---------------------------------------------<span class="p">|</span>---------------------------------<span class="p">|</span>
-<span class="p">|</span><span class="w"> </span>0744c6693a64<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/nginx:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                                </span><span class="p">|</span><span class="w"> </span><span class="sb">`</span>/docker-entrypoint.…<span class="sb">`</span><span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">9</span><span class="w"> </span>minutes<span class="w">                       </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:80-&gt;80/tcp,<span class="w"> </span>:::80-&gt;80/tcp<span class="w">           </span><span class="p">|</span><span class="w"> </span>codetrans-xeon-nginx-server<span class="w">     </span><span class="p">|</span>
-<span class="p">|</span><span class="w"> </span>1e9c8c900843<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/codetrans-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                         </span><span class="p">|</span><span class="w"> </span><span class="sb">`</span>docker-entrypoint.s…<span class="sb">`</span><span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">9</span><span class="w"> </span>minutes<span class="w">                       </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">   </span><span class="p">|</span><span class="w">            </span>codetrans-xeon-ui-server<span class="w">        </span><span class="p">|</span>
-<span class="p">|</span><span class="w"> </span>3ed57de43648<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/codetrans:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                            </span><span class="p">|</span><span class="w"> </span><span class="sb">`</span>python<span class="w"> </span>code_transla…<span class="sb">`</span><span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">9</span><span class="w"> </span>minutes<span class="w">                       </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:7777-&gt;7777/tcp,<span class="w"> </span>:::7777-&gt;7777/tcp<span class="w">   </span><span class="p">|</span><span class="w"> </span>codetrans-xeon-backend-server<span class="w">   </span><span class="p">|</span>
-<span class="p">|</span><span class="w"> </span>29d0fe6382dd<span class="w"> </span><span class="p">|</span><span class="w"> </span>opea/llm-textgen:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                                          </span><span class="p">|</span><span class="w"> </span><span class="sb">`</span>bash<span class="w"> </span>entrypoint.sh<span class="sb">`</span><span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">9</span><span class="w"> </span>minutes<span class="w">                       </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">   </span><span class="p">|</span><span class="w"> </span>llm-textgen-server<span class="w">              </span><span class="p">|</span>
-<span class="p">|</span><span class="w"> </span>e1b37ad9e078<span class="w"> </span><span class="p">|</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="sb">`</span>text-generation-lau…<span class="sb">`</span><span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w"> </span><span class="p">|</span><span class="w"> </span>Up<span class="w"> </span><span class="m">13</span><span class="w"> </span>minutes<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">            </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.0.0.0:8008-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8008-&gt;80/tcp<span class="w">     </span><span class="p">|</span><span class="w"> </span>codetrans-tgi-service<span class="w">           </span><span class="p">|</span>
+<p>Check if all the containers launched via <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> are running i.e. each container’s <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> is <code class="docutils literal notranslate"><span class="pre">Up</span></code> and in some cases <code class="docutils literal notranslate"><span class="pre">Healthy</span></code>.</p>
+<p>Run this command to see this info:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>-a
+</pre></div>
+</div>
+<p>Sample output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                      </span>COMMAND<span class="w">                  </span>CREATED<span class="w">         </span>STATUS<span class="w">                   </span>PORTS<span class="w">                                         </span>NAMES
+ca0cfb3edce5<span class="w">   </span>opea/nginx:latest<span class="w">          </span><span class="s2">&quot;/docker-entrypoint.…&quot;</span><span class="w">   </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:80-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:80-&gt;80/tcp<span class="w">           </span>codetrans-xeon-nginx-server
+d7ef9da3f7db<span class="w">   </span>opea/codetrans-ui:latest<span class="w">   </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:5173-&gt;5173/tcp<span class="w">   </span>codetrans-xeon-ui-server
+2cfc12e1c8f1<span class="w">   </span>opea/codetrans:latest<span class="w">      </span><span class="s2">&quot;python code_transla…&quot;</span><span class="w">   </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:7777-&gt;7777/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:7777-&gt;7777/tcp<span class="w">   </span>codetrans-xeon-backend-server
+c1db5a49003d<span class="w">   </span>opea/llm-textgen:latest<span class="w">    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">6</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:9000-&gt;9000/tcp<span class="w">   </span>codetrans-xeon-llm-server
+450f74cb65a4<span class="w">   </span>opea/vllm:latest<span class="w">           </span><span class="s2">&quot;python3 -m vllm.ent…&quot;</span><span class="w">   </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8008-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8008-&gt;80/tcp<span class="w">       </span>codetrans-xeon-vllm-service
+</pre></div>
+</div>
+<p>Each docker container’s log can also be checked using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>&lt;CONTAINER_ID<span class="w"> </span>OR<span class="w"> </span>CONTAINER_NAME&gt;
 </pre></div>
 </div>
 </section>
 </section>
-</section>
-<section id="interacting-with-codetrans-deployment">
-<h2>Interacting with CodeTrans deployment<a class="headerlink" href="#interacting-with-codetrans-deployment" title="Link to this heading">¶</a></h2>
-<p>In this section, you will walk through the different ways to interact with the deployed microservices.</p>
-<section id="tgi-service">
-<h3>TGI Service<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h3>
-<p>In the first startup, this service will take more time to download the model files. After it’s finished, the service will be ready.</p>
+<section id="validate-microservices">
+<h2>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
+<p>This section will guide through the various methods for interacting with the deployed microservices.</p>
+<section id="vllm-or-tgi-service">
+<h3>vLLM or TGI Service<a class="headerlink" href="#vllm-or-tgi-service" title="Link to this heading">¶</a></h3>
+<p>During the initial startup, this service will take a few minutes to download the model files and complete the warm-up process. Once this is finished, the service will be ready for use.</p>
 <p>Try the command below to check whether the LLM serving is ready.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span><span class="si">${</span><span class="nv">CONTAINER_ID</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-2">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>codetrans-xeon-vllm-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
 </pre></div>
 </div>
-<p>If the service is ready, you will get a response like below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w"> </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-3">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>codetrans-xeon-tgi-service<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w">  </span><span class="se">\</span>
--X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
--d<span class="w">  </span><span class="s1">&#39;{&quot;inputs&quot;:&quot; ### System: Please translate the following Golang codes into Python codes. ### Original codes: &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n fmt.Println(\&quot;Hello, World!\&quot;);\n &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39; ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w">  </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
 </div>
-<p>TGI service generates text for the input prompt. Here is the expected result from TGI:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;&#39;&#39;&#39;Python\nprint(\&quot;Hello, World!\&quot;)&quot;</span><span class="o">}</span>
-</pre></div>
 </div>
-<p><strong>NOTE</strong>: After launching TGI, it takes a few minutes for the TGI server to load the LLM model and warm up.</p>
-</section>
-<section id="text-generation-microservice">
-<h3>Text Generation Microservice<a class="headerlink" href="#text-generation-microservice" title="Link to this heading">¶</a></h3>
-<p>This service handles the core language model operations. You can validate it’s working by sending a direct request to translate a simple “Hello World” program from Go to Python:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command to verify the vLLM or TGI service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;query&quot;: &quot;### System: Please translate the following Golang codes into Python codes. ### Original codes: ```Golang\npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n fmt.Println(\&quot;Hello, World!\&quot;);\n}\n``` ### Translated codes:&quot;,</span>
-<span class="s1">        &quot;max_tokens&quot;: 17</span>
-<span class="s1">      }&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<p>The expected output is as shown below:</p>
+<p>The vLLM or TGI service generates text for the input prompt. Here is the expected result:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;&#39;&#39;&#39;Python\nprint(\&quot;Hello, World!\&quot;)&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="llm-microservice">
+<h3>LLM Microservice<a class="headerlink" href="#llm-microservice" title="Link to this heading">¶</a></h3>
+<p>This service handles the core language model operations. Send a direct request to translate a simple “Hello World” program from Go to Python:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Sample output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n&quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737123223,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
 data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n&quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737123223,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
 data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;``&quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737123223,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
@@ -2815,15 +2765,15 @@ data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span
 </pre></div>
 </div>
 </section>
-<section id="megaservice">
-<h3>MegaService<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
+<section id="codetrans-megaservice">
+<h3>CodeTrans Megaservice<a class="headerlink" href="#codetrans-megaservice" title="Link to this heading">¶</a></h3>
 <p>The CodeTrans megaservice orchestrates the entire translation process. Test it with a simple code translation request:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w">  </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
--d<span class="w">  </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
 </pre></div>
 </div>
-<p>When you send this request, you’ll receive a streaming response from the MegaService. It will appear line by line like so:</p>
+<p>Sample output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n&quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737121307,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
 data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;\n&quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737121307,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
 data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;choices&quot;</span>:<span class="o">[{</span><span class="s2">&quot;finish_reason&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;index&quot;</span>:0,<span class="s2">&quot;logprobs&quot;</span>:null,<span class="s2">&quot;text&quot;</span>:<span class="s2">&quot;        &quot;</span><span class="o">}]</span>,<span class="s2">&quot;created&quot;</span>:1737121307,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>,<span class="s2">&quot;object&quot;</span>:<span class="s2">&quot;text_completion&quot;</span>,<span class="s2">&quot;system_fingerprint&quot;</span>:<span class="s2">&quot;2.4.0-sha-0a655a0-intel-cpu&quot;</span>,<span class="s2">&quot;usage&quot;</span>:null<span class="o">}</span>
@@ -2845,93 +2795,62 @@ data:<span class="w"> </span><span class="o">{</span><span class="s2">&quot;id&q
 data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
 </div>
-<p>Within this output, each line contains JSON that includes a <code class="docutils literal notranslate"><span class="pre">text</span></code> field. Once you combine the <code class="docutils literal notranslate"><span class="pre">text</span></code> values in order, you’ll reconstruct the translated code. In this example, the final code is simply:</p>
+<p>The megaservice streams each segment of the response. Each line contains JSON that includes a <code class="docutils literal notranslate"><span class="pre">text</span></code> field. Combining the <code class="docutils literal notranslate"><span class="pre">text</span></code> values in order will reconstruct the translated code. In this example, the final code is simply:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>print<span class="o">(</span><span class="s2">&quot;Hello, World!&quot;</span><span class="o">)</span>
 </pre></div>
 </div>
-<p>This demonstrates how the MegaService streams each segment of the response, which you can then piece together to get the complete translation.</p>
 </section>
 <section id="nginx-service">
 <h3>Nginx Service<a class="headerlink" href="#nginx-service" title="Link to this heading">¶</a></h3>
-<p>The Nginx service acts as a reverse proxy and load balancer for the application. You can verify it’s properly routing requests by sending the same translation request through Nginx:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/codetrans<span class="w">  </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
--d<span class="w">  </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<p>The Nginx service acts as a reverse proxy and load balancer for the application. To verify it is properly routing requests, send the same translation request through Nginx:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/codetrans<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
 </pre></div>
 </div>
-<p>The expected output is the same as the MegaService output.</p>
+<p>The expected output is the same as the megaservice output.</p>
 <p>Each of these endpoints should return a successful response with the translated Python code. If any of these tests fail, check the corresponding service logs for more details.</p>
 </section>
-</section>
-<section id="check-the-docker-container-logs">
-<h2>Check the docker container logs<a class="headerlink" href="#check-the-docker-container-logs" title="Link to this heading">¶</a></h2>
-<p>Following is an example of debugging using Docker logs:</p>
-<p>Check the log of the container using:</p>
-<p><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">&lt;CONTAINER</span> <span class="pre">ID&gt;</span> <span class="pre">-t</span></code></p>
-<p>Check the log using <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">e1b37ad9e078</span> <span class="pre">-t</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2024</span>-06-05T01:30:30.695934928Z<span class="w"> </span>error:<span class="w"> </span>a<span class="w"> </span>value<span class="w"> </span>is<span class="w"> </span>required<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;--model-id &lt;MODEL_ID&gt;&#39;</span><span class="w"> </span>but<span class="w"> </span>none<span class="w"> </span>was<span class="w"> </span>supplied
-
-<span class="m">2024</span>-06-05T01:30:30.697123534Z
-
-<span class="m">2024</span>-06-05T01:30:30.697148330Z<span class="w"> </span>For<span class="w"> </span>more<span class="w"> </span>information,<span class="w"> </span>try<span class="w"> </span><span class="s1">&#39;--help&#39;</span>.
-</pre></div>
-</div>
-<p>The log indicates the <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is not set.</p>
-<p>View the docker input parameters in <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tgi-service</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span>
-<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codetrans-tgi-service</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8008:80&quot;</span>
-<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./data:/data&quot;</span>
-<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">no_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${no_proxy}</span>
-<span class="w">      </span><span class="nt">http_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${http_proxy}</span>
-<span class="w">      </span><span class="nt">https_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${https_proxy}</span>
-<span class="w">      </span><span class="nt">HF_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HUGGINGFACEHUB_API_TOKEN}</span>
-<span class="w">      </span><span class="nt">host_ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${host_ip}</span>
-<span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;CMD-SHELL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;curl</span><span class="nv"> </span><span class="s">-f</span><span class="nv"> </span><span class="s">http://$host_ip:8008/health</span><span class="nv"> </span><span class="s">||</span><span class="nv"> </span><span class="s">exit</span><span class="nv"> </span><span class="s">1&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--model-id ${LLM_MODEL_ID} --cuda-graphs 0</span>
-</pre></div>
-</div>
-<p>The input <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> is <code class="docutils literal notranslate"><span class="pre">${LLM_MODEL_ID}</span></code></p>
-<p>Check environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is set correctly, and spelled correctly.</p>
-<p>Set the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> then restart the containers.
-You can also check overall logs with the following command, where the
-<code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> is the MegaService docker-compose configuration file.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>logs
-</pre></div>
-</div>
 </section>
 <section id="launch-ui">
 <h2>Launch UI<a class="headerlink" href="#launch-ui" title="Link to this heading">¶</a></h2>
 <section id="basic-ui">
 <h3>Basic UI<a class="headerlink" href="#basic-ui" title="Link to this heading">¶</a></h3>
-<p>To access the frontend user interface (UI), the primary method is through the Nginx reverse proxy service. Open the following URL in your browser: http://${host_ip}:${NGINX_PORT}. This provides a stable and secure access point to the UI. The value of ${NGINX_PORT} has been defined in the earlier steps.</p>
-<p>Alternatively, you can access the UI directly using its internal port. This method bypasses the Nginx proxy and can be used for testing or troubleshooting purposes. To access the UI directly, open the following URL in your browser: http://${host_ip}:5173. By default, the UI runs on port 5173.</p>
-<p>If you need to change the port used to access the UI directly (not through Nginx), modify the ports section of the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file:</p>
+<p>To access the frontend user interface (UI), the primary method is through the Nginx reverse proxy service. Open the following URL in a web browser: http://${host_ip}:${NGINX_PORT}. This provides a stable and secure access point to the UI.</p>
+<p>Alternatively, the UI can be accessed directly using its internal port. This method bypasses the Nginx proxy and can be used for testing or troubleshooting purposes. To access the UI directly, open the following URL in a web browser: http://${host_ip}:5173. By default, the UI runs on port 5173. A different host port can be used to access the frontend by modifying the <code class="docutils literal notranslate"><span class="pre">FRONTEND_SERVICE_PORT</span></code> environment variable. For reference, the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file is shown below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">codetrans-xeon-ui-server</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/codetrans-ui:${TAG:-latest}</span>
 <span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codetrans-xeon-ui-server</span>
 <span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codetrans-xeon-backend-server</span>
 <span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;YOUR_HOST_PORT:5173&quot;</span><span class="w"> </span><span class="c1"># Change YOUR_HOST_PORT to your desired port</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;${FRONTEND_SERVICE_PORT:-5173}:5173&quot;</span>
 </pre></div>
 </div>
-<p>Remember to replace YOUR_HOST_PORT with your preferred host port number. After making this change, you will need to rebuild and restart your containers for the change to take effect.</p>
+<p>After making this change, restart the containers for the change to take effect.</p>
 </section>
 <section id="stop-the-services">
-<h3>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h3>
-<p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
+<h3>Stop the Services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h3>
+<p>Navigate to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> directory for this hardware platform.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon
+</pre></div>
+</div>
+<p>To stop and remove all the containers, use the commands below:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-4">
+vllm</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
 </pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-5">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -2942,8 +2861,8 @@ You can also check overall logs with the following command, where the
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../CodeTrans_Guide.html" class="btn btn-neutral float-left" title="Code Translations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gaudi.html" class="btn btn-neutral float-right" title="# Single node on-prem deployment with TGI on Gaudi AI Accelerator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../CodeTrans_Guide.html" class="btn btn-neutral float-left" title="Code Translation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gaudi.html" class="btn btn-neutral float-right" title="Single node on-prem deployment on Gaudi AI Accelerator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
