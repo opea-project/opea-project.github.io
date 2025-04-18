@@ -237,13 +237,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html">OpenTelemetry on OPEA Guide</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#how-it-works">How It Works</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#deployment">Deployment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/ChatQnA.html">OpenTelemetry on ChatQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/ChatQnA.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/AgentQnA.html">OpenTelemetry on AgentQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/AgentQnA.html#table-of-contents">Table of contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#how-to-monitor">How to Monitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#prometheus">1. Prometheus</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#grafana">2. Grafana</a></li>
@@ -251,6 +244,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#code-instrumentations-for-opea-tracing">Code Instrumentations for OPEA Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html#opentelemetry-on-genaiexamples">OpenTelemetry on GenAIExamples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/ChatQnA.html">ChatQnA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial/OpenTelemetry/deploy/AgentQnA.html">AgentQnA</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2553,9 +2551,11 @@
 <section id="install-the-chart">
 <h2>Install the chart<a class="headerlink" href="#install-the-chart" title="Link to this heading">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/</span>
-<span class="go">helm install gpt-sovits gpt-sovits</span>
+<span class="go">export MODELDIR=/mnt/opea-models</span>
+<span class="go">helm install gpt-sovits gpt-sovits --set global.modelUseHostPath=${MODELDIR}</span>
 </pre></div>
 </div>
+<p>The gpt-sovits service will download model <code class="docutils literal notranslate"><span class="pre">lj1995/GPT-SoVITS</span></code> which is about 2.8GB.</p>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
@@ -2602,10 +2602,15 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;9880&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>TTS_ENDPOINT</p></td>
+<tr class="row-even"><td><p>global.HUGGINGFACEHUB_API_TOKEN</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">insert-your-huggingface-token-here</span></code></p></td>
+<td><p>Hugging Face API token</p></td>
+</tr>
+<tr class="row-odd"><td><p>global.modelUseHostPath</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
-<td><p></p></td>
+<td><p>Cached models directory, service will not download if the model is cached here. The host path “modelUseHostPath” will be mounted to the container and the downloaded model will be saved to directory <code class="docutils literal notranslate"><span class="pre">lj1995/GPT-SoVITS</span></code>. Set this to null/empty will force it to download model.</p></td>
 </tr>
 </tbody>
 </table>

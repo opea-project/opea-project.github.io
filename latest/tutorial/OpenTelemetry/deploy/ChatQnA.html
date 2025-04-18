@@ -237,13 +237,6 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html">OpenTelemetry on OPEA Guide</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#how-it-works">How It Works</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#deployment">Deployment</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">OpenTelemetry on ChatQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#table-of-contents">Table of contents</a></li>
-<li class="toctree-l4"><a class="reference internal" href="AgentQnA.html">OpenTelemetry on AgentQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="AgentQnA.html#table-of-contents">Table of contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3 current"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#how-to-monitor">How to Monitor</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#prometheus">1. Prometheus</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#grafana">2. Grafana</a></li>
@@ -251,6 +244,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#code-instrumentations-for-opea-tracing">Code Instrumentations for OPEA Tracing</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../OpenTelemetry_OPEA_Guide.html#opentelemetry-on-genaiexamples">OpenTelemetry on GenAIExamples</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ChatQnA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AgentQnA.html">AgentQnA</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2551,72 +2549,72 @@
              
   <section id="opentelemetry-on-chatqna-application">
 <h1>OpenTelemetry on ChatQnA Application<a class="headerlink" href="#opentelemetry-on-chatqna-application" title="Link to this heading">¶</a></h1>
-<p>Each microservice in ChatQnA is instrumented with opea_telemetry, enabling Jaeger to provide a detailed time breakdown across microservices for each request.<br />
-Additionally, ChatQnA features a pre-defined Grafana dashboard for its megaservice, alongside a vLLM Grafana dashboard.<br />
+<p>Each microservice in ChatQnA is instrumented with opea_telemetry, enabling Jaeger to provide a detailed time breakdown across microservices for each request.
+Additionally, ChatQnA features a pre-defined Grafana dashboard for its megaservice, alongside a vLLM Grafana dashboard.
 A dashboard for monitoring CPU statistics is also available, offering comprehensive insights into system performance and resource utilization.</p>
-</section>
 <section id="table-of-contents">
-<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h1>
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#telemetry-tracing-with-jaeger-on-gaudi"><span class="xref myst">Telemetry Tracing with Jaeger on Gaudi</span></a></p></li>
 <li><p><a class="reference internal" href="#telemetry-metrics-with-grafana-on-gaudi"><span class="xref myst">Telemetry Metrics with Grafana on Gaudi</span></a></p></li>
 </ol>
+</section>
 <section id="telemetry-tracing-with-jaeger-on-gaudi">
 <h2>Telemetry Tracing with Jaeger on Gaudi<a class="headerlink" href="#telemetry-tracing-with-jaeger-on-gaudi" title="Link to this heading">¶</a></h2>
-<p>After ChatQnA processes a question, two traces should appear along the timeline.<br />
+<p>After ChatQnA processes a question, two traces should appear along the timeline.
 The trace for opea: ServiceOrchestrator.schedule runs on the CPU and includes seven spans, one of which represents the LLM service running on CPU.
-For LLM functions executed on Gaudi, stream requests are displayed under opea: llm_generate_stream.<br />
+For LLM functions executed on Gaudi, stream requests are displayed under opea: llm_generate_stream.
 This trace contains two spans: one for the first token and another for all subsequent tokens.</p>
 <p><img alt="chatqna_1req" src="../../../_images/jaeger_ui_opea_chatqna_1req.png" /></p>
 <p>The first trace along the timeline is opea: ServiceOrchestrator.schedule, which runs on the CPU.</p>
 <p>It provides insights into the orchestration and scheduling of services within the ChatQnA megaservice, highlighting the execution flow during the process.</p>
 <p><img alt="chatqna_cpu_req" src="../../../_images/jaeger_ui_opea_chatqna_req_cpu.png" /></p>
-<p>Clicking on the opea: ServiceOrchestrator.schedule trace will expand to reveal seven spans along the timeline.<br />
-The first span represents the main schedule function, which has minimal self-execution time, indicated in black.<br />
-The second span corresponds to the embedding microservice execution time, taking 33.72 ms as shown in the diagram.<br />
-Following the embedding is the retriever span, which took only 3.13 ms.<br />
-The last span captures the LLM functions on the CPU, with an execution time of 41.99 ms.<br />
+<p>Clicking on the opea: ServiceOrchestrator.schedule trace will expand to reveal seven spans along the timeline.
+The first span represents the main schedule function, which has minimal self-execution time, indicated in black.
+The second span corresponds to the embedding microservice execution time, taking 33.72 ms as shown in the diagram.
+Following the embedding is the retriever span, which took only 3.13 ms.
+The last span captures the LLM functions on the CPU, with an execution time of 41.99 ms.
 These spans provide a detailed breakdown of the execution flow and timing for each component within the service orchestration.</p>
 <p><img alt="chatqna_cpu_breakdown" src="../../../_images/jaeger_ui_opea_chatqna_cpu_breakdown.png" /></p>
-<p>The second trace following the schedule trace is opea: llm_generate_stream, which operates on Gaudi, as depicted in the diagram.<br />
-This trace provides insights into the execution of LLM functions on Gaudi,<br />
+<p>The second trace following the schedule trace is opea: llm_generate_stream, which operates on Gaudi, as depicted in the diagram.
+This trace provides insights into the execution of LLM functions on Gaudi,
 highlighting the processing of stream requests and the associated spans for token generation.</p>
 <p><img alt="chatqna_gaudi_req" src="../../../_images/jaeger_ui_opea_chatqna_req_gaudi.png" /></p>
-<p>Clicking on the opea: llm_generate_stream trace will expand to reveal two spans along the timeline.<br />
-The first span represents the execution time for the first token, which took 15.12 ms in this run.<br />
+<p>Clicking on the opea: llm_generate_stream trace will expand to reveal two spans along the timeline.
+The first span represents the execution time for the first token, which took 15.12 ms in this run.
 The second span captures the execution time for all subsequent tokens, taking 920 ms as shown in the diagram.</p>
 <p><img alt="chatqna_gaudi_breakdown" src="../../../_images/jaeger_ui_opea_chatqna_req_breakdown_2.png" /></p>
-<p>Overall, the traces on the CPU consist of seven spans and are represented as larger circles.<br />
-In contrast, the traces on Gaudi have two spans and are depicted as smaller circles.<br />
-The diagrams below illustrate a run with 16 user requests, resulting in a total of 32 traces.<br />
-In this scenario, the larger circles, representing CPU traces, took less time than the smaller circles,<br />
+<p>Overall, the traces on the CPU consist of seven spans and are represented as larger circles.
+In contrast, the traces on Gaudi have two spans and are depicted as smaller circles.
+The diagrams below illustrate a run with 16 user requests, resulting in a total of 32 traces.
+In this scenario, the larger circles, representing CPU traces, took less time than the smaller circles,
 indicating that the requests required more processing time on Gaudi compared to the CPU.</p>
 <p><img alt="chatqna_gaudi_16reqs" src="../../../_images/chatqna_16reqs.png" />.</p>
 </section>
 <section id="telemetry-metrics-with-grafana-on-gaudi">
 <h2>Telemetry Metrics with Grafana on Gaudi<a class="headerlink" href="#telemetry-metrics-with-grafana-on-gaudi" title="Link to this heading">¶</a></h2>
-<p>The ChatQnA application offers several useful dashboards that provide valuable insights into its performance and operations.<br />
-These dashboards are designed to help monitor various aspects of the application, such as service execution times, resource utilization, and system health,<br />
+<p>The ChatQnA application offers several useful dashboards that provide valuable insights into its performance and operations.
+These dashboards are designed to help monitor various aspects of the application, such as service execution times, resource utilization, and system health,
 enabling users to effectively manage and optimize the application.</p>
 <section id="chatqna-megaservice-dashboard">
 <h3>ChatQnA MegaService Dashboard<a class="headerlink" href="#chatqna-megaservice-dashboard" title="Link to this heading">¶</a></h3>
-<p>This dashboard provides metrics for services within the ChatQnA megaservice.<br />
-The chatqna-backend-server service, which functions as the megaservice,<br />
-is highlighted with its average response time displayed across multiple runs.<br />
-Additionally, the dashboard presents CPU and memory usage statistics for the megaservice,<br />
+<p>This dashboard provides metrics for services within the ChatQnA megaservice.
+The chatqna-backend-server service, which functions as the megaservice,
+is highlighted with its average response time displayed across multiple runs.
+Additionally, the dashboard presents CPU and memory usage statistics for the megaservice,
 offering a comprehensive view of its performance and resource consumption.</p>
 <p><img alt="chatqna_1req" src="../../../_images/Grafana_chatqna_backend_server_1.png" /></p>
-<p>The dashboard can also display metrics for the dataprep-redis-service and the retriever service.<br />
-These metrics provide insights into the performance and resource utilization of these services,<br />
+<p>The dashboard can also display metrics for the dataprep-redis-service and the retriever service.
+These metrics provide insights into the performance and resource utilization of these services,
 allowing for a more comprehensive understanding of the ChatQnA application’s overall operation.</p>
 <p><img alt="chatqna_1req" src="../../../_images/Grafana_chatqna_dataprep.png" /></p>
 <p><img alt="chatqna_1req" src="../../../_images/Grafana_chatqna_retriever.png" /></p>
 </section>
 <section id="llm-dashboard">
 <h3>LLM Dashboard<a class="headerlink" href="#llm-dashboard" title="Link to this heading">¶</a></h3>
-<p>This dashboard presents metrics for the LLM service, including key performance indicators such as request latency, time per output token latency,<br />
-and time to first token latency, among others.<br />
-These metrics offer valuable insights into the efficiency and responsiveness of the LLM service,<br />
+<p>This dashboard presents metrics for the LLM service, including key performance indicators such as request latency, time per output token latency,
+and time to first token latency, among others.
+These metrics offer valuable insights into the efficiency and responsiveness of the LLM service,
 helping to identify areas for optimization and ensuring smooth operation.</p>
 <p><img alt="chatqna_1req" src="../../../_images/Grafana_vLLM.png" /></p>
 <p>The dashboard also displays metrics for request prompt length and output length.</p>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Single node on-prem deployment with TGI on Intel® Xeon® Scalable processor &mdash; OPEA™ 1.2 documentation</title>
+  <title>Single node on-prem deployment on Intel® Xeon® Scalable processor &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,7 +28,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Single node on-prem deployment with TGI on Gaudi AI Accelerator" href="gaudi.html" />
+    <link rel="next" title="Single node on-prem deployment on Gaudi AI Accelerator" href="gaudi.html" />
     <link rel="prev" title="DocSum" href="../DocSum_Guide.html" /> 
 </head>
 
@@ -237,13 +237,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html">OpenTelemetry on OPEA Guide</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#how-it-works">How It Works</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#deployment">Deployment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/ChatQnA.html">OpenTelemetry on ChatQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/ChatQnA.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/AgentQnA.html">OpenTelemetry on AgentQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/AgentQnA.html#table-of-contents">Table of contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#how-to-monitor">How to Monitor</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#prometheus">1. Prometheus</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#grafana">2. Grafana</a></li>
@@ -251,6 +244,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#code-instrumentations-for-opea-tracing">Code Instrumentations for OPEA Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../OpenTelemetry/OpenTelemetry_OPEA_Guide.html#opentelemetry-on-genaiexamples">OpenTelemetry on GenAIExamples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/ChatQnA.html">ChatQnA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../OpenTelemetry/deploy/AgentQnA.html">AgentQnA</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2529,7 +2527,7 @@
   
      <li><a href="../DocSum_Guide.html">DocSum</a> &raquo;</li>
   
-  <li>Single node on-prem deployment with TGI on Intel® Xeon® Scalable processor</li>
+  <li>Single node on-prem deployment on Intel® Xeon® Scalable processor</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/tutorial/DocSum/deploy/xeon.md.txt" rel="nofollow"> View page source</a>
@@ -2549,155 +2547,54 @@
   
            <div itemprop="articleBody">
              
-  <section id="single-node-on-prem-deployment-with-tgi-on-intel-xeon-scalable-processor">
-<h1>Single node on-prem deployment with TGI on Intel® Xeon® Scalable processor<a class="headerlink" href="#single-node-on-prem-deployment-with-tgi-on-intel-xeon-scalable-processor" title="Link to this heading">¶</a></h1>
-<p>This deployment section covers single-node on-prem deployment of the DocSum
-example with OPEA comps to deploy using the TGI service. We will be showcasing how
-to build an e2e DocSum solution with the Intel/neural-chat-7b-v3-3 model, deployed on
-Intel® Xeon® Scalable processors. To quickly learn about OPEA in just 5 minutes and set
-up the required hardware and software, please follow the instructions in the
-<a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a>
-section.</p>
+  <section id="single-node-on-prem-deployment-on-intel-xeon-scalable-processor">
+<h1>Single node on-prem deployment on Intel® Xeon® Scalable processor<a class="headerlink" href="#single-node-on-prem-deployment-on-intel-xeon-scalable-processor" title="Link to this heading">¶</a></h1>
+<p>This section covers the single-node on-prem deployment of the DocSum example. It will show how to build a document summarization service using the <code class="docutils literal notranslate"><span class="pre">Intel/neural-chat-7b-v3-3</span></code> model deployed on Intel® Xeon® Scalable processors. To quickly learn about OPEA and set up the required hardware and software, follow the instructions in the <a class="reference internal" href="../../../getting-started/README.html"><span class="std std-doc">Getting Started</span></a> section.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>The DocSum use case uses  LLM and ASR microservices. In this tutorial, we
-will walk through the steps on how to enable it from OPEA GenAIComps to deploy on
-a single node.</p>
-<p>The solution is aimed to show how to use the Intel/neural-chat-7b-v3-3 model on the
-Intel® Xeon® Scalable processors. We will go through how to set up docker containers to start
-the microservice and megaservice. The solution will then take a document(.txt,.doc,.pdf), audio or
-video file as the input and generate a summary. It is deployed with a UI with 3 modes to
-choose from:</p>
+<p>The OPEA GenAIComps microservices used to deploy a single node vLLM or TGI megaservice solution for DocSum are listed below:</p>
 <ol class="arabic simple">
-<li><p>Gradio-Based UI</p></li>
-<li><p>Svelte-Based UI</p></li>
-<li><p>React-Based UI</p></li>
+<li><p>ASR</p></li>
+<li><p>LLM with vLLM or TGI</p></li>
 </ol>
-<p>If you need to work with multimedia documents, .doc, or .pdf files, it is suggested that you use Gradio UI.</p>
-<p>Below is the list of content we will be covering in this tutorial:</p>
-<ol class="arabic simple">
-<li><p>Prerequisites</p></li>
-<li><p>Prepare (Building / Pulling) Docker images</p></li>
-<li><p>Use case setup</p></li>
-<li><p>Deploy the use case</p></li>
-<li><p>Interacting with DocSum deployment</p></li>
-</ol>
+<p>This solution is designed to demonstrate the use of the <code class="docutils literal notranslate"><span class="pre">Intel/neural-chat-7b-v3-3</span></code> model on the Intel® Xeon® Scalable processors to take a document (.txt,.doc,.pdf), audio, or video file as the input and generate a summary. The steps will involve setting up Docker containers, uploading documents, and generating summaries. Although multiple versionf of the UI can be deployed, this tutorial will focus solely on the Gradio UI because it can handle multimedia docuemnts, .doc, and .pdf files.</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
-<p>The first step is to clone the GenAIExamples and GenAIComps projects. GenAIComps are
-fundamental necessary components used to build the examples you find in
-GenAIExamples and deploy them as microservices. Set an environment
-variable for the desired release version with the <strong>number only</strong>
-(i.e. 1.0, 1.1, etc) and checkout using the tag with that version.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set workspace and navigate into it</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;path&gt;
+<p>To run the UI on a web browser external to the host machine such as a laptop, the following port(s) need to be port forwarded when using SSH to log in to the host machine:</p>
+<ul class="simple">
+<li><p>8888: DocSum megaservice port</p></li>
+</ul>
+<p>This port is used for <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> defined in the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for this example inside the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> folder. Specifically, for DocSum, append the following to the ssh command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="w"> </span><span class="m">8888</span>:localhost:8888
+</pre></div>
+</div>
+<p>Set up a workspace and clone the <a class="reference external" href="https://github.com/opea-project/GenAIExamples">GenAIExamples</a> GitHub repo.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WORKSPACE</span><span class="o">=</span>&lt;Path&gt;
 <span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>
-
-<span class="c1"># Set desired release version - number only</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;insert-release-version&gt;
-
-<span class="c1"># GenAIComps</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
-<span class="nb">cd</span><span class="w"> </span>..
-
-<span class="c1"># GenAIExamples</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="c1"># GenAIExamples</span>
+</pre></div>
+</div>
+<p><strong>Optional</strong> It is recommended to use a stable release version by setting <code class="docutils literal notranslate"><span class="pre">RELEASE_VERSION</span></code> to a <strong>number only</strong> (i.e. 1.0, 1.1, etc) and checkout that version using the tag. Otherwise, by default, the main branch with the latest updates will be used.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RELEASE_VERSION</span><span class="o">=</span>&lt;Release_Version&gt;<span class="w"> </span><span class="c1"># Set desired release version - number only</span>
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples
 git<span class="w"> </span>checkout<span class="w"> </span>tags/v<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span>
 <span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
-<p>The example requires you to set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> to deploy the microservices on the endpoint enabled with ports. Set the host_ip env variable.</p>
+<p>Set up a <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and generate a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>. The <a class="reference external" href="https://huggingface.co/Intel/neural-chat-7b-v3-3">Intel/neural-chat-7b-v3-3</a> model does not need special access, but the token can be used with other models requiring access.</p>
+<p>Set the <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code> environment variable to the value of the Hugging Face token by executing the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+</pre></div>
+</div>
+<p>Set the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable to deploy the microservices on the endpoints enabled with ports:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 </pre></div>
 </div>
-<p>Make sure to set up Proxies if you are behind a firewall.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="nv">$host_ip</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-</pre></div>
-</div>
-</section>
-<section id="prepare-building-pulling-docker-images">
-<h2>Prepare (Building / Pulling) Docker images<a class="headerlink" href="#prepare-building-pulling-docker-images" title="Link to this heading">¶</a></h2>
-<p>This step will involve building/pulling relevant docker
-images with a step-by-step process along with a sanity check at the end. For
-DocSum, the following docker images will be needed: llm-docsum and whisper.
-Additionally, you will need to build docker images for the
-DocSum megaservice, and UI (Svelte/React UI is optional). In total,
-there are <strong>4 required docker images</strong> and two optional docker images.</p>
-<section id="build-pull-microservice-image">
-<h3>Build/Pull Microservice image<a class="headerlink" href="#build-pull-microservice-image" title="Link to this heading">¶</a></h3>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Pull" for="sd-tab-item-0">
-Pull</label><div class="sd-tab-content docutils">
-<p>If you decide to pull the docker containers and not build them locally,
-you can proceed to the next step where all the necessary containers will
-be pulled in from the docker hub.</p>
-</div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Build" for="sd-tab-item-1">
-Build</label><div class="sd-tab-content docutils">
-<p>Follow the steps below to build the docker images from within the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> folder.
-<strong>Note:</strong> For RELEASE_VERSIONS older than 1.0, you will need to add a ‘v’ in front
-of ${RELEASE_VERSION} to reference the correct image on dockerhub.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIComps
-</pre></div>
-</div>
-<h4 class="rubric" id="build-whisper-service">Build Whisper Service</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/asr/src/integrations/dependency/whisper/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="build-mega-service-images">Build Mega Service images</h3>
-<p>The Megaservice is a pipeline that channels data through different
-microservices, each performing varied tasks. The LLM, whisper microservice, and flow of data are defined in the <code class="docutils literal notranslate"><span class="pre">docsum.py</span></code> file. You can also add or
-remove microservices and customize the megaservice to suit your needs.</p>
-<p>Build the megaservice image for this use case.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="build-the-ui-image">Build the UI Image</h3>
-<p>You can build 3 modes of UI</p>
-<p><em>Gradio UI</em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-gradio-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.gradio<span class="w"> </span>.
-</pre></div>
-</div>
-<p><em>Svelte UI (Optional)</em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/ui
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p><em>React UI (Optional)</em>
-If you want a React-based frontend.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/docsum&quot;</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/docsum-react-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="nv">$BACKEND_SERVICE_ENDPOINT</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w">  </span>-f<span class="w"> </span>./docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-<h3 class="rubric" id="sanity-check">Sanity Check</h3>
-<p>Check if you have the following set of docker images by running the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code> before moving on to the next step.
-The tags are based on what you set the environment variable <code class="docutils literal notranslate"><span class="pre">RELEASE_VERSION</span></code> to.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:${RELEASE_VERSION}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum:${RELEASE_VERSION}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-gradio-ui:${RELEASE_VERSION}</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-ui:${RELEASE_VERSION}</span></code> (optional)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/docsum-react-ui:${RELEASE_VERSION}</span></code> (optional)</p></li>
-</ul>
-</div>
-</div>
-</section>
 </section>
 <section id="use-case-setup">
 <h2>Use Case Setup<a class="headerlink" href="#use-case-setup" title="Link to this heading">¶</a></h2>
-<p>The use case will use the following combination of GenAIComps and tools.</p>
+<p>DocSum will utilize the following GenAIComps services and associated tools. The tools and models listed in the table can be configured via environment variables in either the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script or the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Use Case Components</p></th>
@@ -2708,7 +2605,7 @@ The tags are based on what you set the environment variable <code class="docutil
 </thead>
 <tbody>
 <tr class="row-even"><td><p>LLM</p></td>
-<td><p>TGI</p></td>
+<td><p>vLLM or TGI</p></td>
 <td><p>Intel/neural-chat-7b-v3-3</p></td>
 <td><p>OPEA Microservice</p></td>
 </tr>
@@ -2724,15 +2621,8 @@ The tags are based on what you set the environment variable <code class="docutil
 </tr>
 </tbody>
 </table>
-<p>Tools and models mentioned in the table are configurable either through the
-environment variables or the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
-<p>Set the necessary environment variables to set up the use case by running the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.
-Here is where the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is set, and you can change it to another model
-by specifying the HuggingFace model card ID.</p>
-<p><strong>Note:</strong> If you wish to run the UI on a web browser on your laptop, you will need to modify <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> or <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> inside <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for the backend to properly receive data from the UI. Additionally, you will need to port-forward the port used for <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code>. Specifically, for DocSum, append the following to your ssh command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="w"> </span><span class="m">8888</span>:localhost:8888
-</pre></div>
-</div>
+<p>Set the necessary environment variables to set up the use case. To swap out models, modify <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> before running it. For example, the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> can be changed to another model by specifying the HuggingFace model card ID.</p>
+<p>To run the UI on a web browser on a laptop, modify <code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code> to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> or <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> inside <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for the backend to properly receive data from the UI.</p>
 <p>Run the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/docker_compose
 <span class="nb">source</span><span class="w"> </span>./set_env.sh
@@ -2741,20 +2631,30 @@ by specifying the HuggingFace model card ID.</p>
 </section>
 <section id="deploy-the-use-case">
 <h2>Deploy the Use Case<a class="headerlink" href="#deploy-the-use-case" title="Link to this heading">¶</a></h2>
-<p>In this tutorial, we will be deploying via docker compose with the provided
-YAML file.  The docker compose instructions should start all the
-above-mentioned services as containers.</p>
+<p>Navigate to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> directory for this hardware platform.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<section id="checks-to-ensure-the-services-are-running">
-<h3>Checks to Ensure the Services are Running<a class="headerlink" href="#checks-to-ensure-the-services-are-running" title="Link to this heading">¶</a></h3>
-<section id="check-startup-and-env-variables">
-<h4>Check Startup and Env Variables<a class="headerlink" href="#check-startup-and-env-variables" title="Link to this heading">¶</a></h4>
-<p>Check the startup log by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">logs</span></code> to ensure there are no errors.
-The warning messages print out the variables if they are <strong>NOT</strong> set.</p>
-<p>Here are some sample messages if proxy environment variables are not set:</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> with the provided YAML file to start all the services mentioned above as containers. The vLLM or TGI service can be used for DocSum.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-0">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-1">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</div>
+</div>
+<section id="check-env-variables">
+<h3>Check Env Variables<a class="headerlink" href="#check-env-variables" title="Link to this heading">¶</a></h3>
+<p>After running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code>, check for warning messages for environment variables that are <strong>NOT</strong> set. Address them if needed.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>WARN[0000] The &quot;no_proxy&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;https_proxy&quot; variable is not set. Defaulting to a blank string.
 WARN[0000] The &quot;http_proxy&quot; variable is not set. Defaulting to a blank string.
@@ -2769,39 +2669,63 @@ WARN[0000] The &quot;http_proxy&quot; variable is not set. Defaulting to a blank
 WARN[0000] The &quot;https_proxy&quot; variable is not set. Defaulting to a blank string.
 </pre></div>
 </div>
-</section>
-<section id="check-the-container-status">
-<h4>Check the Container Status<a class="headerlink" href="#check-the-container-status" title="Link to this heading">¶</a></h4>
-<p>Check if all the containers launched via docker compose have started.</p>
-<p>The DocSum example starts 4 docker containers. Check that these docker
-containers are all running, i.e., all the containers  <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> are  <code class="docutils literal notranslate"><span class="pre">Up</span></code>.
-You can do this with the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                           </span>COMMAND<span class="w">                  </span>CREATED<span class="w">             </span>STATUS<span class="w">                       </span>PORTS<span class="w">                                       </span>NAMES
-8ec82528bcbb<span class="w">   </span>opea/docsum-gradio-ui:latest<span class="w">                                    </span><span class="s2">&quot;python docsum_ui_gr…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">   </span>docsum-xeon-ui-server
-e22344ed80d5<span class="w">   </span>opea/docsum:latest<span class="w">                                              </span><span class="s2">&quot;python docsum.py&quot;</span><span class="w">       </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">   </span>docsum-xeon-backend-server
-bbb3c05a2878<span class="w">   </span>opea/llm-docsum:latest<span class="w">                                          </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">   </span>llm-docsum-server
-d20a8896d2a0<span class="w">   </span>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu<span class="w">   </span><span class="s2">&quot;text-generation-lau…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8008-&gt;80/tcp,<span class="w"> </span>:::8008-&gt;80/tcp<span class="w">       </span>tgi-server
-8213029b6b26<span class="w">   </span>opea/whisper:latest<span class="w">                                             </span><span class="s2">&quot;python whisper_serv…&quot;</span><span class="w">   </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>an<span class="w"> </span>hour<span class="w">             </span><span class="m">0</span>.0.0.0:7066-&gt;7066/tcp,<span class="w"> </span>:::7066-&gt;7066/tcp<span class="w">   </span>whisper-server
+<p>Check if all the containers launched via <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> are running i.e. each container’s <code class="docutils literal notranslate"><span class="pre">STATUS</span></code> is <code class="docutils literal notranslate"><span class="pre">Up</span></code> and <code class="docutils literal notranslate"><span class="pre">Healthy</span></code>.</p>
+<p>Run this command to see this info:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>-a
+</pre></div>
+</div>
+<p>Sample output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                          </span>COMMAND<span class="w">                  </span>CREATED<span class="w">         </span>STATUS<span class="w">                   </span>PORTS<span class="w">                                         </span>NAMES
+d02da5001212<span class="w">   </span>opea/docsum-gradio-ui:latest<span class="w">   </span><span class="s2">&quot;python docsum_ui_gr…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">19</span><span class="w"> </span>seconds<span class="w">            </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:5173-&gt;5173/tcp<span class="w">   </span>docsum-xeon-ui-server
+43de0d8ee9dd<span class="w">   </span>opea/docsum:latest<span class="w">             </span><span class="s2">&quot;python docsum.py&quot;</span><span class="w">       </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">19</span><span class="w"> </span>seconds<span class="w">            </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8888-&gt;8888/tcp<span class="w">   </span>docsum-xeon-backend-server
+81f0e8d27f1f<span class="w">   </span>opea/llm-docsum:latest<span class="w">         </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">20</span><span class="w"> </span>seconds<span class="w">            </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:9000-&gt;9000/tcp<span class="w">   </span>docsum-xeon-llm-server
+a4a9501fc4df<span class="w">   </span>opea/whisper:latest<span class="w">            </span><span class="s2">&quot;python whisper_serv…&quot;</span><span class="w">   </span><span class="m">3</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:7066-&gt;7066/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:7066-&gt;7066/tcp<span class="w">   </span>docsum-xeon-whisper-server
+951abf0ebb5a<span class="w">   </span>opea/vllm:latest<span class="w">               </span><span class="s2">&quot;python3 -m vllm.ent…&quot;</span><span class="w">   </span><span class="m">3</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8008-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8008-&gt;80/tcp<span class="w">       </span>docsum-xeon-vllm-service
+</pre></div>
+</div>
+<p>Each docker container’s log can also be checked using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>&lt;CONTAINER_ID<span class="w"> </span>OR<span class="w"> </span>CONTAINER_NAME&gt;
 </pre></div>
 </div>
 </section>
 </section>
-</section>
-<section id="interacting-with-docsum-for-deployment">
-<h2>Interacting with DocSum for Deployment<a class="headerlink" href="#interacting-with-docsum-for-deployment" title="Link to this heading">¶</a></h2>
-<p>This section will walk you through the different ways to interact with
-the microservices deployed. After a couple of minutes, rerun <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code>
-to ensure all the docker containers are still up and running. Then proceed
-to validate each microservice and megaservice.</p>
-<section id="tgi-service">
-<h3>TGI Service<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<section id="validate-microservices">
+<h2>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
+<p>This section will guide through the various methods for interacting with the deployed microservices.</p>
+<section id="vllm-or-tgi-service">
+<h3>vLLM or TGI Service<a class="headerlink" href="#vllm-or-tgi-service" title="Link to this heading">¶</a></h3>
+<p>During the initial startup, this service will take a few minutes to download the model files and complete the warm-up process. Once this is finished, the service will be ready for use.</p>
+<p>Try the command below to check whether the LLM service is ready. It uses the name of the image to check the status.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-2">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>docsum-xeon-vllm-service<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nb">complete</span>
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
 </pre></div>
 </div>
-<p>Here is the output:</p>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-3">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># TGI service</span>
+docker<span class="w"> </span>logs<span class="w"> </span>docsum-xeon-tgi-server<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Connected
+<span class="c1"># If the service is ready, you will get the response like below.</span>
+<span class="m">2024</span>-09-03T02:47:53.402023Z<span class="w">  </span>INFO<span class="w"> </span>text_generation_router::server:<span class="w"> </span>router/src/server.rs:2311:<span class="w"> </span>Connected
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then try the <code class="docutils literal notranslate"><span class="pre">cURL</span></code> command to verify the vLLM or TGI service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p>Sample output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;generated_text&quot;</span>:<span class="s2">&quot;\nDeep learning is a sub-discipline of machine learning. Machine learning is&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
@@ -2809,214 +2733,244 @@ to validate each microservice and megaservice.</p>
 <section id="llm-microservice">
 <h3>LLM Microservice<a class="headerlink" href="#llm-microservice" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE, and E5.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
 <p>The output is the summary of the input given to this microservice.</p>
 </section>
 <section id="whisper-microservice">
 <h3>Whisper Microservice<a class="headerlink" href="#whisper-microservice" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;:&quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;:&quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-<p>Here is the output:</p>
+<p>Expected output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="o">{</span><span class="s2">&quot;asr_result&quot;</span>:<span class="s2">&quot;you&quot;</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
-<section id="megaservice">
-<h3>MegaService<a class="headerlink" href="#megaservice" title="Link to this heading">¶</a></h3>
-<p>You can upload documents (.txt, .doc, .pdf), audio, and video to get a summary of the content.</p>
+<section id="docsum-megaservice">
+<h3>DocSum Megaservice<a class="headerlink" href="#docsum-megaservice" title="Link to this heading">¶</a></h3>
+<p>Documents (.txt, .doc, .pdf), audio, and video can be uploaded to get a summary of the content. For each type of document, there are different input formats.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Text" for="sd-tab-item-2">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Text" for="sd-tab-item-4">
 Text</label><div class="sd-tab-content docutils">
-<p>The megaservice accepts input files in txt, pdf, doc format, or plain text in the message parameter.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open-source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE, and E5.&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+<p>JSON input:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;text&quot;, &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
 </pre></div>
 </div>
-<p>The output will be the summarization of the text content. We can also upload files and modify the other parametes such as the streaming mode and language.</p>
+<p>Form input with English mode (default):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+</pre></div>
+</div>
+<p>Form input with Chinese mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;messages=2024年9月26日，北京——今日，英特尔正式发布英特尔® 至强® 6性能核处理器（代号Granite Rapids），为AI、数据分析、科学计算等计算密集型业务提供卓越性能。&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;language=zh&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+</pre></div>
+</div>
+<p>Uploading a file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Audio" for="sd-tab-item-3">
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Audio" for="sd-tab-item-5">
 Audio</label><div class="sd-tab-content docutils">
-<p>Audio uploads are not supported through curl command, use the UI to upload it. You can pass base64 string of the audio file as follows :</p>
+<p>Audio uploads are not supported through <em>curl</em> commands, so use the UI to upload it. It is possible to pass base64 encoded strings of the audio file:</p>
+<p>JSON input:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;audio&quot;, &quot;messages&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>Form input:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=audio&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;messages=UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=audio&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Video" for="sd-tab-item-4">
+<input id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Video" for="sd-tab-item-6">
 Video</label><div class="sd-tab-content docutils">
-<p>Video uploads are not supported through curl command, use the UI to upload it. You can pass base64 string of the video file as the value for the message parameter as shown here :</p>
+<p>Video uploads are not supported through <em>curl</em> commands, so use the UI to upload it. It is possible to pass base64 strings of the video file as the value for the message parameter:</p>
+<p>JSON input:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;video&quot;, &quot;messages&quot;: &quot;convert your video to base64 data type&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>Form input:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=video&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;messages=convert your video to base64 data type&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=video&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=convert your video to base64 data type&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>When dealing with longer context of the content to be summarized, we can use different summarization strategies such as auto, stuff, truncate, map_reduce, or refine. Depending on various factors like models context size and input tokens we can select the stratergy that best fits.</p>
-<ol class="arabic simple">
-<li><p>Auto : In this mode, we will check input token length, if it exceeds MAX_INPUT_TOKENS, summary_type will automatically be set to refine mode, otherwise will be set to stuff mode.</p></li>
-<li><p>Stuff : In this mode, LLM generates a summary based on a complete input text. In this case please carefully set MAX_INPUT_TOKENS and MAX_TOTAL_TOKENS according to your model and device memory, otherwise, it may exceed LLM context limit and raise an error when meeting long context.</p></li>
-<li><p>Truncate : Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to min(MAX_TOTAL_TOKENS - input.max_tokens - 50, MAX_INPUT_TOKENS).</p></li>
-<li><p>Map_reduce : Map_reduce mode will split the inputs into multiple chunks, map each document to an individual summary, then consolidate those summaries into a single global summary. stream=True is not allowed here. In this mode, default chunk_size is set to be min(MAX_TOTAL_TOKENS - input.max_tokens - 50, MAX_INPUT_TOKENS).</p></li>
-<li><p>Refine : Refine mode will split the inputs into multiple chunks, generate a summary for the first one, then combine it with the second, and loop over every remaining chunk to get the final summary. In this mode, default chunk_size is set to be min(MAX_TOTAL_TOKENS - 2 * input.max_tokens - 128, MAX_INPUT_TOKENS).</p></li>
-</ol>
-<p>We can define the summary_type by providing one of the 5 values discussed above as the value for the summary_type variable as shown below:</p>
+<section id="megaservice-with-long-context">
+<h4>Megaservice with Long Context<a class="headerlink" href="#megaservice-with-long-context" title="Link to this heading">¶</a></h4>
+<p>When performing summarization with long contexts - content longer than the model’s context limit - different summarization strategies can be used such as <em>auto</em>, <em>stuff</em>, <em>truncate</em>, <em>map_reduce</em>, or <em>refine</em>. The best strategy is determined from various factors including model context size limits and number of input tokens.</p>
+<p>The following parameters can be adjusted to work with long context:</p>
+<ul class="simple">
+<li><p>“summary_type”: can be “auto”, “stuff”, “truncate”, “map_reduce”, “refine”, default is “auto”</p></li>
+<li><p>“chunk_size”: max token length for each chunk. Set to be different default value according to “summary_type”.</p></li>
+<li><p>“chunk_overlap”: overlap token length between each chunk, default is 0.1*chunk_size</p></li>
+</ul>
+<p>Select the “summary_type” of interest to see how to run with it.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="auto" for="sd-tab-item-7">
+auto</label><div class="sd-tab-content docutils">
+<p>“summary_type” is set to be “auto” by default, in this mode the input token length is checked. If it exceeds <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code>, <code class="docutils literal notranslate"><span class="pre">summary_type</span></code> will automatically be set to <code class="docutils literal notranslate"><span class="pre">refine</span></code> mode. Otherwise, it will be set to <code class="docutils literal notranslate"><span class="pre">stuff</span></code> mode.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=One of the above 5 types&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=auto&quot;</span>
 </pre></div>
 </div>
+</div>
+<input id="sd-tab-item-8" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="stuff" for="sd-tab-item-8">
+stuff</label><div class="sd-tab-content docutils">
+<p>In this mode the LLM microservice generates a summary based on the entire input text. In this case, set <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code> and <code class="docutils literal notranslate"><span class="pre">MAX_TOTAL_TOKENS</span></code> according to the model and device memory. Otherwise, it may exceed the LLM context limit and raise errors when provided a longer context.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=stuff&quot;</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="truncate" for="sd-tab-item-9">
+truncate</label><div class="sd-tab-content docutils">
+<p>Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=truncate&quot;</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="map_reduce" for="sd-tab-item-10">
+map_reduce</label><div class="sd-tab-content docutils">
+<p>Map_reduce mode will split the inputs into multiple chunks, map each document to an individual summary, and consolidate all summaries into a single global summary. <code class="docutils literal notranslate"><span class="pre">stream=True</span></code> is not allowed here.</p>
+<p>In this mode, <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=map_reduce&quot;</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="refine" for="sd-tab-item-11">
+refine</label><div class="sd-tab-content docutils">
+<p>Refine mode will split the inputs into multiple chunks, generate a summary for the first one, combine it with the second summary, and repeats with all remaining chunks to get the final summary.</p>
+<p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">128,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;summary_type=refine&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 <section id="launch-ui">
 <h2>Launch UI<a class="headerlink" href="#launch-ui" title="Link to this heading">¶</a></h2>
+<p>The Gradio UI is recommended because it can work with multimedia documents, .doc, and .pdf files.</p>
 <section id="gradio-ui">
 <h3>Gradio UI<a class="headerlink" href="#gradio-ui" title="Link to this heading">¶</a></h3>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-ui-server</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-ui:${TAG:-latest}</span>
-<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5173:5173&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="svelte-ui-optional">
-<h3>Svelte UI (Optional)<a class="headerlink" href="#svelte-ui-optional" title="Link to this heading">¶</a></h3>
-<p>To access the Svelte-based frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">docsum-gradio-ui</span></code> service with the <code class="docutils literal notranslate"><span class="pre">docsum-ui</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-ui</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-ui:${TAG:-latest}</span>
-<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-ui-server</span>
-<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-backend-server</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5173:5173&quot;</span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_proxy=${no_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https_proxy=${https_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_proxy=${http_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DOC_BASE_URL=${BACKEND_SERVICE_ENDPOINT}</span>
-<span class="w">    </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
-</pre></div>
-</div>
-</section>
-<section id="react-based-ui-optional">
-<h3>React-Based UI (Optional)<a class="headerlink" href="#react-based-ui-optional" title="Link to this heading">¶</a></h3>
-<p>To access the React-based frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">docsum-gradio-ui</span></code> service with the <code class="docutils literal notranslate"><span class="pre">docsum-react-ui</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-react-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-react-ui:${TAG:-latest}</span>
-<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-react-ui-server</span>
-<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docsum-xeon-backend-server</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no_proxy=${no_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https_proxy=${https_proxy}</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_proxy=${http_proxy}</span>
-<span class="w">    </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
-</pre></div>
-</div>
-<p>Once the services are up, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-xeon-react-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-react-ui:${TAG:-latest}</span>
+<p>To access the frontend, open the following URL in a web browser: http://${host_ip}:5173. By default, the UI runs on port 5173 internally. A different host port can be used to access the frontend by modifying the <code class="docutils literal notranslate"><span class="pre">FRONTEND_SERVICE_PORT</span></code> environment variable. For reference, the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file is shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">docsum-gradio-ui</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${REGISTRY:-opea}/docsum-gradio-ui:${TAG:-latest}</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;${FRONTEND_SERVICE_PORT:-5173}:5173&quot;</span>
 </pre></div>
 </div>
+<p>After making this change, rebuild and restart the containers for the change to take effect.</p>
 </section>
-</section>
-<section id="check-docker-container-logs">
-<h2>Check Docker Container Logs<a class="headerlink" href="#check-docker-container-logs" title="Link to this heading">¶</a></h2>
-<p>You can check the log of a container by running this command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>&lt;CONTAINER<span class="w"> </span>ID&gt;<span class="w"> </span>-t
-</pre></div>
-</div>
-<p>You can also check the overall logs with the following command, where the
-<code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> is the megaservice docker-compose configuration file.</p>
-<p>Assuming you are still in this directory <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon</span></code>,
-run the following command to check the logs:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>logs
-</pre></div>
-</div>
-<p>View the docker input parameters in  <code class="docutils literal notranslate"><span class="pre">$WORKSPACE/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon/compose.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">tgi-server</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</span>
-<span class="w">      </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tgi-server</span>
-<span class="w">      </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${LLM_ENDPOINT_PORT:-8008}:80</span>
-<span class="w">      </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">no_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${no_proxy}</span>
-<span class="w">        </span><span class="nt">http_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${http_proxy}</span>
-<span class="w">        </span><span class="nt">https_proxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${https_proxy}</span>
-<span class="w">        </span><span class="nt">TGI_LLM_ENDPOINT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${TGI_LLM_ENDPOINT}</span>
-<span class="w">        </span><span class="nt">HUGGINGFACEHUB_API_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${HUGGINGFACEHUB_API_TOKEN}</span>
-<span class="w">        </span><span class="nt">host_ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${host_ip}</span>
-<span class="w">        </span><span class="nt">LLM_ENDPOINT_PORT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${LLM_ENDPOINT_PORT}</span>
-<span class="w">      </span><span class="nt">healthcheck</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;CMD-SHELL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;curl</span><span class="nv"> </span><span class="s">-f</span><span class="nv"> </span><span class="s">http://${host_ip}:${LLM_ENDPOINT_PORT}/health</span><span class="nv"> </span><span class="s">||</span><span class="nv"> </span><span class="s">exit</span><span class="nv"> </span><span class="s">1&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">        </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-<span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-<span class="w">        </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="w">      </span><span class="nt">volumes</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./data:/data&quot;</span>
-<span class="w">      </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
-<span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--model-id ${LLM_MODEL_ID} --cuda-graphs 0  --max-input-length ${MAX_INPUT_TOKENS} --max-total-tokens ${MAX_TOTAL_TOKENS}</span>
-</pre></div>
-</div>
-<p>The input <code class="docutils literal notranslate"><span class="pre">--model-id</span></code> is  <code class="docutils literal notranslate"><span class="pre">${LLM_MODEL_ID}</span></code>. Ensure the environment variable <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code>
-is set and spelled correctly. Check spelling. Whenever this is changed, restart the containers to use
-the newly selected model.</p>
 </section>
 <section id="stop-the-services">
-<h2>Stop the services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h2>
-<p>Once you are done with the entire pipeline and wish to stop and remove all the containers, use the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>down
+<h2>Stop the Services<a class="headerlink" href="#stop-the-services" title="Link to this heading">¶</a></h2>
+<p>Navigate to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> directory for this hardware platform.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKSPACE</span>/GenAIExamples/DocSum/docker_compose/intel/cpu/xeon
 </pre></div>
+</div>
+<p>To stop and remove all the containers, use the command below:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="vllm" for="sd-tab-item-12">
+vllm</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-13" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="TGI" for="sd-tab-item-13">
+TGI</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -3027,7 +2981,7 @@ the newly selected model.</p>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../DocSum_Guide.html" class="btn btn-neutral float-left" title="DocSum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gaudi.html" class="btn btn-neutral float-right" title="Single node on-prem deployment with TGI on Gaudi AI Accelerator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gaudi.html" class="btn btn-neutral float-right" title="Single node on-prem deployment on Gaudi AI Accelerator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
