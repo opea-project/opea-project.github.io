@@ -308,8 +308,9 @@
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and Deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README_pinecone.html">Build Mega Service of ChatQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README_faqgen.html">Deploying FAQ Generation on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README_pinecone.html">Deploying ChatQnA with Pinecone on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README_qdrant.html">Deploying ChatQnA with Qdrant on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
@@ -2583,7 +2584,7 @@
 </section>
 <section id="build-megaservice-docker-image">
 <h2>Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h2>
-<p>To construct the Mega Service with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIExamples.git">GenAIExamples</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build MegaService Docker image via below command:</p>
+<p>To construct the MegaService with Rerank, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIExamples.git">GenAIExamples</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">chatqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 git<span class="w"> </span>fetch<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>tags/v1.2
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA
@@ -2593,7 +2594,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 </section>
 <section id="build-basic-ui-docker-image">
 <h2>Build Basic UI Docker Image<a class="headerlink" href="#build-basic-ui-docker-image" title="Link to this heading">¶</a></h2>
-<p>Build frontend Docker image via below command:</p>
+<p>Build the Frontend Docker Image using the command below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/ui
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna-ui:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>./docker/Dockerfile<span class="w"> </span>.
 </pre></div>
@@ -2611,7 +2612,7 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
-<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
+<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate microservices</span></a> first. A simple example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span>-X<span class="w"> </span>POST<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
@@ -2644,7 +2645,7 @@ Users could also get the external IP via below command.</p>
 <img alt="Screenshot from 2024-12-27 11-26-25" src="https://github.com/user-attachments/assets/3a7c51c6-f422-41eb-8e82-c3df52cd48b8" /></p>
 <p>There are also OPEA related tracings. Users could understand the time breakdown of each service request by looking into each opea:schedule operation.
 <img alt="image" src="https://github.com/user-attachments/assets/6137068b-b374-4ff8-b345-993343c0c25f" /></p>
-<p>There could be async function such as <code class="docutils literal notranslate"><span class="pre">llm/MicroService_asyn_generate</span></code> and user needs to check the trace of the async function in another operation like
+<p>There could be asynchronous function such as <code class="docutils literal notranslate"><span class="pre">llm/MicroService_asyn_generate</span></code> and user needs to check the trace of the asynchronous function in another operation like
 opea:llm_generate_stream.
 <img alt="image" src="https://github.com/user-attachments/assets/a973d283-198f-4ce2-a7eb-58515b77503e" /></p>
 </section>

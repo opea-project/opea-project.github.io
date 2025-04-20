@@ -28,7 +28,7 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Build Mega Service of ChatQnA on Xeon" href="README_pinecone.html" />
+    <link rel="next" title="Deploying FAQ Generation on Intel® Xeon® Processors" href="README_faqgen.html" />
     <link rel="prev" title="Build Mega Service of ChatQnA on AIPC" href="../aipc/README.html" /> 
 </head>
 
@@ -308,8 +308,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and Deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="README_pinecone.html">Build Mega Service of ChatQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_faqgen.html">Deploying FAQ Generation on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_pinecone.html">Deploying ChatQnA with Pinecone on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Deploying ChatQnA with Qdrant on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
@@ -2701,7 +2702,7 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 </section>
 <section id="test-the-pipeline">
 <h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
-<p>Once the ChatQnA services are running, test the pipeline using the following command:</p>
+<p>Once the ChatQnA services are running, test the pipeline using the following command. This will send a sample query to the ChatQnA service and return a response.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -2709,7 +2710,7 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 <span class="s1">    }&#39;</span>
 </pre></div>
 </div>
-<p><strong>Note</strong> : Access the ChatQnA UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservie used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate microservicess</span></a> section.</p>
+<p><strong>Note</strong> : Access the ChatQnA UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservice used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate microservices</span></a> section.</p>
 </section>
 <section id="cleanup-the-deployment">
 <h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
@@ -2733,19 +2734,25 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 <td><p>Default compose file using vllm as serving framework and redis as vector database</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_milvus.yaml"><span class="xref myst">compose_milvus.yaml</span></a></p></td>
-<td><p>The vector database utilized is Milvus. All other configurations remain the same as the default</p></td>
+<td><p>Uses Milvus as the vector database. All other configurations remain the same as the default</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#./compose_pinecone.yaml"><span class="xref myst">compose_pinecone.yaml</span></a></p></td>
-<td><p>The vector database utilized is Pinecone. All other configurations remain the same as the default</p></td>
+<td><p>Uses Pinecone as the vector database. All other configurations remain the same as the default. For more details, refer to <a class="reference internal" href="README_pinecone.html"><span class="std std-doc">README_pinecone.md</span></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_qdrant.yaml"><span class="xref myst">compose_qdrant.yaml</span></a></p></td>
-<td><p>The vector database utilized is Qdrant. All other configurations remain the same as the default</p></td>
+<td><p>Uses Qdrant as the vector database. All other configurations remain the same as the default. For more details, refer to <a class="reference internal" href="README_qdrant.html"><span class="std std-doc">README_qdrant.md</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#./compose_tgi.yaml"><span class="xref myst">compose_tgi.yaml</span></a></p></td>
-<td><p>The LLM serving framework is TGI. All other configurations remain the same as the default</p></td>
+<td><p>Uses TGI as the LLM serving framework. All other configurations remain the same as the default</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_without_rerank.yaml"><span class="xref myst">compose_without_rerank.yaml</span></a></p></td>
 <td><p>Default configuration without the reranker</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose_faqgen.yaml"><span class="xref myst">compose_faqgen.yaml</span></a></p></td>
+<td><p>Enables FAQ generation using vLLM as the LLM serving framework. For more details, refer to <a class="reference internal" href="README_faqgen.html"><span class="std std-doc">README_faqgen.md</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose_faqgen_tgi.yaml"><span class="xref myst">compose_faqgen_tgi.yaml</span></a></p></td>
+<td><p>Enables FAQ generation using TGI as the LLM serving framework. For more details, refer to <a class="reference internal" href="README_faqgen.html"><span class="std std-doc">README_faqgen.md</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#./compose.telemetry.yaml"><span class="xref myst">compose.telemetry.yaml</span></a></p></td>
 <td><p>Helper file for telemetry features for vllm. Can be used along with any compose files that serves vllm</p></td>
@@ -2759,7 +2766,7 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 <section id="chatqna-with-conversational-ui-optional">
 <h2>ChatQnA with Conversational UI (Optional)<a class="headerlink" href="#chatqna-with-conversational-ui-optional" title="Link to this heading">¶</a></h2>
 <p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose</span></code> file used to deploy. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chatqna-xeon-conversation-ui-server</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
 <span class="w">  </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-conversation-ui-server</span>
 <span class="w">  </span><span class="nt">environment</span><span class="p">:</span>
@@ -2773,7 +2780,7 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 <span class="w">  </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
 </pre></div>
 </div>
-<p>Once the services are up, open the following URL in the browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If the developer prefers to use a different host port to access the frontend, it can be modiied by port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
+<p>Once the services are up, open the following URL in the browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If the developer prefers to use a different host port to access the frontend, it can be modified by port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">chaqna-gaudi-conversation-ui-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
@@ -2787,23 +2794,25 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                                     
 <p><img alt="project-screenshot" src="../../../../../../_images/conversation_ui_response1.png" /></p>
 <section id="validate-microservices">
 <h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<p>Note, when verify the microservices by curl or API from remote client, please make sure the <strong>ports</strong> of the microservices are opened in the firewall of the cloud node.<br />
+<p>Note, when verifying the microservices by curl or API from remote client, please make sure the <strong>ports</strong> of the microservices are opened in the firewall of the cloud node.<br />
 Follow the instructions to validate MicroServices.
 For details on how to verify the correctness of the response, refer to <a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html"><span class="std std-doc">how-to-validate_service</span></a>.</p>
 <ol class="arabic">
-<li><p>TEI Embedding Service</p>
+<li><p><strong>TEI Embedding Service</strong>
+Send a test request to the TEI Embedding Service to ensure it is running correctly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+<p>If you receive a connection error, ensure that the service is running and the port 6006 is open in the firewall.</p>
 </li>
-<li><p>Retriever Microservice</p>
+<li><p><strong>Retriever Microservice</strong></p>
 <p>To consume the retriever microservice, you need to generate a mock embedding vector by Python script. The length of embedding vector
 is determined by the embedding model.
 Here we use the model <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;</span></code>, which vector size is 768.</p>
-<p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equals to it.</p>
+<p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equal to it.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
@@ -2811,8 +2820,10 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
+<p>If the response indicates an invalid embedding vector, verify that the vector size matches the model’s expected dimension.</p>
 </li>
-<li><p>TEI Reranking Service</p>
+<li><p><strong>TEI Reranking Service</strong></p>
+<p>To test the TEI Reranking Service, use the following <code class="docutils literal notranslate"><span class="pre">curl</span></code> command:</p>
 <blockquote>
 <div><p>Skip for ChatQnA without Rerank pipeline</p>
 </div></blockquote>
@@ -2823,7 +2834,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </li>
-<li><p>LLM backend Service</p>
+<li><p><strong>LLM Backend Service</strong></p>
 <p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.</p>
 <p>Try the command below to check whether the LLM serving is ready.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
@@ -2847,22 +2858,23 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 </li>
-<li><p>MegaService</p>
+<li><p><strong>MegaService</strong></p>
+<p>Use the following <code class="docutils literal notranslate"><span class="pre">curl</span></code> command to test the MegaService:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
 <span class="s1">       }&#39;</span>
 </pre></div>
 </div>
 </li>
-<li><p>Nginx Service</p>
+<li><p><strong>Nginx Service</strong></p>
+<p>Use the following curl command to test the Nginx Service:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/chatqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
 </pre></div>
 </div>
 </li>
-<li><p>Dataprep Microservice（Optional）</p></li>
-</ol>
+<li><p>**Dataprep Microservice(Optional) **</p>
 <p>If you want to update the default knowledge base, you can use the following commands:</p>
 <p>Update Knowledge Base via Local File <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf">nke-10k-2023.pdf</a>. Or
 click <a class="reference external" href="https://raw.githubusercontent.com/opea-project/GenAIComps/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf">here</a> to download the file via any web browser.
@@ -2872,21 +2884,21 @@ Or run this command to get the file on a terminal.</p>
 </div>
 <p>Upload:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by uploading a local file for processing. Update the file path according to your environment.</p>
 <p>Add Knowledge Base via HTTP Links:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
 <p>Also, you are able to get the file list that you uploaded:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 <p>Then you will get the response JSON like this. Notice that the returned <code class="docutils literal notranslate"><span class="pre">name</span></code>/<code class="docutils literal notranslate"><span class="pre">id</span></code> of the uploaded link is <code class="docutils literal notranslate"><span class="pre">https://xxx.txt</span></code>.</p>
@@ -2910,20 +2922,22 @@ Or run this command to get the file on a terminal.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">file_path</span></code> here should be the <code class="docutils literal notranslate"><span class="pre">id</span></code> get from <code class="docutils literal notranslate"><span class="pre">/v1/dataprep/get</span></code> API.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete link</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 
 <span class="c1"># delete file</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 
 <span class="c1"># delete all uploaded files and links</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
+</li>
+</ol>
 </section>
 <section id="profile-microservices">
 <h3>Profile Microservices<a class="headerlink" href="#profile-microservices" title="Link to this heading">¶</a></h3>
@@ -2950,7 +2964,7 @@ or ChatQnA MicroService.</p>
 </section>
 <section id="stop-vllm-profiling">
 <h5>Stop vLLM profiling<a class="headerlink" href="#stop-vllm-profiling" title="Link to this heading">¶</a></h5>
-<p>By following command, users could stop vLLM profliing and generate a *.pt.trace.json.gz file as profiling result<br />
+<p>By following command, users could stop vLLM profiling and generate a *.pt.trace.json.gz file as profiling result<br />
 under /mnt folder in vllm-service docker instance.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM Service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/stop_profile<span class="w"> </span><span class="se">\</span>
@@ -2990,7 +3004,7 @@ to see the vLLM profiling result as below diagram.
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../aipc/README.html" class="btn btn-neutral float-left" title="Build Mega Service of ChatQnA on AIPC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="README_pinecone.html" class="btn btn-neutral float-right" title="Build Mega Service of ChatQnA on Xeon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_faqgen.html" class="btn btn-neutral float-right" title="Deploying FAQ Generation on Intel® Xeon® Processors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

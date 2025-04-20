@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of ChatQnA on Xeon &mdash; OPEA™ 1.2 documentation</title>
+  <title>Deploying ChatQnA with Pinecone on Intel® Xeon® Processors &mdash; OPEA™ 1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,8 +28,8 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Build Mega Service of ChatQnA (with Qdrant) on Xeon" href="README_qdrant.html" />
-    <link rel="prev" title="Deploying ChatQnA on Intel® Xeon® Processors" href="README.html" /> 
+    <link rel="next" title="Deploying ChatQnA with Qdrant on Intel® Xeon® Processors" href="README_qdrant.html" />
+    <link rel="prev" title="Deploying FAQ Generation on Intel® Xeon® Processors" href="README_faqgen.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -308,8 +308,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and Deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README.html">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of ChatQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_faqgen.html">Deploying FAQ Generation on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Deploying ChatQnA with Pinecone on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_qdrant.html">Deploying ChatQnA with Qdrant on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
@@ -2550,7 +2551,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of ChatQnA on Xeon</li>
+  <li>Deploying ChatQnA with Pinecone on Intel® Xeon® Processors</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/README_pinecone.md.txt" rel="nofollow"> View page source</a>
@@ -2570,19 +2571,25 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-chatqna-on-xeon">
-<h1>Build Mega Service of ChatQnA on Xeon<a class="headerlink" href="#build-mega-service-of-chatqna-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
-<p>The default pipeline deploys with vLLM as the LLM serving component and leverages rerank component.</p>
-<p>Quick Start:</p>
+  <section id="deploying-chatqna-with-pinecone-on-intel-xeon-processors">
+<h1>Deploying ChatQnA with Pinecone on Intel® Xeon® Processors<a class="headerlink" href="#deploying-chatqna-with-pinecone-on-intel-xeon-processors" title="Link to this heading">¶</a></h1>
+<p>This document outlines the deployment process for a ChatQnA application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel® Xeon® servers. The pipeline integrates <strong>Pinecone</strong> as the vector database (VectorDB) and includes microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
+<hr class="docutils" />
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Set up the environment variables.</p></li>
-<li><p>Run Docker Compose.</p></li>
-<li><p>Consume the ChatQnA Service.</p></li>
+<li><p><a class="reference internal" href="#quick-start"><span class="xref myst">Quick Start</span></a></p></li>
+<li><p><a class="reference internal" href="#build-docker-images"><span class="xref myst">Build Docker Images</span></a></p></li>
+<li><p><a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-ui"><span class="xref myst">Launch the UI</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-conversational-ui-optional"><span class="xref myst">Launch the Conversational UI (Optional)</span></a></p></li>
 </ol>
-<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">meta-llama/Meta-Llama-3-8B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
-<section id="quick-start-1-setup-environment-variable">
-<h2>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h2>
+</section>
+<hr class="docutils" />
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<section id="set-up-environment-variable">
+<h3>1.Set up Environment Variable<a class="headerlink" href="#set-up-environment-variable" title="Link to this heading">¶</a></h3>
 <p>To set up environment variables for deploying ChatQnA services, follow these steps:</p>
 <ol class="arabic">
 <li><p>Set the required environment variables:</p>
@@ -2597,8 +2604,8 @@
 </li>
 <li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPS_Proxy&quot;</span>
+<span class="c1"># Example: no_proxy=&quot;localhost,127.0.0.1,192.168.1.1&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>,chatqna-xeon-ui-server,chatqna-xeon-backend-server,dataprep-pinecone-service,tei-embedding-service,retriever,tei-reranking-service,tgi-service,vllm-service
 </pre></div>
 </div>
@@ -2610,26 +2617,26 @@
 </li>
 </ol>
 </section>
-<section id="quick-start-2-run-docker-compose">
-<h2>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h2>
+<section id="run-docker-compose">
+<h3>2.Run Docker Compose<a class="headerlink" href="#run-docker-compose" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_pinecone.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>It will automatically download the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
+<p>It will automatically download the Docker image on <code class="docutils literal notranslate"><span class="pre">Docker</span> <span class="pre">hub</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna:latest
 docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
 </pre></div>
 </div>
-<p>NB: You should build docker image from source by yourself if:</p>
+<p>Note: You should build docker image from source by yourself if:</p>
 <ul class="simple">
 <li><p>You are developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
 <li><p>You can’t download the docker image.</p></li>
 <li><p>You want to use a specific version of Docker image.</p></li>
 </ul>
-<p>Please refer to <a class="reference internal" href="#%F0%9F%9A%80-build-docker-images"><span class="xref myst">‘Build Docker Images’</span></a> in below.</p>
+<p>Please refer to <a class="reference internal" href="#build-docker-images"><span class="xref myst">‘Build Docker Images’</span></a> in below.</p>
 </section>
-<section id="quickstart-3-consume-the-chatqna-service">
-<h2>QuickStart: 3.Consume the ChatQnA Service<a class="headerlink" href="#quickstart-3-consume-the-chatqna-service" title="Link to this heading">¶</a></h2>
+<section id="consume-the-chatqna-service">
+<h3>3.Consume the ChatQnA Service<a class="headerlink" href="#consume-the-chatqna-service" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -2638,34 +2645,9 @@ docker<span class="w"> </span>pull<span class="w"> </span>opea/chatqna-ui:latest
 </pre></div>
 </div>
 </section>
-<section id="apply-xeon-server-on-aws">
-<h2>🚀 Apply Xeon Server on AWS<a class="headerlink" href="#apply-xeon-server-on-aws" title="Link to this heading">¶</a></h2>
-<p>To apply a Xeon server on AWS, start by creating an AWS account if you don’t have one already. Then, head to the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 Console</a> to begin the process. Within the EC2 service, select the Amazon EC2 M7i or M7i-flex instance type to leverage 4th Generation Intel Xeon Scalable processors that are optimized for demanding workloads.</p>
-<p>For detailed information about these instance types, you can refer to this <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/m7i/">link</a>. Once you’ve chosen the appropriate instance type, proceed with configuring your instance settings, including network configurations, security groups, and storage options.</p>
-<p>After launching your instance, you can connect to it using SSH (for Linux instances) or Remote Desktop Protocol (RDP) (for Windows instances). From there, you’ll have full access to your Xeon server, allowing you to install, configure, and manage your applications as needed.</p>
-<section id="network-port-security">
-<h3>Network Port &amp; Security<a class="headerlink" href="#network-port-security" title="Link to this heading">¶</a></h3>
-<ul>
-<li><p>Access the ChatQnA UI by web browser</p>
-<p>It supports to access by <code class="docutils literal notranslate"><span class="pre">80</span></code> port. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall of EC2 instance.</p>
-</li>
-<li><p>Access the microservice by tool or API</p>
-<ol class="arabic">
-<li><p>Login to the EC2 instance and access by <strong>local IP address</strong> and port.</p>
-<p>It’s recommended and do nothing of the network port setting.</p>
-</li>
-<li><p>Login to a remote client and access by <strong>public IP address</strong> and port.</p>
-<p>You need to open the port of the microservice in the security group setting of firewall of EC2 instance setting.</p>
-<p>For detailed guide, please refer to <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a>.</p>
-<p>Note, it will increase the risk of security, so please confirm before do it.</p>
-</li>
-</ol>
-</li>
-</ul>
-</section>
 </section>
 <section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 <span class="nb">cd</span><span class="w"> </span>GenAIComps
@@ -2787,8 +2769,8 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 </li>
 </ol>
 </section>
-<section id="setup-environment-variables">
-<h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="set-up-environment-variables">
+<h3>Set up Environment Variables<a class="headerlink" href="#set-up-environment-variables" title="Link to this heading">¶</a></h3>
 <ol class="arabic">
 <li><p>Set the required environment variables:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
@@ -2831,8 +2813,9 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </pre></div>
 </div>
 </section>
+</section>
 <section id="validate-microservices">
-<h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
+<h2>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
 <p>Note, when verify the microservices by curl or API from remote client, please make sure the <strong>ports</strong> of the microservices are opened in the firewall of the cloud node.
 Follow the instructions to validate MicroServices.
 For details on how to verify the correctness of the response, refer to <a class="reference internal" href="../../hpu/gaudi/how_to_validate_service.html"><span class="std std-doc">how-to-validate_service</span></a>.</p>
@@ -2926,15 +2909,14 @@ Or run this command to get the file on a terminal.</p>
 <p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
 <p>To delete the files/link you uploaded:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete all uploaded files and links</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6009/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
 </pre></div>
 </div>
 </section>
-</section>
 <section id="launch-the-ui">
-<h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
+<h2>Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
 <section id="launch-with-origin-port">
 <h3>Launch with origin port<a class="headerlink" href="#launch-with-origin-port" title="Link to this heading">¶</a></h3>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
@@ -2952,7 +2934,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 </section>
 <section id="launch-the-conversational-ui-optional">
-<h2>🚀 Launch the Conversational UI (Optional)<a class="headerlink" href="#launch-the-conversational-ui-optional" title="Link to this heading">¶</a></h2>
+<h2>Launch the Conversational UI (Optional)<a class="headerlink" href="#launch-the-conversational-ui-optional" title="Link to this heading">¶</a></h2>
 <p>To access the Conversational UI (react based) frontend, modify the UI service in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file. Replace <code class="docutils literal notranslate"><span class="pre">chaqna-xeon-ui-server</span></code> service with the <code class="docutils literal notranslate"><span class="pre">chatqna-xeon-conversation-ui-server</span></code> service as per the config below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">chaqna-xeon-conversation-ui-server</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
@@ -2989,8 +2971,8 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="README.html" class="btn btn-neutral float-left" title="Deploying ChatQnA on Intel® Xeon® Processors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="README_qdrant.html" class="btn btn-neutral float-right" title="Build Mega Service of ChatQnA (with Qdrant) on Xeon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_faqgen.html" class="btn btn-neutral float-left" title="Deploying FAQ Generation on Intel® Xeon® Processors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="README_qdrant.html" class="btn btn-neutral float-right" title="Deploying ChatQnA with Qdrant on Intel® Xeon® Processors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

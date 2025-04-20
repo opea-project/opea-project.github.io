@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
     <link rel="next" title="How to Check and Validate Micro Service in the GenAI Example" href="how_to_validate_service.html" />
-    <link rel="prev" title="Build Mega Service of ChatQnA (with Qdrant) on Xeon" href="../../cpu/xeon/README_qdrant.html" /> 
+    <link rel="prev" title="Deploying ChatQnA with Qdrant on Intel® Xeon® Processors" href="../../cpu/xeon/README_qdrant.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -308,8 +308,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build and Deploy ChatQnA Application on AMD GPU (ROCm)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README.html">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_pinecone.html">Build Mega Service of ChatQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_qdrant.html">Build Mega Service of ChatQnA (with Qdrant) on Xeon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_faqgen.html">Deploying FAQ Generation on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_pinecone.html">Deploying ChatQnA with Pinecone on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README_qdrant.html">Deploying ChatQnA with Qdrant on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Example ChatQnA deployments on an Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="how_to_validate_service.html">How to Check and Validate Micro Service in the GenAI Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
@@ -2797,7 +2798,7 @@
 </section>
 <section id="compose-faqgen-yaml-faq-generation-deployment">
 <h3>compose_faqgen.yaml - FAQ generation Deployment<a class="headerlink" href="#compose-faqgen-yaml-faq-generation-deployment" title="Link to this heading">¶</a></h3>
-<p>The FAQs(frequently asked questions and answers) generation Deployment will generate FAQs instead of normally text generation. It add a new microservice called <code class="docutils literal notranslate"><span class="pre">llm-faqgen</span></code>, which is a microservice that interacts with the TGI/vLLM LLM server to generate FAQs from input text.</p>
+<p>The FAQs (frequently asked questions and answers) generation Deployment will generate FAQs instead of normally text generation. It adds a new microservice called <code class="docutils literal notranslate"><span class="pre">llm-faqgen</span></code>, which is a microservice that interacts with the TGI/vLLM LLM server to generate FAQs from input text.</p>
 <p>The TGI (Text Generation Inference) deployment and the default deployment differ primarily in their service configurations and specific focus on handling large language models (LLMs). The TGI deployment includes a unique <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, which utilizes the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.3.1</span></code> image and is specifically configured to run on Gaudi hardware. This service is designed to handle LLM tasks with optimizations such as <code class="docutils literal notranslate"><span class="pre">ENABLE_HPU_GRAPH</span></code> and <code class="docutils literal notranslate"><span class="pre">USE_FLASH_ATTENTION</span></code>. The <code class="docutils literal notranslate"><span class="pre">chatqna-gaudi-backend-server</span></code> in the TGI deployment depends on the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, whereas in the default deployment, it relies on the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>.</p>
 <table class="docutils align-default">
 <thead>
@@ -3074,14 +3075,14 @@
 </section>
 <section id="tei-embedding-service-tei-reranking-service">
 <h3>tei-embedding-service &amp; tei-reranking-service<a class="headerlink" href="#tei-embedding-service-tei-reranking-service" title="Link to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</span></code> image supporting <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code> or <code class="docutils literal notranslate"><span class="pre">RERANK_MODEL_ID</span></code> environment variables respectively to specify the embedding model and reranking model used for converting text into vector representations and rankings. This choice impacts the quality and relevance of the embeddings rerankings for various applications. Unlike the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, the <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> each typically acquires only one Gaudi device and does not use the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter; embedding and reranking tasks generally do not require extensive parallel processing and one Gaudi per service is appropriate. The list of <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">supported embedding and reranking models</a> can be found at the the <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">huggingface/tei-gaudi</a> website.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</span></code> image supporting <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code> or <code class="docutils literal notranslate"><span class="pre">RERANK_MODEL_ID</span></code> environment variables respectively to specify the embedding model and reranking model used for converting text into vector representations and rankings. This choice impacts the quality and relevance of the embeddings rerankings for various applications. Unlike the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, the <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> each typically acquires only one Gaudi device and does not use the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter; embedding and reranking tasks generally do not require extensive parallel processing and one Gaudi per service is appropriate. The list of <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">supported embedding and reranking models</a> can be found at the <a class="reference external" href="https://github.com/huggingface/tei-gaudi?tab=readme-ov-file#supported-models">huggingface/tei-gaudi</a> website.</p>
 </section>
-<section id="tgi-gaurdrails-service">
-<h3>tgi-gaurdrails-service<a class="headerlink" href="#tgi-gaurdrails-service" title="Link to this heading">¶</a></h3>
+<section id="tgi-guardrails-service">
+<h3>tgi-guardrails-service<a class="headerlink" href="#tgi-guardrails-service" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">tgi-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">GUARDRAILS_MODEL_ID</span></code> parameter to select a <a class="reference external" href="https://github.com/huggingface/tgi-gaudi?tab=readme-ov-file#tested-models-and-configurations">supported model</a> for the associated <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/tgi-gaudi:2.3.1</span></code> image. Like the <code class="docutils literal notranslate"><span class="pre">tei-embedding-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-reranking-service</span></code> services, it doesn’t use the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter.</p>
 </section>
-<section id="vllm-gaurdrails-service">
-<h3>vllm-gaurdrails-service<a class="headerlink" href="#vllm-gaurdrails-service" title="Link to this heading">¶</a></h3>
+<section id="vllm-guardrails-service">
+<h3>vllm-guardrails-service<a class="headerlink" href="#vllm-guardrails-service" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">vllm-guardrails-service</span></code> uses the <code class="docutils literal notranslate"><span class="pre">GUARDRAILS_MODEL_ID</span></code> parameter to select a <a class="reference external" href="https://docs.vllm.ai/en/latest/models/supported_models.html">supported model</a> for the associated <code class="docutils literal notranslate"><span class="pre">opea/vllm-gaudi:latest</span></code> image. It uses the <code class="docutils literal notranslate"><span class="pre">NUM_CARDS</span></code> parameter.</p>
 </section>
 </section>
@@ -3098,7 +3099,7 @@
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../cpu/xeon/README_qdrant.html" class="btn btn-neutral float-left" title="Build Mega Service of ChatQnA (with Qdrant) on Xeon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../cpu/xeon/README_qdrant.html" class="btn btn-neutral float-left" title="Deploying ChatQnA with Qdrant on Intel® Xeon® Processors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="how_to_validate_service.html" class="btn btn-neutral float-right" title="How to Check and Validate Micro Service in the GenAI Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
