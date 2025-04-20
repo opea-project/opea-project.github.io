@@ -30,7 +30,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Build and Deploy DocSum Application on AMD GPU (ROCm)" href="docker_compose/amd/gpu/rocm/README.html" />
+    <link rel="next" title="Table of Contents" href="README_miscellaneous.html" />
     <link rel="prev" title="DocRetriever Application with Docker" href="../DocIndexRetriever/docker_compose/intel/hpu/gaudi/README.html" /> 
 </head>
 
@@ -362,9 +362,10 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#docsum-application">DocSum Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Document Summarization Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and Deploy DocSum Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_miscellaneous.html">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Example DocSum deployments on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Example DocSum deployments on Intel Xeon Processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Example DocSum deployments on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy DocSum in Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/helm/README.html">Deploy DocSum on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/gradio/README.html">Document Summary</a></li>
@@ -435,9 +436,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#translation-application">Translation Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/README.html">Translation Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/amd/gpu/rocm/README.html">Build and deploy Translation Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Translation on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Translation on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/amd/gpu/rocm/README.html">Example Translation Deployment on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/cpu/xeon/README.html">Example Translation Deployment on Intel® Xeon® Platform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../Translation/docker_compose/intel/hpu/gaudi/README.html">Example Translation Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/kubernetes/gmc/README.html">Deploy Translation in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/tests/README.html">Translation E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../Translation/ui/svelte/README.html">Language Translation</a></li>
@@ -2579,75 +2580,17 @@
   <section id="document-summarization-application">
 <h1>Document Summarization Application<a class="headerlink" href="#document-summarization-application" title="Link to this heading">¶</a></h1>
 <p>Large Language Models (LLMs) have revolutionized the way we interact with text. These models can be used to create summaries of news articles, research papers, technical documents, legal documents, multimedia documents, and other types of documents. Suppose you have a set of documents (PDFs, Notion pages, customer questions, multimedia files, etc.) and you want to summarize the content. In this example use case, we utilize LangChain to implement summarization strategies and facilitate LLM inference using Text Generation Inference.</p>
-<p><img alt="Architecture" src="../../_images/docsum_architecture.png" /></p>
-<section id="deploy-document-summarization-service">
-<h2>Deploy Document Summarization Service<a class="headerlink" href="#deploy-document-summarization-service" title="Link to this heading">¶</a></h2>
-<p>The Document Summarization service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.
-Based on whether you want to use Docker or Kubernetes, follow the instructions below. Currently we support deploying Document Summarization services with docker compose.</p>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>Default model is “Intel/neural-chat-7b-v3-3”. Change “LLM_MODEL_ID” environment variable in commands below if you want to use another model.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-</pre></div>
-</div>
-<p>When using gated models, you also need to provide <a class="reference external" href="https://huggingface.co/docs/hub/security-tokens">HuggingFace token</a> to “HUGGINGFACEHUB_API_TOKEN” environment variable.</p>
-</section>
-<section id="setup-environment-variable">
-<h3>Setup Environment Variable<a class="headerlink" href="#setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying Document Summarization services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/set_env.sh
-</pre></div>
-</div>
-</li>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
 </ol>
 </section>
-<section id="deploy-using-docker">
-<h3>Deploy using Docker<a class="headerlink" href="#deploy-using-docker" title="Link to this heading">¶</a></h3>
-<section id="deploy-on-gaudi">
-<h4>Deploy on Gaudi<a class="headerlink" href="#deploy-on-gaudi" title="Link to this heading">¶</a></h4>
-<p>Follow the instructions provided in the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build Docker images from source. Once the images are built, run the following command to start the services:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/intel/hpu/gaudi/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<blockquote>
-<div><p>Notice: Currently only the <strong>Habana Driver 1.16.x</strong> is supported for Gaudi.</p>
-</div></blockquote>
-</section>
-<section id="deploy-on-xeon">
-<h4>Deploy on Xeon<a class="headerlink" href="#deploy-on-xeon" title="Link to this heading">¶</a></h4>
-<p>Follow the instructions provided in the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> to build Docker images from source. Once the images are built, run the following command to start the services:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/intel/cpu/xeon/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-</section>
-</section>
-<section id="deploy-docsum-on-kubernetes-using-helm-chart">
-<h3>Deploy DocSum on Kubernetes using Helm Chart<a class="headerlink" href="#deploy-docsum-on-kubernetes-using-helm-chart" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">DocSum helm chart</span></a> for instructions on deploying DocSum on Kubernetes.</p>
-</section>
-<section id="workflow-of-the-deployed-document-summarization-service">
-<h3>Workflow of the deployed Document Summarization Service<a class="headerlink" href="#workflow-of-the-deployed-document-summarization-service" title="Link to this heading">¶</a></h3>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
+<p>The architecture of the Document Summarization Application is illustrated below:</p>
+<p><img alt="Architecture" src="../../_images/docsum_architecture.png" /></p>
 <p>The DocSum example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
             flowchart LR
@@ -2692,98 +2635,31 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
     M2T &lt;-.-&gt; A2T_SRV &lt;-.-&gt; WSP_SRV
     V2A_SRV .-&gt; A2T_SRV
         </div></section>
-</section>
-<section id="consume-document-summarization-service">
-<h2>Consume Document Summarization Service<a class="headerlink" href="#consume-document-summarization-service" title="Link to this heading">¶</a></h2>
-<p>Two ways of consuming Document Summarization Service:</p>
-<ol class="arabic">
-<li><p>Use cURL command on terminal</p>
-<p>Text:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;text&quot;, &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
-
-<span class="c1"># Use English mode (default).</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
-
-<span class="c1"># Use Chinese mode.</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;messages=2024年9月26日，北京——今日，英特尔正式发布英特尔® 至强® 6性能核处理器（代号Granite Rapids），为AI、数据分析、科学计算等计算密集型业务提供卓越性能。&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;language=zh&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
-
-<span class="c1"># Upload file</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
-</pre></div>
-</div>
-<blockquote>
-<div><p>Audio and Video file uploads are not supported in docsum with curl request, please use the Gradio-UI.</p>
-</div></blockquote>
-<p>Audio:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;audio&quot;, &quot;messages&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
-
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=audio&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
-</pre></div>
-</div>
-<p>Video:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;video&quot;, &quot;messages&quot;: &quot;convert your video to base64 data type&quot;}&#39;</span>
-
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=video&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=convert your video to base64 data type&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=true&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Access via frontend</p>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173.</p>
-<p>By default, the UI runs on port 5173 internally.</p>
-</li>
-</ol>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>(Docker only) If all microservices work well, check the port ${host_ip}:8888, the port may be allocated by other users, you can modify the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-<li><p>(Docker only) If you get errors like “The container name is in use”, change container name in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-</ol>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Deployment Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>On-premise Deployments</p></td>
+<td><p>Docker Compose (Xeon)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/cpu/xeon"><span class="xref myst">DocSum deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Docker Compose (Gaudi)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/hpu/gaudi"><span class="xref myst">DocSum deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Docker Compose (ROCm)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">DocSum deployment on AMD ROCm</span></a></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -2793,7 +2669,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../DocIndexRetriever/docker_compose/intel/hpu/gaudi/README.html" class="btn btn-neutral float-left" title="DocRetriever Application with Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="docker_compose/amd/gpu/rocm/README.html" class="btn btn-neutral float-right" title="Build and Deploy DocSum Application on AMD GPU (ROCm)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_miscellaneous.html" class="btn btn-neutral float-right" title="Table of Contents" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

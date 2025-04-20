@@ -30,7 +30,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Build and deploy Translation Application on AMD GPU (ROCm)" href="docker_compose/amd/gpu/rocm/README.html" />
+    <link rel="next" title="Example Translation Deployment on AMD GPU (ROCm)" href="docker_compose/amd/gpu/rocm/README.html" />
     <link rel="prev" title="Text2Image Customized UI" href="../Text2Image/ui/svelte/README.html" /> 
 </head>
 
@@ -362,9 +362,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#docsum-application">DocSum Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/README.html">Document Summarization Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/amd/gpu/rocm/README.html">Build and Deploy DocSum Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Document Summarization on Intel Xeon Processor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Document Summarization on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../DocSum/README_miscellaneous.html">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/amd/gpu/rocm/README.html">Example DocSum deployments on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/cpu/xeon/README.html">Example DocSum deployments on Intel Xeon Processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../DocSum/docker_compose/intel/hpu/gaudi/README.html">Example DocSum deployments on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/kubernetes/gmc/README.html">Deploy DocSum in Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/kubernetes/helm/README.html">Deploy DocSum on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../DocSum/ui/gradio/README.html">Document Summary</a></li>
@@ -435,9 +436,9 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#translation-application">Translation Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Translation Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and deploy Translation Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of Translation on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build MegaService of Translation on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Example Translation Deployment on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Example Translation Deployment on Intel® Xeon® Platform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Example Translation Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy Translation in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">Translation E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/svelte/README.html">Language Translation</a></li>
@@ -2578,8 +2579,17 @@
              
   <section id="translation-application">
 <h1>Translation Application<a class="headerlink" href="#translation-application" title="Link to this heading">¶</a></h1>
-<p>Language Translation is the communication of the meaning of a source-language text by means of an equivalent target-language text.</p>
-<p>Translation architecture shows below:</p>
+<p>The Translation example demonstrates the implementation of language translation using OPEA component-level microservices.</p>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+</ol>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
+<p>The architecture of the Translation Application is illustrated below:</p>
 <p><img alt="architecture" src="../../_images/translation_architecture.png" /></p>
 <p>The Translation example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
@@ -2621,17 +2631,32 @@
     direction LR
     LLM &lt;-.-&gt; LLM_gen
         </div><p>This Translation use case performs Language Translation Inference across multiple platforms. Currently, we provide the example for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
-<section id="deploy-translation-service">
-<h2>Deploy Translation Service<a class="headerlink" href="#deploy-translation-service" title="Link to this heading">¶</a></h2>
-<p>The Translation service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.</p>
-<section id="deploy-translation-on-gaudi">
-<h3>Deploy Translation on Gaudi<a class="headerlink" href="#deploy-translation-on-gaudi" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> for instructions on deploying Translation on Gaudi.</p>
 </section>
-<section id="deploy-translation-on-xeon">
-<h3>Deploy Translation on Xeon<a class="headerlink" href="#deploy-translation-on-xeon" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for instructions on deploying Translation on Xeon.</p>
-</section>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists the available deployment options and their implementation details for different hardware platforms.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Deployment Method</p></th>
+<th class="head"><p>Link</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Intel Xeon</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Intel Gaudi2</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>AMD ROCm</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">Deployment on AMD Rocm</span></a></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -2641,7 +2666,7 @@
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../Text2Image/ui/svelte/README.html" class="btn btn-neutral float-left" title="Text2Image Customized UI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="docker_compose/amd/gpu/rocm/README.html" class="btn btn-neutral float-right" title="Build and deploy Translation Application on AMD GPU (ROCm)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docker_compose/amd/gpu/rocm/README.html" class="btn btn-neutral float-right" title="Example Translation Deployment on AMD GPU (ROCm)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
