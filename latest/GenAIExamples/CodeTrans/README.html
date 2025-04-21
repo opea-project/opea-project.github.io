@@ -25,12 +25,10 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=32c45995"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="CodeTrans Benchmarking" href="benchmark/performance/README.html" />
+    <link rel="next" title="CodeTrans Docker Image Build" href="README_miscellaneous.html" />
     <link rel="prev" title="Code Gen" href="../CodeGen/ui/svelte/README.html" /> 
 </head>
 
@@ -338,10 +336,12 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#codetrans-application">CodeTrans Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Code Translation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_miscellaneous.html">CodeTrans Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/performance/README.html">CodeTrans Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and Deploy CodeTrans Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of CodeTrans on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of CodeTrans on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Deploy CodeTrans on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Deploying CodeTrans on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Deploying CodeTrans on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy CodeTrans in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/helm/README.html">Deploy CodeTrans on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/svelte/README.html">Code Translation</a></li>
@@ -418,9 +418,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#searchqna-application">SearchQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../SearchQnA/README.html">SearchQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/amd/gpu/rocm/README.html">Build and deploy SearchQnA Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of SearchQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of SearchQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/README_miscellaneous.html">SearchQnA Docker Image Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/amd/gpu/rocm/README.html">Example SearchQnA deployments on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/intel/cpu/xeon/README.html">Deploying SearchQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SearchQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying searchqna on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../SearchQnA/kubernetes/gmc/README.html">Deploy SearchQnA in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../SearchQnA/kubernetes/helm/README.html">Deploy SearchQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../SearchQnA/ui/svelte/README.html">Neural Chat</a></li>
@@ -2580,161 +2581,62 @@
   <section id="code-translation-application">
 <h1>Code Translation Application<a class="headerlink" href="#code-translation-application" title="Link to this heading">¶</a></h1>
 <p>Code translation is the process of converting code written in one programming language to another programming language while maintaining the same functionality. This process is also known as code conversion, source-to-source translation, or transpilation. Code translation is often performed when developers want to take advantage of new programming languages, improve code performance, or maintain legacy systems. Some common examples include translating code from Python to Java, or from JavaScript to TypeScript.</p>
-<p>The workflow falls into the following architecture:</p>
-<p><img alt="architecture" src="../../_images/code_trans_architecture.png" /></p>
-<p>The CodeTrans example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
-<div class="mermaid">
-            flowchart LR
-    %% Colors %%
-    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef invisible fill:transparent,stroke:transparent;
-    style CodeTrans-MegaService stroke:#000000
-
-    %% Subgraphs %%
-    subgraph CodeTrans-MegaService[&quot;CodeTrans MegaService &quot;]
-        direction LR
-        LLM([LLM MicroService]):::blue
-    end
-    subgraph UserInterface[&quot; User Interface &quot;]
-        direction LR
-        a([User Input Query]):::orchid
-        UI([UI server&lt;br&gt;]):::orchid
-    end
-
-
-    LLM_gen{{LLM Service &lt;br&gt;}}
-    GW([CodeTrans GateWay&lt;br&gt;]):::orange
-    NG([Nginx MicroService]):::blue
-
-
-    %% Questions interaction
-    direction LR
-    NG &lt;==&gt; UserInterface
-    a[User Input Query] --&gt; UI
-    UI --&gt; GW
-    GW &lt;==&gt; CodeTrans-MegaService
-
-
-    %% Embedding service flow
-    direction LR
-    LLM &lt;-.-&gt; LLM_gen
-        </div><p>This Code Translation use case demonstrates Text Generation Inference across multiple platforms. Currently, we provide examples for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
-<section id="deploy-code-translation-service">
-<h2>Deploy Code Translation Service<a class="headerlink" href="#deploy-code-translation-service" title="Link to this heading">¶</a></h2>
-<p>The Code Translation service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processor.</p>
-<p>Currently we support two ways of deploying Code Translation services on docker:</p>
-<ol class="arabic">
-<li><p>Start services using the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/codetrans:latest
-</pre></div>
-</div>
-</li>
-<li><p>Start services using the docker images <code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">from</span> <span class="pre">source</span></code>: <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Guide</span></a></p></li>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+<li><p><a class="reference internal" href="README_miscellaneous.html"><span class="std std-doc">Monitoring and Tracing</span></a></p></li>
 </ol>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>By default, the LLM model is set to a default value as listed below:</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
+<p>The CodeTrans application is an end-to-end workflow that leverages the capability of LLMs. The workflow falls into the following architecture:</p>
+<p><img alt="architecture" src="../../_images/code_trans_architecture.png" /></p>
+<p>The CodeTrans example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>.</p>
+<p>This Code Translation use case demonstrates Text Generation Inference across multiple platforms. Currently, we provide examples for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
+</section>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Service</p></th>
-<th class="head"><p>Model</p></th>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Deployment Option</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>LLM</p></td>
-<td><p>mistralai/Mistral-7B-Instruct-v0.3</p></td>
+<tr class="row-even"><td><p>On-premise Deployments</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/cpu/xeon"><span class="xref myst">CodeTrans deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/hpu/gaudi"><span class="xref myst">CodeTrans deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">CodeTrans deployment on AMD ROCm</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Kubernetes</p></td>
+<td><p><a class="reference internal" href="#./kubernetes/helm"><span class="xref myst">Helm Charts</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./kubernetes/gmc"><span class="xref myst">GMC</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Azure</p></td>
+<td><p>Work-in-progress</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Intel Tiber AI Cloud</p></td>
+<td><p>Work-in-progress</p></td>
 </tr>
 </tbody>
 </table>
-<p>Change the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> in <code class="docutils literal notranslate"><span class="pre">docker_compose/set_env.sh</span></code> for your needs.</p>
-</section>
-<section id="setup-environment-variable">
-<h3>Setup Environment Variable<a class="headerlink" href="#setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying Code Translation services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-<span class="c1"># Example: NGINX_PORT=80</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./docker_compose/set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="deploy-with-docker">
-<h3>Deploy with Docker<a class="headerlink" href="#deploy-with-docker" title="Link to this heading">¶</a></h3>
-<section id="deploy-code-translation-on-gaudi">
-<h4>Deploy Code Translation on Gaudi<a class="headerlink" href="#deploy-code-translation-on-gaudi" title="Link to this heading">¶</a></h4>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeTrans/docker_compose/intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
-</section>
-<section id="deploy-code-translation-on-xeon">
-<h4>Deploy Code Translation on Xeon<a class="headerlink" href="#deploy-code-translation-on-xeon" title="Link to this heading">¶</a></h4>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeTrans/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for more instructions on building docker images from source.</p>
-</section>
-</section>
-<section id="deploy-codetrans-on-kubernetes-using-helm-chart">
-<h3>Deploy CodeTrans on Kubernetes using Helm Chart<a class="headerlink" href="#deploy-codetrans-on-kubernetes-using-helm-chart" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">CodeTrans helm chart</span></a> for instructions on deploying CodeTrans on Kubernetes.</p>
-</section>
-</section>
-<section id="consume-code-translation-service">
-<h2>Consume Code Translation Service<a class="headerlink" href="#consume-code-translation-service" title="Link to this heading">¶</a></h2>
-<p>Two ways of consuming Code Translation Service:</p>
-<ol class="arabic">
-<li><p>Use cURL command on terminal</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Access via frontend</p></li>
-</ol>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173.</p>
-<p>By default, the UI runs on port 5173 internally.</p>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>(Docker only) If all microservices work well, check the port ${host_ip}:7777, the port may be allocated by other users, you can modify the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-<li><p>(Docker only) If you get errors like “The container name is in use”, change container name in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-</ol>
 </section>
 </section>
 
@@ -2744,7 +2646,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../CodeGen/ui/svelte/README.html" class="btn btn-neutral float-left" title="Code Gen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="benchmark/performance/README.html" class="btn btn-neutral float-right" title="CodeTrans Benchmarking" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_miscellaneous.html" class="btn btn-neutral float-right" title="CodeTrans Docker Image Build" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

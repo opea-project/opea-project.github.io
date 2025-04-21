@@ -30,7 +30,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Build and deploy SearchQnA Application on AMD GPU (ROCm)" href="docker_compose/amd/gpu/rocm/README.html" />
+    <link rel="next" title="SearchQnA Docker Image Build" href="README_miscellaneous.html" />
     <link rel="prev" title="Deploy Rerank Model Finetuning Service on Gaudi" href="../RerankFinetuning/docker_compose/intel/hpu/gaudi/README.html" /> 
 </head>
 
@@ -338,10 +338,12 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#codetrans-application">CodeTrans Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../CodeTrans/README.html">Code Translation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/README_miscellaneous.html">CodeTrans Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../CodeTrans/benchmark/performance/README.html">CodeTrans Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/amd/gpu/rocm/README.html">Build and Deploy CodeTrans Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of CodeTrans on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of CodeTrans on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/amd/gpu/rocm/README.html">Deploy CodeTrans on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/amd/gpu/rocm/README.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/intel/cpu/xeon/README.html">Deploying CodeTrans on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../CodeTrans/docker_compose/intel/hpu/gaudi/README.html">Deploying CodeTrans on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../CodeTrans/kubernetes/gmc/README.html">Deploy CodeTrans in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../CodeTrans/kubernetes/helm/README.html">Deploy CodeTrans on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../CodeTrans/ui/svelte/README.html">Code Translation</a></li>
@@ -418,9 +420,10 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#searchqna-application">SearchQnA Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">SearchQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and deploy SearchQnA Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of SearchQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of SearchQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_miscellaneous.html">SearchQnA Docker Image Build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Example SearchQnA deployments on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Deploying SearchQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Deploying searchqna on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy SearchQnA in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/helm/README.html">Deploy SearchQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/svelte/README.html">Neural Chat</a></li>
@@ -2589,7 +2592,16 @@
 <li><p>Contextual Result Matching: The bot matches original search queries with relevant documents stored in the vector store, presenting users with accurate and contextually appropriate results.</p></li>
 </ul>
 <p>By integrating search capabilities with LLMs within the LangChain framework, this Google Search QnA chatbot delivers comprehensive and precise answers, akin to human search behavior.</p>
-<p>The workflow falls into the following architecture:</p>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+</ol>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
+<p>The architecture of the SearchQnA Application is illustrated below:</p>
 <p><img alt="architecture" src="../../_images/searchqna.png" /></p>
 <p>The SearchQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
@@ -2643,100 +2655,33 @@
     direction TB
     %% Vector DB interaction
     R_RET &lt;-.-&gt; VDB
-        </div><section id="deploy-searchqna-service">
-<h2>Deploy SearchQnA Service<a class="headerlink" href="#deploy-searchqna-service" title="Link to this heading">¶</a></h2>
-<p>The SearchQnA service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.</p>
-<p>Currently we support two ways of deploying SearchQnA services with docker compose:</p>
-<ol class="arabic">
-<li><p>Start services using the docker image on <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">hub</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>opea/searchqna:latest
-</pre></div>
-</div>
-</li>
-<li><p>Start services using the docker images <code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">from</span> <span class="pre">source</span></code>: <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/SearchQnA/docker_compose/">Guide</a></p></li>
-</ol>
-<section id="setup-environment-variable">
-<h3>Setup Environment Variable<a class="headerlink" href="#setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying SearchQnA services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_CSE_ID</span><span class="o">=</span><span class="s2">&quot;Your_CSE_ID&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_API_KEY</span><span class="o">=</span><span class="s2">&quot;Your_Google_API_Key&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>./docker_compose/set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
+        </div><p>This SearchQnA use case performs Search-augmented Question Answering across multiple platforms. Currently, we provide the example for Intel® Gaudi® 2 and Intel® Xeon® Scalable Processors, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
 </section>
-<section id="deploy-searchqna-on-gaudi">
-<h3>Deploy SearchQnA on Gaudi<a class="headerlink" href="#deploy-searchqna-on-gaudi" title="Link to this heading">¶</a></h3>
-<p>If your version of <code class="docutils literal notranslate"><span class="pre">Habana</span> <span class="pre">Driver</span></code> &lt; 1.16.0 (check with <code class="docutils literal notranslate"><span class="pre">hl-smi</span></code>), run the following command directly to start SearchQnA services. Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/SearchQnA/docker_compose/intel/hpu/gaudi/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
-</section>
-<section id="deploy-searchqna-on-xeon">
-<h3>Deploy SearchQnA on Xeon<a class="headerlink" href="#deploy-searchqna-on-xeon" title="Link to this heading">¶</a></h3>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/SearchQnA/docker_compose/intel/cpu/xeon/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for more instructions on building docker images from source.</p>
-</section>
-</section>
-<section id="consume-searchqna-service">
-<h2>Consume SearchQnA Service<a class="headerlink" href="#consume-searchqna-service" title="Link to this heading">¶</a></h2>
-<p>Two ways of consuming SearchQnA Service:</p>
-<ol class="arabic">
-<li><p>Use cURL command on terminal</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/searchqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;messages&quot;: &quot;What is the latest news? Give me also the source link.&quot;,</span>
-<span class="s1">        &quot;stream&quot;: &quot;True&quot;</span>
-<span class="s1">    }&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Access via frontend</p>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173.</p>
-<p>By default, the UI runs on port 5173 internally.</p>
-</li>
-</ol>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="../ChatQnA/docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3001/embed<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>(Docker only) If all microservices work well, check the port ${host_ip}:3008, the port may be allocated by other users, you can modify the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-<li><p>(Docker only) If you get errors like “The container name is in use”, change container name in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-</ol>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists the available deployment options and their implementation details for different hardware platforms.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Deployment Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>On-premise Deployments</p></td>
+<td><p>Docker Compose (Xeon)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/cpu/xeon"><span class="xref myst">DocSum deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Docker Compose (Gaudi)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/hpu/gaudi"><span class="xref myst">DocSum deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Docker Compose (ROCm)</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">DocSum deployment on AMD ROCm</span></a></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -2746,7 +2691,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../RerankFinetuning/docker_compose/intel/hpu/gaudi/README.html" class="btn btn-neutral float-left" title="Deploy Rerank Model Finetuning Service on Gaudi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="docker_compose/amd/gpu/rocm/README.html" class="btn btn-neutral float-right" title="Build and deploy SearchQnA Application on AMD GPU (ROCm)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_miscellaneous.html" class="btn btn-neutral float-right" title="SearchQnA Docker Image Build" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
