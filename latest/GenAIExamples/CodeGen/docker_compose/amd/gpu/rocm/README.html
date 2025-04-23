@@ -283,7 +283,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/README_miscellaneous.html">AudioQnA Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/benchmark/accuracy/README.html">AudioQnA Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/benchmark/performance/README.html">AudioQnA Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of AudioQnA on AMD ROCm GPU</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/amd/gpu/rocm/README.html">Deploying AudioQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/intel/cpu/xeon/README.html">Deploying AudioQnA on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/intel/cpu/xeon/README_vllm.html">Deploy AudioQnA application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying AudioQnA on Intel® Gaudi® Processors</a></li>
@@ -2732,7 +2732,6 @@
 <span class="nt">devices</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/:/dev/dri/</span>
-<span class="c1"># - /dev/dri/render128:/dev/dri/render128</span>
 <span class="nt">cap_add</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
 <span class="nt">group_add</span><span class="p">:</span>
@@ -2741,7 +2740,22 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
 </pre></div>
 </div>
-<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs (e.g., <code class="docutils literal notranslate"><span class="pre">/dev/dri/card0:/dev/dri/card0</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/dri/render128:/dev/dri/render128</span></code>). Use AMD GPU driver utilities to identify device IDs.</p>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs (e.g., <code class="docutils literal notranslate"><span class="pre">/dev/dri/card0:/dev/dri/card0</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/dri/render128:/dev/dri/render128</span></code>). For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
 </section>
 <section id="environment-variables-set-env-sh">
 <h3>Environment Variables (<code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code>)<a class="headerlink" href="#environment-variables-set-env-sh" title="Link to this heading">¶</a></h3>
