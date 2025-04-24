@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deploy CodeTrans on AMD GPU (ROCm) &mdash; OPEA™ 1.3 documentation</title>
+  <title>Deploying CodeTrans on AMD ROCm GPU &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -340,8 +340,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Code Translation Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../README_miscellaneous.html">CodeTrans Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/README.html">CodeTrans Benchmarking</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Deploy CodeTrans on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Deploying CodeTrans on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Deploying CodeTrans on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Deploying CodeTrans on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy CodeTrans in a Kubernetes Cluster</a></li>
@@ -2560,7 +2559,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Deploy CodeTrans on AMD GPU (ROCm)</li>
+  <li>Deploying CodeTrans on AMD ROCm GPU</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/CodeTrans/docker_compose/amd/gpu/rocm/README.md.txt" rel="nofollow"> View page source</a>
@@ -2580,21 +2579,22 @@
   
            <div itemprop="articleBody">
              
-  <section id="deploy-codetrans-on-amd-gpu-rocm">
-<h1>Deploy CodeTrans on AMD GPU (ROCm)<a class="headerlink" href="#deploy-codetrans-on-amd-gpu-rocm" title="Link to this heading">¶</a></h1>
-<p>This document outlines the single node deployment process for a CodeTrans application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservices on AMD GPU (ROCm) server. The steps include pulling Docker images, container deployment via Docker Compose, and service execution using microservices <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
-</section>
+  <section id="deploying-codetrans-on-amd-rocm-gpu">
+<h1>Deploying CodeTrans on AMD ROCm GPU<a class="headerlink" href="#deploying-codetrans-on-amd-rocm-gpu" title="Link to this heading">¶</a></h1>
+<p>This document outlines the single node deployment process for a CodeTrans application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservices on Intel Xeon server and AMD GPU. The steps include pulling Docker images, container deployment via Docker Compose, and service execution using microservices <code class="docutils literal notranslate"><span class="pre">llm</span></code>.</p>
+<p>Note: The default LLM is <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-Coder-7B-Instruct</span></code>. Before deploying the application, please make sure either you’ve requested and been granted the access to it on <a class="reference external" href="https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct">Huggingface</a> or you’ve downloaded the model locally from <a class="reference external" href="https://www.modelscope.cn/models">ModelScope</a>.</p>
 <section id="table-of-contents">
-<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h1>
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#codetrans-quick-start-deployment"><span class="xref myst">CodeTrans Quick Start Deployment</span></a></p></li>
 <li><p><a class="reference internal" href="#codetrans-docker-compose-files"><span class="xref myst">CodeTrans Docker Compose Files</span></a></p></li>
 <li><p><a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a></p></li>
 <li><p><a class="reference internal" href="#conclusion"><span class="xref myst">Conclusion</span></a></p></li>
 </ol>
+</section>
 <section id="codetrans-quick-start-deployment">
 <h2>CodeTrans Quick Start Deployment<a class="headerlink" href="#codetrans-quick-start-deployment" title="Link to this heading">¶</a></h2>
-<p>This section describes how to quickly deploy and test the CodeTrans service manually on an AMD GPU (ROCm) processor. The basic steps are:</p>
+<p>This section describes how to quickly deploy and test the CodeTrans service manually on an AMD ROCm GPU. The basic steps are:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
 <li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
@@ -2605,7 +2605,7 @@
 </ol>
 <section id="access-the-code">
 <h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
-<p>Clone the GenAIExample repository and access the CodeTrans AMD GPU (ROCm) platform Docker Compose files and supporting scripts:</p>
+<p>Clone the GenAIExample repository and access the CodeTrans AMD ROCm GPU platform Docker Compose files and supporting scripts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeTrans
 </pre></div>
@@ -2617,25 +2617,72 @@
 </section>
 <section id="configure-the-deployment-environment">
 <h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying CodeTrans services, set up some parameters specific to the deployment environment and source the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script in this directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1"># ip address of the node</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_HuggingFace_API_Token&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1"># http proxy if any</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1"># https proxy if any</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1"># additional no proxies if needed</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span><span class="w">          </span><span class="c1"># your usable port for nginx, 80 for example</span>
-<span class="nb">source</span><span class="w"> </span>./set_env.sh
+<p>To set up environment variables for deploying CodeTrans services, set up some parameters specific to the deployment environment and source the <code class="docutils literal notranslate"><span class="pre">set_env_*.sh</span></code> script in this directory:</p>
+<ul class="simple">
+<li><p>if used vLLM - set_env_vllm.sh</p></li>
+<li><p>if used TGI - set_env.sh</p></li>
+</ul>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
+<p>Setting variables in the operating system environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_HuggingFace_API_Token&quot;</span>
+<span class="nb">source</span><span class="w"> </span>./set_env_*.sh<span class="w"> </span><span class="c1"># replace the script name with the appropriate one</span>
 </pre></div>
 </div>
 <p>Consult the section on <a class="reference internal" href="#codetrans-configuration"><span class="xref myst">CodeTrans Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
 </section>
 <section id="deploy-the-services-using-docker-compose">
 <h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
-<p>To deploy the CodeTrans services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute the command below. It uses the ‘compose.yaml’ file.</p>
+<p>To deploy the CodeTrans services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment with TGI, execute the command below. It uses the ‘compose.yaml’ file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/amd/gpu/rocm
+<span class="c1"># if used TGI</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># if used vLLM</span>
+<span class="c1"># docker compose -f compose_vllm.yaml up -d</span>
 </pre></div>
 </div>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
+<ul class="simple">
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri:/dev/dri</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
 <blockquote>
 <div><p><strong>Note</strong>: developers should build docker image from source when:</p>
 <ul class="simple">
@@ -2655,14 +2702,20 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <tr class="row-even"><td><p>vLLM</p></td>
 <td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/vllm#build-docker">vLLM build guide</a></p></td>
 </tr>
-<tr class="row-odd"><td><p>LLM</p></td>
+<tr class="row-odd"><td><p>TGI</p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-generation-inference.git">TGI project</a></p></td>
+</tr>
+<tr class="row-even"><td><p>LLM</p></td>
 <td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms">LLM build guide</a></p></td>
 </tr>
-<tr class="row-even"><td><p>MegaService</p></td>
-<td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-megaservice-docker-image"><span class="std std-ref">MegaService build guide</span></a></p></td>
+<tr class="row-odd"><td><p>MegaService</p></td>
+<td><p><a class="reference internal" href="../../../../README.html"><span class="std std-doc">MegaService guide</span></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>UI</p></td>
-<td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-ui-docker-image"><span class="std std-ref">Basic UI build guide</span></a></p></td>
+<tr class="row-even"><td><p>UI</p></td>
+<td><p><a class="reference internal" href="../../../../ui/svelte/README.html"><span class="std std-doc">UI guide</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Nginx</p></td>
+<td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/nginx">Nginx guide</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2673,13 +2726,22 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>-a
 </pre></div>
 </div>
-<p>For the default deployment, the following 5 containers should have started:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONTAINER ID   IMAGE                                                   COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
-b3e1388fa2ca   opea/nginx:${RELEASE_VERSION}                           &quot;/usr/local/bin/star…&quot;   32 hours ago   Up 2 hours   0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp                                                      codetrans-nginx-server
-3b5fa9a722da   opea/codetrans-ui:${RELEASE_VERSION}                    &quot;docker-entrypoint.s…&quot;   32 hours ago   Up 2 hours   0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                              codetrans-ui-server
-d3b37f3d1faa   opea/codetrans:${RELEASE_VERSION}                       &quot;python codetrans.py&quot;    32 hours ago   Up 2 hours   0.0.0.0:7777-&gt;7777/tcp, :::7777-&gt;7777/tcp                                              codetrans-backend-server
-24cae0db1a70   opea/llm-textgen:${RELEASE_VERSION}                     &quot;bash entrypoint.sh&quot;     32 hours ago   Up 2 hours   0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              codetrans-llm-server
-b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                            &quot;python3 -m vllm.ent…&quot;   32 hours ago   Up 2 hours   0.0.0.0:9009-&gt;80/tcp, :::9009-&gt;80/tcp                                                  codetrans-tgi-service
+<p>For the default deployment with TGI, the following 9 containers should have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                   <span class="n">COMMAND</span>                  <span class="n">CREATED</span>          <span class="n">STATUS</span>                    <span class="n">PORTS</span>                                                                                      <span class="n">NAMES</span>
+<span class="n">eaf24161aca8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>                                       <span class="s2">&quot;/docker-entrypoint.…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18104</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18104</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">chaqna</span><span class="o">-</span><span class="n">nginx</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">2</span><span class="n">fce48a4c0f4</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18101</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18101</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">613</span><span class="n">c384979f4</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="p">:</span><span class="n">latest</span>                                     <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18102</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18102</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">e0ef1ea67640</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">36</span> <span class="n">seconds</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18011</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18011</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">342</span><span class="n">f01bfdbb2</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.3.1</span><span class="o">-</span><span class="n">rocm</span><span class="s2">&quot;python3 /workspace/…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">36</span> <span class="n">seconds</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18008</span><span class="o">-&gt;</span><span class="mi">8011</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18008</span><span class="o">-&gt;</span><span class="mi">8011</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>if used vLLM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                   <span class="n">COMMAND</span>                  <span class="n">CREATED</span>          <span class="n">STATUS</span>                    <span class="n">PORTS</span>                                                                                      <span class="n">NAMES</span>
+<span class="n">eaf24161aca8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>                                       <span class="s2">&quot;/docker-entrypoint.…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18104</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18104</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">chaqna</span><span class="o">-</span><span class="n">nginx</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">2</span><span class="n">fce48a4c0f4</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18101</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18101</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">613</span><span class="n">c384979f4</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="p">:</span><span class="n">latest</span>                                     <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">seconds</span>              <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18102</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18102</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">e0ef1ea67640</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">36</span> <span class="n">seconds</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18011</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18011</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">342</span><span class="n">f01bfdbb2</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="o">-</span><span class="n">rocm</span><span class="p">:</span><span class="n">latest</span>                                   <span class="s2">&quot;python3 /workspace/…&quot;</span>   <span class="mi">37</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">36</span> <span class="n">seconds</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">18008</span><span class="o">-&gt;</span><span class="mi">8011</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">18008</span><span class="o">-&gt;</span><span class="mi">8011</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codetrans</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
 <p>If any issues are encountered during deployment, refer to the <a class="reference internal" href="../../../../README_miscellaneous.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a> section.</p>
@@ -2695,19 +2757,22 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p><strong>Note</strong> : Access the CodeTrans UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservie used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a> section.</p>
+<p><strong>Note</strong> : Access the CodeTrans UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP_EXTERNAL}:${CODETRANS_NGINX_PORT}</span></code></p>
 </section>
 <section id="cleanup-the-deployment">
 <h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
 <p>To stop the containers associated with the deployment, execute the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if used TGI</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+<span class="c1"># if used vLLM</span>
+<span class="c1"># docker compose -f compose_vllm.yaml down</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="codetrans-docker-compose-files">
 <h2>CodeTrans Docker Compose Files<a class="headerlink" href="#codetrans-docker-compose-files" title="Link to this heading">¶</a></h2>
-<p>In the context of deploying a CodeTrans pipeline on an AMD GPU (ROCm) platform, we can pick and choose different large language model serving frameworks. The table below outlines the various configurations that are available as part of the application. These configurations can be used as templates and can be extended to different components available in <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a>.</p>
+<p>In the context of deploying an ChatQnA pipeline on an Intel® Xeon® platform, we can pick and choose different large language model serving frameworks, or single English TTS/multi-language TTS component. The table below outlines the various configurations that are available as part of the application. These configurations can be used as templates and can be extended to different components available in <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a>.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>File</p></th>
@@ -2716,18 +2781,17 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 </thead>
 <tbody>
 <tr class="row-even"><td><p><a class="reference internal" href="#./compose.yaml"><span class="xref myst">compose.yaml</span></a></p></td>
-<td><p>Default compose file using TGI as serving framework</p></td>
+<td><p>The LLM serving framework is TGI. Default compose file using TGI as serving framework</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_vllm.yaml"><span class="xref myst">compose_vllm.yaml</span></a></p></td>
-<td><p>The LLM serving framework is vLLM. All other configurations remain the same as the default</p></td>
+<td><p>The LLM serving framework is vLLM. Compose file using vllm as serving framework</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="validate-microservices">
-<h2>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>LLM backend Service</p>
+<h2>Validate MicroServices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
+<p>LLM backend Service</p>
 <p>In the first startup, this service will take more time to download, load and warm up the model. After it’s finished, the service will be ready.</p>
 <p>Try the command below to check whether the LLM serving is ready.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM service</span>
@@ -2754,9 +2818,9 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
+<ol class="arabic" start="2">
 <li><p>LLM Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">CODETRANS_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">CODETRANS_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
