@@ -2584,7 +2584,9 @@
 <section id="installing-the-chart">
 <h2>Installing the Chart<a class="headerlink" href="#installing-the-chart" title="Link to this heading">¶</a></h2>
 <p>To install the chart, run the following:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/opea-project/GenAIInfra.git</span>
+<span class="go">cd GenAIInfra/helm-charts/</span>
+<span class="go">mkdir /mnt/opea-models &amp;&amp; chmod -R 664 /mnt/opea-models</span>
 <span class="go">./update_dependency.sh</span>
 <span class="go">helm dependency update docsum</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
@@ -2592,9 +2594,13 @@
 <span class="go">export MODELNAME=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
 <span class="go">helm install docsum docsum --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR} --set llm-uservice.LLM_MODEL_ID=${MODELNAME} --set vllm.LLM_MODEL_ID=${MODELNAME}</span>
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>vLLM
-<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-values.yaml<span class="w"> </span>...
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-values.yaml
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>TGI
-<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-tgi-values.yaml<span class="w"> </span>..
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/gaudi-tgi-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>AMD<span class="w"> </span>ROCm<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>vLLM
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/rocm-values.yaml
+<span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>AMD<span class="w"> </span>ROCm<span class="w"> </span>device<span class="w"> </span>with<span class="w"> </span>TGI
+<span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>docsum/rocm-tgi-values.yaml
 </pre></div>
 </div>
 </section>
