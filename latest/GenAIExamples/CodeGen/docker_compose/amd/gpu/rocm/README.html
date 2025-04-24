@@ -326,6 +326,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/accuracy/README.html">CodeGen Accuracy Benchmark</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../benchmark/performance/README.html">CodeGen Performance Benchmark</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Deploy CodeGen Application on AMD GPU (ROCm) with Docker Compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#to-deploy-the-codegen-services-execute-the-docker-compose-up-command-with-the-appropriate-arguments-for-a-tgi-deployment-execute">To deploy the CodeGen services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a TGI deployment, execute:</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/cpu/xeon/README.html">Deploy CodeGen Application on Intel Xeon CPU with Docker Compose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../intel/hpu/gaudi/README.html">Deploy CodeGen Application on Intel Gaudi HPU with Docker Compose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy CodeGen using Kubernetes Microservices Connector (GMC)</a></li>
@@ -2582,125 +2583,82 @@
   <section id="deploy-codegen-application-on-amd-gpu-rocm-with-docker-compose">
 <h1>Deploy CodeGen Application on AMD GPU (ROCm) with Docker Compose<a class="headerlink" href="#deploy-codegen-application-on-amd-gpu-rocm-with-docker-compose" title="Link to this heading">¶</a></h1>
 <p>This README provides instructions for deploying the CodeGen application using Docker Compose on a system equipped with AMD GPUs supporting ROCm, detailing the steps to configure, run, and validate the services. This guide defaults to using the <strong>vLLM</strong> backend for LLM serving.</p>
+<p>If the service response has a meaningful response in the value of the “choices.text” key,
+then we consider the vLLM service to be successfully launched</p>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="#steps-to-run-with-docker-compose-default-vllm"><span class="xref myst">Steps to Run with Docker Compose (Default vLLM)</span></a></p></li>
-<li><p><a class="reference internal" href="#service-overview"><span class="xref myst">Service Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#quick-start"><span class="xref myst">Quick Start</span></a></p></li>
 <li><p><a class="reference internal" href="#available-deployment-options"><span class="xref myst">Available Deployment Options</span></a></p>
 <ul>
-<li><p><a class="reference internal" href="#compose_vllyaml-vllm---default"><span class="xref myst">compose_vllm.yaml (vLLM - Default)</span></a></p></li>
-<li><p><a class="reference internal" href="#composeyaml-tgi"><span class="xref myst">compose.yaml (TGI)</span></a></p></li>
+<li><p><a class="reference internal" href="#default-vllm-based-deployment---profile-codegen-xeon-vllm"><span class="xref myst">Default: vLLM-based Deployment (<code class="docutils literal notranslate"><span class="pre">--profile</span> <span class="pre">codegen-xeon-vllm</span></code>)</span></a></p></li>
+<li><p><a class="reference internal" href="#tgi-based-deployment---profile-codegen-xeon-tgi"><span class="xref myst">TGI-based Deployment (<code class="docutils literal notranslate"><span class="pre">--profile</span> <span class="pre">codegen-xeon-tgi</span></code>)</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#configuration-parameters-and-usage"><span class="xref myst">Configuration Parameters and Usage</span></a></p>
+<li><p><a class="reference internal" href="#configuration-parameters"><span class="xref myst">Configuration Parameters</span></a></p>
 <ul>
-<li><p><a class="reference internal" href="#docker-compose-gpu-configuration"><span class="xref myst">Docker Compose GPU Configuration</span></a></p></li>
-<li><p><a class="reference internal" href="#environment-variables-set_envsh"><span class="xref myst">Environment Variables (<code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code>)</span></a></p></li>
+<li><p><a class="reference internal" href="#environment-variables"><span class="xref myst">Environment Variables</span></a></p></li>
+<li><p><a class="reference internal" href="#compose-profiles"><span class="xref myst">Compose Profiles</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#building-docker-images-locally-optional"><span class="xref myst">Building Docker Images Locally (Optional)</span></a></p>
+<li><p><a class="reference internal" href="#building-custom-images-optional"><span class="xref myst">Building Custom Images (Optional)</span></a></p></li>
+<li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p>
 <ul>
-<li><p><a class="reference internal" href="#setup-build-environment"><span class="xref myst">1. Setup Build Environment</span></a></p></li>
-<li><p><a class="reference internal" href="#clone-repositories"><span class="xref myst">2. Clone Repositories</span></a></p></li>
-<li><p><a class="reference internal" href="#select-services-and-build"><span class="xref myst">3. Select Services and Build</span></a></p></li>
+<li><p><a class="reference internal" href="#check-container-status"><span class="xref myst">Check Container Status</span></a></p></li>
+<li><p><a class="reference internal" href="#run-validation-scriptcommands"><span class="xref myst">Run Validation Script/Commands</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#validate-service-health"><span class="xref myst">Validate Service Health</span></a></p>
+<li><p><a class="reference internal" href="#accessing-the-user-interface-ui"><span class="xref myst">Accessing the User Interface (UI)</span></a></p>
 <ul>
-<li><p><a class="reference internal" href="#validate-the-vllmtgi-service"><span class="xref myst">1. Validate the vLLM/TGI Service</span></a></p></li>
-<li><p><a class="reference internal" href="#validate-the-llm-service"><span class="xref myst">2. Validate the LLM Service</span></a></p></li>
-<li><p><a class="reference internal" href="#validate-the-megaservice-backend"><span class="xref myst">3. Validate the MegaService (Backend)</span></a></p></li>
-<li><p><a class="reference internal" href="#validate-the-frontend-ui"><span class="xref myst">4. Validate the Frontend (UI)</span></a></p></li>
+<li><p><a class="reference internal" href="#gradio-ui-default"><span class="xref myst">Gradio UI (Default)</span></a></p></li>
+<li><p><a class="reference internal" href="#svelte-ui-optional"><span class="xref myst">Svelte UI (Optional)</span></a></p></li>
+<li><p><a class="reference internal" href="#react-ui-optional"><span class="xref myst">React UI (Optional)</span></a></p></li>
+<li><p><a class="reference internal" href="#vs-code-extension-optional"><span class="xref myst">VS Code Extension (Optional)</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#how-to-open-the-ui"><span class="xref myst">How to Open the UI</span></a></p></li>
 <li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p></li>
 <li><p><a class="reference internal" href="#stopping-the-application"><span class="xref myst">Stopping the Application</span></a></p></li>
 <li><p><a class="reference internal" href="#next-steps"><span class="xref myst">Next Steps</span></a></p></li>
 </ul>
 </section>
-<section id="steps-to-run-with-docker-compose-default-vllm">
-<h2>Steps to Run with Docker Compose (Default vLLM)<a class="headerlink" href="#steps-to-run-with-docker-compose-default-vllm" title="Link to this heading">¶</a></h2>
-<p><em>This section assumes you are using pre-built images and targets the default vLLM deployment.</em></p>
-<ol class="arabic">
-<li><p><strong>Set Deploy Environment Variables:</strong></p>
-<ul>
-<li><p>Go to the Docker Compose directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Adjust path if your GenAIExamples clone is located elsewhere</span>
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose/amd/gpu/rocm
-</pre></div>
-</div>
-</li>
-<li><p>Setting variables in the operating system environment:</p>
-<ul>
-<li><p>Set variable <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-<li><p>Edit the environment script for the <strong>vLLM</strong> deployment (<code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code>):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>set_env_vllm.sh
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Configure <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code>, <code class="docutils literal notranslate"><span class="pre">EXTERNAL_HOST_IP</span></code>, <code class="docutils literal notranslate"><span class="pre">*_PORT</span></code> variables, and proxies (<code class="docutils literal notranslate"><span class="pre">http_proxy</span></code>, <code class="docutils literal notranslate"><span class="pre">https_proxy</span></code>, <code class="docutils literal notranslate"><span class="pre">no_proxy</span></code>) as described in the Configuration section below.</p></li>
-</ul>
-</li>
-<li><p>Source the environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>set_env_vllm.sh
-</pre></div>
-</div>
-</li>
-</ul>
-</li>
-<li><p><strong>Start the Services (vLLM):</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</li>
-<li><p><strong>Verify:</strong> Proceed to the <a class="reference internal" href="#validate-service-health"><span class="xref myst">Validate Service Health</span></a> section after allowing time for services to start.</p></li>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>This guide focuses on running the pre-configured CodeGen service using Docker Compose on AMD ROCm processing acelarating platform. It leverages containers optimized for Intel architecture for the CodeGen gateway, LLM serving (vLLM or TGI), and UI.</p>
+</section>
+<section id="codegen-quick-start-deployment">
+<h2>CodeGen Quick Start Deployment<a class="headerlink" href="#codegen-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the CodeGen service manually on an AMD GPU (ROCm) platform. The basic steps are:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
 </ol>
 </section>
-<section id="service-overview">
-<h2>Service Overview<a class="headerlink" href="#service-overview" title="Link to this heading">¶</a></h2>
-<p>When using the default <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code> (vLLM-based), the following services are deployed:</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head text-left"><p>Service Name</p></th>
-<th class="head text-left"><p>Default Port (Host)</p></th>
-<th class="head text-left"><p>Internal Port</p></th>
-<th class="head text-left"><p>Purpose</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-left"><p>codegen-vllm-service</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_VLLM_SERVICE_PORT}</span></code> (e.g., 8028)</p></td>
-<td class="text-left"><p>8000</p></td>
-<td class="text-left"><p>LLM Serving (vLLM on ROCm)</p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p>codegen-llm-server</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_LLM_SERVICE_PORT}</span></code> (e.g., 9000)</p></td>
-<td class="text-left"><p>80</p></td>
-<td class="text-left"><p>LLM Microservice Wrapper</p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p>codegen-backend-server</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_BACKEND_SERVICE_PORT}</span></code> (e.g., 7778)</p></td>
-<td class="text-left"><p>80</p></td>
-<td class="text-left"><p>CodeGen MegaService/Gateway</p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p>codegen-ui-server</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_UI_SERVICE_PORT}</span></code> (e.g., 5173)</p></td>
-<td class="text-left"><p>80</p></td>
-<td class="text-left"><p>Frontend User Interface</p></td>
-</tr>
-</tbody>
-</table>
-<p><em>(Note: Ports are configurable via <code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code>. Check the script for actual defaults used.)</em>
-<em>(Note: The TGI deployment (<code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>) uses <code class="docutils literal notranslate"><span class="pre">codegen-tgi-service</span></code> instead of <code class="docutils literal notranslate"><span class="pre">codegen-vllm-service</span></code>)</em></p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Docker and Docker Compose installed.</p></li>
+<li><p>x86 Intel or AMD CPU.</p></li>
+<li><p>4x AMD Instinct MI300X Accelerators.</p></li>
+<li><p>Git installed (for cloning repository).</p></li>
+<li><p>Hugging Face Hub API Token (for downloading models).</p></li>
+<li><p>Access to the internet (or a private model cache).</p></li>
+<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code> repository:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="w">  </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen/docker_compose/amd/gpu/rocm/
+</pre></div>
+</div>
+<p>Checkout a released version, such as v1.3:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+</pre></div>
+</div>
 </section>
 <section id="available-deployment-options">
 <h2>Available Deployment Options<a class="headerlink" href="#available-deployment-options" title="Link to this heading">¶</a></h2>
@@ -2722,6 +2680,100 @@
 </section>
 <section id="configuration-parameters-and-usage">
 <h2>Configuration Parameters and Usage<a class="headerlink" href="#configuration-parameters-and-usage" title="Link to this heading">¶</a></h2>
+<section id="environment-variables-set-env-sh">
+<h3>Environment Variables (<code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code>)<a class="headerlink" href="#environment-variables-set-env-sh" title="Link to this heading">¶</a></h3>
+<p>These scripts (<code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code> for vLLM, <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for TGI) configure crucial parameters passed to the containers.</p>
+<p>This example covers the single-node on-premises deployment of the CodeGen example using OPEA components. There are various ways to enable CodeGen, but this example will focus on four options available for deploying the CodeGen pipeline to AMD ROCm AI Accelerators. This example begins with a Quick Start section and then documents how to modify deployments, leverage new models and configure the number of allocated devices.</p>
+<p>This example includes the following sections:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#CodeGen-quick-start-deployment"><span class="xref myst">CodeGen Quick Start Deployment</span></a>: Demonstrates how to quickly deploy a CodeGen application/pipeline on AMD GPU (ROCm) platform.</p></li>
+<li><p><a class="reference internal" href="#CodeGen-docker-compose-files"><span class="xref myst">CodeGen Docker Compose Files</span></a>: Describes some example deployments and their docker compose files.</p></li>
+<li><p><a class="reference internal" href="#CodeGen-service-configuration"><span class="xref myst">CodeGen Service Configuration</span></a>: Describes the services and possible configuration changes.</p></li>
+</ul>
+<p><strong>Note</strong> This example requires access to a properly installed AMD ROCm platform with a functional Docker service configured</p>
+</section>
+</section>
+<section id="generate-a-huggingface-access-token">
+<h2>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h2>
+<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+</section>
+<section id="configure-the-deployment-environment">
+<h2>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h2>
+<section id="environment-variables">
+<h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h3>
+<p>Key parameters are configured via environment variables set before running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Environment Variable</p></th>
+<th class="head text-left"><p>Description</p></th>
+<th class="head text-left"><p>Default (Set Externally)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code></p></td>
+<td class="text-left"><p>External IP address of the host machine. <strong>Required.</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_external_ip_address</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code></p></td>
+<td class="text-left"><p>Your Hugging Face Hub token for model access. <strong>Required.</strong></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_huggingface_token</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code></p></td>
+<td class="text-left"><p>Hugging Face model ID for the CodeGen LLM (used by TGI/vLLM service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-Coder-7B-Instruct</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code></p></td>
+<td class="text-left"><p>Hugging Face model ID for the embedding model (used by TEI service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">BAAI/bge-base-en-v1.5</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">LLM_ENDPOINT</span></code></p></td>
+<td class="text-left"><p>Internal URL for the LLM serving endpoint (used by <code class="docutils literal notranslate"><span class="pre">codegen-llm-server</span></code>). Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-tgi-server:80/generate</span></code> or <code class="docutils literal notranslate"><span class="pre">http://codegen-vllm-server:8000/v1/chat/completions</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">TEI_EMBEDDING_ENDPOINT</span></code></p></td>
+<td class="text-left"><p>Internal URL for the Embedding service. Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-tei-embedding-server:80/embed</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DATAPREP_ENDPOINT</span></code></p></td>
+<td class="text-left"><p>Internal URL for the Data Preparation service. Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-dataprep-server:80/dataprep</span></code></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code></p></td>
+<td class="text-left"><p>External URL for the CodeGen Gateway (MegaService). Derived from <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> and port <code class="docutils literal notranslate"><span class="pre">7778</span></code>.</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:7778/v1/codegen</span></code></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">*_PORT</span></code> (Internal)</p></td>
+<td class="text-left"><p>Internal container ports (e.g., <code class="docutils literal notranslate"><span class="pre">80</span></code>, <code class="docutils literal notranslate"><span class="pre">6379</span></code>). Defined in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
+<td class="text-left"><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http_proxy</span></code> / <code class="docutils literal notranslate"><span class="pre">https_proxy</span></code>/<code class="docutils literal notranslate"><span class="pre">no_proxy</span></code></p></td>
+<td class="text-left"><p>Network proxy settings (if required).</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>To set up environment variables for deploying CodeGen services, source the <em>setup_env.sh</em> script in this directory:</p>
+<p>For TGI</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1">#ip address of the node</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1">#http proxy if any</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1">#https proxy if any</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1">#additional no proxies if needed</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>
+<span class="nb">source</span><span class="w"> </span>./set_env.sh
+</pre></div>
+</div>
+<p>For vLLM</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1">#ip address of the node</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1">#http proxy if any</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1">#https proxy if any</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1">#additional no proxies if needed</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>
+<span class="nb">source</span><span class="w"> </span>./set_env_vllm.sh
+</pre></div>
+</div>
+</section>
 <section id="docker-compose-gpu-configuration">
 <h3>Docker Compose GPU Configuration<a class="headerlink" href="#docker-compose-gpu-configuration" title="Link to this heading">¶</a></h3>
 <p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose files (<code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code>) for the LLM serving container:</p>
@@ -2757,178 +2809,119 @@
 <p><strong>How to Identify GPU Device IDs:</strong>
 Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
 </section>
-<section id="environment-variables-set-env-sh">
-<h3>Environment Variables (<code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code>)<a class="headerlink" href="#environment-variables-set-env-sh" title="Link to this heading">¶</a></h3>
-<p>These scripts (<code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code> for vLLM, <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> for TGI) configure crucial parameters passed to the containers.</p>
+<section id="deploy-the-services-using-docker-compose">
+<h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>Please refer to the table below to build different microservices from source:</p>
+<p>When using the default <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code> (vLLM-based), the following services are deployed:</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head text-left"><p>Environment Variable</p></th>
-<th class="head text-left"><p>Description</p></th>
-<th class="head text-left"><p>Example Value (Edit in Script)</p></th>
+<tr class="row-odd"><th class="head text-left"><p>Service Name</p></th>
+<th class="head text-left"><p>Default Port (Host)</p></th>
+<th class="head text-left"><p>Internal Port</p></th>
+<th class="head text-left"><p>Purpose</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code></p></td>
-<td class="text-left"><p>Your Hugging Face Hub token for model access. <strong>Required.</strong></p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_huggingfacehub_token</span></code></p></td>
+<tr class="row-even"><td class="text-left"><p>codegen-vllm-service</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_VLLM_SERVICE_PORT}</span></code> (e.g., 8028)</p></td>
+<td class="text-left"><p>8000</p></td>
+<td class="text-left"><p>LLM Serving (vLLM on ROCm)</p></td>
 </tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code></p></td>
-<td class="text-left"><p>Internal/Primary IP address of the host machine. Used for inter-service communication. <strong>Required.</strong></p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">192.168.1.100</span></code></p></td>
+<tr class="row-odd"><td class="text-left"><p>codegen-llm-server</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_LLM_SERVICE_PORT}</span></code> (e.g., 9000)</p></td>
+<td class="text-left"><p>80</p></td>
+<td class="text-left"><p>LLM Microservice Wrapper</p></td>
 </tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">EXTERNAL_HOST_IP</span></code></p></td>
-<td class="text-left"><p>External IP/hostname used to access the UI from outside. Same as <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> if no proxy/LB. <strong>Required.</strong></p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">192.168.1.100</span></code></p></td>
+<tr class="row-even"><td class="text-left"><p>codegen-backend-server</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_BACKEND_SERVICE_PORT}</span></code> (e.g., 7778)</p></td>
+<td class="text-left"><p>80</p></td>
+<td class="text-left"><p>CodeGen MegaService/Gateway</p></td>
 </tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_LLM_MODEL_ID</span></code></p></td>
-<td class="text-left"><p>Hugging Face model ID for the CodeGen LLM.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-Coder-7B-Instruct</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_VLLM_SERVICE_PORT</span></code></p></td>
-<td class="text-left"><p>Host port mapping for the vLLM serving endpoint (in <code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code>).</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">8028</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_TGI_SERVICE_PORT</span></code></p></td>
-<td class="text-left"><p>Host port mapping for the TGI serving endpoint (in <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>).</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">8028</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_LLM_SERVICE_PORT</span></code></p></td>
-<td class="text-left"><p>Host port mapping for the LLM Microservice wrapper.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">9000</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_BACKEND_SERVICE_PORT</span></code></p></td>
-<td class="text-left"><p>Host port mapping for the CodeGen MegaService/Gateway.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">7778</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">CODEGEN_UI_SERVICE_PORT</span></code></p></td>
-<td class="text-left"><p>Host port mapping for the UI service.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">5173</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http_proxy</span></code></p></td>
-<td class="text-left"><p>Network HTTP Proxy URL (if required).</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Your_HTTP_Proxy</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">https_proxy</span></code></p></td>
-<td class="text-left"><p>Network HTTPS Proxy URL (if required).</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Your_HTTPs_Proxy</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">no_proxy</span></code></p></td>
-<td class="text-left"><p>Comma-separated list of hosts to bypass proxy. Should include <code class="docutils literal notranslate"><span class="pre">localhost,127.0.0.1,$HOST_IP</span></code>.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">localhost,127.0.0.1</span></code></p></td>
+<tr class="row-odd"><td class="text-left"><p>codegen-ui-server</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">${CODEGEN_UI_SERVICE_PORT}</span></code> (e.g., 5173)</p></td>
+<td class="text-left"><p>80</p></td>
+<td class="text-left"><p>Frontend User Interface</p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>How to Use:</strong> Edit the relevant <code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code> file (<code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code> for the default) with your values, then source it (<code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">./set_env*.sh</span></code>) before running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code>.</p>
+<p>To deploy the CodeGen services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a vLLM deployment, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.sh<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>The CodeGen docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the AMD GPU (ROCM) Platform:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">5</span>/5_default<span class="w">              </span>Created<span class="w">                                                              </span><span class="m">0</span>.3s
+<span class="w"> </span>✔<span class="w"> </span>Network<span class="w"> </span>rocm_default<span class="w">              </span>Created<span class="w">                                                              </span><span class="m">0</span>.3s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-vllm-service<span class="w">    </span>Healthy<span class="w">                                                              </span><span class="m">100</span>.9s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-llm-server<span class="w">      </span>Started<span class="w">                                                              </span><span class="m">101</span>.2s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-backend-server<span class="w">  </span>Started<span class="w">                                                              </span><span class="m">101</span>.5s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-ui-server<span class="w">       </span>Started<span class="w">                                                              </span><span class="m">101</span>.9s
+</pre></div>
+</div>
 </section>
 </section>
-<section id="building-docker-images-locally-optional">
-<h2>Building Docker Images Locally (Optional)<a class="headerlink" href="#building-docker-images-locally-optional" title="Link to this heading">¶</a></h2>
-<p>Follow these steps if you need to build the Docker images from source instead of using pre-built ones.</p>
-<section id="setup-build-environment">
-<h3>1. Setup Build Environment<a class="headerlink" href="#setup-build-environment" title="Link to this heading">¶</a></h3>
-<ul>
-<li><h4 class="rubric" id="create-application-install-directory-and-go-to-it">Create application install directory and go to it:</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/codegen-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>codegen-install
-</pre></div>
-</div>
-</li>
-</ul>
 </section>
-<section id="clone-repositories">
-<h3>2. Clone Repositories<a class="headerlink" href="#clone-repositories" title="Link to this heading">¶</a></h3>
-<ul>
-<li><h4 class="rubric" id="clone-the-repository-genaiexamples-the-default-repository-branch-main-is-used-here">Clone the repository GenAIExamples (the default repository branch “main” is used here):</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<section id="to-deploy-the-codegen-services-execute-the-docker-compose-up-command-with-the-appropriate-arguments-for-a-tgi-deployment-execute">
+<h1>To deploy the CodeGen services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a TGI deployment, execute:<a class="headerlink" href="#to-deploy-the-codegen-services-execute-the-docker-compose-up-command-with-the-appropriate-arguments-for-a-tgi-deployment-execute" title="Link to this heading">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span>  <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
 </pre></div>
 </div>
-<p>If you need to use a specific branch/tag of the GenAIExamples repository, then (v1.3 replace with its own value):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIExamples<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+<p>The CodeGen docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the AMD GPU (ROCM) Platform:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">5</span>/5_default<span class="w">              </span>Created<span class="w">                                                                </span><span class="m">0</span>.4s
+<span class="w"> </span>✔<span class="w"> </span>Network<span class="w"> </span>rocm_default<span class="w">              </span>Created<span class="w">                                                                </span><span class="m">0</span>.4s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-tgi-service<span class="w">     </span>Healthy<span class="w">                                                                </span><span class="m">102</span>.6s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-llm-server<span class="w">      </span>Started<span class="w">                                                                </span><span class="m">100</span>.2s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-backend-server<span class="w">  </span>Started<span class="w">                                                                </span><span class="m">103</span>.7s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-ui-server<span class="w">       </span>Started<span class="w">                                                                </span><span class="m">102</span>.9s
 </pre></div>
 </div>
-<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
-</li>
-<li><h4 class="rubric" id="go-to-build-directory">Go to build directory:</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/codegen-install/GenAIExamples/CodeGen/docker_image_build
-</pre></div>
-</div>
-</li>
-<li><p>Cleaning up the GenAIComps repository if it was previously cloned in this directory.
-This is necessary if the build was performed earlier and the GenAIComps folder exists and is not empty:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>Y<span class="w"> </span><span class="p">|</span><span class="w"> </span>rm<span class="w"> </span>-R<span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</li>
-<li><h4 class="rubric" id="clone-the-repository-genaicomps-the-default-repository-branch-main-is-used-here">Clone the repository GenAIComps (the default repository branch “main” is used here):</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-</pre></div>
-</div>
-<p>If you use a specific tag of the GenAIExamples repository,
-then you should also use the corresponding tag for GenAIComps. (v1.3 replace with its own value):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>GenAIComps<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
-</pre></div>
-</div>
-<p>We remind you that when using a specific version of the code, you need to use the README from this version.</p>
-</li>
-</ul>
+<section id="building-custom-images-optional">
+<h2>Building Custom Images (Optional)<a class="headerlink" href="#building-custom-images-optional" title="Link to this heading">¶</a></h2>
+<p>If you need to modify the microservices:</p>
+<ol class="arabic simple">
+<li><p>Clone the <a class="reference external" href="https://github.com/opea-project/GenAIComps">OPEA GenAIComps</a> repository.</p></li>
+<li><p>Follow build instructions in the respective component directories (e.g., <code class="docutils literal notranslate"><span class="pre">comps/llms/text-generation</span></code>, <code class="docutils literal notranslate"><span class="pre">comps/codegen</span></code>, <code class="docutils literal notranslate"><span class="pre">comps/ui/gradio</span></code>, etc.). Use the provided Dockerfiles (e.g., <code class="docutils literal notranslate"><span class="pre">CodeGen/Dockerfile</span></code>, <code class="docutils literal notranslate"><span class="pre">CodeGen/ui/docker/Dockerfile.gradio</span></code>).</p></li>
+<li><p>Tag your custom images appropriately (e.g., <code class="docutils literal notranslate"><span class="pre">my-custom-codegen:latest</span></code>).</p></li>
+<li><p>Update the <code class="docutils literal notranslate"><span class="pre">image:</span></code> fields in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file to use your custom image tags.</p></li>
+</ol>
+<p><em>Refer to the main <a class="reference internal" href="../../../../README.html"><span class="std std-doc">CodeGen README</span></a> for links to relevant GenAIComps components.</em></p>
 </section>
-<section id="select-services-and-build">
-<h3>3. Select Services and Build<a class="headerlink" href="#select-services-and-build" title="Link to this heading">¶</a></h3>
-<ul>
-<li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
-<p>Select the services corresponding to your desired deployment (vLLM is the default):</p>
-<h5 class="rubric" id="vllm-based-application-default">vLLM-based application (Default)</h5>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;vllm-rocm llm-textgen codegen codegen-ui&quot;</span>
+<section id="validate-services">
+<h2>Validate Services<a class="headerlink" href="#validate-services" title="Link to this heading">¶</a></h2>
+<section id="check-the-deployment-status-for-tgi-base-deployment">
+<h3>Check the Deployment Status for TGI base deployment<a class="headerlink" href="#check-the-deployment-status-for-tgi-base-deployment" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>-a
 </pre></div>
 </div>
-<h5 class="rubric" id="tgi-based-application">TGI-based application</h5>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;llm-textgen codegen codegen-ui&quot;</span>
+<p>For the default deployment, the following 10 containers should have started:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                      </span>COMMAND<span class="w">                  </span>CREATED<span class="w">         </span>STATUS<span class="w">                   </span>PORTS<span class="w">                                           </span>NAMES
+1d08caeae2ed<span class="w">   </span>opea/codegen-ui:latest<span class="w">                                     </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">        </span><span class="m">0</span>.0.0.0:18151-&gt;5173/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:18151-&gt;5173/tcp<span class="w">   </span>codegen-ui-server
+f52adc66c116<span class="w">   </span>opea/codegen:latest<span class="w">                                        </span><span class="s2">&quot;python codegen.py&quot;</span><span class="w">      </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">        </span><span class="m">0</span>.0.0.0:18150-&gt;7778/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:18150-&gt;7778/tcp<span class="w">   </span>codegen-backend-server
+4b1cb8f5d4ff<span class="w">   </span>opea/llm-textgen:latest<span class="w">                                    </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span>About<span class="w"> </span>a<span class="w"> </span>minute<span class="w">        </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">       </span>codegen-llm-server
+3bb4ee0abf15<span class="w">   </span>ghcr.io/huggingface/text-generation-inference:2.4.1-rocm<span class="w">   </span><span class="s2">&quot;/tgi-entrypoint.sh …&quot;</span><span class="w">   </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8028-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8028-&gt;80/tcp<span class="w">         </span>codegen-tgi-service
 </pre></div>
 </div>
-</li>
-<li><h4 class="rubric" id="optional-pull-tgi-docker-image-do-this-if-you-plan-to-build-use-the-tgi-variant">Optional. Pull TGI Docker Image (Do this if you plan to build/use the TGI variant)</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm
-</pre></div>
-</div>
-</li>
-<li><h4 class="rubric" id="build-docker-images">Build Docker Images</h4>
-<p><em>Ensure you are in the <code class="docutils literal notranslate"><span class="pre">~/codegen-install/GenAIExamples/CodeGen/docker_image_build</span></code> directory.</em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span><span class="si">${</span><span class="nv">service_list</span><span class="si">}</span><span class="w"> </span>--no-cache
-</pre></div>
-</div>
-<p>After the build, check the list of images with the command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>image<span class="w"> </span>ls
-</pre></div>
-</div>
-<p>The list of images should include (depending on <code class="docutils literal notranslate"><span class="pre">service_list</span></code>):</p>
-<h6 class="rubric" id="vllm-based-application">vLLM-based application:</h6>
-<ul class="simple">
-<li><p>opea/vllm-rocm:latest</p></li>
-<li><p>opea/llm-textgen:latest</p></li>
-<li><p>opea/codegen:latest</p></li>
-<li><p>opea/codegen-ui:latest</p></li>
-</ul>
-<h6 class="rubric" id="id1">TGI-based application:</h6>
-<ul class="simple">
-<li><p>ghcr.io/huggingface/text-generation-inference:2.3.1-rocm (if pulled)</p></li>
-<li><p>opea/llm-textgen:latest</p></li>
-<li><p>opea/codegen:latest</p></li>
-<li><p>opea/codegen-ui:latest</p></li>
-</ul>
-<p><em>After building, ensure the <code class="docutils literal notranslate"><span class="pre">image:</span></code> tags in the main <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code> or <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> (in the <code class="docutils literal notranslate"><span class="pre">amd/gpu/rocm</span></code> directory) match these built images (e.g., <code class="docutils literal notranslate"><span class="pre">opea/vllm-rocm:latest</span></code>).</em></p>
-</li>
-</ul>
 </section>
+<section id="check-the-deployment-status-for-vllm-base-deployment">
+<h3>Check the Deployment Status for vLLM base deployment<a class="headerlink" href="#check-the-deployment-status-for-vllm-base-deployment" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>-a
+</pre></div>
+</div>
+<p>For the default deployment, the following 10 containers should have started:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                     </span>COMMAND<span class="w">                  </span>CREATED<span class="w">          </span>STATUS<span class="w">                    </span>PORTS<span class="w">                                           </span>NAMES
+f100cc326343<span class="w">   </span>opea/codegen-ui:latest<span class="w">    </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">16</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">14</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:18151-&gt;5173/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:18151-&gt;5173/tcp<span class="w">   </span>codegen-ui-server
+c59de0b2da5b<span class="w">   </span>opea/codegen:latest<span class="w">       </span><span class="s2">&quot;python codegen.py&quot;</span><span class="w">      </span><span class="m">16</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">14</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:18150-&gt;7778/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:18150-&gt;7778/tcp<span class="w">   </span>codegen-backend-server
+dcd83e0e4c0f<span class="w">   </span>opea/llm-textgen:latest<span class="w">   </span><span class="s2">&quot;bash entrypoint.sh&quot;</span><span class="w">     </span><span class="m">16</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">14</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:9000-&gt;9000/tcp,<span class="w"> </span>:::9000-&gt;9000/tcp<span class="w">       </span>codegen-llm-server
+d091d8f2fab6<span class="w">   </span>opea/vllm-rocm:latest<span class="w">     </span><span class="s2">&quot;python3 /workspace/…&quot;</span><span class="w">   </span><span class="m">16</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w"> </span><span class="o">(</span>healthy<span class="o">)</span><span class="w">   </span><span class="m">0</span>.0.0.0:8028-&gt;8011/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8028-&gt;8011/tcp<span class="w">     </span>codegen-vllm-service
+</pre></div>
+</div>
 </section>
-<section id="validate-service-health">
-<h2>Validate Service Health<a class="headerlink" href="#validate-service-health" title="Link to this heading">¶</a></h2>
-<p>Run these checks after starting the services to ensure they are operational. Focus on the vLLM checks first as it’s the default.</p>
-<section id="validate-the-vllm-tgi-service">
-<h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
-<section id="if-you-use-vllm-default-using-compose-vllm-yaml-and-set-env-vllm-sh">
-<h4>If you use vLLM (Default - using <code class="docutils literal notranslate"><span class="pre">compose_vllm.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code>)<a class="headerlink" href="#if-you-use-vllm-default-using-compose-vllm-yaml-and-set-env-vllm-sh" title="Link to this heading">¶</a></h4>
-<ul>
-<li><p><strong>How Tested:</strong> Send a POST request with a sample prompt to the vLLM endpoint.</p></li>
-<li><p><strong>CURL Command:</strong></p>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+</section>
+<section id="if-you-use-vllm">
+<h3>If you use vLLM:<a class="headerlink" href="#if-you-use-vllm" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &#39;</span><span class="se">\</span>
 <span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a high-level API for a TODO list application. &#39;</span><span class="se">\</span>
 <span class="s1">&#39;The API takes as input an operation request and updates the TODO list in place. &#39;</span><span class="se">\</span>
@@ -2940,26 +2933,38 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Sample Output:</strong></p>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-142f34ef35b64a8db3deedd170fed951&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span>
-<span class="w">  </span><span class="c1">// ... (rest of output) ...</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742270316</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;```python\nfrom typing import Optional, List, Dict, Union\nfrom pydantic import BaseModel, validator\n\nclass OperationRequest(BaseModel):\n    # Assuming OperationRequest is already defined as per the given text\n    pass\n\nclass UpdateOperation(OperationRequest):\n    new_items: List[str]\n\n    def apply_and_maybe_raise(self, updatable_item: \&quot;Updatable todo list\&quot;) -&gt; None:\n        # Assuming updatable_item is an instance of Updatable todo list\n        self.validate()\n        updatable_item.add_items(self.new_items)\n\nclass Updatable:\n    # Abstract class for items that can be updated\n    pass\n\nclass TodoList(Updatable):\n    # Class that represents a todo list\n    items: List[str]\n\n    def add_items(self, new_items: List[str]) -&gt; None:\n        self.items.extend(new_items)\n\ndef handle_request(operation_request: OperationRequest) -&gt; None:\n    # Function to handle an operation request\n    if isinstance(operation_request, UpdateOperation):\n        operation_request.apply_and_maybe_raise(get_todo_list_for_update())\n    else:\n        raise ValueError(\&quot;Invalid operation request\&quot;)\n\ndef get_todo_list_for_update() -&gt; TodoList:\n    # Function to get the todo list for update\n    # Assuming this function returns the&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">322</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Expected Result:</strong> A JSON response with a <code class="docutils literal notranslate"><span class="pre">choices[0].message.content</span></code> field containing meaningful generated code.</p></li>
-</ul>
+<p>If the service response has a meaningful response in the value of the “choices.message.content” key,
+then we consider the vLLM service to be successfully launched</p>
 </section>
-<section id="if-you-use-tgi-using-compose-yaml-and-set-env-sh">
-<h4>If you use TGI (using <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>)<a class="headerlink" href="#if-you-use-tgi-using-compose-yaml-and-set-env-sh" title="Link to this heading">¶</a></h4>
-<ul>
-<li><p><strong>How Tested:</strong> Send a POST request with a sample prompt to the TGI endpoint.</p></li>
-<li><p><strong>CURL Command:</strong></p>
+<section id="if-you-use-tgi">
+<h3>If you use TGI:<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;Implement a high-level API for a TODO list application. &#39;</span><span class="se">\</span>
-<span class="c1"># ... (data payload as before) ...</span>
+<span class="s1">&#39;The API takes as input an operation request and updates the TODO list in place. &#39;</span><span class="se">\</span>
+<span class="s1">&#39;If the request is invalid, raise an exception.&quot;,&#39;</span><span class="se">\</span>
 <span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">CODEGEN_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
@@ -2968,26 +2973,21 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Sample Output:</strong></p>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; The supported operations are \&quot;add_task\&quot;, \&quot;complete_task\&quot;, and \&quot;remove_task\&quot;. # ... (generated code) ...&quot;</span>
+<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; The supported operations are \&quot;add_task\&quot;, \&quot;complete_task\&quot;, and \&quot;remove_task\&quot;. Each operation can be defined with a corresponding function in the API.\n\nAdd your API in the following format:\n\n```\nTODO App API\n\nsupported operations:\n\noperation name           description\n-----------------------  ------------------------------------------------\n&lt;operation_name&gt;         &lt;operation description&gt;\n```\n\nUse type hints for function parameters and return values. Specify a text description of the API&#39;s supported operations.\n\nUse the following code snippet as a starting point for your high-level API function:\n\n```\nclass TodoAPI:\n    def __init__(self, tasks: List[str]):\n        self.tasks = tasks  # List of tasks to manage\n\n    def add_task(self, task: str) -&gt; None:\n        self.tasks.append(task)\n\n    def complete_task(self, task: str) -&gt; None:\n        self.tasks = [t for t in self.tasks if t != task]\n\n    def remove_task(self, task: str) -&gt; None:\n        self.tasks = [t for t in self.tasks if t != task]\n\n    def handle_request(self, request: Dict[str, str]) -&gt; None:\n        operation = request.get(&#39;operation&#39;)\n        if operation == &#39;add_task&#39;:\n            self.add_task(request.get(&#39;task&#39;))\n        elif&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Expected Result:</strong> A JSON response with a <code class="docutils literal notranslate"><span class="pre">generated_text</span></code> field containing meaningful generated code.</p></li>
-</ul>
-</section>
+<p>If the service response has a meaningful response in the value of the “generated_text” key,
+then we consider the TGI service to be successfully launched</p>
 </section>
 <section id="validate-the-llm-service">
 <h3>2. Validate the LLM Service<a class="headerlink" href="#validate-the-llm-service" title="Link to this heading">¶</a></h3>
-<ul>
-<li><p><strong>Service Name:</strong> <code class="docutils literal notranslate"><span class="pre">codegen-llm-server</span></code></p></li>
-<li><p><strong>How Tested:</strong> Send a POST request to the LLM microservice wrapper endpoint.</p></li>
-<li><p><strong>CURL Command:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;query&quot;:&quot;Implement a high-level API for a TODO list application. &#39;</span><span class="se">\</span>
-<span class="c1"># ... (data payload as before) ...</span>
+<span class="s1">&#39;The API takes as input an operation request and updates the TODO list in place. &#39;</span><span class="se">\</span>
+<span class="s1">&#39;If the request is invalid, raise an exception.&quot;,&#39;</span><span class="se">\</span>
+<span class="s1">&#39;&quot;max_tokens&quot;:256,&quot;top_k&quot;:10,&quot;top_p&quot;:0.95,&quot;typical_p&quot;:0.95,&quot;temperature&quot;:0.01,&#39;</span><span class="se">\</span>
 <span class="s1">&#39;&quot;repetition_penalty&quot;:1.03,&quot;stream&quot;:false}&#39;</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">CODEGEN_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
@@ -2996,105 +2996,173 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Sample Output:</strong> (Structure may vary slightly depending on whether vLLM or TGI is backend)</p>
+<p>Checking the response from the service. The response should be similar to JSON:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cmpl-4e89a590b1af46bfb37ce8f12b2996f8&quot;</span><span class="w"> </span><span class="c1">// Example ID</span>
-<span class="w">  </span><span class="c1">// ... (output structure depends on backend, check original validation) ...</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cmpl-4e89a590b1af46bfb37ce8f12b2996f8&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; The API should support the following operations:\n\n1. Add a new task to the TODO list.\n2. Remove a task from the TODO list.\n3. Mark a task as completed.\n4. Retrieve the list of all tasks.\n\nThe API should also support the following features:\n\n1. The ability to filter tasks based on their completion status.\n2. The ability to sort tasks based on their priority.\n3. The ability to search for tasks based on their description.\n\nHere is an example of how the API can be used:\n\n```python\ntodo_list = []\napi = TodoListAPI(todo_list)\n\n# Add tasks\napi.add_task(\&quot;Buy groceries\&quot;)\napi.add_task(\&quot;Finish homework\&quot;)\n\n# Mark a task as completed\napi.mark_task_completed(\&quot;Buy groceries\&quot;)\n\n# Retrieve the list of all tasks\nprint(api.get_all_tasks())\n\n# Filter tasks based on completion status\nprint(api.filter_tasks(completed=True))\n\n# Sort tasks based on priority\napi.sort_tasks(priority=\&quot;high\&quot;)\n\n# Search for tasks based on description\nprint(api.search_tasks(description=\&quot;homework\&quot;))\n```\n\nIn this example, the `TodoListAPI` class is used to manage the TODO list. The `add_task` method adds a new task to the list, the `mark_task_completed` method&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742270567</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_completion&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;system_fingerprint&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">37</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">293</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;completion_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Expected Result:</strong> A JSON response containing meaningful generated code within the <code class="docutils literal notranslate"><span class="pre">choices</span></code> array.</p></li>
-</ul>
-</section>
-<section id="validate-the-megaservice-backend">
-<h3>3. Validate the MegaService (Backend)<a class="headerlink" href="#validate-the-megaservice-backend" title="Link to this heading">¶</a></h3>
-<ul>
-<li><p><strong>Service Name:</strong> <code class="docutils literal notranslate"><span class="pre">codegen-backend-server</span></code></p></li>
-<li><p><strong>How Tested:</strong> Send a POST request to the main CodeGen gateway endpoint.</p></li>
-<li><p><strong>CURL Command:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;messages&quot;: &quot;Implement a high-level API for a TODO list application. &#39;</span><span class="se">\</span>
-<span class="c1"># ... (data payload as before) ...</span>
-<span class="s1">&#39;If the request is invalid, raise an exception.&quot;}&#39;</span>
-
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">CODEGEN_BACKEND_SERVICE_PORT</span><span class="si">}</span>/v1/codegen<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Sample Output:</strong></p>
-<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>data: {&quot;id&quot;:&quot;cmpl-...&quot;, ...}
-# ... more data chunks ...
-data: [DONE]
-</pre></div>
-</div>
-</li>
-<li><p><strong>Expected Result:</strong> A stream of server-sent events (SSE) containing JSON data with generated code tokens, ending with <code class="docutils literal notranslate"><span class="pre">data:</span> <span class="pre">[DONE]</span></code>.</p></li>
-</ul>
-</section>
-<section id="validate-the-frontend-ui">
-<h3>4. Validate the Frontend (UI)<a class="headerlink" href="#validate-the-frontend-ui" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Service Name:</strong> <code class="docutils literal notranslate"><span class="pre">codegen-ui-server</span></code></p></li>
-<li><p><strong>How Tested:</strong> Access the UI URL in a web browser and perform a test query.</p></li>
-<li><p><strong>Steps:</strong> See <a class="reference internal" href="#how-to-open-the-ui"><span class="xref myst">How to Open the UI</span></a>.</p></li>
-<li><p><strong>Expected Result:</strong> The UI loads correctly, and submitting a prompt results in generated code displayed on the page.</p></li>
-</ul>
 </section>
 </section>
-<section id="how-to-open-the-ui">
-<h2>How to Open the UI<a class="headerlink" href="#how-to-open-the-ui" title="Link to this heading">¶</a></h2>
+<section id="accessing-the-user-interface-ui">
+<h2>Accessing the User Interface (UI)<a class="headerlink" href="#accessing-the-user-interface-ui" title="Link to this heading">¶</a></h2>
+<p>Multiple UI options can be configured via the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p>
+<section id="svelte-ui-optional">
+<h3>Svelte UI (Optional)<a class="headerlink" href="#svelte-ui-optional" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Determine the UI access URL using the <code class="docutils literal notranslate"><span class="pre">EXTERNAL_HOST_IP</span></code> and <code class="docutils literal notranslate"><span class="pre">CODEGEN_UI_SERVICE_PORT</span></code> variables defined in your sourced <code class="docutils literal notranslate"><span class="pre">set_env*.sh</span></code> file (use <code class="docutils literal notranslate"><span class="pre">set_env_vllm.sh</span></code> for the default vLLM deployment). The default URL format is:
-<code class="docutils literal notranslate"><span class="pre">http://${EXTERNAL_HOST_IP}:${CODEGEN_UI_SERVICE_PORT}</span></code>
-(e.g., <code class="docutils literal notranslate"><span class="pre">http://192.168.1.100:5173</span></code>)</p></li>
-<li><p>Open this URL in your web browser.</p></li>
-<li><p>You should see the CodeGen starting page:
-<img alt="UI start page" src="../../../../../../_images/ui-starting-page.png" /></p></li>
-<li><p>Enter a prompt in the input field (e.g., “Write a Python code that returns the current time and date”) and press Enter or click the submit button.</p></li>
-<li><p>Verify that the generated code appears correctly:
-<img alt="UI result page" src="../../../../../../_images/ui-result-page.png" /></p></li>
+<li><p>Modify <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>: Comment out the <code class="docutils literal notranslate"><span class="pre">codegen-gradio-ui-server</span></code> service and uncomment/add the <code class="docutils literal notranslate"><span class="pre">codegen-xeon-ui-server</span></code> (Svelte) service definition, ensuring the port mapping is correct (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;-</span> <span class="pre">5173:5173&quot;</span></code>).</p></li>
+<li><p>Restart Docker Compose: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">--profile</span> <span class="pre">&lt;profile_name&gt;</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
+<li><p>Access: <code class="docutils literal notranslate"><span class="pre">http://{HOST_IP}:5173</span></code> (or the host port you mapped).</p></li>
 </ol>
+<p><img alt="Svelte UI Init" src="../../../../../../_images/codeGen_ui_init.jpg" /></p>
+</section>
+<section id="vs-code-extension-optional">
+<h3>VS Code Extension (Optional)<a class="headerlink" href="#vs-code-extension-optional" title="Link to this heading">¶</a></h3>
+<p>Users can interact with the backend service using the <code class="docutils literal notranslate"><span class="pre">Neural</span> <span class="pre">Copilot</span></code> VS Code extension.</p>
+<ol class="arabic simple">
+<li><p><strong>Install:</strong> Find and install <code class="docutils literal notranslate"><span class="pre">Neural</span> <span class="pre">Copilot</span></code> from the VS Code Marketplace.
+<img alt="Install Copilot" src="../../../../../../_images/codegen_copilot.png" /></p></li>
+<li><p><strong>Configure:</strong> Set the “Service URL” in the extension settings to your CodeGen backend endpoint: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:7778/v1/codegen</span></code> (use the correct port if changed).
+<img alt="Configure Endpoint" src="../../../../../../_images/codegen_endpoint.png" /></p></li>
+<li><p><strong>Usage:</strong></p>
+<ul class="simple">
+<li><p><strong>Inline Suggestion:</strong> Type a comment describing the code you want (e.g., <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">Python</span> <span class="pre">function</span> <span class="pre">to</span> <span class="pre">read</span> <span class="pre">a</span> <span class="pre">file</span></code>) and wait for suggestions.
+<img alt="Code Suggestion" src="../../../../../../_images/codegen_suggestion.png" /></p></li>
+<li><p><strong>Chat:</strong> Use the Neural Copilot panel to chat with the AI assistant about code.
+<img alt="Chat Dialog" src="../../../../../../_images/codegen_dialog.png" /></p></li>
+</ul>
+</li>
+</ol>
+</section>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<p><em>(No specific troubleshooting steps provided in the original content for this file. Add common issues if known.)</em></p>
 <ul class="simple">
-<li><p>Check container logs (<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">&lt;file&gt;</span> <span class="pre">logs</span> <span class="pre">&lt;service_name&gt;</span></code>), especially for <code class="docutils literal notranslate"><span class="pre">codegen-vllm-service</span></code> or <code class="docutils literal notranslate"><span class="pre">codegen-tgi-service</span></code>.</p></li>
-<li><p>Ensure <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code> is correct.</p></li>
-<li><p>Verify ROCm drivers and Docker setup for GPU access.</p></li>
-<li><p>Confirm network connectivity and proxy settings.</p></li>
-<li><p>Ensure <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> and <code class="docutils literal notranslate"><span class="pre">EXTERNAL_HOST_IP</span></code> are correctly set and accessible.</p></li>
-<li><p>If building locally, ensure build steps completed without error and image tags match compose file.</p></li>
+<li><p><strong>Model Download Issues:</strong> Check <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>. Ensure internet connectivity or correct proxy settings. Check logs of <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>/<code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-embedding-server</span></code>. Gated models need prior Hugging Face access.</p></li>
+<li><p><strong>Connection Errors:</strong> Verify <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> is correct and accessible. Check <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> for port mappings. Ensure <code class="docutils literal notranslate"><span class="pre">no_proxy</span></code> includes <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> if using a proxy. Check logs of the service failing to connect (e.g., <code class="docutils literal notranslate"><span class="pre">codegen-backend-server</span></code> logs if it can’t reach <code class="docutils literal notranslate"><span class="pre">codegen-llm-server</span></code>).</p></li>
+<li><p><strong>“Container name is in use”</strong>: Stop existing containers (<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span></code>) or change <code class="docutils literal notranslate"><span class="pre">container_name</span></code> in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
+<li><p><strong>Resource Issues:</strong> CodeGen models can be memory-intensive. Monitor host RAM usage. Increase Docker resources if needed.</p></li>
 </ul>
-</section>
-<section id="stopping-the-application">
-<h2>Stopping the Application<a class="headerlink" href="#stopping-the-application" title="Link to this heading">¶</a></h2>
-<section id="if-you-use-vllm-default">
-<h3>If you use vLLM (Default)<a class="headerlink" href="#if-you-use-vllm-default" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure you are in the correct directory</span>
-<span class="c1"># cd GenAIExamples/CodeGen/docker_compose/amd/gpu/rocm</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm.yaml<span class="w"> </span>down
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">0</span>/1
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">1</span>/2degen-ui-server<span class="w">  </span>Stopping<span class="w">                                                                                               </span><span class="m">0</span>.4s
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">2</span>/3degen-ui-server<span class="w">       </span>Removed<span class="w">                                                                                          </span><span class="m">10</span>.5s
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">2</span>/3degen-ui-server<span class="w">       </span>Removed<span class="w">                                                                                          </span><span class="m">10</span>.5s
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">3</span>/4degen-ui-server<span class="w">       </span>Removed<span class="w">                                                                                          </span><span class="m">10</span>.5s
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">5</span>/5degen-ui-server<span class="w">       </span>Removed<span class="w">                                                                                          </span><span class="m">10</span>.5s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-ui-server<span class="w">       </span>Removed<span class="w">                                                                                         </span><span class="m">10</span>.5s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-backend-server<span class="w">  </span>Removed<span class="w">                                                                                         </span><span class="m">10</span>.4s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-llm-server<span class="w">      </span>Removed<span class="w">                                                                                         </span><span class="m">10</span>.4s
+<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>codegen-tgi-service<span class="w">     </span>Removed<span class="w">                                                                                          </span><span class="m">8</span>.0s
+<span class="w"> </span>✔<span class="w"> </span>Network<span class="w"> </span>rocm_default<span class="w">              </span>Removed<span class="w">                                                                                          </span><span class="m">0</span>.6s
 </pre></div>
 </div>
 </section>
-<section id="if-you-use-tgi">
-<h3>If you use TGI<a class="headerlink" href="#if-you-use-tgi" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure you are in the correct directory</span>
-<span class="c1"># cd GenAIExamples/CodeGen/docker_compose/amd/gpu/rocm</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
-</pre></div>
-</div>
+<section id="compose-yaml-tgi-deployment">
+<h3>compose.yaml - TGI Deployment<a class="headerlink" href="#compose-yaml-tgi-deployment" title="Link to this heading">¶</a></h3>
+<p>The TGI (Text Generation Inference) deployment and the default deployment differ primarily in their service configurations and specific focus on handling large language models (LLMs). The TGI deployment includes a unique <code class="docutils literal notranslate"><span class="pre">codegen-tgi-service</span></code>, which utilizes the <code class="docutils literal notranslate"><span class="pre">ghcr.io/huggingface/text-generation-inference:2.4.1-rocm</span></code> image and is specifically configured to run on AMD hardware.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>AMD Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>codegen-backend-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>codegen-llm-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>codegen-tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.1-rocm</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>codegen-ui-server</p></td>
+<td><p>opea/codegen-ui:latest</p></td>
+<td><p>no</p></td>
+</tr>
+</tbody>
+</table>
 </section>
+<section id="compose-vllm-yaml-vllm-deployment">
+<h3>compose_vllm.yaml - vLLM Deployment<a class="headerlink" href="#compose-vllm-yaml-vllm-deployment" title="Link to this heading">¶</a></h3>
+<p>The vLLM deployment utilizes AMD devices primarily for the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code>, which handles large language model (LLM) tasks. This service is configured to maximize the use of AMD’s capabilities, potentially allocating multiple devices to enhance parallel processing and throughput.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+<th class="head"><p>AMD Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>codegen-backend-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>codegen-llm-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>codegen-vllm-service</p></td>
+<td><p>opea/vllm-rocm:latest</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>codegen-ui-server</p></td>
+<td><p>opea/codegen-ui:latest</p></td>
+<td><p>no</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="codegen-service-configuration">
+<h2>CodeGen Service Configuration<a class="headerlink" href="#codegen-service-configuration" title="Link to this heading">¶</a></h2>
+<p>The table provides a comprehensive overview of the CodeGen services utilized across various deployments as illustrated in the example Docker Compose files. Each row in the table represents a distinct service, detailing its possible images used to enable it and a concise description of its function within the deployment architecture. These services collectively enable functionalities such as data storage and management, text embedding, retrieval, reranking, and large language model processing.</p>
+<p>ex.: (From ChatQna)
+| Service Name | Possible Image Names | Optional | Description
+| redis-vector-db | redis/redis-stack:7.2.0-v9 | No | Acts as a Redis database for storing and managing</p>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<p>In the configuration of the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and the <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>, two variables play a primary role in determining the service’s performance and functionality. The <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> parameter specifies the particular large language model (LLM) that the service will utilize, effectively determining the capabilities and characteristics of the language processing tasks it can perform. This model identifier ensures that the service is aligned with the specific requirements of the application, whether it involves text generation, comprehension, or other language-related tasks.</p>
+<p>However, developers need to be aware of the models that have been tested with the respective service image supporting the <code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>. For example, documentation for the OPEA GenAIComps v1.0 release specify the list of <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/v1.0/comps/llms/text-generation/README.md#validated-llm-models">validated LLM models</a> for each AMD ROCm enabled service image. Specific models may have stringent requirements on the number of AMD ROCm devices required to support them.</p>
+<p>This guide should enable developer to deploy the default configuration or any of the other compose yaml files for different configurations. It also highlights the configurable parameters that can be set before deployment.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Explore the alternative TGI deployment option if needed.</p></li>
-<li><p>Refer to the main <a class="reference internal" href="../../../../README.html"><span class="std std-doc">CodeGen README</span></a> for architecture details and links to other deployment methods (Kubernetes, Xeon).</p></li>
 <li><p>Consult the <a class="reference external" href="https://github.com/opea-project/GenAIComps">OPEA GenAIComps</a> repository for details on individual microservices.</p></li>
+<li><p>Refer to the main <a class="reference internal" href="../../../../README.html"><span class="std std-doc">CodeGen README</span></a> for links to benchmarking and Kubernetes deployment options.</p></li>
 </ul>
 </section>
 </section>
