@@ -2620,7 +2620,7 @@
              
   <section id="kubernetes-installation-demo-using-kubeadm">
 <h1>Kubernetes installation demo using kubeadm<a class="headerlink" href="#kubernetes-installation-demo-using-kubeadm" title="Link to this heading">¶</a></h1>
-<p>In this demo, we’ll install Kubernetes v1.29 using official <a class="reference external" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/">kubeadm</a> on a 2 node cluster.</p>
+<p>In this demo, we’ll install Kubernetes v1.32 using official <a class="reference external" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/">kubeadm</a> on a 2 node cluster.</p>
 <section id="node-configuration">
 <h2>Node configuration<a class="headerlink" href="#node-configuration" title="Link to this heading">¶</a></h2>
 <table class="docutils align-default">
@@ -2697,11 +2697,11 @@ sudo<span class="w"> </span>sysctl<span class="w"> </span>--system
 <li><p>Install containerd CRI and relevant components</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You may change the component version if necessary</span>
-<span class="nv">CONTAINERD_VER</span><span class="o">=</span><span class="s2">&quot;1.7.18&quot;</span>
-<span class="nv">RUNC_VER</span><span class="o">=</span><span class="s2">&quot;1.1.12&quot;</span>
-<span class="nv">CNI_VER</span><span class="o">=</span><span class="s2">&quot;1.5.0&quot;</span>
-<span class="nv">NERDCTL_VER</span><span class="o">=</span><span class="s2">&quot;1.7.6&quot;</span>
-<span class="nv">BUILDKIT_VER</span><span class="o">=</span><span class="s2">&quot;0.13.2&quot;</span>
+<span class="nv">CONTAINERD_VER</span><span class="o">=</span><span class="s2">&quot;1.7.27&quot;</span>
+<span class="nv">RUNC_VER</span><span class="o">=</span><span class="s2">&quot;1.2.5&quot;</span>
+<span class="nv">CNI_VER</span><span class="o">=</span><span class="s2">&quot;1.6.2&quot;</span>
+<span class="nv">NERDCTL_VER</span><span class="o">=</span><span class="s2">&quot;2.0.4&quot;</span>
+<span class="nv">BUILDKIT_VER</span><span class="o">=</span><span class="s2">&quot;0.20.0&quot;</span>
 
 <span class="c1">#Install Runc</span>
 wget<span class="w"> </span>https://github.com/opencontainers/runc/releases/download/v<span class="si">${</span><span class="nv">RUNC_VER</span><span class="si">}</span>/runc.amd64
@@ -2763,7 +2763,7 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class=
 <li><p>Install kubeadm and related components</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You may change the component version if necessary</span>
-<span class="nv">K8S_VER</span><span class="o">=</span><span class="s2">&quot;1.29&quot;</span>
+<span class="nv">K8S_VER</span><span class="o">=</span><span class="s2">&quot;1.32&quot;</span>
 
 <span class="c1">#Install kubeadm/kubectl/kubelet</span>
 sudo<span class="w"> </span>apt-get<span class="w"> </span>update
@@ -2791,7 +2791,7 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w
 <ol class="arabic simple" start="2">
 <li><p>Initialize the Kubernetes control-plane node: on node k8s-master, run the following commands:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">POD_CIDR</span><span class="o">=</span><span class="s2">&quot;10.244.0.0/16&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">POD_CIDR</span><span class="o">=</span><span class="s2">&quot;10.244.0.0/16&quot;</span>
 sudo<span class="w"> </span>-E<span class="w"> </span>kubeadm<span class="w"> </span>init<span class="w"> </span>--pod-network-cidr<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">POD_CIDR</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
@@ -2837,7 +2837,7 @@ kubectl<span class="w"> </span>completion<span class="w"> </span>bash<span class
 <span class="c1"># we set NODE_CIDR accordingly.</span>
 <span class="nv">NODE_CIDR</span><span class="o">=</span><span class="s2">&quot;192.168.121.0/24&quot;</span>
 <span class="c1"># You may change the component version if necessary</span>
-<span class="nv">CALICO_VER</span><span class="o">=</span><span class="s2">&quot;3.28.0&quot;</span>
+<span class="nv">CALICO_VER</span><span class="o">=</span><span class="s2">&quot;3.29.3&quot;</span>
 kubectl<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/projectcalico/calico/v</span><span class="si">${</span><span class="nv">CALICO_VER</span><span class="si">}</span><span class="s2">/manifests/tigera-operator.yaml&quot;</span>
 sleep<span class="w"> </span><span class="m">10</span>
 cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl create -f -</span>
@@ -2904,10 +2904,10 @@ tigera-operator    tigera-operator-76c4974c85-lx79h           1/1     Running   
 </pre></div>
 </div>
 <p>Run command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">get</span> <span class="pre">node</span></code> to make sure all node are in ‘Ready’ status. Possible output should be something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>vagrant@k8s-master:~$ kubectl get node
-NAME          STATUS   ROLES           AGE     VERSION
-k8s-master    Ready    control-plane   31m     v1.29.6
-k8s-worker1   Ready    &lt;none&gt;          7m31s   v1.29.6
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>vagrant@k8s-master:~$ kubectl get node -owide
+NAME          STATUS   ROLES           AGE     VERSION   INTERNAL-IP       EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+k8s-master    Ready    control-plane   16m     v1.32.3   192.168.121.35    &lt;none&gt;        Ubuntu 22.04.1 LTS   5.15.0-46-generic   containerd://1.7.27
+k8s-worker1   Ready    &lt;none&gt;          5m39s   v1.32.3   192.168.121.133   &lt;none&gt;        Ubuntu 22.04.1 LTS   5.15.0-46-generic   containerd://1.7.27
 </pre></div>
 </div>
 </section>
