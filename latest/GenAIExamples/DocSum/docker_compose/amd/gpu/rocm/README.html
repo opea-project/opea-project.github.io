@@ -2603,13 +2603,13 @@
 </ol>
 <section id="access-the-code">
 <h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
-<p>Clone the GenAIExample repository and access the ChatQnA AMD GPU platform Docker Compose files and supporting scripts:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">DocSum</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">amd</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span><span class="n">rocm</span>
+<p>Clone the GenAIExample repository and access the DocSum AMD GPU platform Docker Compose files and supporting scripts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose/amd/gpu/rocm
 </pre></div>
 </div>
-<p>Checkout a released version, such as v1.2:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.2</span>
+<p>Checkout a released version, such as v1.3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.3</span>
 </pre></div>
 </div>
 </section>
@@ -2619,24 +2619,80 @@
 </section>
 <section id="configure-the-deployment-environment">
 <h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying DocSum services, source the <em>set_env.sh</em> script in this directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">./</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+<p>To set up environment variables for deploying DocSum services, set up some parameters specific to the deployment environment and source the <code class="docutils literal notranslate"><span class="pre">set_env_*.sh</span></code> script in this directory:</p>
+<ul class="simple">
+<li><p>if used vLLM - set_env_vllm.sh</p></li>
+<li><p>if used TGI - set_env.sh</p></li>
+</ul>
+<p>Set the values of the variables:</p>
+<ul>
+<li><p><strong>HOST_IP, HOST_IP_EXTERNAL</strong> - These variables are used to configure the name/address of the service in the operating system environment for the application services to interact with each other and with the outside world.</p>
+<p>If your server uses only an internal address and is not accessible from the Internet, then the values for these two variables will be the same and the value will be equal to the server’s internal name/address.</p>
+<p>If your server uses only an external, Internet-accessible address, then the values for these two variables will be the same and the value will be equal to the server’s external name/address.</p>
+<p>If your server is located on an internal network, has an internal address, but is accessible from the Internet via a proxy/firewall/load balancer, then the HOST_IP variable will have a value equal to the internal name/address of the server, and the EXTERNAL_HOST_IP variable will have a value equal to the external name/address of the proxy/firewall/load balancer behind which the server is located.</p>
+<p>We set these values in the file set_env****.sh</p>
+</li>
+<li><p><strong>Variables with names like “</strong>******_PORT”** - These variables set the IP port numbers for establishing network connections to the application services.
+The values shown in the file set_env.sh or set_env_vllm.sh they are the values used for the development and testing of the application, as well as configured for the environment in which the development is performed. These values must be configured in accordance with the rules of network access to your environment’s server, and must not overlap with the IP ports of other applications that are already in use.</p></li>
+</ul>
+<p>Setting variables in the operating system environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_HuggingFace_API_Token&quot;</span>
+<span class="nb">source</span><span class="w"> </span>./set_env_*.sh<span class="w"> </span><span class="c1"># replace the script name with the appropriate one</span>
 </pre></div>
 </div>
-<p>The <em>set_env.sh</em> script will prompt for required and optional environment variables used to configure the DocSum services. If a value is not entered, the script will use a default value for the same. It will also generate a <em>.env</em> file defining the desired configuration. Consult the section on <a class="reference internal" href="#docsum-service-configuration"><span class="xref myst">DocSum Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
+<p>Consult the section on <a class="reference internal" href="#docsum-configuration"><span class="xref myst">DocSum Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
 </section>
 <section id="deploy-the-services-using-docker-compose">
 <h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
-<p>To deploy the DocSum services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<p>To deploy the DocSum services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment with TGI, execute the command below. It uses the ‘compose.yaml’ file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/amd/gpu/rocm
+<span class="c1"># if used TGI</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># if used vLLM</span>
+<span class="c1"># docker compose -f compose_vllm.yaml up -d</span>
 </pre></div>
 </div>
-<p><strong>Note</strong>: developers should build docker image from source when:</p>
+<p>To enable GPU support for AMD GPUs, the following configuration is added to the Docker Compose file:</p>
 <ul class="simple">
-<li><p>Developing off the git main branch (as the container’s ports in the repo may be different from the published docker image).</p></li>
+<li><p>compose_vllm.yaml - for vLLM-based application</p></li>
+<li><p>compose.yaml - for TGI-based</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri:/dev/dri</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p>This configuration forwards all available GPUs to the container. To use a specific GPU, specify its <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> device IDs. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/kfd:/dev/kfd</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/card0:/dev/dri/card0</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/dri/render128:/dev/dri/render128</span>
+<span class="nt">cap_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SYS_PTRACE</span>
+<span class="nt">group_add</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">video</span>
+<span class="nt">security_opt</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seccomp:unconfined</span>
+</pre></div>
+</div>
+<p><strong>How to Identify GPU Device IDs:</strong>
+Use AMD GPU driver utilities to determine the correct <code class="docutils literal notranslate"><span class="pre">cardN</span></code> and <code class="docutils literal notranslate"><span class="pre">renderN</span></code> IDs for your GPU.</p>
+<blockquote>
+<div><p><strong>Note</strong>: developers should build docker image from source when:</p>
+<ul class="simple">
+<li><p>Developing off the git main branch (as the container’s ports in the repo may be different &gt; from the published docker image).</p></li>
 <li><p>Unable to download the docker image.</p></li>
 <li><p>Use a specific version of Docker image.</p></li>
 </ul>
+</div></blockquote>
 <p>Please refer to the table below to build different microservices from source:</p>
 <table class="docutils align-default">
 <thead>
@@ -2648,16 +2704,19 @@
 <tr class="row-even"><td><p>whisper</p></td>
 <td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/whisper/src">whisper build guide</a></p></td>
 </tr>
-<tr class="row-odd"><td><p>vLLM</p></td>
+<tr class="row-odd"><td><p>TGI</p></td>
+<td><p><a class="reference external" href="https://github.com/huggingface/text-generation-inference.git">TGI project</a></p></td>
+</tr>
+<tr class="row-even"><td><p>vLLM</p></td>
 <td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/vllm#build-docker">vLLM build guide</a></p></td>
 </tr>
-<tr class="row-even"><td><p>llm-docsum</p></td>
+<tr class="row-odd"><td><p>llm-docsum</p></td>
 <td><p><a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/llms/src/doc-summarization#build-docker-image">LLM-DocSum build guide</a></p></td>
 </tr>
-<tr class="row-odd"><td><p>MegaService</p></td>
+<tr class="row-even"><td><p>MegaService</p></td>
 <td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-megaservice-docker-image"><span class="std std-ref">MegaService build guide</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p>UI</p></td>
+<tr class="row-odd"><td><p>UI</p></td>
 <td><p><a class="reference internal" href="../../../../README_miscellaneous.html#build-ui-docker-image"><span class="std std-ref">Basic UI build guide</span></a></p></td>
 </tr>
 </tbody>
@@ -2670,6 +2729,7 @@
 </pre></div>
 </div>
 <p>For the default deployment, the following 5 containers should have started:</p>
+<p>If used TGI:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                         <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>                   <span class="n">PORTS</span>                                       <span class="n">NAMES</span>
 <span class="mi">748</span><span class="n">f577b3c78</span>   <span class="n">opea</span><span class="o">/</span><span class="n">whisper</span><span class="p">:</span><span class="n">latest</span>                                           <span class="s2">&quot;python whisper_s…&quot;</span>      <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">whisper</span><span class="o">-</span><span class="n">service</span>
 <span class="mi">4</span><span class="n">eq8b7034fd9</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="o">-</span><span class="n">gradio</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
@@ -2678,21 +2738,33 @@
 <span class="mi">78964</span><span class="n">d0c1hg5</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.1</span><span class="o">-</span><span class="n">rocm</span>      <span class="s2">&quot;/tgi-entrypoint.sh&quot;</span>     <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">docsum</span><span class="o">-</span><span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
+<p>If used vLLM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                         <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>                   <span class="n">PORTS</span>                                       <span class="n">NAMES</span>
+<span class="mi">748</span><span class="n">f577b3c78</span>   <span class="n">opea</span><span class="o">/</span><span class="n">whisper</span><span class="p">:</span><span class="n">latest</span>                                           <span class="s2">&quot;python whisper_s…&quot;</span>      <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">whisper</span><span class="o">-</span><span class="n">service</span>
+<span class="mi">4</span><span class="n">eq8b7034fd9</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="o">-</span><span class="n">gradio</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="n">fds3dd5b9fd8</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                            <span class="s2">&quot;python docsum.py&quot;</span>       <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">78</span><span class="n">fsd6fabfs7</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                        <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="n">About</span> <span class="n">a</span> <span class="n">minute</span>        <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">docsum</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">78964</span><span class="n">d0c1hg5</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="o">-</span><span class="n">rocm</span><span class="p">:</span><span class="n">latest</span>                                         <span class="s2">&quot;python3 /workspace/…&quot;</span>   <span class="mi">5</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">docsum</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
+</pre></div>
+</div>
 </section>
 <section id="test-the-pipeline">
 <h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the DocSum services are running, test the pipeline using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;text&quot;, &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;}&#39;</span>
 </pre></div>
 </div>
-<p><strong>Note</strong> The value of <em>host_ip</em> was set using the <em>set_env.sh</em> script and can be found in the <em>.env</em> file.</p>
+<p><strong>Note</strong> The value of <em>HOST_IP</em> was set using the <em>set_env.sh</em> script and can be found in the <em>.env</em> file.</p>
 </section>
 <section id="cleanup-the-deployment">
 <h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
 <p>To stop the containers associated with the deployment, execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if used TGI</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+<span class="c1"># if used vLLM</span>
+<span class="c1"># docker compose -f compose_vllm.yaml down</span>
 </pre></div>
 </div>
 <p>All the DocSum containers will be stopped and then removed on completion of the “down” command.</p>
@@ -2723,7 +2795,7 @@
 <section id="query-with-text">
 <h3>Query with text<a class="headerlink" href="#query-with-text" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># form input. Use English mode (default).</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;messages=Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2732,7 +2804,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;stream=True&quot;</span>
 
 <span class="c1"># Use Chinese mode.</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;messages=2024年9月26日，北京——今日，英特尔正式发布英特尔® 至强® 6性能核处理器（代号Granite Rapids），为AI、数据分析、科学计算等计算密集型业务提供卓越性能。&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2741,7 +2813,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">      </span>-F<span class="w"> </span><span class="s2">&quot;stream=True&quot;</span>
 
 <span class="c1"># Upload file</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2757,11 +2829,11 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <div><p>Audio and Video file uploads are not supported in docsum with curl request, please use the Gradio-UI.</p>
 </div></blockquote>
 <p>Audio:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;audio&quot;, &quot;messages&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=audio&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2771,11 +2843,11 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 <p>Video:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;video&quot;, &quot;messages&quot;: &quot;convert your video to base64 data type&quot;}&#39;</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=video&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=convert your video to base64 data type&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2795,7 +2867,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </ul>
 <p><strong>summary_type=auto</strong></p>
 <p>“summary_type” is set to be “auto” by default, in this mode we will check input token length, if it exceed <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code>, <code class="docutils literal notranslate"><span class="pre">summary_type</span></code> will automatically be set to <code class="docutils literal notranslate"><span class="pre">refine</span></code> mode, otherwise will be set to <code class="docutils literal notranslate"><span class="pre">stuff</span></code> mode.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2807,7 +2879,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div>
 <p><strong>summary_type=stuff</strong></p>
 <p>In this mode LLM generate summary based on complete input text. In this case please carefully set <code class="docutils literal notranslate"><span class="pre">MAX_INPUT_TOKENS</span></code> and <code class="docutils literal notranslate"><span class="pre">MAX_TOTAL_TOKENS</span></code> according to your model and device memory, otherwise it may exceed LLM context limit and raise error when meet long context.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2819,7 +2891,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div>
 <p><strong>summary_type=truncate</strong></p>
 <p>Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2832,7 +2904,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p><strong>summary_type=map_reduce</strong></p>
 <p>Map_reduce mode will split the inputs into multiple chunks, map each document to an individual summary, then consolidate those summaries into a single global summary. <code class="docutils literal notranslate"><span class="pre">stream=True</span></code> is not allowed here.</p>
 <p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2845,7 +2917,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p><strong>summary_type=refine</strong></p>
 <p>Refin mode will split the inputs into multiple chunks, generate summary for the first one, then combine with the second, loops over every remaining chunks to get the final summary.</p>
 <p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">128,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">DOCSUM_BACKEND_SERVER_PORT</span><span class="si">}</span>/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=text&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2862,7 +2934,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>Several UI options are provided. If you need to work with multimedia documents, .doc, or .pdf files, suggested to use Gradio UI.</p>
 <section id="gradio-ui">
 <h3>Gradio UI<a class="headerlink" href="#gradio-ui" title="Link to this heading">¶</a></h3>
-<p>To access the UI, use the URL - http://${EXTERNAL_HOST_IP}:${FAGGEN_UI_PORT}
+<p>To access the UI, use the URL - http://${HOST_IP}:${DOCSUM_FRONTEND_PORT}
 A page should open when you click through to this address:</p>
 <p><img alt="UI start page" src="../../../../../../_images/ui-starting-page.png" /></p>
 <p>If a page of this type has opened, then we believe that the service is running and responding,

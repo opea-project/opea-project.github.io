@@ -2599,6 +2599,168 @@ helm install docsum oci://ghcr.io/opea-project/charts/docsum  --set global.HUGGI
 </pre></div>
 </div>
 </section>
+<section id="deploy-on-amd-rocm-using-helm-charts-from-the-binary-helm-repository">
+<h2>Deploy on AMD ROCm using Helm charts from the binary Helm repository<a class="headerlink" href="#deploy-on-amd-rocm-using-helm-charts-from-the-binary-helm-repository" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/docsum-k8s-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/docsum-k8s-install
+</pre></div>
+</div>
+<section id="cloning-repos">
+<h3>Cloning repos<a class="headerlink" href="#cloning-repos" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+</pre></div>
+</div>
+</section>
+<section id="go-to-the-installation-directory">
+<h3>Go to the installation directory<a class="headerlink" href="#go-to-the-installation-directory" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/kubernetes/helm
+</pre></div>
+</div>
+</section>
+<section id="settings-system-variables">
+<h3>Settings system variables<a class="headerlink" href="#settings-system-variables" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HFTOKEN</span><span class="o">=</span><span class="s2">&quot;your_huggingface_token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODELDIR</span><span class="o">=</span><span class="s2">&quot;/mnt/opea-models&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODELNAME</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-variables-in-values-files">
+<h3>Setting variables in Values files<a class="headerlink" href="#setting-variables-in-values-files" title="Link to this heading">¶</a></h3>
+<section id="if-rocm-vllm-used">
+<h4>If ROCm vLLM used<a class="headerlink" href="#if-rocm-vllm-used" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>~/docsum-k8s-install/GenAIExamples/DocSum/kubernetes/helm/rocm-values.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>HIP_VISIBLE_DEVICES - this variable specifies the ID of the GPU that you want to use.
+You can specify either one or several comma-separated ones - “0” or “0,1,2,3”</p></li>
+<li><p>TENSOR_PARALLEL_SIZE - must match the number of GPUs used</p></li>
+<li><p>resources:
+limits:
+amd.com/gpu: “1” - replace “1” with the number of GPUs used</p></li>
+</ul>
+</section>
+<section id="if-rocm-tgi-used">
+<h4>If ROCm TGI used<a class="headerlink" href="#if-rocm-tgi-used" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>~/docsum-k8s-install/GenAIExamples/DocSum/kubernetes/helm/rocm-tgi-values.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>HIP_VISIBLE_DEVICES - this variable specifies the ID of the GPU that you want to use.
+You can specify either one or several comma-separated ones - “0” or “0,1,2,3”</p></li>
+<li><p>extraCmdArgs: [ “–num-shard”,”1” ] - replace “1” with the number of GPUs used</p></li>
+<li><p>resources:
+limits:
+amd.com/gpu: “1” - replace “1” with the number of GPUs used</p></li>
+</ul>
+</section>
+</section>
+<section id="installing-the-helm-chart">
+<h3>Installing the Helm Chart<a class="headerlink" href="#installing-the-helm-chart" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h4>If ROCm vLLM used<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>docsum<span class="w"> </span>oci://ghcr.io/opea-project/charts/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--values<span class="w"> </span>rocm-values.yaml
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h4>If ROCm TGI used<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>docsum<span class="w"> </span>oci://ghcr.io/opea-project/charts/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--values<span class="w"> </span>rocm-tgi-values.yaml
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="deploy-on-amd-rocm-using-helm-charts-from-git-repositories">
+<h2>Deploy on AMD ROCm using Helm charts from Git repositories<a class="headerlink" href="#deploy-on-amd-rocm-using-helm-charts-from-git-repositories" title="Link to this heading">¶</a></h2>
+<section id="creating-working-dirs">
+<h3>Creating working dirs<a class="headerlink" href="#creating-working-dirs" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/docsum-k8s-install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/docsum-k8s-install
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Cloning repos<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+git<span class="w"> </span>clone<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIInfra.git
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Go to the installation directory<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/kubernetes/helm
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Settings system variables<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HFTOKEN</span><span class="o">=</span><span class="s2">&quot;your_huggingface_token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODELDIR</span><span class="o">=</span><span class="s2">&quot;/mnt/opea-models&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODELNAME</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>Setting variables in Values files<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<section id="id7">
+<h4>If ROCm vLLM used<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>~/docsum-k8s-install/GenAIExamples/DocSum/kubernetes/helm/rocm-values.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>HIP_VISIBLE_DEVICES - this variable specifies the ID of the GPU that you want to use.
+You can specify either one or several comma-separated ones - “0” or “0,1,2,3”</p></li>
+<li><p>TENSOR_PARALLEL_SIZE - must match the number of GPUs used</p></li>
+<li><p>resources:
+limits:
+amd.com/gpu: “1” - replace “1” with the number of GPUs used</p></li>
+</ul>
+</section>
+<section id="id8">
+<h4>If ROCm TGI used<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>~/docsum-k8s-install/GenAIExamples/DocSum/kubernetes/helm/rocm-tgi-values.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>HIP_VISIBLE_DEVICES - this variable specifies the ID of the GPU that you want to use.
+You can specify either one or several comma-separated ones - “0” or “0,1,2,3”</p></li>
+<li><p>extraCmdArgs: [ “–num-shard”,”1” ] - replace “1” with the number of GPUs used</p></li>
+<li><p>resources:
+limits:
+amd.com/gpu: “1” - replace “1” with the number of GPUs used</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h3>Installing the Helm Chart<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>If ROCm vLLM used<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-k8s-install/GenAIInfra/helm-charts
+./update_dependency.sh
+helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>docsum
+helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--values<span class="w"> </span>../../GenAIExamples/DocSum/kubernetes/helm/rocm-values.yaml
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h4>If ROCm TGI used<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/docsum-k8s-install/GenAIInfra/helm-charts
+./update_dependency.sh
+helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>docsum
+helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>docsum<span class="w"> </span>docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--values<span class="w"> </span>../../GenAIExamples/DocSum/kubernetes/helm/rocm-tgi-values.yaml
+</pre></div>
+</div>
+</section>
+</section>
+</section>
 </section>
 
 
