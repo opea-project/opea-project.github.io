@@ -291,6 +291,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying AudioQnA on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/kubernetes/gmc/README.html">Deploy AudioQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/kubernetes/helm/README.html">Deploy AudioQnA on Kubernetes cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/tests/README.html">AudioQnA E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AudioQnA/ui/svelte/README.html">AudioQnA</a></li>
 </ul>
 </li>
@@ -2786,17 +2787,19 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.txt, .docx, .pdf)&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span>
 </pre></div>
 </div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">-F</span> <span class="pre">&quot;messages=&quot;</span></code> flag is required, even for file uploads. Multiple files can be uploaded in a single call with multiple <code class="docutils literal notranslate"><span class="pre">-F</span> <span class="pre">&quot;files=&#64;/path&quot;</span></code> inputs.</p>
 </section>
 <section id="query-with-audio-and-video">
 <h3>Query with audio and video<a class="headerlink" href="#query-with-audio-and-video" title="Link to this heading">¶</a></h3>
 <blockquote>
-<div><p>Audio and Video file uploads are not supported in docsum with curl request, please use the Gradio-UI.</p>
+<div><p>Audio and video can be passed as base64 strings or uploaded by providing a local file path.</p>
 </div></blockquote>
 <p>Audio:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Send base64 string</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;audio&quot;, &quot;messages&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span>
 
@@ -2807,10 +2810,20 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=True&quot;</span>
+
+<span class="c1"># Upload file</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=audio&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.mp3, .wav)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span>
 </pre></div>
 </div>
 <p>Video:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Send base64 string</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;: &quot;video&quot;, &quot;messages&quot;: &quot;convert your video to base64 data type&quot;}&#39;</span>
 
@@ -2821,6 +2834,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;stream=True&quot;</span>
+
+<span class="c1"># Upload file</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/docsum<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;type=video&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;messages=&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;files=@/path to your file (.mp4)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;max_tokens=32&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-F<span class="w"> </span><span class="s2">&quot;language=en&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -2949,7 +2971,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on May 07, 2025.</span>
+<span class="lastupdated">Published on May 08, 2025.</span>
 
   </div>
 
