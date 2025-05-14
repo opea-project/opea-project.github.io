@@ -2753,9 +2753,9 @@ Expert worker agents, such as RAG agents and SQL agents, can provide high-qualit
 <h3>1. Set up environment </br><a class="headerlink" href="#set-up-environment" title="Link to this heading">¶</a></h3>
 <section id="first-clone-the-genaiexamples-repo">
 <h4>First, clone the <code class="docutils literal notranslate"><span class="pre">GenAIExamples</span></code> repo.<a class="headerlink" href="#first-clone-the-genaiexamples-repo" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WORKDIR=&lt;your-work-directory&gt;
-cd $WORKDIR
-git clone https://github.com/opea-project/GenAIExamples.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WORKDIR</span><span class="o">=</span>&lt;your-work-directory&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 </pre></div>
 </div>
 </section>
@@ -2763,23 +2763,28 @@ git clone https://github.com/opea-project/GenAIExamples.git
 <h4>Second, set up environment variables.<a class="headerlink" href="#second-set-up-environment-variables" title="Link to this heading">¶</a></h4>
 <section id="for-proxy-environments-only">
 <h5>For proxy environments only<a class="headerlink" href="#for-proxy-environments-only" title="Link to this heading">¶</a></h5>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
 <span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="for-using-open-source-llms">
 <h5>For using open-source llms<a class="headerlink" href="#for-using-open-source-llms" title="Link to this heading">¶</a></h5>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">HF</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
-<span class="n">export</span> <span class="n">HF_CACHE_DIR</span><span class="o">=&lt;</span><span class="n">directory</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">llms</span><span class="o">-</span><span class="n">are</span><span class="o">-</span><span class="n">downloaded</span><span class="o">&gt;</span> <span class="c1">#so that no need to redownload every time</span>
+<p>Set up a <a class="reference external" href="https://huggingface.co/">HuggingFace</a> account and generate a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+<p>Then set an environment variable with the token and another for a directory to download the models:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span>&lt;your-HF-token&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_CACHE_DIR</span><span class="o">=</span>&lt;directory-where-llms-are-downloaded&gt;<span class="w"> </span><span class="c1">#  to avoid redownloading models</span>
 </pre></div>
 </div>
 </section>
-<section id="optional-opanai-api-key-to-use-openai-models">
-<h5>[Optional] OPANAI_API_KEY to use OpenAI models<a class="headerlink" href="#optional-opanai-api-key-to-use-openai-models" title="Link to this heading">¶</a></h5>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OPENAI_API_KEY</span><span class="o">=&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">openai</span><span class="o">-</span><span class="n">key</span><span class="o">&gt;</span>
+<section id="optional-openai-api-key-to-use-openai-models-or-intel-ai-for-enterprise-inference">
+<h5>[Optional] OPENAI_API_KEY to use OpenAI models or Intel® AI for Enterprise Inference<a class="headerlink" href="#optional-openai-api-key-to-use-openai-models-or-intel-ai-for-enterprise-inference" title="Link to this heading">¶</a></h5>
+<p>To use OpenAI models, generate a key following these <a class="reference external" href="https://platform.openai.com/api-keys">instructions</a>.</p>
+<p>To use a remote server running Intel® AI for Enterprise Inference, contact the cloud service provider or owner of the on-prem machine for a key to access the desired model on the server.</p>
+<p>Then set the environment variable <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> with the key contents:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>&lt;your-openai-key&gt;
 </pre></div>
 </div>
 </section>
@@ -2788,15 +2793,16 @@ git clone https://github.com/opea-project/GenAIExamples.git
 <h4>Third, set up environment variables for the selected hardware using the corresponding <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code><a class="headerlink" href="#third-set-up-environment-variables-for-the-selected-hardware-using-the-corresponding-set-env-sh" title="Link to this heading">¶</a></h4>
 <section id="gaudi">
 <h5>Gaudi<a class="headerlink" href="#gaudi" title="Link to this heading">¶</a></h5>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/set_env.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/hpu/gaudi/set_env.sh
 </pre></div>
 </div>
 </section>
 <section id="xeon">
 <h5>Xeon<a class="headerlink" href="#xeon" title="Link to this heading">¶</a></h5>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source $WORKDIR/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/set_env.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon/set_env.sh
 </pre></div>
 </div>
+<p>For running</p>
 </section>
 </section>
 </section>
@@ -2836,12 +2842,35 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="launch-on-xeon">
 <h4>Launch on Xeon<a class="headerlink" href="#launch-on-xeon" title="Link to this heading">¶</a></h4>
-<p>On Xeon, only OpenAI models are supported. The command below will launch the multi-agent system with the <code class="docutils literal notranslate"><span class="pre">DocIndexRetriever</span></code> as the retrieval tool for the Worker RAG agent.</p>
+<p>On Xeon, OpenAI models and models deployed on a remote server are supported. Both methods require an API key.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>&lt;your-openai-key&gt;
 <span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/AgentQnA/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose_openai.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<section id="openai-models">
+<h5>OpenAI Models<a class="headerlink" href="#openai-models" title="Link to this heading">¶</a></h5>
+<p>The command below will launch the multi-agent system with the <code class="docutils literal notranslate"><span class="pre">DocIndexRetriever</span></code> as the retrieval tool for the Worker RAG agent.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose_openai.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="models-on-remote-server">
+<h5>Models on Remote Server<a class="headerlink" href="#models-on-remote-server" title="Link to this heading">¶</a></h5>
+<p>When models are deployed on a remote server with Intel® AI for Enterprise Inference, a base URL and an API key are required to access them. To run the Agent microservice on Xeon while using models deployed on a remote server, add <code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code> to the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> command and set additional environment variables.</p>
+<section id="notes">
+<h6>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h6>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code> is already set in a previous step.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model</span></code> is used to overwrite the value set for this environment variable in <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LLM_ENDPOINT_URL</span></code> is the base URL given from the owner of the on-prem machine or cloud service provider. It will follow this format: “https://<DNS>”. Here is an example: “https://api.inference.example.com”.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span>&lt;name-of-model-card&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT_URL</span><span class="o">=</span>&lt;http-endpoint-of-remote-server&gt;
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon/compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose_openai.yaml<span class="w"> </span>-f<span class="w"> </span>compose_remote.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 <section id="ingest-data-into-the-vector-database">
@@ -2861,12 +2890,18 @@ bash<span class="w"> </span>run_ingest_data.sh
 <p>The UI microservice is launched in the previous step with the other microservices.
 To see the UI, open a web browser to <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:5173</span></code> to access the UI. Note the <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here is the host IP of the UI microservice.</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">create</span> <span class="pre">Admin</span> <span class="pre">Account</span></code> with a random value</p></li>
-<li><p>add opea agent endpoint <code class="docutils literal notranslate"><span class="pre">http://$ip_address:9090/v1</span></code> which is a openai compatible api</p></li>
+<li><p>Click on the arrow above <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">started</span></code>. Create an admin account with a name, email, and password.</p></li>
+<li><p>Add an OpenAI-compatible API endpoint. In the upper right, click on the circle button with the user’s initial, go to <code class="docutils literal notranslate"><span class="pre">Admin</span> <span class="pre">Settings</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">Connections</span></code>. Under <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">OpenAI</span> <span class="pre">API</span> <span class="pre">Connections</span></code>, click on the <code class="docutils literal notranslate"><span class="pre">+</span></code> to add a connection. Fill in these fields:</p></li>
 </ol>
+<ul class="simple">
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:9090/v1</span></code>, do not forget the <code class="docutils literal notranslate"><span class="pre">v1</span></code></p></li>
+<li><p><strong>Key</strong>: any value</p></li>
+<li><p><strong>Model IDs</strong>: any name i.e. <code class="docutils literal notranslate"><span class="pre">opea-agent</span></code>, then press <code class="docutils literal notranslate"><span class="pre">+</span></code> to add it</p></li>
+</ul>
+<p>Click “Save”.</p>
 <p><img alt="opea-agent-setting" src="../../_images/opea-agent-setting.png" /></p>
 <ol class="arabic simple" start="3">
-<li><p>test opea agent with ui</p></li>
+<li><p>Test OPEA agent with UI. Return to <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Chat</span></code> and ensure the model (i.e. <code class="docutils literal notranslate"><span class="pre">opea-agent</span></code>) is selected near the upper left. Enter in any prompt to interact with the agent.</p></li>
 </ol>
 <p><img alt="opea-agent-test" src="../../_images/opea-agent-test1.png" /></p>
 </section>
