@@ -2669,7 +2669,7 @@
 <ul>
 <li><p><a class="reference internal" href="#resource-requests"><span class="xref myst">Resource requests</span></a></p></li>
 <li><p><a class="reference internal" href="#prometheus-metrics"><span class="xref myst">Prometheus metrics</span></a></p></li>
-<li><p><a class="reference internal" href="#prometheus-adapter"><span class="xref myst">Prometheus-adapter</span></a></p></li>
+<li><p><a class="reference internal" href="#prometheus-adapter"><span class="xref myst">Prometheus adapter</span></a></p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#gotchas"><span class="xref myst">Gotchas</span></a></p></li>
@@ -2714,11 +2714,11 @@ that provide further isolation</p></li>
 See <a class="reference internal" href="monitoring.html"><span class="std std-doc">monitoring instructions</span></a> for details.</p>
 </section>
 <section id="prometheus-adapter">
-<h3>Prometheus-adapter<a class="headerlink" href="#prometheus-adapter" title="Link to this heading">¶</a></h3>
-<p>Prometheus-adapter is also needed, to provide k8s custom metrics based on collected service metrics:
+<h3>Prometheus adapter<a class="headerlink" href="#prometheus-adapter" title="Link to this heading">¶</a></h3>
+<p>Prometheus adapter is also needed, to provide k8s custom metrics based on collected service metrics:
 https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-adapter</p>
 <p>Install adapter after installing Prometheus:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">prom_ns</span><span class="o">=</span>monitoring<span class="w">  </span><span class="c1"># namespace for Prometheus/-adapter</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">prom_ns</span><span class="o">=</span>monitoring<span class="w">  </span><span class="c1"># namespace for Prometheus+adapter</span>
 <span class="gp">$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span>
 <span class="gp">$ </span>helm<span class="w"> </span>install<span class="w">  </span>prometheus-adapter<span class="w"> </span>prometheus-community/prometheus-adapter<span class="w"> </span>--version<span class="w"> </span><span class="m">4</span>.10.0<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--set<span class="w"> </span>prometheus.url<span class="o">=</span>http://prometheus-stack-kube-prom-prometheus.<span class="nv">$prom_ns</span>.svc<span class="w"> </span><span class="se">\</span>
@@ -2738,7 +2738,7 @@ created serviceMonitors with a label Prometheus requires when above option is <c
 <p>Why HPA is opt-in:</p>
 <ul class="simple">
 <li><p>Installing custom metrics for HPA requires manual post-install steps, as
-Prometheus-operator and -adapter are missing support needed to automate that</p></li>
+both Prometheus operator and adapter are missing support needed to automate that</p></li>
 <li><p>Top level chart name needs to conform to Prometheus metric naming conventions,
 as it is also used as a metric name prefix (with dashes converted to underscores)</p></li>
 <li><p>Unless pod resource requests, affinity rules, scheduling topology constraints and/or cluster NRI
@@ -2762,50 +2762,31 @@ used model, data type and image versions, the specified resource values may need
 </section>
 <section id="post-install">
 <h3>Post-install<a class="headerlink" href="#post-install" title="Link to this heading">¶</a></h3>
-<p>Above step created custom metrics config for Prometheus-adapter suitable for HPA use.</p>
-<p>Take backup of existing custom metrics config before replacing it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">prom_ns</span><span class="o">=</span>monitoring<span class="w">  </span><span class="c1"># Prometheus/-adapter namespace</span>
-<span class="gp">$ </span><span class="nv">name</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>--selector<span class="w"> </span>app.kubernetes.io/name<span class="o">=</span>prometheus-adapter<span class="w"> </span>-o<span class="w"> </span>name<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d/<span class="w"> </span>-f2<span class="k">)</span>
-<span class="gp">$ </span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span>get<span class="w"> </span>cm/<span class="nv">$name</span><span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>adapter-config.yaml.bak
+<p>The above step created a custom metrics configuration for the Prometheus adapter, suitable for HPA use.</p>
+<p>However, Helm does not allow OPEA chart to overwrite adapter configMap, as it belongs to another chart.
+Therefore, a manual step is needed to overwrite its current custom metric rules.</p>
+<p>The following will overwrite the current adapter custom metric rules with the ones generated by OPEA
+Helm and will restart the adapter to apply the new rules.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">scripts/install-custom-metrics.sh monitoring chatqna</span>
 </pre></div>
 </div>
-<p>Save generated config with values matching current adapter config:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">chart</span><span class="o">=</span>chatqna<span class="w">  </span><span class="c1"># OPEA chart release name</span>
-<span class="gp">$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>cm/<span class="nv">$chart</span>-custom-metrics<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s/name:.*custom-metrics</span>$<span class="s2">/name: </span><span class="nv">$name</span><span class="s2">/&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s/namespace: default</span>$<span class="s2">/namespace: </span><span class="nv">$prom_ns</span><span class="s2">/&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>&gt;<span class="w"> </span>adapter-config.yaml
-</pre></div>
-</div>
-<p>NOTE: if there are existing custom metric rules you need to retain, add them from saved
-<code class="docutils literal notranslate"><span class="pre">adapter-config.yaml.bak</span></code> to <code class="docutils literal notranslate"><span class="pre">adapter-config.yaml</span></code> file now!</p>
-<p>Overwrite current Prometheus-adapter configMap with generated one:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span>cm/<span class="nv">$name</span>
-<span class="gp">$ </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>adapter-config.yaml
-</pre></div>
-</div>
-<p>And restart it, so that it will use the new config:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">selector</span><span class="o">=</span>app.kubernetes.io/name<span class="o">=</span>prometheus-adapter
-<span class="gp">$ </span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span>delete<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$prom_ns</span><span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>--selector<span class="w"> </span><span class="nv">$selector</span><span class="w"> </span>-o<span class="w"> </span>name<span class="k">)</span>
-</pre></div>
-</div>
+<p>(It assumes adapter to be in the <code class="docutils literal notranslate"><span class="pre">monitoring</span></code> namespace, and the new rules are expected to be
+generated by a ChatQnA chart release named <code class="docutils literal notranslate"><span class="pre">chatqna</span></code>.)</p>
+<p>YAML backups of the new and previous rules are saved to the current directory.</p>
 </section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
 <p>After <a class="reference internal" href="monitoring.html#verify"><span class="std std-ref">verifying that service metrics work</span></a>,
 one can verify that HPA rules can access custom metrics based on them.</p>
-<p>Verify that there are custom metrics from inferencing service(s), prefixed with the chart name:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>--raw<span class="w"> </span>/apis/custom.metrics.k8s.io/v1beta1<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.resources<span class="o">[]</span>.name
+<p>Verify that custom metric values are available for scaling the services:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">watch -n 5 scale-monitor-helm.sh default chatqna</span>
 </pre></div>
 </div>
-<p>And HPA rules have TARGET values for HPA controlled service deployments (instead of <code class="docutils literal notranslate"><span class="pre">&lt;unknown&gt;</span></code>):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">ns</span><span class="o">=</span>default<span class="w">  </span><span class="c1"># OPEA namespace</span>
-<span class="gp">$ </span>kubectl<span class="w"> </span>-n<span class="w"> </span><span class="nv">$ns</span><span class="w"> </span>get<span class="w"> </span>hpa
-</pre></div>
-</div>
+<p>(Assumes that HPA scaled chart is installed to <code class="docutils literal notranslate"><span class="pre">default</span></code> namespace with <code class="docutils literal notranslate"><span class="pre">chatqna</span></code> release name.)</p>
 <p><strong>NOTE</strong>: inferencing services provide metrics only after they’ve processed their first request.
-And reranking service is used only after query context data has been uploaded!</p>
+The reranking service is used only after the query context data has been uploaded. Until then,
+no metrics will be available for them.</p>
 </section>
 </section>
 
