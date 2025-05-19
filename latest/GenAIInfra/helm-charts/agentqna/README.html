@@ -2705,6 +2705,18 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HUGGINGFACEHUB_API_TOKEN=&quot;YourOwnToken&quot;
 helm pull oci://ghcr.io/opea-project/charts/agentqna --untar
 helm install agentqna agentqna -f agentqna/gaudi-values.yaml --set global.HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN}
+
+# To use AMD ROCm device
+cd GenAIInfra/helm-charts/
+./update_dependency.sh
+helm dependency update agentqna
+export HFTOKEN=&quot;your_huggingface_token&quot;
+export MODELDIR=&quot;/mnt/opea-models&quot;
+# with vLLM
+helm upgrade --install agentqna agentqna -f agentqna/rocm-values.yaml --set global.HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN}
+
+# with TGI
+helm upgrade --install agentqna agentqna -f agentqna/rocm-tgi-values.yaml --set global.HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN}
 </pre></div>
 </div>
 </section>
@@ -2729,7 +2741,7 @@ python3 index_data.py --filedir /mnt/tools --filename test_docs_music.jsonl --ho
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9090/v1/chat/completions \</span>
 <span class="go">    -X POST \</span>
 <span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;}&#39;</span>
+<span class="go">    -d &#39;{&quot;model&quot;: &quot;meta-llama/Llama-3.3-70B-Instruct&quot;,&quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;}&#39;</span>
 </pre></div>
 </div>
 </section>
