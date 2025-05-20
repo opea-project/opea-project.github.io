@@ -2670,8 +2670,10 @@
   <section id="docretriever-application-with-docker">
 <h1>DocRetriever Application with Docker<a class="headerlink" href="#docretriever-application-with-docker" title="Link to this heading">¶</a></h1>
 <p>DocRetriever are the most widely adopted use case for leveraging the different methodologies to match user query against a set of free-text records. DocRetriever is essential to RAG system, which bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that responses generated remain factual and current. The core of this architecture are vector databases, which are instrumental in enabling efficient and semantic retrieval of information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
-<section id="build-images-for-necessary-microservices-optional-after-docker-image-release">
-<h2>1. Build Images for necessary microservices. (Optional after docker image release)<a class="headerlink" href="#build-images-for-necessary-microservices-optional-after-docker-image-release" title="Link to this heading">¶</a></h2>
+<p>_Note:</p>
+<p>As the related docker images were published to Docker Hub, you can ignore the below step 1 and 2， quick start from step 3.</p>
+<section id="build-images-for-necessary-microservices-optional">
+<h2>1. Build Images for necessary microservices. (Optional)<a class="headerlink" href="#build-images-for-necessary-microservices-optional" title="Link to this heading">¶</a></h2>
 <ul>
 <li><p>Embedding TEI Image</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
@@ -2697,8 +2699,8 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </li>
 </ul>
 </section>
-<section id="build-images-for-megaservice">
-<h2>2. Build Images for MegaService<a class="headerlink" href="#build-images-for-megaservice" title="Link to this heading">¶</a></h2>
+<section id="build-images-for-megaservice-optional">
+<h2>2. Build Images for MegaService (Optional)<a class="headerlink" href="#build-images-for-megaservice-optional" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>..
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocIndexRetriever
@@ -2710,19 +2712,28 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <h2>3. Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;YOUR IP ADDR&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6006&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8808&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6379&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;rag-redis&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8000/v1/retrievaltool&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span>
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>Set environment variables by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">DocIndexRetriever</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span>
+<span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Note: set_env.sh will help to set all required variables. Please ensure all required variables like ports (LLM_SERVICE_PORT, MEGA_SERVICE_PORT, etc.) are set if not using defaults from the compose file.
+or Set environment variables manually</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;
+export RERANK_MODEL_ID=&quot;BAAI/bge-reranker-base&quot;
+export TEI_EMBEDDING_ENDPOINT=&quot;http://${host_ip}:6006&quot;
+export TEI_RERANKING_ENDPOINT=&quot;http://${host_ip}:8808&quot;
+export REDIS_URL=&quot;redis://${host_ip}:6379&quot;
+export INDEX_NAME=&quot;rag-redis&quot;
+export EMBEDDING_SERVICE_HOST_IP=${host_ip}
+export RETRIEVER_SERVICE_HOST_IP=${host_ip}
+export RERANK_SERVICE_HOST_IP=${host_ip}
+export BACKEND_SERVICE_ENDPOINT=&quot;http://${host_ip}:8000/v1/retrievaltool&quot;
+export DATAPREP_SERVICE_ENDPOINT=&quot;http://${host_ip}:6007/v1/dataprep/ingest&quot;
+cd GenAIExamples/DocIndexRetriever/docker_compose/intel/cpu/xeon
+docker compose up -d
 </pre></div>
 </div>
 <p>Two types of DocRetriever pipeline are supported now: <code class="docutils literal notranslate"><span class="pre">DocRetriever</span> <span class="pre">with/without</span> <span class="pre">Rerank</span></code>. And the <code class="docutils literal notranslate"><span class="pre">DocRetriever</span> <span class="pre">without</span> <span class="pre">Rerank</span></code> pipeline (including Embedding and Retrieval) is offered for customers who expect to handle all retrieved documents by LLM, and require high performance of DocRetriever.
