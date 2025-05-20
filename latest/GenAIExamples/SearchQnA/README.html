@@ -323,6 +323,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/nvidia/gpu/README.html">Build MegaService of ChatQnA on NVIDIA GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/kubernetes/gmc/README.html">Deploy ChatQnA in Kubernetes Cluster on Xeon and Gaudi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/kubernetes/helm/README.html">Deploy ChatQnA on Kubernetes cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ChatQnA/tests/README.html">ChatQnA E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/ui/react/README.html">ChatQnA Conversational UI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/ui/svelte/README.html">ChatQnA Customized UI</a></li>
 </ul>
@@ -2693,56 +2694,38 @@
 <p><img alt="architecture" src="../../_images/searchqna.png" /></p>
 <p>The SearchQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
-            flowchart LR
-    %% Colors %%
-    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef invisible fill:transparent,stroke:transparent;
-    style SearchQnA-MegaService stroke:#000000
+            %% Orange are microservices from third parties that are 'wrapped' as OPEA components.
+flowchart LR
+    User[&quot;User&quot;] --&gt; Nginx[&quot;Nginx&lt;br&gt;searchqna-nginx-server&quot;]
+    Nginx --&gt; UI[&quot;UI&lt;br&gt;searchqna-ui-server&quot;] &amp; Gateway &amp; User
+    UI --&gt; Nginx
+    Gateway --&gt; Nginx &amp; Embedding
+    Embedding --&gt; Retriever
+    Retriever --&gt; Reranker
+    Reranker --&gt; LLM
+    LLM --&gt; Gateway
+    LLM &lt;-.-&gt; TGI_Service[&quot;LLM&lt;br&gt;tgi-service&quot;]
+    Embedding &lt;-.-&gt; TEI_Embedding[&quot;TEI Embedding&lt;br&gt;tei-embedding-server&quot;]
+    Reranker &lt;-.-&gt; TEI_Reranker[&quot;TEI Reranker&lt;br&gt;tei-reranking-server&quot;]
 
-    %% Subgraphs %%
-    subgraph SearchQnA-MegaService[&quot;SearchQnA MegaService &quot;]
-        direction LR
-        EM([Embedding MicroService]):::blue
-        RET([Web Retrieval MicroService]):::blue
-        RER([Rerank MicroService]):::blue
-        LLM([LLM MicroService]):::blue
-    end
-    subgraph UserInterface[&quot; User Interface &quot;]
-        direction LR
-        a([User Input Query]):::orchid
-        UI([UI server&lt;br&gt;]):::orchid
-    end
+     TEI_Embedding:::ext
+     TEI_Reranker:::ext
+     TGI_Service:::ext
 
-
-
-    TEI_RER{{Reranking service&lt;br&gt;}}
-    TEI_EM{{Embedding service &lt;br&gt;}}
-    VDB{{Vector DB&lt;br&gt;&lt;br&gt;}}
-    R_RET{{Web Retriever service &lt;br&gt;}}
-    LLM_gen{{LLM Service &lt;br&gt;}}
-    GW([SearchQnA GateWay&lt;br&gt;]):::orange
-
-    %% Questions interaction
-    direction LR
-    a[User Input Query] --&gt; UI
-    UI --&gt; GW
-    GW &lt;==&gt; SearchQnA-MegaService
-    EM ==&gt; RET
-    RET ==&gt; RER
-    RER ==&gt; LLM
-
-    %% Embedding service flow
-    direction LR
-    EM &lt;-.-&gt; TEI_EM
-    RET &lt;-.-&gt; R_RET
-    RER &lt;-.-&gt; TEI_RER
-    LLM &lt;-.-&gt; LLM_gen
-
+ subgraph MegaService[&quot;MegaService&quot;]
+        LLM[&quot;LLM&lt;br&gt;llm-textgen-server&quot;]
+        Reranker[&quot;Reranker&lt;br&gt;reranking-tei-server&quot;]
+        Retriever[&quot;Retriever&lt;br&gt;web-retriever-server&quot;]
+        Embedding[&quot;Embedding&lt;br&gt;embedding-server&quot;]
+  end
+ subgraph Backend[&quot;searchqna-backend-server&quot;]
     direction TB
-    %% Vector DB interaction
-    R_RET &lt;-.-&gt; VDB
+        MegaService
+        Gateway[&quot;Backend Endpoint&quot;]
+ end
+    classDef default fill:#fff,stroke:#000,color:#000
+    classDef ext fill:#f9cb9c,stroke:#000,color:#000
+    style MegaService margin-top:20px,margin-bottom:20px
         </div><p>This SearchQnA use case performs Search-augmented Question Answering across multiple platforms. Currently, we provide the example for Intel® Gaudi® 2 and Intel® Xeon® Scalable Processors, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
 </section>
 <section id="deployment-options">
@@ -2758,15 +2741,15 @@
 <tbody>
 <tr class="row-even"><td><p>On-premise Deployments</p></td>
 <td><p>Docker Compose (Xeon)</p></td>
-<td><p><a class="reference internal" href="#./docker_compose/intel/cpu/xeon"><span class="xref myst">DocSum deployment on Xeon</span></a></p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">SearchQnA deployment on Xeon</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p></p></td>
 <td><p>Docker Compose (Gaudi)</p></td>
-<td><p><a class="reference internal" href="#./docker_compose/intel/hpu/gaudi"><span class="xref myst">DocSum deployment on Gaudi</span></a></p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">SearchQnA deployment on Gaudi</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p></p></td>
 <td><p>Docker Compose (ROCm)</p></td>
-<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">DocSum deployment on AMD ROCm</span></a></p></td>
+<td><p><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">SearchQnA deployment on AMD ROCm</span></a></p></td>
 </tr>
 </tbody>
 </table>
