@@ -336,6 +336,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Deploy CodeGen Application on Intel Gaudi HPU with Docker Compose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/gmc/README.html">Deploy CodeGen using Kubernetes Microservices Connector (GMC)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../kubernetes/helm/README.html">Deploy CodeGen on Kubernetes using Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tests/README.html">CodeGen E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/gradio/README.html">Document Summary</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/react/README.html">Code Gen</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/svelte/README.html">Code Gen</a></li>
@@ -2680,35 +2681,10 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
 <li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
-<li><p><a class="reference internal" href="#quick-start"><span class="xref myst">Quick Start</span></a></p></li>
-<li><p><a class="reference internal" href="#available-deployment-options"><span class="xref myst">Available Deployment Options</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#default-vllm-based-deployment---profile-codegen-gaudi-vllm"><span class="xref myst">Default: vLLM-based Deployment (<code class="docutils literal notranslate"><span class="pre">--profile</span> <span class="pre">codegen-gaudi-vllm</span></code>)</span></a></p></li>
-<li><p><a class="reference internal" href="#tgi-based-deployment---profile-codegen-gaudi-tgi"><span class="xref myst">TGI-based Deployment (<code class="docutils literal notranslate"><span class="pre">--profile</span> <span class="pre">codegen-gaudi-tgi</span></code>)</span></a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#configuration-parameters"><span class="xref myst">Configuration Parameters</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#environment-variables"><span class="xref myst">Environment Variables</span></a></p></li>
-<li><p><a class="reference internal" href="#compose-profiles"><span class="xref myst">Compose Profiles</span></a></p></li>
-<li><p><a class="reference internal" href="#docker-compose-gaudi-configuration"><span class="xref myst">Docker Compose Gaudi Configuration</span></a></p></li>
-</ul>
-</li>
+<li><p><a class="reference internal" href="#quick-start-deployment"><span class="xref myst">Quick Start Deployment</span></a></p></li>
 <li><p><a class="reference internal" href="#building-custom-images-optional"><span class="xref myst">Building Custom Images (Optional)</span></a></p></li>
-<li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#check-container-status"><span class="xref myst">Check Container Status</span></a></p></li>
-<li><p><a class="reference internal" href="#run-validation-scriptcommands"><span class="xref myst">Run Validation Script/Commands</span></a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#accessing-the-user-interface-ui"><span class="xref myst">Accessing the User Interface (UI)</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#gradio-ui-default"><span class="xref myst">Gradio UI (Default)</span></a></p></li>
-<li><p><a class="reference internal" href="#svelte-ui-optional"><span class="xref myst">Svelte UI (Optional)</span></a></p></li>
-<li><p><a class="reference internal" href="#react-ui-optional"><span class="xref myst">React UI (Optional)</span></a></p></li>
-<li><p><a class="reference internal" href="#vs-code-extension-optional"><span class="xref myst">VS Code Extension (Optional)</span></a></p></li>
-</ul>
-</li>
+<li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p></li>
+<li><p><a class="reference internal" href="#accessing-the-user-interface-ui"><span class="xref myst">Accessing the User Interface (UI)</span></a></p></li>
 <li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p></li>
 <li><p><a class="reference internal" href="#stopping-the-application"><span class="xref myst">Stopping the Application</span></a></p></li>
 <li><p><a class="reference internal" href="#next-steps"><span class="xref myst">Next Steps</span></a></p></li>
@@ -2734,31 +2710,31 @@
 </li>
 </ul>
 </section>
-<section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<section id="quick-start-deployment">
+<h2>Quick Start Deployment<a class="headerlink" href="#quick-start-deployment" title="Link to this heading">¶</a></h2>
 <p>This uses the default vLLM-based deployment profile (<code class="docutils literal notranslate"><span class="pre">codegen-gaudi-vllm</span></code>).</p>
 <ol class="arabic">
 <li><p><strong>Configure Environment:</strong>
 Set required environment variables in your shell:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Replace with your host&#39;s external IP address (do not use localhost or 127.0.0.1)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;your_external_ip_address&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="s2">&quot;your_external_ip_address&quot;</span>
 <span class="c1"># Replace with your Hugging Face Hub API token</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_huggingface_token&quot;</span>
 
 <span class="c1"># Optional: Configure proxy if needed</span>
 <span class="c1"># export http_proxy=&quot;your_http_proxy&quot;</span>
 <span class="c1"># export https_proxy=&quot;your_https_proxy&quot;</span>
-<span class="c1"># export no_proxy=&quot;localhost,127.0.0.1,${host_ip}&quot; # Add other hosts if necessary</span>
-<span class="nb">source</span><span class="w"> </span>../../../set_env.sh
+<span class="c1"># export no_proxy=&quot;localhost,127.0.0.1,${HOST_IP}&quot; # Add other hosts if necessary</span>
+<span class="nb">source</span><span class="w"> </span>../../set_env.sh
 </pre></div>
 </div>
 <p><em>Note: The compose file might read additional variables from set_env.sh. Ensure all required variables like ports (<code class="docutils literal notranslate"><span class="pre">LLM_SERVICE_PORT</span></code>, <code class="docutils literal notranslate"><span class="pre">MEGA_SERVICE_PORT</span></code>, etc.) are set if not using defaults from the compose file.</em>
-like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen2.5-Coder-32B-Instruct&quot;</span>
+For instance, edit the set_env.sh to change the LLM model</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;</span>
 </pre></div>
 </div>
-<p>can be changed to small model if needed</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;</span>
+<p>can be changed to other model if needed</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen2.5-Coder-32B-Instruct&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -2791,7 +2767,7 @@ Wait several minutes for models to download and services to initialize (Gaudi in
 <li><p><strong>Gaudi Service:</strong> <code class="docutils literal notranslate"><span class="pre">codegen-tgi-gaudi-server</span></code></p></li>
 <li><p><strong>Other Services:</strong> Same CPU-based services as the vLLM profile.</p></li>
 <li><p><strong>To Run:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure environment variables (host_ip, HUGGINGFACEHUB_API_TOKEN) are set</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure environment variables (HOST_IP, HUGGINGFACEHUB_API_TOKEN) are set</span>
 docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>codegen-gaudi-tgi<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
@@ -2804,56 +2780,13 @@ docker<span class="w"> </span>compose<span class="w"> </span>--profile<span clas
 <section id="environment-variables">
 <h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h3>
 <p>Key parameters are configured via environment variables set before running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code>.</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head text-left"><p>Environment Variable</p></th>
-<th class="head text-left"><p>Description</p></th>
-<th class="head text-left"><p>Default (Set Externally)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">host_ip</span></code></p></td>
-<td class="text-left"><p>External IP address of the host machine. <strong>Required.</strong></p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_external_ip_address</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code></p></td>
-<td class="text-left"><p>Your Hugging Face Hub token for model access. <strong>Required.</strong></p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_huggingface_token</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code></p></td>
-<td class="text-left"><p>Hugging Face model ID for the CodeGen LLM (used by TGI/vLLM service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-Coder-32B-Instruct</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code></p></td>
-<td class="text-left"><p>Hugging Face model ID for the embedding model (used by TEI service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">BAAI/bge-base-en-v1.5</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">LLM_ENDPOINT</span></code></p></td>
-<td class="text-left"><p>Internal URL for the LLM serving endpoint (used by <code class="docutils literal notranslate"><span class="pre">codegen-llm-server</span></code>). Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-tgi-server:80/generate</span></code> or <code class="docutils literal notranslate"><span class="pre">http://codegen-vllm-server:8000/v1/chat/completions</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">TEI_EMBEDDING_ENDPOINT</span></code></p></td>
-<td class="text-left"><p>Internal URL for the Embedding service. Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-tei-embedding-server:80/embed</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DATAPREP_ENDPOINT</span></code></p></td>
-<td class="text-left"><p>Internal URL for the Data Preparation service. Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://codegen-dataprep-server:80/dataprep</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">BACKEND_SERVICE_ENDPOINT</span></code></p></td>
-<td class="text-left"><p>External URL for the CodeGen Gateway (MegaService). Derived from <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> and port <code class="docutils literal notranslate"><span class="pre">7778</span></code>.</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http://${host_ip}:7778/v1/codegen</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">*_PORT</span></code> (Internal)</p></td>
-<td class="text-left"><p>Internal container ports (e.g., <code class="docutils literal notranslate"><span class="pre">80</span></code>, <code class="docutils literal notranslate"><span class="pre">6379</span></code>). Defined in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></td>
-<td class="text-left"><p>N/A</p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">http_proxy</span></code> / <code class="docutils literal notranslate"><span class="pre">https_proxy</span></code>/<code class="docutils literal notranslate"><span class="pre">no_proxy</span></code></p></td>
-<td class="text-left"><p>Network proxy settings (if required).</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
-</tr>
-</tbody>
-</table>
+<p>| Environment Variable                    | Description                                                                                                         | Default (Set Externally)                       |
+| :————————————– | :—————————————————————————————————————— | :——————————————— | ———————————— |
+| <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code>                               | External IP address of the host machine. <strong>Required.</strong>                                                              | <code class="docutils literal notranslate"><span class="pre">your_external_ip_address</span></code>                     |
+| <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>              | Your Hugging Face Hub token for model access. <strong>Required.</strong>                                                         | <code class="docutils literal notranslate"><span class="pre">your_huggingface_token</span></code>                       |
+| <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code>                          | Hugging Face model ID for the CodeGen LLM (used by TGI/vLLM service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment. | <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-Coder-7B-Instruct</span></code>               |
+| <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID</span></code>                    | Hugging Face model ID for the embedding model (used by TEI service). Configured within <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> environment.  | <code class="docutils literal notranslate"><span class="pre">BAAI/bge-base-en-v1.5</span></code>                        |
+| <code class="docutils literal notranslate"><span class="pre">LLM_ENDPOINT</span></code>                          | Internal URL for the LLM serving endpoint (used by <code class="docutils literal notranslate"><span class="pre">llm-codegen-vllm-server</span></code>). Configured in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.        | http://codegen-vllm                            | tgi-server:9000/v1/chat/completions<code class="docutils literal notranslate"><span class="pre">|</span> <span class="pre">|</span></code>TEI_EMBEDDING_ENDPOINT<code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Internal</span> <span class="pre">URL</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">Embedding</span> <span class="pre">service.</span> <span class="pre">Configured</span> <span class="pre">in</span></code>compose.yaml<code class="docutils literal notranslate"><span class="pre">.</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> </code>http://codegen-tei-embedding-server:80/embed<code class="docutils literal notranslate"><span class="pre">|</span> <span class="pre">|</span></code>DATAPREP_ENDPOINT<code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Internal</span> <span class="pre">URL</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">Data</span> <span class="pre">Preparation</span> <span class="pre">service.</span> <span class="pre">Configured</span> <span class="pre">in</span></code>compose.yaml<code class="docutils literal notranslate"><span class="pre">.</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> </code>http://codegen-dataprep-server:80/dataprep<code class="docutils literal notranslate">&#160; <span class="pre">|</span> <span class="pre">|</span></code>BACKEND_SERVICE_ENDPOINT<code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">External</span> <span class="pre">URL</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">CodeGen</span> <span class="pre">Gateway</span> <span class="pre">(MegaService).</span> <span class="pre">Derived</span> <span class="pre">from</span></code>HOST_IP<code class="docutils literal notranslate"><span class="pre">and</span> <span class="pre">port</span></code>7778<code class="docutils literal notranslate"><span class="pre">.</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> </code>http://${HOST_IP}:7778/v1/codegen<code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">|</span></code>*_PORT<code class="docutils literal notranslate"><span class="pre">(Internal)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Internal</span> <span class="pre">container</span> <span class="pre">ports</span> <span class="pre">(e.g.,</span></code>80<code class="docutils literal notranslate"><span class="pre">,</span> </code>6379<code class="docutils literal notranslate"><span class="pre">).</span> <span class="pre">Defined</span> <span class="pre">in</span> </code>compose.yaml<code class="docutils literal notranslate"><span class="pre">.</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">N/A</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">|</span> </code>http_proxy<code class="docutils literal notranslate"><span class="pre">/</span></code>https_proxy<code class="docutils literal notranslate"><span class="pre">/</span></code>no_proxy<code class="docutils literal notranslate"><span class="pre">|</span> <span class="pre">Network</span> <span class="pre">proxy</span> <span class="pre">settings</span> <span class="pre">(if</span> <span class="pre">required).</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span></code>””`                                           |</p>
 <p>Most of these parameters are in <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>, you can either modify this file or overwrite the env variables by setting them.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>CodeGen/docker_compose/set_env.sh
 </pre></div>
@@ -2904,19 +2837,19 @@ docker<span class="w"> </span>compose<span class="w"> </span>--profile<span clas
 </section>
 <section id="run-validation-script-commands">
 <h3>Run Validation Script/Commands<a class="headerlink" href="#run-validation-script-commands" title="Link to this heading">¶</a></h3>
-<p>Use <code class="docutils literal notranslate"><span class="pre">curl</span></code> commands targeting the main service endpoints. Ensure <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> is correctly set.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">curl</span></code> commands targeting the main service endpoints. Ensure <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> is correctly set.</p>
 <ol class="arabic">
 <li><p><strong>Validate LLM Serving Endpoint (Example for vLLM on default port 9000 internally, exposed differently):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This command structure targets the OpenAI-compatible vLLM endpoint</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-32B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a basic Python class&quot;}], &quot;max_tokens&quot;:32}&#39;</span>
+<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a basic Python class&quot;}], &quot;max_tokens&quot;:32}&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Validate CodeGen Gateway (MegaService, default host port 7778):</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Implement a sorting algorithm in Python.&quot;}&#39;</span>
 </pre></div>
@@ -2934,7 +2867,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <section id="gradio-ui-default">
 <h3>Gradio UI (Default)<a class="headerlink" href="#gradio-ui-default" title="Link to this heading">¶</a></h3>
 <p>Access the default Gradio UI:
-<code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5173</span></code>
+<code class="docutils literal notranslate"><span class="pre">http://{HOST_IP}:5173</span></code>
 <em>(Port <code class="docutils literal notranslate"><span class="pre">5173</span></code> is the default host mapping)</em></p>
 <p><img alt="Gradio UI" src="../../../../../../_images/codegen_gradio_ui_main.png" /></p>
 </section>
@@ -2943,7 +2876,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple">
 <li><p>Modify <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>: Swap Gradio service for Svelte (<code class="docutils literal notranslate"><span class="pre">codegen-gaudi-ui-server</span></code>), check port map (e.g., <code class="docutils literal notranslate"><span class="pre">5173:5173</span></code>).</p></li>
 <li><p>Restart: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">--profile</span> <span class="pre">&lt;profile_name&gt;</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
-<li><p>Access: <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5173</span></code></p></li>
+<li><p>Access: <code class="docutils literal notranslate"><span class="pre">http://{HOST_IP}:5173</span></code></p></li>
 </ol>
 </section>
 <section id="react-ui-optional">
@@ -2951,12 +2884,12 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <ol class="arabic simple">
 <li><p>Modify <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>: Swap Gradio service for React (<code class="docutils literal notranslate"><span class="pre">codegen-gaudi-react-ui-server</span></code>), check port map (e.g., <code class="docutils literal notranslate"><span class="pre">5174:80</span></code>).</p></li>
 <li><p>Restart: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">--profile</span> <span class="pre">&lt;profile_name&gt;</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
-<li><p>Access: <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5174</span></code></p></li>
+<li><p>Access: <code class="docutils literal notranslate"><span class="pre">http://{HOST_IP}:5174</span></code></p></li>
 </ol>
 </section>
 <section id="vs-code-extension-optional">
 <h3>VS Code Extension (Optional)<a class="headerlink" href="#vs-code-extension-optional" title="Link to this heading">¶</a></h3>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">Neural</span> <span class="pre">Copilot</span></code> extension configured with the CodeGen backend URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:7778/v1/codegen</span></code>. (See Xeon README for detailed setup screenshots).</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">Neural</span> <span class="pre">Copilot</span></code> extension configured with the CodeGen backend URL: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:7778/v1/codegen</span></code>. (See Xeon README for detailed setup screenshots).</p>
 </section>
 </section>
 <section id="troubleshooting">
@@ -2971,7 +2904,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </ul>
 </li>
 <li><p><strong>Model Download Issues:</strong> Check <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>, internet access, proxy settings. Check LLM service logs.</p></li>
-<li><p><strong>Connection Errors:</strong> Verify <code class="docutils literal notranslate"><span class="pre">host_ip</span></code>, ports, and proxy settings. Use <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> and check service logs.</p></li>
+<li><p><strong>Connection Errors:</strong> Verify <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code>, ports, and proxy settings. Use <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> and check service logs.</p></li>
 </ul>
 </section>
 <section id="stopping-the-application">
