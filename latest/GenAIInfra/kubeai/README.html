@@ -1903,6 +1903,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#using-the-models">Using the Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#observability">Observability</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deploy/index.html#kubernetes-addons">Kubernetes Addons</a><ul>
@@ -2691,8 +2692,9 @@
 <li><p>Persistent Volume cache for models - tested/working</p></li>
 <li><p>Model downloading &amp; inference engine deployment - tested/working</p></li>
 <li><p>Scaling pods to/from zero - tested/working</p></li>
-<li><p>Load based autoscaling - not tested/included</p></li>
+<li><p>Load based autoscaling - tested/working</p></li>
 <li><p>Integration with OPEA application - missing</p></li>
+<li><p>Observability - tested/working</p></li>
 </ul>
 <p>The following models are included.</p>
 <ul class="simple">
@@ -2738,7 +2740,7 @@
 </section>
 <section id="deploying-the-models">
 <h1>Deploying the Models<a class="headerlink" href="#deploying-the-models" title="Link to this heading">¶</a></h1>
-<p>This section describes how to deploy various models. All the examples below use Kubernetes Persistent Volumes and Claims (PV/PVC) to store the models. The Kubernetes Storage Class (SC) is called <code class="docutils literal notranslate"><span class="pre">standard</span></code>. You can tune the storage configuration to match your environment during the installation (see <code class="docutils literal notranslate"><span class="pre">opea-values.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">cacheProfiles</span></code> for more information).</p>
+<p>This section describes how to deploy various models. All the examples below use Kubernetes Persistent Volumes and Claims (PV/PVC) to store the models. The Kubernetes Storage Class (SC) is called <code class="docutils literal notranslate"><span class="pre">standard</span></code>. You can tune the storage configuration to match your environment during the installation (see <code class="docutils literal notranslate"><span class="pre">cacheProfiles</span></code> in <code class="docutils literal notranslate"><span class="pre">opea-values.yaml</span></code>).</p>
 <p>The models in the examples below are deployed to <code class="docutils literal notranslate"><span class="pre">$NAMESPACE</span></code>. Please set that according to your needs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export NAMESPACE=&quot;kubeai&quot;
 kubectl create namespace $NAMESPACE
@@ -2766,7 +2768,8 @@ kubect apply -f models/llama-3.1-8b-instruct-gaudi.yaml -n $NAMESPACE
 kubect apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 </pre></div>
 </div>
-<p>The rest is the same as in the previous example. You should see a pod running with the name <code class="docutils literal notranslate"><span class="pre">model-llama-3.1-8b-instruct-gpu-xxxx</span></code> and/or <code class="docutils literal notranslate"><span class="pre">model-llama-3.3-70b-instruct-gpu-xxxx</span></code>.</p>
+<p>The rest is the same as in the previous example. You should see a pod running with the name <code class="docutils literal notranslate"><span class="pre">model-llama-3.1-8b-instruct-gaudi-xxxx</span></code>. When request load for that model increases enough, KubeAI will automatically deploy more instances (model <code class="docutils literal notranslate"><span class="pre">maxReplicas</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">minReplicas</span></code>).</p>
+<p>Latter model is set to scale from zero (<code class="docutils literal notranslate"><span class="pre">minReplicas</span></code> = 0), so <code class="docutils literal notranslate"><span class="pre">model-llama-3.3-70b-instruct-gaudi-xxxx</span></code> pod(s) will be present only when KubeAI gets requests for that model (avoids multiple devices being exclusively reserved for idle pods, but significantly slows down first response).</p>
 </section>
 <section id="text-embeddings-with-bge-on-cpu">
 <h2>Text Embeddings with BGE on CPU<a class="headerlink" href="#text-embeddings-with-bge-on-cpu" title="Link to this heading">¶</a></h2>
@@ -2824,6 +2827,26 @@ kubect apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 </pre></div>
 </div>
 <p>Enjoy the answer!</p>
+</section>
+<section id="observability">
+<h1>Observability<a class="headerlink" href="#observability" title="Link to this heading">¶</a></h1>
+<p>With <a class="reference internal" href="../helm-charts/monitoring.html"><span class="std std-doc">Prometheus</span></a> running, install script can enable monitoring of the vLLM inference engine instances.</p>
+<p>Script requires Prometheus Helm chart release name for that, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>release=prometheus-stack
+./install.sh $release
+</pre></div>
+</div>
+<p>Install dashboard for vLLM metrics to same namespace as Grafana.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ns=monitoring
+kubectl apply -n $ns -f grafana/vllm-metrics.yaml
+</pre></div>
+</div>
+<p>Port-forward Grafana</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n $ns svc/$release-grafana 3000:80
+</pre></div>
+</div>
+<p>And open web-browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> with <code class="docutils literal notranslate"><span class="pre">admin</span></code> / <code class="docutils literal notranslate"><span class="pre">prom-operator</span></code> given as the username / password for login.</p>
+<p>Note: metrics will be available only after first request has been processed.</p>
 </section>
 
 

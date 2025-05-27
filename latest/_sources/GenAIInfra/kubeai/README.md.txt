@@ -13,8 +13,9 @@ The following features are available at the moment.
 - Persistent Volume cache for models - tested/working
 - Model downloading & inference engine deployment - tested/working
 - Scaling pods to/from zero - tested/working
-- Load based autoscaling - not tested/included
+- Load based autoscaling - tested/working
 - Integration with OPEA application - missing
+- Observability - tested/working
 
 The following models are included.
 
@@ -60,7 +61,7 @@ kubectl explain models.kubeai.org
 
 # Deploying the Models
 
-This section describes how to deploy various models. All the examples below use Kubernetes Persistent Volumes and Claims (PV/PVC) to store the models. The Kubernetes Storage Class (SC) is called `standard`. You can tune the storage configuration to match your environment during the installation (see `opea-values.yaml`, `cacheProfiles` for more information).
+This section describes how to deploy various models. All the examples below use Kubernetes Persistent Volumes and Claims (PV/PVC) to store the models. The Kubernetes Storage Class (SC) is called `standard`. You can tune the storage configuration to match your environment during the installation (see `cacheProfiles` in `opea-values.yaml`).
 
 The models in the examples below are deployed to `$NAMESPACE`. Please set that according to your needs.
 
@@ -98,7 +99,9 @@ kubect apply -f models/llama-3.1-8b-instruct-gaudi.yaml -n $NAMESPACE
 kubect apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 ```
 
-The rest is the same as in the previous example. You should see a pod running with the name `model-llama-3.1-8b-instruct-gpu-xxxx` and/or `model-llama-3.3-70b-instruct-gpu-xxxx`.
+The rest is the same as in the previous example. You should see a pod running with the name `model-llama-3.1-8b-instruct-gaudi-xxxx`. When request load for that model increases enough, KubeAI will automatically deploy more instances (model `maxReplicas` > `minReplicas`).
+
+Latter model is set to scale from zero (`minReplicas` = 0), so `model-llama-3.3-70b-instruct-gaudi-xxxx` pod(s) will be present only when KubeAI gets requests for that model (avoids multiple devices being exclusively reserved for idle pods, but significantly slows down first response).
 
 ## Text Embeddings with BGE on CPU
 
@@ -165,3 +168,31 @@ curl "http://localhost:8000/openai/v1/chat/completions" \
 ```
 
 Enjoy the answer!
+
+# Observability
+
+With [Prometheus](../helm-charts/monitoring.md) running, install script can enable monitoring of the vLLM inference engine instances.
+
+Script requires Prometheus Helm chart release name for that, e.g.:
+
+```
+release=prometheus-stack
+./install.sh $release
+```
+
+Install dashboard for vLLM metrics to same namespace as Grafana.
+
+```
+ns=monitoring
+kubectl apply -n $ns -f grafana/vllm-metrics.yaml
+```
+
+Port-forward Grafana
+
+```
+kubectl port-forward -n $ns svc/$release-grafana 3000:80
+```
+
+And open web-browser to `http://localhost:3000` with `admin` / `prom-operator` given as the username / password for login.
+
+Note: metrics will be available only after first request has been processed.
