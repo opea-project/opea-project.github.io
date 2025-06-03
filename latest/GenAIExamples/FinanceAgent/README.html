@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finance Agent &mdash; OPEA™ 1.3 documentation</title>
+  <title>Finance Agent Example &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -28,7 +28,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="GraphRAG Application" href="../GraphRAG/README.html" />
+    <link rel="next" title="Deploy Finance Agent on Intel® Gaudi® AI Accelerator with Docker Compose" href="docker_compose/intel/hpu/gaudi/README.html" />
     <link rel="prev" title="EdgeCraftRAG E2E test scripts" href="../EdgeCraftRAG/tests/README.html" /> 
 </head>
 
@@ -390,7 +390,8 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Finance Agent</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Finance Agent Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Deploy Finance Agent on Intel® Gaudi® AI Accelerator with Docker Compose</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#graphrag-application">GraphRAG Application</a><ul>
@@ -2662,7 +2663,7 @@
   
      <li><a href="../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Finance Agent</li>
+  <li>Finance Agent Example</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/GenAIExamples/FinanceAgent/README.md.txt" rel="nofollow"> View page source</a>
@@ -2682,10 +2683,33 @@
   
            <div itemprop="articleBody">
              
-  <section id="finance-agent">
-<h1>Finance Agent<a class="headerlink" href="#finance-agent" title="Link to this heading">¶</a></h1>
+  <section id="finance-agent-example">
+<h1>Finance Agent Example<a class="headerlink" href="#finance-agent-example" title="Link to this heading">¶</a></h1>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#problem-motivation"><span class="xref myst">Problem Motivation</span></a></p></li>
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#high-level-diagram"><span class="xref myst">High-Level Diagram</span></a></p></li>
+<li><p><a class="reference internal" href="#opea-microservices-diagram-for-data-handling"><span class="xref myst">OPEA Microservices Diagram for Data Handling</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+<li><p><a class="reference internal" href="#contribution"><span class="xref myst">Contribution</span></a></p></li>
+</ul>
+</section>
 <section id="overview">
-<h2>1. Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The Finance Agent exemplifies a hierarchical multi-agent system designed to streamline financial document processing and analysis for users. It offers three core functionalities: summarizing lengthy financial documents, answering queries related to these documents, and conducting research to generate investment reports on public companies.</p>
+<p>Navigating and analyzing extensive financial documents can be both challenging and time-consuming. Users often need concise summaries, answers to specific queries, or comprehensive investment reports. The Finance Agent effectively addresses these needs by automating document summarization, query answering, and research tasks, thereby enhancing productivity and decision-making efficiency.</p>
+<p>Users interact with the system through a graphical user interface (UI), where a supervisor agent manages requests by delegating tasks to worker agents or the summarization microservice. The system also supports document uploads via the UI for processing.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
+<section id="high-level-diagram">
+<h3>High-Level Diagram<a class="headerlink" href="#high-level-diagram" title="Link to this heading">¶</a></h3>
 <p>The architecture of this Finance Agent example is shown in the figure below. The agent is a hierarchical multi-agent system and has 3 main functions:</p>
 <ol class="arabic simple">
 <li><p>Summarize long financial documents and provide key points (using OPEA DocSum).</p></li>
@@ -2694,6 +2718,9 @@
 </ol>
 <p>The user interacts with the supervisor agent through the graphical UI. The supervisor agent gets the requests from the user and dispatches tasks to worker agents or to the summarization microservice. The user can also uploads documents through the UI.</p>
 <p><img alt="Finance Agent Architecture" src="../../_images/finance_agent_arch.png" /></p>
+</section>
+<section id="opea-microservices-diagram-for-data-handling">
+<h3>OPEA Microservices Diagram for Data Handling<a class="headerlink" href="#opea-microservices-diagram-for-data-handling" title="Link to this heading">¶</a></h3>
 <p>The architectural diagram of the <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice is shown below. We use <a class="reference external" href="https://github.com/docling-project/docling">docling</a> to extract text from PDFs and URLs into markdown format. Both the full document content and tables are extracted. We then use an LLM to extract metadata from the document, including the company name, year, quarter, document type, and document title. The full document markdown then gets chunked, and LLM is used to summarize each chunk, and the summaries are embedded and saved to a vector database. Each table is also summarized by LLM and the summaries are embedded and saved to the vector database. The chunks and tables are also saved into a KV store. The pipeline is designed as such to improve retrieval accuracy of the <code class="docutils literal notranslate"><span class="pre">search_knowledge_base</span></code> tool used by the Question Answering worker agent.</p>
 <p><img alt="dataprep architecture" src="../../_images/fin_agent_dataprep.png" /></p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice can ingest financial documents in two formats:</p>
@@ -2709,136 +2736,29 @@
 <p>The Question Answering worker agent uses <code class="docutils literal notranslate"><span class="pre">search_knowledge_base</span></code> tool to get relevant information. The tool uses a dense retriever and a BM25 retriever to get many pieces of information including financial statement tables. Then an LLM is used to extract useful information related to the query from the retrieved documents. Refer to the diagram below. We found that using this method significantly improves agent performance.</p>
 <p><img alt="finqa search tool arch" src="../../_images/finqa_tool.png" /></p>
 </section>
-<section id="getting-started">
-<h2>2. Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
-<section id="download-repos">
-<h3>2.1 Download repos<a class="headerlink" href="#download-repos" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>/path/to/your/workspace/
-<span class="nb">export</span><span class="w"> </span><span class="nv">WORKDIR</span><span class="o">=</span>/path/to/your/workspace/
-<span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-</pre></div>
-</div>
 </section>
-<section id="set-up-env-vars">
-<h3>2.2 Set up env vars<a class="headerlink" href="#set-up-env-vars" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_CACHE_DIR</span><span class="o">=</span>/path/to/your/model/cache/
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span>&lt;you-hf-token&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">FINNHUB_API_KEY</span><span class="o">=</span>&lt;your-finnhub-api-key&gt;<span class="w"> </span><span class="c1"># go to https://finnhub.io/ to get your free api key</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FINANCIAL_DATASETS_API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;<span class="w"> </span><span class="c1"># go to https://docs.financialdatasets.ai/ to get your free api key</span>
-</pre></div>
-</div>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>This Finance Agent example can be deployed manually on Docker Compose.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Hardware</p></th>
+<th class="head text-left"><p>Deployment Mode</p></th>
+<th class="head text-left"><p>Guide Link</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Intel® Gaudi® AI Accelerator</p></td>
+<td class="text-left"><p>Single Node (Docker)</p></td>
+<td class="text-left"><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Docker Compose Guide</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: Building custom microservice images can be done using the resources in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>.</em></p>
 </section>
-<section id="optional-build-docker-images">
-<h3>2.3 [Optional] Build docker images<a class="headerlink" href="#optional-build-docker-images" title="Link to this heading">¶</a></h3>
-<p>Only needed when docker pull failed.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/docker_image_build
-<span class="c1"># get GenAIComps repo</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="c1"># build the images</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span>--no-cache
-</pre></div>
-</div>
-<p>If deploy on Gaudi, also need to build vllm image.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/HabanaAI/vllm-fork.git
-<span class="c1"># get the latest release tag of vllm gaudi</span>
-<span class="nb">cd</span><span class="w"> </span>vllm-fork
-<span class="nv">VLLM_VER</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>describe<span class="w"> </span>--tags<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>git<span class="w"> </span>rev-list<span class="w"> </span>--tags<span class="w"> </span>--max-count<span class="o">=</span><span class="m">1</span><span class="k">)</span><span class="s2">&quot;</span><span class="k">)</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Check out vLLM tag </span><span class="si">${</span><span class="nv">VLLM_VER</span><span class="si">}</span><span class="s2">&quot;</span>
-git<span class="w"> </span>checkout<span class="w"> </span><span class="si">${</span><span class="nv">VLLM_VER</span><span class="si">}</span>
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-f<span class="w"> </span>Dockerfile.hpu<span class="w"> </span>-t<span class="w"> </span>opea/vllm-gaudi:latest<span class="w"> </span>--shm-size<span class="o">=</span>128g<span class="w"> </span>.<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="deploy-with-docker-compose">
-<h2>3. Deploy with docker compose<a class="headerlink" href="#deploy-with-docker-compose" title="Link to this heading">¶</a></h2>
-<section id="launch-vllm-endpoint">
-<h3>3.1 Launch vllm endpoint<a class="headerlink" href="#launch-vllm-endpoint" title="Link to this heading">¶</a></h3>
-<p>Below is the command to launch a vllm endpoint on Gaudi that serves <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-3.3-70B-Instruct</span></code> model on 4 Gaudi cards.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/docker_compose/intel/hpu/gaudi
-bash<span class="w"> </span>launch_vllm.sh
-</pre></div>
-</div>
-</section>
-<section id="prepare-knowledge-base">
-<h3>3.2 Prepare knowledge base<a class="headerlink" href="#prepare-knowledge-base" title="Link to this heading">¶</a></h3>
-<p>The commands below will upload some example files into the knowledge base. You can also upload files through UI.</p>
-<p>First, launch the redis databases and the dataprep microservice.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># inside $WORKDIR/GenAIExamples/FinanceAgent/docker_compose/intel/hpu/gaudi/</span>
-bash<span class="w"> </span>launch_dataprep.sh
-</pre></div>
-</div>
-<p>Validate datat ingest data and retrieval from database:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test_redis_finance.py<span class="w"> </span>--port<span class="w"> </span><span class="m">6007</span><span class="w"> </span>--test_option<span class="w"> </span>ingest
-python<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test_redis_finance.py<span class="w"> </span>--port<span class="w"> </span><span class="m">6007</span><span class="w"> </span>--test_option<span class="w"> </span>get
-</pre></div>
-</div>
-</section>
-<section id="launch-the-multi-agent-system">
-<h3>3.3 Launch the multi-agent system<a class="headerlink" href="#launch-the-multi-agent-system" title="Link to this heading">¶</a></h3>
-<p>The command below will launch 3 agent microservices, 1 docsum microservice, 1 UI microservice.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># inside $WORKDIR/GenAIExamples/FinanceAgent/docker_compose/intel/hpu/gaudi/</span>
-bash<span class="w"> </span>launch_agents.sh
-</pre></div>
-</div>
-</section>
-<section id="validate-agents">
-<h3>3.4 Validate agents<a class="headerlink" href="#validate-agents" title="Link to this heading">¶</a></h3>
-<p>FinQA Agent:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="s2">&quot;9095&quot;</span>
-<span class="nv">prompt</span><span class="o">=</span><span class="s2">&quot;What is Gap&#39;s revenue in 2024?&quot;</span>
-python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$prompt</span><span class="s2">&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span>
-</pre></div>
-</div>
-<p>Research Agent:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="s2">&quot;9096&quot;</span>
-<span class="nv">prompt</span><span class="o">=</span><span class="s2">&quot;generate NVDA financial research report&quot;</span>
-python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$prompt</span><span class="s2">&quot;</span><span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;worker&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--tool_choice<span class="w"> </span><span class="s2">&quot;get_current_date&quot;</span><span class="w"> </span>--tool_choice<span class="w"> </span><span class="s2">&quot;get_share_performance&quot;</span>
-</pre></div>
-</div>
-<p>Supervisor Agent single turns:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="s2">&quot;9090&quot;</span>
-python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--stream
-</pre></div>
-</div>
-<p>Supervisor Agent multi turn:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--multi-turn<span class="w"> </span>--stream
-</pre></div>
-</div>
-</section>
-</section>
-<section id="how-to-interact-with-the-agent-system-with-ui">
-<h2>How to interact with the agent system with UI<a class="headerlink" href="#how-to-interact-with-the-agent-system-with-ui" title="Link to this heading">¶</a></h2>
-<p>The UI microservice is launched in the previous step with the other microservices.
-To see the UI, open a web browser to <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:5175</span></code> to access the UI. Note the <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here is the host IP of the UI microservice.</p>
-<ol class="arabic">
-<li><p>Create Admin Account with a random value</p></li>
-<li><p>Enter the endpoints in the <code class="docutils literal notranslate"><span class="pre">Connections</span></code> settings</p>
-<p>First, click on the user icon in the upper right corner to open <code class="docutils literal notranslate"><span class="pre">Settings</span></code>. Click on <code class="docutils literal notranslate"><span class="pre">Admin</span> <span class="pre">Settings</span></code>. Click on <code class="docutils literal notranslate"><span class="pre">Connections</span></code>.</p>
-<p>Then, enter the supervisor agent endpoint in the <code class="docutils literal notranslate"><span class="pre">OpenAI</span> <span class="pre">API</span></code> section: <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:9090/v1</span></code>. Enter the API key as “empty”. Add an arbitrary model id in <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">IDs</span></code>, for example, “opea_agent”. The <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here should be the host ip of the agent microservice.</p>
-<p>Then, enter the dataprep endpoint in the <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">File</span> <span class="pre">API</span></code> section. You first need to enable <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">File</span> <span class="pre">API</span></code> by clicking on the button on the right to turn it into green and then enter the endpoint url, for example, <code class="docutils literal notranslate"><span class="pre">http://${ip_address}:6007/v1</span></code>. The <code class="docutils literal notranslate"><span class="pre">ip_address</span></code> here should be the host ip of the dataprep microservice.</p>
-<p>You should see screen like the screenshot below when the settings are done.</p>
-</li>
-</ol>
-<p><img alt="opea-agent-setting" src="../../_images/ui_connections_settings.png" /></p>
-<ol class="arabic" start="3">
-<li><p>Upload documents with UI</p>
-<p>Click on the <code class="docutils literal notranslate"><span class="pre">Workplace</span></code> icon in the top left corner. Click <code class="docutils literal notranslate"><span class="pre">Knowledge</span></code>. Click on the “+” sign to the right of <code class="docutils literal notranslate"><span class="pre">Icloud</span> <span class="pre">Knowledge</span></code>. You can paste an url in the left hand side of the pop-up window, or upload a local file by click on the cloud icon on the right hand side of the pop-up window. Then click on the <code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">Confirm</span></code> button. Wait till the processing is done and the pop-up window will be closed on its own when the data ingestion is done. See the screenshot below.</p>
-<p>Note: the data ingestion may take a few minutes depending on the length of the document. Please wait patiently and do not close the pop-up window.</p>
-</li>
-</ol>
-<p><img alt="upload-doc-ui" src="../../_images/upload_doc_ui.png" /></p>
-<ol class="arabic" start="4">
-<li><p>Test agent with UI</p>
-<p>After the settings are done and documents are ingested, you can start to ask questions to the agent. Click on the <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Chat</span></code> icon in the top left corner, and type in your questions in the text box in the middle of the UI.</p>
-<p>The UI will stream the agent’s response tokens. You need to expand the <code class="docutils literal notranslate"><span class="pre">Thinking</span></code> tab to see the agent’s reasoning process. After the agent made tool calls, you would also see the tool output after the tool returns output to the agent. Note: it may take a while to get the tool output back if the tool execution takes time.</p>
-</li>
-</ol>
-<p><img alt="opea-agent-test" src="../../_images/opea-agent-test.png" /></p>
+<section id="contribution">
+<h2>Contribution<a class="headerlink" href="#contribution" title="Link to this heading">¶</a></h2>
+<p>We welcome contributions to the OPEA project. Please refer to the <a class="reference internal" href="../../community/CONTRIBUTING.html"><span class="std std-doc">contribution guidelines</span></a> for more information.</p>
 </section>
 </section>
 
@@ -2848,7 +2768,7 @@ To see the UI, open a web browser to <code class="docutils literal notranslate">
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../EdgeCraftRAG/tests/README.html" class="btn btn-neutral float-left" title="EdgeCraftRAG E2E test scripts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../GraphRAG/README.html" class="btn btn-neutral float-right" title="GraphRAG Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docker_compose/intel/hpu/gaudi/README.html" class="btn btn-neutral float-right" title="Deploy Finance Agent on Intel® Gaudi® AI Accelerator with Docker Compose" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
