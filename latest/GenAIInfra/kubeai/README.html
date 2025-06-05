@@ -2685,6 +2685,28 @@
 <h1>KubeAI for OPEA<a class="headerlink" href="#kubeai-for-opea" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://www.kubeai.org">KubeAI</a> is an open-source AI inferencing operator. This folder contains documentation, installation instructions and deployment files for running KubeAI with OPEA inference services.</p>
 <p>For now, OPEA enables a subset of the KubeAI features. In the future more KubeAI service will be added.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#kubeai-for-opea"><span class="xref myst">KubeAI for OPEA</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#features"><span class="xref myst">Features</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#installation"><span class="xref myst">Installation</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#install-kubeai"><span class="xref myst">Install KubeAI</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#deploying-the-models"><span class="xref myst">Deploying the Models</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#text-generation-with-llama-3-on-cpu"><span class="xref myst">Text Generation with Llama-3 on CPU</span></a></p></li>
+<li><p><a class="reference internal" href="#text-generation-with-llama-3-on-gaudi"><span class="xref myst">Text Generation with Llama-3 on Gaudi</span></a></p></li>
+<li><p><a class="reference internal" href="#text-embeddings-with-bge-on-cpu"><span class="xref myst">Text Embeddings with BGE on CPU</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-the-models"><span class="xref myst">Using the Models</span></a></p></li>
+<li><p><a class="reference internal" href="#observability"><span class="xref myst">Observability</span></a></p></li>
+</ul>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
 <p>The following features are available at the moment.</p>
@@ -2833,22 +2855,31 @@ kubectl apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 <section id="observability">
 <h1>Observability<a class="headerlink" href="#observability" title="Link to this heading">¶</a></h1>
 <p>With <a class="reference internal" href="../helm-charts/monitoring.html"><span class="std std-doc">Prometheus</span></a> running, install script can enable monitoring of the vLLM inference engine instances.</p>
-<p>Script requires Prometheus Helm chart release name for that, e.g.:</p>
+<p>Script requires Prometheus Helm chart release name for that, e.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>release=prometheus-stack
 ./install.sh $release
 </pre></div>
 </div>
-<p>Install dashboard for vLLM metrics to same namespace as Grafana.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ns=monitoring
-kubectl apply -n $ns -f grafana/vllm-metrics.yaml
-</pre></div>
-</div>
-<p>Port-forward Grafana</p>
+<p>Port-forward Grafana.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n $ns svc/$release-grafana 3000:80
 </pre></div>
 </div>
-<p>And open web-browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> with <code class="docutils literal notranslate"><span class="pre">admin</span></code> / <code class="docutils literal notranslate"><span class="pre">prom-operator</span></code> given as the username / password for login.</p>
-<p>Note: metrics will be available only after first request has been processed.</p>
+<p>Install “vLLM scaling” and “vLLM details” dashboards, to the same namespace as Grafana.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ns=monitoring
+kubectl apply -n $ns -f grafana/vllm-scaling.yaml -f grafana/vllm-details.yaml
+</pre></div>
+</div>
+<p>Open web-browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> with <code class="docutils literal notranslate"><span class="pre">admin</span></code> / <code class="docutils literal notranslate"><span class="pre">prom-operator</span></code> given as the username / password for login, to view the dashboards.</p>
+<p>Both dashboards filter the viewed vLLM instances by the selected namespace (e.g. <code class="docutils literal notranslate"><span class="pre">kubeai</span></code>) and the model they use.</p>
+<p>The scaling dashboard shows trends both for sum of metrics across all these instances, as well as the best and worst per-instance metric values at a given moment.
+<img alt="Scaling dashboard" src="../../_images/vllm-scaling.png" /></p>
+<p>Whereas details dashboard shows more detailed engine metrics for the selected vLLM instance (or all of them).
+<img alt="Details dashboard" src="../../_images/vllm-details.png" /></p>
+<p>Note:</p>
+<ul class="simple">
+<li><p>Dashboards should be visible in Grafana within a minute of them being applied, but</p></li>
+<li><p>vLLM metrics will be available only after the first inference request has been processed</p></li>
+</ul>
 </section>
 
 
