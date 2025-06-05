@@ -2817,7 +2817,7 @@ then we consider the vLLM service to be successfully launched</p>
 <td class="text-left"><p>External IP address of the host machine. <strong>Required.</strong></p></td>
 <td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_external_ip_address</span></code></p></td>
 </tr>
-<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code></p></td>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code></p></td>
 <td class="text-left"><p>Your Hugging Face Hub token for model access. <strong>Required.</strong></p></td>
 <td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">your_huggingface_token</span></code></p></td>
 </tr>
@@ -2858,7 +2858,7 @@ then we consider the vLLM service to be successfully launched</p>
 <p>To set up environment variables for deploying CodeGen services, source the <em>setup_env.sh</em> script in this directory:</p>
 <p>For TGI</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1">#ip address of the node</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1">#http proxy if any</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1">#https proxy if any</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1">#additional no proxies if needed</span>
@@ -2868,7 +2868,7 @@ then we consider the vLLM service to be successfully launched</p>
 </div>
 <p>For vLLM</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1">#ip address of the node</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1">#http proxy if any</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1">#https proxy if any</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1">#additional no proxies if needed</span>
@@ -3162,7 +3162,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Model Download Issues:</strong> Check <code class="docutils literal notranslate"><span class="pre">HUGGINGFACEHUB_API_TOKEN</span></code>. Ensure internet connectivity or correct proxy settings. Check logs of <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>/<code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-embedding-server</span></code>. Gated models need prior Hugging Face access.</p></li>
+<li><p><strong>Model Download Issues:</strong> Check <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code>. Ensure internet connectivity or correct proxy settings. Check logs of <code class="docutils literal notranslate"><span class="pre">tgi-service</span></code>/<code class="docutils literal notranslate"><span class="pre">vllm-service</span></code> and <code class="docutils literal notranslate"><span class="pre">tei-embedding-server</span></code>. Gated models need prior Hugging Face access.</p></li>
 <li><p><strong>Connection Errors:</strong> Verify <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> is correct and accessible. Check <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> for port mappings. Ensure <code class="docutils literal notranslate"><span class="pre">no_proxy</span></code> includes <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> if using a proxy. Check logs of the service failing to connect (e.g., <code class="docutils literal notranslate"><span class="pre">codegen-backend-server</span></code> logs if it can’t reach <code class="docutils literal notranslate"><span class="pre">codegen-llm-server</span></code>).</p></li>
 <li><p><strong>“Container name is in use”</strong>: Stop existing containers (<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span></code>) or change <code class="docutils literal notranslate"><span class="pre">container_name</span></code> in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
 <li><p><strong>Resource Issues:</strong> CodeGen models can be memory-intensive. Monitor host RAM usage. Increase Docker resources if needed.</p></li>
