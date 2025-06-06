@@ -989,6 +989,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-docker">🚀1. Start Microservice with Docker 🐳</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-kubernetes">🚀2. Start Microservice with Kubernetes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#consume-llm-service">🚀3. Consume LLM Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../faq-generation/README.html">FAQGen LLM Microservice</a><ul>
@@ -2862,6 +2863,25 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 </div>
 </section>
 </section>
+</section>
+<section id="running-in-the-air-gapped-environment">
+<h2>Running in the air gapped environment<a class="headerlink" href="#running-in-the-air-gapped-environment" title="Link to this heading">¶</a></h2>
+<p>The following steps are needed for running the <code class="docutils literal notranslate"><span class="pre">opea/llm-docsum</span></code> microservice in an air gapped environment (a.k.a. environment with no internet access).</p>
+<ol class="arabic simple">
+<li><p>Pre download the following models, i.e. <code class="docutils literal notranslate"><span class="pre">huggingface-cli</span> <span class="pre">download</span> <span class="pre">--cache-dir</span> <span class="pre">&lt;model</span> <span class="pre">data</span> <span class="pre">directory&gt;</span> <span class="pre">&lt;model&gt;</span></code></p></li>
+</ol>
+<ul class="simple">
+<li><p>gpt2</p></li>
+<li><p>the same model as the LLM inference backend</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Launch the <code class="docutils literal notranslate"><span class="pre">opea/llm-docsum</span></code> microservice with the following settings:</p></li>
+</ol>
+<ul class="simple">
+<li><p>mount the host <code class="docutils literal notranslate"><span class="pre">&lt;model</span> <span class="pre">data</span> <span class="pre">directory&gt;</span></code> as the <code class="docutils literal notranslate"><span class="pre">/data</span></code> directory within the microservice container</p></li>
+<li><p>leave environment as unset <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code> as unset</p></li>
+</ul>
+<p>e.g. <code class="docutils literal notranslate"><span class="pre">unset</span> <span class="pre">HF_TOKEN;</span> <span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-v</span> <span class="pre">&lt;model</span> <span class="pre">data</span> <span class="pre">directory&gt;:/data</span> <span class="pre">...</span> <span class="pre">...</span></code></p>
 </section>
 </section>
 
