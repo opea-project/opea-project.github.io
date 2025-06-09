@@ -2751,6 +2751,37 @@
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>llm-uservice<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>image.repository<span class="o">=</span><span class="s2">&quot;opea/llm-faqgen&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">FAQGEN_BACKEND</span><span class="o">=</span><span class="s2">&quot;vLLM&quot;</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--wait
 </pre></div>
 </div>
+<section id="install-the-microservice-in-air-gapped-offline-mode">
+<h3>Install the microservice in air gapped (offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
+<p>To run <code class="docutils literal notranslate"><span class="pre">llm-docsum</span></code> microservice in an air gapped environment, users are required to pre-download the following models to a shared storage:</p>
+<ul class="simple">
+<li><p>gpt2</p></li>
+<li><p>the same model as the inference backend engine</p></li>
+</ul>
+<p>Below is an example for using node level local directory to download the model data:</p>
+<p>Assuming the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
+export MODEL_DIR=/mnt/opea-models
+# Download model, assumes Python huggingface_hub[cli] module is already installed
+huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; gpt2
+huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; ${LLM_MODEL_ID}
+
+# On K8s master node, run the following command:
+# Install using Helm with the following additional parameters:
+helm install ... ... --set global.offline=true,global.modelUseHostPath=${MODEL_DIR}
+
+</pre></div>
+</div>
+<p>Assuming we share the offline data on cluster level using a persistent volume (PV), first we need to create the persistent volume claim (PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store the model data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download model data at the root directory of the corresponding PV</span>
+<span class="c1"># ... ...</span>
+<span class="c1"># Install using Helm with the following additional parameters:</span>
+<span class="c1"># export MODEL_PVC=opea-model-pvc</span>
+<span class="c1"># helm install ... ... --set global.offline=true,global.modelUsePVC=${MODEL_PVC}</span>
+</pre></div>
+</div>
+<p>There is no special step or setting needed to run <code class="docutils literal notranslate"><span class="pre">llm-textgen</span></code> or <code class="docutils literal notranslate"><span class="pre">llm-faqgen</span></code> microservice in an air gapped environment.</p>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
@@ -2823,22 +2854,27 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;TGI&quot;</span></code></p></td>
 <td><p>backend inference engine, only valid for llm-faqgen image, one of “TGi”, “vLLM”</p></td>
 </tr>
-<tr class="row-odd"><td><p>global.monitoring</p></td>
+<tr class="row-odd"><td><p>global.offline</p></td>
+<td><p>bool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>Whether to run the microservice in air gapped environment</p></td>
+</tr>
+<tr class="row-even"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>Service usage metrics</p></td>
 </tr>
-<tr class="row-even"><td><p>bedrock.BEDROCK_REGION</p></td>
+<tr class="row-odd"><td><p>bedrock.BEDROCK_REGION</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;us-east-1&quot;</span></code></p></td>
 <td><p>The AWS Region to use when accessing the Bedrock service</p></td>
 </tr>
-<tr class="row-odd"><td><p>bedrock.AWS_ACCESS_KEY_ID</p></td>
+<tr class="row-even"><td><p>bedrock.AWS_ACCESS_KEY_ID</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>The AWS Access Key to use when authenticating with the Bedrock service. If set, bedrock.AWS_SECRET_ACCESS_KEY must also be set</p></td>
 </tr>
-<tr class="row-even"><td><p>bedrock.AWS_SECRET_ACCESS_KEY</p></td>
+<tr class="row-odd"><td><p>bedrock.AWS_SECRET_ACCESS_KEY</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>The AWS Secret Access Key to use when authenticating with the Bedrock service. If set, bedrock.AWS_ACCESS_KEY_ID must also be set</p></td>

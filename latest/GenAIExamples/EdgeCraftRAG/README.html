@@ -2801,17 +2801,46 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service">
 <h4>Launch services with vLLM for multi Intel Arc GPUs inference service<a class="headerlink" href="#launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service" title="Link to this heading">¶</a></h4>
 <p>The docker file can be pulled automatically‌, you can also pull the image manually:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>intelanalytics/ipex-llm-serving-xpu:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>intelanalytics/ipex-llm-serving-xpu:0.8.3-b18
+</pre></div>
+</div>
+<p>Generate your nginx config file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="c1">#your host ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="m">8086</span><span class="w"> </span><span class="c1">#set port for nginx</span>
+<span class="c1"># If you are running with 1 vllm container:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT_1</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
+<span class="c1"># If you are running with 2 vllm containers:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT_1</span><span class="o">=</span><span class="m">8200</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
+<span class="c1"># Generate your nginx config file</span>
+envsubst<span class="w"> </span>&lt;<span class="w"> </span>GenAIExamples/EdgeCraftRAG/nginx/nginx.conf.template<span class="w"> </span>&gt;<span class="w"> </span>&lt;your_nginx_config_path&gt;/nginx.conf
+<span class="c1"># set NGINX_CONFIG_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;your_nginx_config_path&gt;/nginx.conf&quot;</span>
 </pre></div>
 </div>
 <p>Set up Additional Environment Variables and start with compose_vllm_multi-arc.yaml</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT</span><span class="o">=</span><span class="m">8008</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VLLM_SERVICE_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For 1 vLLM container(1 DP) with  multi Intel Arc GPUs</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_PATH</span><span class="o">=</span><span class="c1">#your model path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CONTAINER_COUNT</span><span class="o">=</span><span class="s2">&quot;single_container&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="c1">#your Intel Arc GPU number to do inference</span>
-
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm_multi-arc.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run&gt;<span class="w"> </span><span class="c1"># example for selecting 2 Arc GPUs: SELECTED_XPU_0=0,1</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For 2 vLLM container(2 DP) with  multi Intel Arc GPUs</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_PATH</span><span class="o">=</span><span class="c1">#your model path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CONTAINER_COUNT</span><span class="o">=</span><span class="s2">&quot;multi_container&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="c1">#your Intel Arc GPU number to do inference</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">0</span>&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_1</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">1</span>&gt;
+</pre></div>
+</div>
+<p>start with compose_vllm_multi-arc.yaml</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose_vllm_multi-arc.yaml<span class="w"> </span>--profile<span class="w"> </span><span class="si">${</span><span class="nv">CONTAINER_COUNT</span><span class="si">}</span><span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
@@ -3048,9 +3077,27 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 </section>
 <section id="system-prompt-management">
 <h3>System Prompt Management<a class="headerlink" href="#system-prompt-management" title="Link to this heading">¶</a></h3>
-<section id="use-custom-system-prompt">
-<h4>Use custom system prompt<a class="headerlink" href="#use-custom-system-prompt" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span>
+<section id="get-system-prompt">
+<h4>Get system prompt<a class="headerlink" href="#get-system-prompt" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="update-system-prompt">
+<h4>Update system prompt<a class="headerlink" href="#update-system-prompt" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;:&quot;This is a template prompt&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="reset-system-prompt">
+<h4>Reset system prompt<a class="headerlink" href="#reset-system-prompt" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/reset<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="use-custom-system-prompt-file">
+<h4>Use custom system prompt file<a class="headerlink" href="#use-custom-system-prompt-file" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt-file<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span>
 </pre></div>
 </div>
 </section>
