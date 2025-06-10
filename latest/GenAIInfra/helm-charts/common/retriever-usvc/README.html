@@ -357,8 +357,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../examples/examples.html#dbqna-application">DBQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/README.html">DBQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/docker_compose/amd/gpu/rocm/README.html">Deploy on AMD GPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/docker_compose/intel/cpu/xeon/README.html">Deploy on Intel Xeon Processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/docker_compose/amd/gpu/rocm/README.html">Example DBQnA Deployment on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/docker_compose/intel/cpu/xeon/README.html">Example DBQnA Deployment on Intel® Xeon® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/tests/README.html">DBQnA E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../GenAIExamples/DBQnA/ui/react/README.html">DBQnA React Application</a></li>
 </ul>
@@ -2731,27 +2731,6 @@
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>retriever-usvc<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">RETRIEVER_BACKEND</span><span class="o">=</span><span class="si">${</span><span class="nv">RETRIEVER_BACKEND</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">QDRANT_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">DB_HOST</span><span class="si">}</span>
 </pre></div>
 </div>
-<section id="install-the-microservice-in-air-gapped-offline-mode">
-<h3>Install the microservice in air gapped(offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
-<p>To support running this microservice in an air gapped environment, users are required to download the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data to a shared storage. Below is an example for using node level local directory to download the offline data:</p>
-<p>Assuming the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data is ahred using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/nltk_data</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
-export NLTKDATA=/mnt/nltk_data
-# Download nltk data, assumes Python nltk module(s) are already installed
-python -m nltk.downloader -d $NLTKDATA all &amp;&amp; chmod -R a+r $NLTKDATA
-
-# Install using Helm with the following additional parameters:
-# helm install ... ... --set global.offline=true,global.nltkDataUseHostPath=${NLTKDATA}
-</pre></div>
-</div>
-<p>Assuming we share the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data on cluster level using a persistent volume(PV), first we need to create a persistent volume claim(PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-nltk-pvc</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download nltk data at the root of the corresponding PV</span>
-<span class="c1"># Install using Helm with the following additional parameters:</span>
-<span class="c1"># export NLTKPVC=opea-nltk-pvc</span>
-<span class="c1"># helm install ... ... --set global.offline=true,global.nltkDataUsePVC=${NLTKPVC}</span>
-</pre></div>
-</div>
-</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
@@ -2840,7 +2819,7 @@ python -m nltk.downloader -d $NLTKDATA all &amp;&amp; chmod -R a+r $NLTKDATA
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Jun 09, 2025.</span>
+<span class="lastupdated">Published on Jun 10, 2025.</span>
 
   </div>
 

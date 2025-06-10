@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deploy on Intel Xeon Processor &mdash; OPEA™ 1.3 documentation</title>
+  <title>Example DBQnA Deployment on Intel® Xeon® Platform &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
     <link rel="next" title="DBQnA E2E test scripts" href="../../../../tests/README.html" />
-    <link rel="prev" title="Deploy on AMD GPU" href="../../../amd/gpu/rocm/README.html" /> 
+    <link rel="prev" title="Example DBQnA Deployment on AMD GPU (ROCm)" href="../../../amd/gpu/rocm/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -357,8 +357,8 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#dbqna-application">DBQnA Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">DBQnA Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Deploy on AMD GPU</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Deploy on Intel Xeon Processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Example DBQnA Deployment on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Example DBQnA Deployment on Intel® Xeon® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tests/README.html">DBQnA E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/react/README.html">DBQnA React Application</a></li>
 </ul>
@@ -2677,7 +2677,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Deploy on Intel Xeon Processor</li>
+  <li>Example DBQnA Deployment on Intel® Xeon® Platform</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/DBQnA/docker_compose/intel/cpu/xeon/README.md.txt" rel="nofollow"> View page source</a>
@@ -2697,145 +2697,83 @@
   
            <div itemprop="articleBody">
              
-  <section id="deploy-on-intel-xeon-processor">
-<h1>Deploy on Intel Xeon Processor<a class="headerlink" href="#deploy-on-intel-xeon-processor" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for DBQnA application which helps generating a SQL query and its output given a NLP question, utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on an Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices. We will publish the Docker images to Docker Hub soon, which will simplify the deployment process for this service.</p>
-<section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build Docker Images locally. This step can be ignored once the Docker images are published to Docker hub.</p>
-<section id="build-text-to-sql-service-image">
-<h3>1.1 Build Text to SQL service Image<a class="headerlink" href="#build-text-to-sql-service-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/text2sql:comps<span class="w"> </span>-f<span class="w"> </span>comps/text2sql/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-react-ui-docker-image">
-<h3>1.2 Build react UI Docker Image<a class="headerlink" href="#build-react-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build the frontend Docker image based on react framework via below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DBQnA/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/text2sql-react-ui:latest<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have the following Docker Images:</p>
+  <section id="example-dbqna-deployment-on-intel-xeon-platform">
+<h1>Example DBQnA Deployment on Intel® Xeon® Platform<a class="headerlink" href="#example-dbqna-deployment-on-intel-xeon-platform" title="Link to this heading">¶</a></h1>
+<p>This document outlines the deployment process for DBQnA application which helps generating a SQL query and its output given a NLP question, utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on an Intel Xeon server.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#dbqna-quick-start-deployment"><span class="xref myst">DBQnA Quick Start Deployment</span></a>: Demonstrates how to quickly deploy a DBQnA service/pipeline on Intel® Xeon® platform.</p></li>
+<li><p><a class="reference internal" href="#dbqna-docker-compose-files"><span class="xref myst">DBQnA Docker Compose Files</span></a>: Describes some example deployments and their docker compose files.</p></li>
+</ul>
+<section id="dbqna-quick-start-deployment">
+<h2>DBQnA Quick Start Deployment<a class="headerlink" href="#dbqna-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the DBQnA service manually on Intel® Xeon® platform. The basic steps are:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/text2sql:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/dbqna-react-ui:latest</span></code></p></li>
+<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-service-using-docker-compose"><span class="xref myst">Deploy the Service Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
 </ol>
-</section>
-</section>
-<section id="start-microservices">
-<h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
-<section id="required-models">
-<h3>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h3>
-<p>We set default model as “mistralai/Mistral-7B-Instruct-v0.3”, change “LLM_MODEL_ID” in following Environment Variables setting if you want to use other models.</p>
-<p>If use gated models, you also need to provide <a class="reference external" href="https://huggingface.co/docs/hub/security-tokens">huggingface token</a> to “HF_TOKEN” environment variable.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;xxx&quot;</span>
+<section id="access-the-code">
+<h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
+<p>Clone the GenAIExample repository and access the DBQnA Intel® Xeon® platform Docker Compose files and supporting scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">DBQnA</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Checkout a released version, such as v1.3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.3</span>
 </pre></div>
 </div>
 </section>
-<section id="setup-environment-variables">
-<h3>2.1 Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># host_ip should be your external IP address, do not use localhost.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-
-<span class="c1"># Example: no_proxy=&quot;localhost,127.0.0.1,192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-
-<span class="c1"># If you are in a proxy environment, also set the proxy-related environment variables:</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
-
-<span class="c1"># Set other required variables</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_PORT</span><span class="o">=</span><span class="m">8008</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
-<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>testpwd
-<span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>chinook
-<span class="nb">export</span><span class="w"> </span><span class="nv">text2sql_port</span><span class="o">=</span><span class="m">9090</span>
-</pre></div>
-</div>
-<p>or
-edit the file set_env.sh to set those environment variables,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DBQnA/docker_compose/intel/cpu/xeon/
-<span class="nb">source</span><span class="w"> </span>set_env.sh
-</pre></div>
-</div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with your external IP address, do not use localhost.</p>
+<section id="generate-a-huggingface-access-token">
+<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
+<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
 </section>
-<section id="start-microservice-docker-containers">
-<h3>2.2 Start Microservice Docker Containers<a class="headerlink" href="#start-microservice-docker-containers" title="Link to this heading">¶</a></h3>
-<p>There are 2 options to start the microservice</p>
-<section id="start-the-microservice-using-docker-compose">
-<h4>2.2.1 Start the microservice using docker compose<a class="headerlink" href="#start-the-microservice-using-docker-compose" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DBQnA/docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<section id="configure-the-deployment-environment">
+<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying DBQnA service, source the set_env.sh script in this directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The set*env.sh script will prompt for required and optional environment variables used to configure the DBQnA service. If a value is not entered, the script will use a default value for the same. It will also generate a *.env_ file defining the desired configuration.</p>
+</section>
+<section id="deploy-the-service-using-docker-compose">
+<h3>Deploy the Service Using Docker Compose<a class="headerlink" href="#deploy-the-service-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>To deploy the DBQnA service, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>The DBQnA docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the Intel® Xeon® Platform:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 5/5
+ ✔ Network xeon_default                  Created                                                                            0.1s
+ ✔ Container tgi-service                 Started                                                                            5.9s
+ ✔ Container postgres-container          Started                                                                            5.8s
+ ✔ Container text2sql-service            Started                                                                            6.0s
+ ✔ Container dbqna-xeon-react-ui-server  Started                                                                            0.9s
 </pre></div>
 </div>
 </section>
-<section id="alternatively-we-can-start-the-microservices-by-running-individual-docker-services">
-<h4>2.2.2 Alternatively we can start the microservices by running individual docker services<a class="headerlink" href="#alternatively-we-can-start-the-microservices-by-running-individual-docker-services" title="Link to this heading">¶</a></h4>
-<p><strong>NOTE:</strong> Make sure all the individual docker services are down before starting them.</p>
-<p>Below are the commands to start each of the docker service individually</p>
-<ul class="simple">
-<li><p>Start PostgresDB Service</p></li>
-</ul>
-<p>We will use <a class="reference external" href="https://github.com/lerocha/chinook-database">Chinook</a> sample database as a default to test the Text-to-SQL microservice. Chinook database is a sample database ideal for demos and testing ORM tools targeting single and multiple database servers.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>test-text2sql-postgres<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_HOST_AUTH_METHOD</span><span class="o">=</span>trust<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5442</span>:5432<span class="w"> </span>-d<span class="w"> </span>-v<span class="w"> </span><span class="nv">$WORKPATH</span>/comps/text2sql/langchain/chinook.sql:/docker-entrypoint-initdb.d/chinook.sql<span class="w"> </span>postgres:latest
+<section id="check-the-deployment-status">
+<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Start TGI Service</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-text2sql-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">model</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Start Text-to-SQL Service</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">unset</span><span class="w"> </span>http_proxy
-
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-text2sql-server&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">text2sql_port</span><span class="si">}</span>:8090<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="nv">$TGI_LLM_ENDPOINT</span><span class="w"> </span>opea/text2sql:latest
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Start React UI service</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;test-dbqna-react-ui-server&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="m">5174</span>:80<span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>opea/dbqna-react-ui:latest
+<p>For the default deployment, the following 5 containers should be running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                                                       <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>         <span class="n">PORTS</span>                                       <span class="n">NAMES</span>
+<span class="mi">2728</span><span class="n">db31368b</span>   <span class="n">opea</span><span class="o">/</span><span class="n">text2sql</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                                               <span class="s2">&quot;nginx -g &#39;daemon of…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">dbqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">0</span><span class="n">ab75b92c300</span>   <span class="n">postgres</span><span class="p">:</span><span class="n">latest</span>                                                                             <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5442</span><span class="o">-&gt;</span><span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5442</span><span class="o">-&gt;</span><span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">postgres</span><span class="o">-</span><span class="n">container</span>
+<span class="mi">2662</span><span class="n">a69b515b</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>                               <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
+<span class="n">bb44512be80e</span>   <span class="n">opea</span><span class="o">/</span><span class="n">text2sql</span><span class="p">:</span><span class="n">latest</span>                                                                        <span class="s2">&quot;python opea_text2sq…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">text2sql</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
 </section>
-</section>
-</section>
-<section id="validate-microservices">
-<h2>🚀 Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
-<section id="tgi-service">
-<h3>3.1 TGI Service<a class="headerlink" href="#tgi-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="nv">$TGI_PORT</span>/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="postgres-microservice">
-<h3>3.2 Postgres Microservice<a class="headerlink" href="#postgres-microservice" title="Link to this heading">¶</a></h3>
-<p>Once Text-to-SQL microservice is started, user can use below command</p>
-<section id="test-the-database-connection">
-<h4>3.2.1 Test the Database connection<a class="headerlink" href="#test-the-database-connection" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--location<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/postgres/health<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--header<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--data<span class="w"> </span><span class="s1">&#39;{&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="invoke-the-microservice">
-<h4>3.2.2 Invoke the microservice.<a class="headerlink" href="#invoke-the-microservice" title="Link to this heading">¶</a></h4>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+<p>Once the DBQnA service are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/text2sql<span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
@@ -2843,25 +2781,82 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </pre></div>
 </div>
 </section>
-</section>
-<section id="frontend-validation">
-<h3>3.3 Frontend validation<a class="headerlink" href="#frontend-validation" title="Link to this heading">¶</a></h3>
-<p>We test the API in frontend validation to check if API returns HTTP_STATUS: 200 and validates if API response returns SQL query and output</p>
-<p>The test is present in App.test.tsx under react root folder ui/react/</p>
-<p>Command to run the test</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span>
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 5/5
+ ✔ Container postgres-container          Removed                                                                 0.5s
+ ✔ Container tgi-service                 Removed                                                                 2.9s
+ ✔ Container dbqna-xeon-react-ui-server  Removed                                                                 0.6s
+ ✔ Container text2sql-service            Removed                                                                10.3s
+ ✔ Network xeon_default                  Removed                                                                 0.4s
+</pre></div>
+</div>
+<p>All the DBQnA containers will be stopped and then removed on completion of the “down” command.</p>
 </section>
 </section>
-<section id="launch-the-react-ui">
-<h2>🚀 Launch the React UI<a class="headerlink" href="#launch-the-react-ui" title="Link to this heading">¶</a></h2>
-<p>Open this URL <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5174</span></code> in your browser to access the frontend.</p>
-<p><img alt="project-screenshot" src="../../../../../../_images/dbQnA_ui_init.png" /></p>
-<p>Test DB Connection
-<img alt="project-screenshot" src="../../../../../../_images/dbQnA_ui_successful_db_connection.png" /></p>
-<p>Create SQL query and output for given NLP question
-<img alt="project-screenshot" src="../../../../../../_images/dbQnA_ui_succesful_sql_output_generation.png" /></p>
+<section id="dbqna-docker-compose-files">
+<h2>DBQnA Docker Compose Files<a class="headerlink" href="#dbqna-docker-compose-files" title="Link to this heading">¶</a></h2>
+<p>The compose.yaml is default compose file using tgi as serving framework</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgres</p></td>
+<td><p>postgres:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>text2sql</p></td>
+<td><p>opea/text2sql:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>dbqna-xeon-react-ui-server</p></td>
+<td><p>opea/text2sql-react-ui:latest</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dbqna-service-configuration">
+<h2>DBQnA Service Configuration<a class="headerlink" href="#dbqna-service-configuration" title="Link to this heading">¶</a></h2>
+<p>The table provides a comprehensive overview of the DBQnA service utilized across various deployments as illustrated in the example Docker Compose files. Each row in the table represents a distinct service, detailing its possible images used to enable it and a concise description of its function within the deployment architecture.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Possible Image Names</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+<td><p>No</p></td>
+<td><p>Specific to the TGI deployment, focuses on text generation inference using AMD GPU (ROCm) hardware.</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgres</p></td>
+<td><p>postgres:latest</p></td>
+<td><p>No</p></td>
+<td><p>Provides the relational database backend for storing and querying data used by the DBQnA pipeline.</p></td>
+</tr>
+<tr class="row-even"><td><p>text2sql</p></td>
+<td><p>opea/text2sql:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles text-to-SQL conversion tasks.</p></td>
+</tr>
+<tr class="row-odd"><td><p>dbqna-xeon-react-ui-server</p></td>
+<td><p>opea/text2sql-react-ui:latest</p></td>
+<td><p>No</p></td>
+<td><p>Provides the user interface for the DBQnA service.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -2870,7 +2865,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../../amd/gpu/rocm/README.html" class="btn btn-neutral float-left" title="Deploy on AMD GPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../amd/gpu/rocm/README.html" class="btn btn-neutral float-left" title="Example DBQnA Deployment on AMD GPU (ROCm)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../../../tests/README.html" class="btn btn-neutral float-right" title="DBQnA E2E test scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
@@ -2879,7 +2874,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Jun 09, 2025.</span>
+<span class="lastupdated">Published on Jun 10, 2025.</span>
 
   </div>
 
