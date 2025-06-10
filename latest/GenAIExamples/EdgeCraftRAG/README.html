@@ -2706,11 +2706,9 @@ quality and performance.</p>
 <section id="what-s-new-in-this-release">
 <h2>What’s New in this release?<a class="headerlink" href="#what-s-new-in-this-release" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>A sleek new UI with enhanced user experience, built on Vue and Ant Design</p></li>
-<li><p>Support concurrent multi-requests handling on vLLM inference backend</p></li>
-<li><p>Support pipeline configuration through json file</p></li>
-<li><p>Support system prompt modification through API</p></li>
-<li><p>Fixed known issues in EC-RAG UI and server</p></li>
+<li><p>Chat history support for multi-session chatqna</p></li>
+<li><p>Knowledge base support for EC-RAG</p></li>
+<li><p>Multi-Arc support for multiple LLM inference serving engine</p></li>
 </ul>
 </section>
 <section id="quick-start-guide">
@@ -2775,6 +2773,7 @@ Please follow this link <a class="reference external" href="https://github.com/o
 <span class="c1"># Here is the example:</span>
 pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
 
+<span class="c1"># If below optimum-cli commands show errors, please set transformers==4.49.0 to fix: pip install transformers==4.49.0</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>Qwen/Qwen2-7B-Instruct<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/Qwen/Qwen2-7B-Instruct/INT4_compressed_weights<span class="w"> </span>--weight-format<span class="w"> </span>int4
@@ -2837,6 +2836,14 @@ envsubst<span class="w"> </span>&lt;<span class="w"> </span>GenAIExamples/EdgeCr
 <span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="c1">#your Intel Arc GPU number to do inference</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">0</span>&gt;
 <span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_1</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">1</span>&gt;
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Below are the extra env you can set for vllm</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_SEQS</span><span class="o">=</span>&lt;MAX_NUM_SEQS<span class="w"> </span>value&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span>&lt;MAX_NUM_BATCHED_TOKENS<span class="w"> </span>value&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span>&lt;MAX_MODEL_LEN<span class="w"> </span>value&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LOAD_IN_LOW_BIT</span><span class="o">=</span>&lt;the<span class="w"> </span>weight<span class="w"> </span><span class="nb">type</span><span class="w"> </span>value&gt;<span class="w"> </span><span class="c1"># expected: sym_int4, asym_int4, sym_int5, asym_int5 or sym_int8</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CCL_DG2_USM</span><span class="o">=</span>&lt;CCL_DG2_USM<span class="w"> </span>value&gt;<span class="w"> </span><span class="c1"># Needed on Core to enable USM (Shared Memory GPUDirect). Xeon supports P2P and doesn&#39;t need this.</span>
 </pre></div>
 </div>
 <p>start with compose_vllm_multi-arc.yaml</p>
