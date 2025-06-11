@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChatQnA Application &mdash; OPEA™ 1.3 documentation</title>
+  <title>ChatQnA Benchmark Results &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -25,13 +25,11 @@
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/opea-custom.js?v=32c45995"></script>
         <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-        <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-        <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ChatQnA Docker Image Build" href="README_miscellaneous.html" />
-    <link rel="prev" title="AvatarChatbot E2E test scripts" href="../AvatarChatbot/tests/README.html" /> 
+    <link rel="next" title="ChatQnA Accuracy" href="benchmark/accuracy/README.html" />
+    <link rel="prev" title="ChatQnA Docker Image Build" href="README_miscellaneous.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -306,9 +304,9 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#chatqna-application">ChatQnA Application</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ChatQnA Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README.html">ChatQnA Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="README_miscellaneous.html">ChatQnA Docker Image Build</a></li>
-<li class="toctree-l4"><a class="reference internal" href="benchmark_results.html">ChatQnA Benchmark Results</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ChatQnA Benchmark Results</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/accuracy/README.html">ChatQnA Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/accuracy_faqgen/README.html">FaqGen Accuracy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/performance_faqgen/README.html">FaqGen Benchmarking</a></li>
@@ -2700,10 +2698,10 @@
   
      <li><a href="../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>ChatQnA Application</li>
+  <li>ChatQnA Benchmark Results</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/GenAIExamples/ChatQnA/README.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/GenAIExamples/ChatQnA/benchmark_results.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -2720,160 +2718,248 @@
   
            <div itemprop="articleBody">
              
-  <section id="chatqna-application">
-<h1>ChatQnA Application<a class="headerlink" href="#chatqna-application" title="Link to this heading">¶</a></h1>
-<p>Chatbots are the most widely adopted use case for leveraging the powerful chat and reasoning capabilities of large language models (LLMs). The retrieval augmented generation (RAG) architecture is quickly becoming the industry standard for chatbot development. It combines the benefits of a knowledge base (via a vector store) and generative models to reduce hallucinations, maintain up-to-date information, and leverage domain-specific knowledge.</p>
-<p>RAG bridges the knowledge gap by dynamically fetching relevant information from external sources, ensuring that the response generated remains factual and current. Vector databases are at the core of this architecture, enabling efficient retrieval of semantically relevant information. These databases store data as vectors, allowing RAG to swiftly access the most pertinent documents or data points based on semantic similarity.</p>
-<section id="table-of-contents">
-<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
-<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
-<li><p><a class="reference internal" href="#monitor-and-tracing"><span class="xref myst">Monitoring and Tracing</span></a></p></li>
-</ol>
+  <section id="chatqna-benchmark-results">
+<h1>ChatQnA Benchmark Results<a class="headerlink" href="#chatqna-benchmark-results" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>ChatQnA deployed on a single node with ICX cores as the head node and supporting 8x Gaudi2 cards.
+This is based on OPEA v1.3 release helm charts and images using vLLM inferencing platform.</p>
 </section>
-<section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
-<p>The ChatQnA application is a customizable end-to-end workflow that leverages the capabilities of LLMs and RAG efficiently. ChatQnA architecture is shown below:</p>
-<p><img alt="architecture" src="../../_images/chatqna_architecture.png" /></p>
-<p>This application is modular as it leverages each component as a microservice(as defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>) that can scale independently. It comprises data preparation, embedding, retrieval, reranker(optional) and LLM microservices. All these microservices are stitched together by the ChatQnA megaservice that orchestrates the data through these microservices. The flow chart below shows the information flow between different microservices for this example.</p>
-<div class="mermaid">
-            flowchart LR
-    %% Colors %%
-    classDef blue fill:#ADD8E6,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orange fill:#FBAA60,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef orchid fill:#C26DBC,stroke:#ADD8E6,stroke-width:2px,fill-opacity:0.5
-    classDef invisible fill:transparent,stroke:transparent;
-    style ChatQnA-MegaService stroke:#000000
-
-    %% Subgraphs %%
-    subgraph ChatQnA-MegaService[&quot;ChatQnA MegaService &quot;]
-        direction LR
-        EM([Embedding MicroService]):::blue
-        RET([Retrieval MicroService]):::blue
-        RER([Rerank MicroService]):::blue
-        LLM([LLM MicroService]):::blue
-    end
-    subgraph UserInterface[&quot; User Interface &quot;]
-        direction LR
-        a([User Input Query]):::orchid
-        Ingest([Ingest data]):::orchid
-        UI([UI server&lt;br&gt;]):::orchid
-    end
-
-
-
-    TEI_RER{{Reranking service&lt;br&gt;}}
-    TEI_EM{{Embedding service &lt;br&gt;}}
-    VDB{{Vector DB&lt;br&gt;&lt;br&gt;}}
-    R_RET{{Retriever service &lt;br&gt;}}
-    DP([Data Preparation MicroService]):::blue
-    LLM_gen{{LLM Service &lt;br&gt;}}
-    GW([ChatQnA GateWay&lt;br&gt;]):::orange
-
-    %% Data Preparation flow
-    %% Ingest data flow
-    direction LR
-    Ingest[Ingest data] --&gt; UI
-    UI --&gt; DP
-    DP &lt;-.-&gt; TEI_EM
-
-    %% Questions interaction
-    direction LR
-    a[User Input Query] --&gt; UI
-    UI --&gt; GW
-    GW &lt;==&gt; ChatQnA-MegaService
-    EM ==&gt; RET
-    RET ==&gt; RER
-    RER ==&gt; LLM
-
-
-    %% Embedding service flow
-    direction LR
-    EM &lt;-.-&gt; TEI_EM
-    RET &lt;-.-&gt; R_RET
-    RER &lt;-.-&gt; TEI_RER
-    LLM &lt;-.-&gt; LLM_gen
-
-    direction TB
-    %% Vector DB interaction
-    R_RET &lt;-.-&gt;|d|VDB
-    DP &lt;-.-&gt;|d|VDB
-        </div></section>
-<section id="deployment-options">
-<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
-<p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
+<section id="methodology">
+<h2>Methodology<a class="headerlink" href="#methodology" title="Link to this heading">¶</a></h2>
+<p>Tests scale concurrent users from 1 to 256, and each user send 4 queries. Measuring end to end (E2E) latency average for each query, time to first token (TTFT) average and time per output token (TPOT) average.</p>
+</section>
+<section id="hardware-and-software-configuration">
+<h2>Hardware and Software Configuration<a class="headerlink" href="#hardware-and-software-configuration" title="Link to this heading">¶</a></h2>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Category</p></th>
-<th class="head"><p>Deployment Option</p></th>
-<th class="head"><p>Description</p></th>
+<tr class="row-odd"><th class="head"><p><strong>Category</strong></p></th>
+<th class="head"><p><strong>Details</strong></p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>On-premise Deployments</p></td>
-<td><p>Docker compose</p></td>
-<td><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">ChatQnA deployment on Xeon</span></a></p></td>
+<tr class="row-even"><td><p><strong>System Summary</strong></p></td>
+<td><p>1-node, 2x Intel(R) Xeon(R) Platinum 8380 CPU &#64; 2.30GHz, 40 cores, 270W TDP, HT On, Turbo On, NUMA 2, Integrated Accelerators Available [used]: DLB 0 [0], DSA 0 [0], IAA 0 [0], QAT 0 [0], Total Memory 1024GB (32x32GB DDR4 3200 MT/s [3200 MT/s]), BIOS ETM02, microcode 0xd0003b9, 8x Habana Labs Ltd., 4x MT28800 Family [ConnectX-5 Ex], 4x 7T INTEL SSDPF2KX076TZ, 2x 894.3G SAMSUNG MZ1L2960HCJR-00A07, Ubuntu 22.04.3 LTS, 5.15.0-92-generic. Software: WORKLOAD+VERSION, COMPILER, LIBRARIES, OTHER_SW.</p></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p></p></td>
-<td><p><a class="reference internal" href="docker_compose/intel/cpu/aipc/README.html"><span class="std std-doc">ChatQnA deployment on AI PC</span></a></p></td>
+<tr class="row-odd"><td><p><strong>Framework</strong></p></td>
+<td><p>langchain, vLLM, habana framework</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p></p></td>
-<td><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">ChatQnA deployment on Gaudi</span></a></p></td>
+<tr class="row-even"><td><p><strong>Orchestration</strong></p></td>
+<td><p>k8s/docker</p></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p></p></td>
-<td><p><a class="reference internal" href="docker_compose/nvidia/gpu/README.html"><span class="std std-doc">ChatQnA deployment on Nvidia GPU</span></a></p></td>
+<tr class="row-odd"><td><p><strong>Containers and Virtualization</strong></p></td>
+<td><p>Kubernetes v1.29.9</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p></p></td>
-<td><p><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ChatQnA deployment on AMD ROCm</span></a></p></td>
+<tr class="row-even"><td><p><strong>Drivers</strong></p></td>
+<td><p>habana driver 1.20.1-366eb9c</p></td>
 </tr>
-<tr class="row-odd"><td><p>Cloud Platforms Deployment on AWS, GCP, Azure, IBM Cloud,Oracle Cloud, <a class="reference external" href="https://ai.cloud.intel.com/">Intel® Tiber™ AI Cloud</a></p></td>
-<td><p>Docker Compose</p></td>
-<td><p><a class="reference internal" href="../../getting-started/README.html"><span class="std std-doc">Getting Started Guide: Deploy the ChatQnA application across multiple cloud platforms</span></a></p></td>
+<tr class="row-odd"><td><p><strong>VM vcpu, Memory</strong></p></td>
+<td><p>160 vCPUs, 1T memory</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Kubernetes</p></td>
-<td><p><a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">Helm Charts</span></a></p></td>
+<tr class="row-even"><td><p><strong>OPEA Release Version</strong></p></td>
+<td><p>v1.3</p></td>
 </tr>
-<tr class="row-odd"><td><p>Automated Terraform Deployment on Cloud Service Providers</p></td>
-<td><p>AWS</p></td>
-<td><p><a class="reference external" href="https://github.com/intel/terraform-intel-aws-vm/tree/main/examples/gen-ai-xeon-opea-chatqna">Terraform deployment on 4th Gen Intel Xeon with Intel AMX using meta-llama/Meta-Llama-3-8B-Instruct </a></p></td>
+<tr class="row-odd"><td><p><strong>Dataset</strong></p></td>
+<td><p>pubmed_10.txt</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p></p></td>
-<td><p><a class="reference external" href="https://github.com/intel/terraform-intel-aws-vm/tree/main/examples/gen-ai-xeon-opea-chatqna-falcon11B">Terraform deployment on 4th Gen Intel Xeon with Intel AMX using TII Falcon2-11B</a></p></td>
+<tr class="row-even"><td><p><strong>Embedding Model</strong></p></td>
+<td><p>BAAI/bge-base-en-v1.5</p></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p>GCP</p></td>
-<td><p><a class="reference external" href="https://github.com/intel/terraform-intel-gcp-vm/tree/main/examples/gen-ai-xeon-opea-chatqna">Terraform deployment on 5th Gen Intel Xeon with Intel AMX(support Confidential AI by using Intel® TDX</a></p></td>
+<tr class="row-odd"><td><p><strong>Database</strong></p></td>
+<td><p>redis</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Azure</p></td>
-<td><p><a class="reference external" href="https://github.com/intel/terraform-intel-azure-linux-vm/tree/main/examples/azure-gen-ai-xeon-opea-chatqna-tdx">Terraform deployment on 4th/5th Gen Intel Xeon with Intel AMX &amp; Intel TDX</a></p></td>
+<tr class="row-even"><td><p><strong>LLM Model</strong></p></td>
+<td><p>meta-llama/Llama-3.1-8B-Instruct</p></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
-<td><p>Intel Tiber AI Cloud</p></td>
-<td><p>Coming Soon</p></td>
+<tr class="row-odd"><td><p><strong>Precision</strong></p></td>
+<td><p>bf16</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
-<td><p>Any Xeon based Ubuntu system</p></td>
-<td><p><a class="reference external" href="https://github.com/intel/optimized-cloud-recipes/tree/main/recipes/ai-opea-chatqna-xeon">ChatQnA Ansible Module for Ubuntu 20.04</a>. Use this if you are not using Terraform and have provisioned your system either manually or with another tool, including directly on bare metal.</p></td>
+<tr class="row-even"><td><p><strong>Output Length</strong></p></td>
+<td><p>1024</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Command Line Parameters</strong></p></td>
+<td><p>python deploy_and_benchmark.py ./ChatQnA/benchmark_chatqna.yaml –target-node 1 –test-mode oob</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Batch Size</strong></p></td>
+<td><p>256</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="monitor-and-tracing">
-<h2>Monitor and Tracing<a class="headerlink" href="#monitor-and-tracing" title="Link to this heading">¶</a></h2>
-<p>Follow <a class="reference external" href="https://opea-project.github.io/latest/tutorial/OpenTelemetry/OpenTelemetry_OPEA_Guide.html">OpenTelemetry OPEA Guide</a> to understand how to use OpenTelemetry tracing and metrics in OPEA.<br />
-For ChatQnA specific tracing and metrics monitoring, follow <a class="reference external" href="https://opea-project.github.io/latest/tutorial/OpenTelemetry/deploy/ChatQnA.html">OpenTelemetry on ChatQnA</a> section.</p>
+<section id="benchmark-results">
+<h2>Benchmark Results<a class="headerlink" href="#benchmark-results" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Users</p></th>
+<th class="head"><p>E2E Latency Avg (ms)</p></th>
+<th class="head"><p>TTFT Avg (ms)</p></th>
+<th class="head"><p>TPOT Avg (ms)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>256</p></td>
+<td><p>35,034.7</p></td>
+<td><p>1,042.8</p></td>
+<td><p>33.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>128</p></td>
+<td><p>20,996.0</p></td>
+<td><p>529.8</p></td>
+<td><p>19.9</p></td>
+</tr>
+<tr class="row-even"><td><p>64</p></td>
+<td><p>16,602.1</p></td>
+<td><p>404.9</p></td>
+<td><p>15.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>32</p></td>
+<td><p>14,646.5</p></td>
+<td><p>260.1</p></td>
+<td><p>14.0</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>13,669.3</p></td>
+<td><p>193.7</p></td>
+<td><p>13.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>13,275.2</p></td>
+<td><p>157.3</p></td>
+<td><p>12.8</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>13,038.8</p></td>
+<td><p>127.7</p></td>
+<td><p>12.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>13,059.0</p></td>
+<td><p>129.4</p></td>
+<td><p>12.6</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>12,906.5</p></td>
+<td><p>126.8</p></td>
+<td><p>12.5</p></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="faq-generation-application">
-<h2>FAQ Generation Application<a class="headerlink" href="#faq-generation-application" title="Link to this heading">¶</a></h2>
-<p>FAQ Generation Application leverages the power of large language models (LLMs) to revolutionize the way you interact with and comprehend complex textual data. By harnessing cutting-edge natural language processing techniques, our application can automatically generate comprehensive and natural-sounding frequently asked questions (FAQs) from your documents, legal texts, customer queries, and other sources. We merged the FaqGen into the ChatQnA example, which utilize LangChain to implement FAQ Generation and facilitate LLM inference using Text Generation Inference on Intel Xeon and Gaudi2 processors.</p>
+<section id="benchmark-config-yaml">
+<h2>Benchmark Config Yaml<a class="headerlink" href="#benchmark-config-yaml" title="Link to this heading">¶</a></h2>
+<details>
+<summary>Click to Check Benchmark Config Yaml</summary>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">device</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gaudi</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.3.0</span>
+<span class="w">  </span><span class="nt">modelUseHostPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/sdp/opea_benchmark/model</span>
+<span class="w">  </span><span class="nt">HUGGINGFACEHUB_API_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xxx</span>
+<span class="w">  </span><span class="nt">node</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># timeout in seconds for services to be ready, default 30 minutes</span>
+<span class="w">  </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># interval in seconds between service ready checks, default 5 seconds</span>
+
+<span class="w">  </span><span class="nt">services</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">backend</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cores_per_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;16&quot;</span>
+<span class="w">        </span><span class="nt">memory_capacity</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8000Mi&quot;</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">teirerank</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">      </span><span class="nt">model_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cards_per_instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">tei</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">model_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cores_per_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;80&quot;</span>
+<span class="w">        </span><span class="nt">memory_capacity</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20000Mi&quot;</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">llm</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vllm</span>
+<span class="w">      </span><span class="nt">model_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;meta-llama/Llama-3.1-8B-Instruct&quot;</span><span class="w"> </span><span class="c1"># mandatory</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">with_teirerank</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">7</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">15</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">31</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">63</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># When teirerank.enabled is True</span>
+<span class="w">        </span><span class="nt">without_teirerank</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">16</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">32</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">64</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># When teirerank.enabled is False</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cards_per_instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">      </span><span class="nt">model_params</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">vllm</span><span class="p">:</span><span class="w"> </span><span class="c1"># VLLM specific parameters</span>
+<span class="w">          </span><span class="nt">batch_params</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">            </span><span class="nt">max_num_seqs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">256</span><span class="p p-Indicator">]</span>
+<span class="w">          </span><span class="nt">token_params</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">            </span><span class="nt">max_input_length</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">max_total_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">max_batch_total_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">max_batch_prefill_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">        </span><span class="nt">tgi</span><span class="p">:</span><span class="w"> </span><span class="c1"># TGI specific parameters</span>
+<span class="w">          </span><span class="nt">batch_params</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">            </span><span class="nt">max_batch_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># Each value triggers an LLM service upgrade</span>
+<span class="w">          </span><span class="nt">token_params</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">            </span><span class="nt">max_input_length</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1280&quot;</span>
+<span class="w">            </span><span class="nt">max_total_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2048&quot;</span>
+<span class="w">            </span><span class="nt">max_batch_total_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;65536&quot;</span>
+<span class="w">            </span><span class="nt">max_batch_prefill_tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4096&quot;</span>
+
+<span class="w">    </span><span class="nt">data-prep</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cores_per_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">        </span><span class="nt">memory_capacity</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">retriever-usvc</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cores_per_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8&quot;</span>
+<span class="w">        </span><span class="nt">memory_capacity</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8000Mi&quot;</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">redis-vector-db</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">cores_per_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">        </span><span class="nt">memory_capacity</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">chatqna-ui</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+
+<span class="w">    </span><span class="nt">nginx</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+
+<span class="nt">benchmark</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># http request behavior related fields</span>
+<span class="w">  </span><span class="nt">user_queries</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">16</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">32</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">64</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">128</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">512</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1024</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">concurrency</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">16</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">32</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">64</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">128</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">256</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">load_shape_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;constant&quot;</span><span class="w"> </span><span class="c1"># &quot;constant&quot; or &quot;poisson&quot;</span>
+<span class="w">  </span><span class="nt">poisson_arrival_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># only used when load_shape_type is &quot;poisson&quot;</span>
+<span class="w">  </span><span class="nt">warmup_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+
+<span class="w">  </span><span class="c1"># workload, all of the test cases will run for benchmark</span>
+<span class="w">  </span><span class="nt">bench_target</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">chatqna_qlist_pubmed</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/home/sdp/opea_benchmark/pubmed_10.txt&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">prompt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">10</span><span class="p p-Indicator">]</span>
+
+<span class="w">  </span><span class="nt">llm</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># specify the llm output token size</span>
+<span class="w">    </span><span class="nt">max_token_size</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1024</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -2882,8 +2968,8 @@ For ChatQnA specific tracing and metrics monitoring, follow <a class="reference 
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../AvatarChatbot/tests/README.html" class="btn btn-neutral float-left" title="AvatarChatbot E2E test scripts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="README_miscellaneous.html" class="btn btn-neutral float-right" title="ChatQnA Docker Image Build" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_miscellaneous.html" class="btn btn-neutral float-left" title="ChatQnA Docker Image Build" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="benchmark/accuracy/README.html" class="btn btn-neutral float-right" title="ChatQnA Accuracy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
