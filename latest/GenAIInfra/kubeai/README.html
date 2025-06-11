@@ -1939,6 +1939,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#using-the-models">Using the Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cpu-performance-optimization-with-nri">CPU Performance Optimization with NRI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installation-of-balloons-policy-plugin">Installation of Balloons Policy Plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-of-balloons-policy-plugin">Configuration of Balloons Policy Plugin</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#observability">Observability</a></li>
 </ul>
 </li>
@@ -2740,6 +2746,13 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#using-the-models"><span class="xref myst">Using the Models</span></a></p></li>
+<li><p><a class="reference internal" href="#cpu-performance-optimization-with-nri"><span class="xref myst">CPU Performance Optimization with NRI</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#installation-of-balloons-policy-plugin"><span class="xref myst">Installation of Balloons Policy Plugin</span></a></p></li>
+<li><p><a class="reference internal" href="#configuration-of-balloons-policy-plugin"><span class="xref myst">Configuration of Balloons Policy Plugin</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#observability"><span class="xref myst">Observability</span></a></p></li>
 </ul>
 <section id="features">
@@ -2886,6 +2899,110 @@ kubectl apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 </pre></div>
 </div>
 <p>Enjoy the answer!</p>
+</section>
+<section id="cpu-performance-optimization-with-nri">
+<h1>CPU Performance Optimization with NRI<a class="headerlink" href="#cpu-performance-optimization-with-nri" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/containers/nri-plugins">NRI plugins</a> provide a way to
+optimize the resource placement of applications in a Kubernetes cluster. They
+connect to the container runtime and are able, for example, to adjust the CPU
+and memory pinning of containers.</p>
+<p>This section provides a guide on how to use the
+<a class="reference external" href="https://containers.github.io/nri-plugins/stable/docs/resource-policy/policy/balloons.html">Balloons Policy</a> plugin from the <a class="reference external" href="https://github.com/containers/nri-plugins">NRI Plugins</a>
+project to optimize the performance of CPU-backed KubeAI profiles.</p>
+</section>
+<section id="installation-of-balloons-policy-plugin">
+<h2>Installation of Balloons Policy Plugin<a class="headerlink" href="#installation-of-balloons-policy-plugin" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p><strong>NOTE:</strong> To avoid disturbing already running workloads it is recommended to
+install the NRI plugin to an empty node (do it right after node bootstrap, or
+drain the node before installation).</p>
+</div></blockquote>
+<p>Install the balloons policy plugin with Helm:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>nri-plugins<span class="w"> </span>https://containers.github.io/nri-plugins
+helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>nri-plugins
+helm<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>balloons<span class="w"> </span>nri-plugins/nri-resource-policy-balloons
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>NOTE</strong>: With containerd version earlier than v2.0 you need to enable
+the NRI support in the containerd configuration file. Instead of manual
+configuration you can provide <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">nri.runtime.patchConfig=true</span></code> to the Helm
+command above, which will automatically patch the containerd configuration
+file on each node.</p>
+</div></blockquote>
+<p>Verify that the balloons policy plugin is running on every node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>get<span class="w"> </span>ds<span class="w"> </span>nri-resource-policy-balloons
+NAME<span class="w">                           </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>NODE<span class="w"> </span>SELECTOR<span class="w">            </span>AGE
+nri-resource-policy-balloons<span class="w">   </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">         </span><span class="m">2</span><span class="w">       </span><span class="m">2</span><span class="w">            </span><span class="m">2</span><span class="w">           </span>kubernetes.io/os<span class="o">=</span>linux<span class="w">   </span>77s
+</pre></div>
+</div>
+</section>
+<section id="configuration-of-balloons-policy-plugin">
+<h2>Configuration of Balloons Policy Plugin<a class="headerlink" href="#configuration-of-balloons-policy-plugin" title="Link to this heading">¶</a></h2>
+<p>The aim of the balloons policy configuration is to isolate the model (inference
+engine) containers to minimize the impact of containers on each other.</p>
+<p>An example configuration for the current CPU-backed model profiles:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">cat &lt;&lt;EOF | kubectl apply -f -</span>
+<span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">config.nri/v1alpha1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BalloonsPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">allocatorTopologyBalancing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">balloonTypes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubeai-inference</span>
+<span class="w">    </span><span class="nt">allocatorPriority</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<span class="w">    </span><span class="nt">preferNewBalloons</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">hideHyperthreads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">matchExpressions</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">labels/app.kubernetes.io/name</span>
+<span class="w">      </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">In</span>
+<span class="w">      </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;vllm&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;ollama&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name</span>
+<span class="w">      </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">In</span>
+<span class="w">      </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;server&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="c1"># Enables container-level information for the balloon in NodeResourceTopology objects</span>
+<span class="w">    </span><span class="c1"># if agent.nodeResourceTopology is enabled.</span>
+<span class="w">    </span><span class="nt">showContainersInNrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">    </span><span class="nt">namespaces</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">    </span><span class="nt">shareIdleCPUsInSame</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">numa</span>
+<span class="w">  </span><span class="nt">pinCPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">pinMemory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">reservedPoolNamespaces</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+<span class="w">  </span><span class="nt">reservedResources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2&quot;</span>
+<span class="w">  </span><span class="nt">log</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;policy&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">instrumentation</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">httpEndpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">:8891</span>
+<span class="w">    </span><span class="nt">prometheusExport</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="c1"># NodeResourceTopology custom resource objects can be enabled for debugging</span>
+<span class="w">  </span><span class="c1"># and to examine the CPU pinning of inference containers. Not recommended</span>
+<span class="w">  </span><span class="c1"># for production because it can cause excessive load on the kube-apiserver.</span>
+<span class="w">  </span><span class="c1">#agent:</span>
+<span class="w">  </span><span class="c1">#  nodeResourceTopology: true</span>
+<span class="l l-Scalar l-Scalar-Plain">EOF</span>
+</pre></div>
+</div>
+<p>The configuration above allocates full CPU cores to inference engine
+containers by hiding hyperthreads from them. For example, if a pod requests 6
+CPUs, the balloon will reserve 6 full physical CPU cores (i.e., 12 logical
+CPUs), but configure the cpuset so that the inference instance can only use 6
+logical CPUs – one per core – while the sibling hyperthreads remain unused.
+A new dedicated <code class="docutils literal notranslate"><span class="pre">kubeai-inference</span></code> balloon is created for each inference engine
+container, as long as enough free CPUs are available on the system.
+Additionally, it distributes the <code class="docutils literal notranslate"><span class="pre">kubeai-inference</span></code> balloons across CPU
+sockets.</p>
+<p>See <a class="reference external" href="https://containers.github.io/nri-plugins/stable/docs/resource-policy/policy/balloons.html">balloons-policy documentation</a> and the
+<a class="reference external" href="https://github.com/opea-project/GenAIEval/tree/main/doc/platform-optimization#configure">OPEA platform optimization guide</a> for more details
+on the configuration options.</p>
+</section>
 </section>
 <section id="observability">
 <h1>Observability<a class="headerlink" href="#observability" title="Link to this heading">¶</a></h1>
