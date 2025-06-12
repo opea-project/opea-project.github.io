@@ -2770,7 +2770,7 @@ LLM hosting is done with TGI for Gaudi’s and natively running on CPUs for CPU.
 export SPAN_LENGTH=${SPAN_LENGTH:-&quot;1024&quot;}
 export OVERLAP=${OVERLAP:-&quot;100&quot;}
 export MAX_LENGTH=${MAX_NEW_TOKENS:-&quot;256&quot;}
-export HUGGINGFACEHUB_API_TOKEN=&quot;&quot;
+export HF_TOKEN=&quot;&quot;
 export LLM_MODEL_ID=${LLM_ID}
 export TGI_PORT=8008
 </pre></div>
@@ -2785,11 +2785,11 @@ echo MAX_LENGTH=${MAX_LENGTH}
 </div>
 <section id="start-tgi-service">
 <h3>Start TGI Service<a class="headerlink" href="#start-tgi-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TGI_PORT</span><span class="o">=</span><span class="m">8008</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;text2graph-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HUGGINGFACEHUB_API_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL_ID</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;text2graph-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL_ID</span>
 </pre></div>
 </div>
 </section>
