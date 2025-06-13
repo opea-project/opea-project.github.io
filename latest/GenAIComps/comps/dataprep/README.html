@@ -681,6 +681,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#dataprep-microservice-with-neo4j">Dataprep Microservice with neo4j</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dataprep-microservice-for-financial-domain-data">Dataprep Microservice for financial domain data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dataprep-microservice-with-mariadb-vector">Dataprep Microservice with MariaDB Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deployment/kubernetes/README.html">Deploy dataprep microservice on Kubernetes cluster</a><ul>
@@ -713,6 +714,7 @@
 <li class="toctree-l4"><a class="reference internal" href="src/README_milvus.html#start-microservice-with-docker">🚀1. Start Microservice with Docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README_milvus.html#consume-microservice">🚀2. Consume Microservice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README_milvus.html#troubleshooting">🚀3. Troubleshooting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/README_milvus.html#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src/README_multimodal.html">Dataprep Microservice for Multimodal Data with Redis</a><ul>
@@ -751,12 +753,14 @@
 <li class="toctree-l3"><a class="reference internal" href="src/README_qdrant.html">Dataprep Microservice with Qdrant</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src/README_qdrant.html#start-microservice-with-docker">🚀Start Microservice with Docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README_qdrant.html#invoke-microservice">Invoke Microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/README_qdrant.html#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src/README_redis.html">Dataprep Microservice with Redis</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="src/README_redis.html#start-microservice-with-docker">🚀1. Start Microservice with Docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README_redis.html#status-microservice">🚀2. Status Microservice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README_redis.html#consume-microservice">🚀3. Consume Microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/README_redis.html#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src/README_vdms.html">Dataprep Microservice with VDMS</a><ul>
@@ -2799,6 +2803,26 @@ apt-get<span class="w"> </span>install<span class="w"> </span>libreoffice
 <h2>Dataprep Microservice with MariaDB Vector<a class="headerlink" href="#dataprep-microservice-with-mariadb-vector" title="Link to this heading">¶</a></h2>
 <p>For details, please refer to this <a class="reference internal" href="src/README_mariadb.html"><span class="std std-doc">readme</span></a></p>
 </section>
+<section id="running-in-the-air-gapped-environment">
+<h2>Running in the air gapped environment<a class="headerlink" href="#running-in-the-air-gapped-environment" title="Link to this heading">¶</a></h2>
+<p>The following steps are common for running the dataprep microservice in an air gapped environment (a.k.a. environment with no internet access), for all DB backends.</p>
+<ol class="arabic simple">
+<li><p>Download the following models, e.g. <code class="docutils literal notranslate"><span class="pre">huggingface-cli</span> <span class="pre">download</span> <span class="pre">--cache-dir</span> <span class="pre">&lt;model</span> <span class="pre">data</span> <span class="pre">directory&gt;</span> <span class="pre">&lt;model&gt;</span></code></p></li>
+</ol>
+<ul class="simple">
+<li><p>microsoft/table-transformer-structure-recognition</p></li>
+<li><p>timm/resnet18.a1_in1k</p></li>
+<li><p>unstructuredio/yolo_x_layout</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>launch the <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice with the following settings:</p></li>
+</ol>
+<ul class="simple">
+<li><p>mount the <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">data</span> <span class="pre">directory</span></code> as the <code class="docutils literal notranslate"><span class="pre">/data</span></code> directory within the <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> container</p></li>
+<li><p>set environment variable <code class="docutils literal notranslate"><span class="pre">HF_HUB_OFFLINE</span></code> to 1 when launching the <code class="docutils literal notranslate"><span class="pre">dataprep</span></code> microservice</p></li>
+</ul>
+<p>e.g. <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">-d</span> <span class="pre">-v</span> <span class="pre">&lt;model</span> <span class="pre">data</span> <span class="pre">directory&gt;:/data</span> <span class="pre">-e</span> <span class="pre">HF_HUB_OFFLINE=1</span> <span class="pre">...</span> <span class="pre">...</span></code></p>
+</section>
 </section>
 
 
@@ -2815,7 +2839,7 @@ apt-get<span class="w"> </span>install<span class="w"> </span>libreoffice
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Jun 12, 2025.</span>
+<span class="lastupdated">Published on Jun 13, 2025.</span>
 
   </div>
 
