@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PII Detection Prediction Guard Microservice &mdash; OPEA™ 1.3 documentation</title>
+  <title>PII Detection Microservice &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -936,14 +936,15 @@
 <li class="toctree-l4"><a class="reference internal" href="../hallucination_detection/README.html#consume-guardrail-micorservice-post-llm">🚀4. Consume Guardrail Micorservice Post-LLM</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">PII Detection Prediction Guard Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#start-microservice-with-docker">🚀 Start Microservice with Docker</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#setup-environment-variables">Setup Environment Variables</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#build-docker-images">Build Docker Images</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#start-service">Start Service</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">PII Detection Microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-setup">Environment Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-python-option-1">🚀1. Start Microservice with Python（Option 1）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-microservice-with-docker-option-2">🚀2. Start Microservice with Docker (Option 2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-status-of-microservice">🚀3. Get Status of Microservice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#consume-microservice">🚀4. Consume Microservice</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#consume-pii-detection-service">🚀 Consume PII Detection Service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../prompt_injection/README.html">Prompt Injection and Jailbreak Detection Microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../prompt_injection/README.html#introduction">Introduction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../prompt_injection/README.html#prompt-guard-microservice">Prompt Guard Microservice</a></li>
@@ -2718,7 +2719,7 @@
   
      <li><a href="../../../../../microservices/index.html">GenAI Microservices</a> &raquo;</li>
   
-  <li>PII Detection Prediction Guard Microservice</li>
+  <li>PII Detection Microservice</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../_sources/GenAIComps/comps/guardrails/src/pii_detection/README.md.txt" rel="nofollow"> View page source</a>
@@ -2738,8 +2739,35 @@
   
            <div itemprop="articleBody">
              
-  <section id="pii-detection-prediction-guard-microservice">
-<h1>PII Detection Prediction Guard Microservice<a class="headerlink" href="#pii-detection-prediction-guard-microservice" title="Link to this heading">¶</a></h1>
+  <section id="pii-detection-microservice">
+<h1>PII Detection Microservice<a class="headerlink" href="#pii-detection-microservice" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>In today’s digital landscape, safeguarding personal information has become paramount, necessitating robust mechanisms to detect and protect personally identifiable information (PII). PII detection guardrails serve as essential tools in this endeavor, providing automated systems and protocols designed to identify, manage, and secure sensitive data. These guardrails leverage classical machine learning, LLMs, natural language processing (NLP) algorithms, and pattern recognition to accurately pinpoint PII ensuring compliance with privacy regulations and minimizing the risk of data breaches. By implementing PII detection guardrails, organizations can enhance their data protection strategies, foster trust with stakeholders, and uphold the integrity of personal information.</p>
+<p>This component currently supports two microservices: an OPEA native (free, local, open-source) microservice and a Prediction Guard (API Key required) microservice. Please choose one of the two microservices for PII detection based on your specific use case. If you wish to run both for experimental or comparison purposes, make sure to modify the port configuration of one service to avoid conflicts, as they are configured to use the same port by default.</p>
+<section id="id1">
+<h3>PII Detection Microservice<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<p>This service uses a <a class="reference external" href="https://spacy.io/">SpaCy</a> pipeline that is built by a <a class="reference external" href="https://microsoft.github.io/presidio/">Microsoft Presidio</a> Transformers Nlp Engine. The pipeline contains standard NLP and regex-based recognizers that detect the entities listed <a class="reference external" href="https://microsoft.github.io/presidio/supported_entities/">here</a> as well as a BERT-based model (<a class="reference external" href="https://huggingface.co/StanfordAIMI/stanford-deidentifier-base"><code class="docutils literal notranslate"><span class="pre">StanfordAIMI/stanford-deidentifier-base</span></code></a>) that additionally detects the following PII entities:</p>
+<ul class="simple">
+<li><p>Person</p></li>
+<li><p>Location</p></li>
+<li><p>Organization</p></li>
+<li><p>Age</p></li>
+<li><p>ID</p></li>
+<li><p>Email</p></li>
+<li><p>Date/time</p></li>
+<li><p>Phone number</p></li>
+<li><p>Nationality/religious/political group</p></li>
+</ul>
+<p>The service takes text as input (TextDoc) and returns either the original text (TextDoc) if no PII is detected, or a list of detected entities (PIIResponseDoc) with the detection details including detection score (probability), detection method and start/end string indices of detection.</p>
+<p>Stay tuned for the following future work:</p>
+<ul class="simple">
+<li><p>Entity configurability</p></li>
+<li><p>PII replacement</p></li>
+</ul>
+</section>
+<section id="prediction-guard-pii-detection-microservice">
+<h3>Prediction Guard PII Detection Microservice<a class="headerlink" href="#prediction-guard-pii-detection-microservice" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="https://docs.predictionguard.com">Prediction Guard</a> allows you to utilize hosted open access LLMs, LVMs, and embedding functionality with seamlessly integrated safeguards. In addition to providing a scalable access to open models, Prediction Guard allows you to configure factual consistency checks, toxicity filters, PII filters, and prompt injection blocking. Join the <a class="reference external" href="https://discord.gg/TFHgnhAFKd">Prediction Guard Discord channel</a> and request an API key to get started.</p>
 <p>Detecting Personal Identifiable Information (PII) is important in ensuring that users aren’t sending out private data to LLMs. This service allows you to configurably:</p>
 <ol class="arabic simple">
@@ -2748,46 +2776,215 @@
 <li><p>Mask PII (with placeholders)</p></li>
 </ol>
 </section>
-<section id="start-microservice-with-docker">
-<h1>🚀 Start Microservice with Docker<a class="headerlink" href="#start-microservice-with-docker" title="Link to this heading">¶</a></h1>
-<section id="setup-environment-variables">
-<h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
-<p>Setup the following environment variables first</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_predictionguard_api_key</span><span class="si">}</span>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading">¶</a></h2>
+<section id="clone-opea-genaicomps-and-setup-environment">
+<h3>Clone OPEA GenAIComps and Setup Environment<a class="headerlink" href="#clone-opea-genaicomps-and-setup-environment" title="Link to this heading">¶</a></h3>
+<p>Clone this repository at your desired location and set an environment variable for easy setup and usage throughout the instructions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPEA_GENAICOMPS_ROOT</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/GenAIComps
+</pre></div>
+</div>
+<p>Set the port that this service will use and the component name</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_PORT</span><span class="o">=</span><span class="m">9080</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_NATIVE_PII&quot;</span>
+</pre></div>
+</div>
+<p>By default, this microservice uses <code class="docutils literal notranslate"><span class="pre">OPEA_NATIVE_PII</span></code> which uses <a class="reference external" href="https://microsoft.github.io/presidio/"><code class="docutils literal notranslate"><span class="pre">Microsoft</span> <span class="pre">Presidio</span></code></a> to locally invoke <a class="reference external" href="https://huggingface.co/StanfordAIMI/stanford-deidentifier-base"><code class="docutils literal notranslate"><span class="pre">StanfordAIMI/stanford-deidentifier-base</span></code></a> within a Transformers-based AnalyzerEngine.</p>
+<section id="alternatively-if-you-are-using-prediction-guard-set-the-following-component-name-and-prediction-guard-api-key">
+<h4>Alternatively, if you are using Prediction Guard, set the following component name and Prediction Guard API Key:<a class="headerlink" href="#alternatively-if-you-are-using-prediction-guard-set-the-following-component-name-and-prediction-guard-api-key" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;PREDICTIONGUARD_PII_DETECTION&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_predictionguard_api_key</span><span class="si">}</span>
 </pre></div>
 </div>
 </section>
-<section id="build-docker-images">
-<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../../../../
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/guardrails-pii-predictionguard:latest<span class="w"> </span>-f<span class="w"> </span>comps/guardrails/src/pii_detection/Dockerfile<span class="w"> </span>.
+</section>
+</section>
+<section id="start-microservice-with-python-option-1">
+<h2>🚀1. Start Microservice with Python（Option 1）<a class="headerlink" href="#start-microservice-with-python-option-1" title="Link to this heading">¶</a></h2>
+<section id="install-requirements">
+<h3>1.1 Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>/comps/guardrails/src/pii_detection
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
-<section id="start-service">
-<h2>Start Service<a class="headerlink" href="#start-service" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;guardrails-pii-predictionguard&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9080</span>:9080<span class="w"> </span>-e<span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="nv">$PREDICTIONGUARD_API_KEY</span><span class="w"> </span>opea/guardrails-pii-predictionguard:latest
+<section id="start-pii-detection-microservice-with-python-script">
+<h3>1.2 Start PII Detection Microservice with Python Script<a class="headerlink" href="#start-pii-detection-microservice-with-python-script" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>opea_pii_detection_microservice.py
 </pre></div>
 </div>
 </section>
 </section>
-<section id="consume-pii-detection-service">
-<h1>🚀 Consume PII Detection Service<a class="headerlink" href="#consume-pii-detection-service" title="Link to this heading">¶</a></h1>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:9080/v1/pii<span class="w"> </span><span class="se">\</span>
+<section id="start-microservice-with-docker-option-2">
+<h2>🚀2. Start Microservice with Docker (Option 2)<a class="headerlink" href="#start-microservice-with-docker-option-2" title="Link to this heading">¶</a></h2>
+<section id="for-native-opea-microservice">
+<h3>For native OPEA Microservice<a class="headerlink" href="#for-native-opea-microservice" title="Link to this heading">¶</a></h3>
+<section id="build-docker-image">
+<h4>2.1 Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>opea/guardrails-pii-detection:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/guardrails/src/pii_detection/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="a-run-docker-with-compose-option-a">
+<h4>2.2.a Run Docker with Compose (Option A)<a class="headerlink" href="#a-run-docker-with-compose-option-a" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>/comps/guardrails/deployment/docker_compose
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>guardrails-pii-detection-server
+</pre></div>
+</div>
+</section>
+<section id="b-run-docker-with-cli-option-b">
+<h4>2.2.b Run Docker with CLI (Option B)<a class="headerlink" href="#b-run-docker-with-cli-option-b" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;guardrails-pii-detection-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>:9080<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>opea/guardrails-toxicity-detection:latest
+</pre></div>
+</div>
+</section>
+</section>
+<section id="for-prediction-guard-microservice">
+<h3>For Prediction Guard Microservice<a class="headerlink" href="#for-prediction-guard-microservice" title="Link to this heading">¶</a></h3>
+<section id="id2">
+<h4>2.1 Build Docker Image<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>
+docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>opea/guardrails-pii-predictionguard:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f<span class="w"> </span>comps/guardrails/src/pii_detection/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h4>2.2.a Run Docker with Compose (Option A)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$OPEA_GENAICOMPS_ROOT</span>/comps/guardrails/deployment/docker_compose
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>pii-predictionguard-server
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h4>2.2.b Run Docker with CLI (Option B)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;pii-predictionguard-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>:9080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="nv">$PREDICTIONGUARD_API_KEY</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span>PII_DETECTION_COMPONENT_NAME:<span class="w"> </span><span class="si">${</span><span class="nv">PREDICTIONGUARD_PII_DETECTION</span><span class="si">}</span>
+<span class="w">  </span>opea/guardrails-pii-predictionguard:latest
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="get-status-of-microservice">
+<h2>🚀3. Get Status of Microservice<a class="headerlink" href="#get-status-of-microservice" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h3>For native OPEA Microservice<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>guardrails-pii-detection-server
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>For Prediction Guard Microservice<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>-f<span class="w">  </span>pii-predictionguard-server
+</pre></div>
+</div>
+</section>
+</section>
+<section id="consume-microservice">
+<h2>🚀4. Consume Microservice<a class="headerlink" href="#consume-microservice" title="Link to this heading">¶</a></h2>
+<p>Once microservice starts, users can use examples (bash or python) below to apply PII detection</p>
+<section id="id7">
+<h3>For native OPEA Microservice<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p><strong>Bash Example</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>/v1/pii<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;My name is John Doe and my phone number is (555) 555-5555.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+</pre></div>
+</div>
+<p><strong>Python Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">pii_detection_port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PII_DETECTION_PORT&quot;</span><span class="p">)</span>
+<span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="n">pii_detection_port</span><span class="si">}</span><span class="s2">/v1/pii&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;My name is John Doe and my phone number is (555) 555-5555.&quot;</span><span class="p">}</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>  <span class="c1"># Raise an exception for unsuccessful HTTP status codes</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Request successful!&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An error occurred:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example Output</strong>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4631406f5f91728e45ad27eba062bb4b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;detected_pii&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;entity_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PHONE_NUMBER&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9992861151695251</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;analysis_explanation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;recognition_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;recognizer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;recognizer_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer_140427422846672&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;entity_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PERSON&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8511614799499512</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;analysis_explanation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;recognition_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;recognizer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;recognizer_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer_140427422846672&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;new_prompt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3>For Prediction Guard Microservice<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:<span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>/v1/pii<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">      &quot;prompt&quot;: &quot;My name is John Doe and my phone number is 555-555-5555.&quot;,</span>
+<span class="s1">      &quot;prompt&quot;: &quot;My name is John Doe and my phone number is (555) 555-5555.&quot;,</span>
 <span class="s1">      &quot;replace&quot;: true,</span>
 <span class="s1">      &quot;replace_method&quot;: &quot;random&quot;</span>
-<span class="s1">    }&#39;</span>
+<span class="s1">      }&#39;</span>
 </pre></div>
 </div>
-<p>API parameters:</p>
+<p>API parameters for Prediction Guard microservice:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">prompt</span></code> (string, required): The text in which you want to detect PII (typically the prompt that you anticipate sending to an LLM)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">replace</span></code> (boolean, optional, default is <code class="docutils literal notranslate"><span class="pre">false</span></code>): <code class="docutils literal notranslate"><span class="pre">true</span></code> if you want to replace the detected PII in the <code class="docutils literal notranslate"><span class="pre">prompt</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">replace_method</span></code> (string, optional, default is <code class="docutils literal notranslate"><span class="pre">random</span></code>): The method you want to use to replace PII (set to either <code class="docutils literal notranslate"><span class="pre">random</span></code>, <code class="docutils literal notranslate"><span class="pre">fake</span></code>, <code class="docutils literal notranslate"><span class="pre">category</span></code>, <code class="docutils literal notranslate"><span class="pre">mask</span></code>)</p></li>
 </ul>
+</section>
+</section>
 </section>
 
 
