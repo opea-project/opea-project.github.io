@@ -2779,27 +2779,34 @@
 </pre></div>
 </div>
 <section id="install-the-microservice-in-air-gapped-offline-mode">
-<h3>Install the microservice in air gapped(offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
-<p>To support running this microservice in an air gapped environment, users are required to download the offline data including the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data and model <code class="docutils literal notranslate"><span class="pre">unstructuredio/yolo_x_layout</span></code> to a shared storage. Below is an example for using node level local directory to download the offline data:</p>
-<p>Assuming the <code class="docutils literal notranslate"><span class="pre">nltk</span></code> data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/nltk_data</span></code>, and the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
+<h3>Install the microservice in air gapped (offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
+<p>To support running this microservice in an air gapped environment, users are required to pre-download the following models to a shared storage:</p>
+<ul class="simple">
+<li><p>microsoft/table-transformer-structure-recognition</p></li>
+<li><p>timm/resnet18.a1_in1k</p></li>
+<li><p>unstructuredio/yolo_x_layout</p></li>
+</ul>
+<p>Below is an example for using node level local directory to download the offline data:</p>
+<p>Assuming the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
 export MODELDIR=/mnt/opea-models
-export NLTKDATA=/mnt/nltk_data
-# Download nltk data, assumes Python nltk module(s) are already installed
-python -m nltk.downloader -d $NLTKDATA all &amp;&amp; chmod -R a+r $NLTKDATA
-# Download model,  assumes Python huggingface_hub[cli] module are already installed
-huggingface-cli download unstructuredio/yolo_x_layout --local-dir ${MODELDIR}/unstructuredio/yolo_x_layout &amp;&amp; chmod -R a+r ${MODELDIR}/unstructuredio/yolo_x_layout
+# Download model, assumes Python huggingface_hub[cli] module is already installed
+DATAPREP_MODELS=(microsoft/table-transformer-structure-recognition timm/resnet18.a1_in1k unstructuredio/yolo_x_layout)
+for model in ${DATAPREP_MODELS[@]}; do
+    huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; $model
+done
 
+# On K8s master node, run the following command:
 # Install using Helm with the following additional parameters:
-# helm install ... ... --set global.offline=true,global.modelUseHostPath=${MODELDIR},global.nltkDataUseHostPath=${NLTKDATA}
+helm install ... ... --set global.offline=true,global.modelUseHostPath=${MODELDIR}
 </pre></div>
 </div>
-<p>Assuming we share the offline data on cluster level using a persistent volume(PV), first we need to create the persistent volume claim(PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store model data, the PVC with name <code class="docutils literal notranslate"><span class="pre">opea-nltk-pvc</span></code> to store nltk data:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download nltk data and model into the root and `unstructuredio/yolo_x_layout` directory at the root of the corresponding PVs respectively</span>
+<p>Assuming we share the offline data on cluster level using a persistent volume (PV), first we need to create the persistent volume claim (PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store the model data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download model data at the root directory of the corresponding PV</span>
+<span class="c1"># ... ...</span>
 <span class="c1"># Install using Helm with the following additional parameters:</span>
 <span class="c1"># export MODELPVC=opea-model-pvc</span>
-<span class="c1"># export NLTKPVC=opea-nltk-pvc</span>
-<span class="c1"># helm install ... ... --set global.offline=true,global.modelUsePVC=${MOELPVC},global.nltkDataUsePVC=${NLTKPVC}</span>
+<span class="c1"># helm install ... ... --set global.offline=true,global.modelUsePVC=${MOELPVC}</span>
 </pre></div>
 </div>
 </section>
@@ -2837,32 +2844,37 @@ huggingface-cli download unstructuredio/yolo_x_layout --local-dir ${MODELDIR}/un
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Your own Hugging Face API token</p></td>
 </tr>
-<tr class="row-even"><td><p>DATAPREP_BACKEND</p></td>
+<tr class="row-even"><td><p>global.offline</p></td>
+<td><p>bool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>Whether to run the microservice in air gapped environment</p></td>
+</tr>
+<tr class="row-odd"><td><p>DATAPREP_BACKEND</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;REDIS&quot;</span></code></p></td>
 <td><p>vector DB backend to use, one of “REDIS”, “MILVUS”, “QDRANT”</p></td>
 </tr>
-<tr class="row-odd"><td><p>REDIS_HOST</p></td>
+<tr class="row-even"><td><p>REDIS_HOST</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Redis service URL host, only valid for Redis, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Redis configuration</p></td>
 </tr>
-<tr class="row-even"><td><p>MILVUS_HOST</p></td>
+<tr class="row-odd"><td><p>MILVUS_HOST</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Milvus service URL host, only valid for Milvus, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Milvus configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p>QDRANT_HOST</p></td>
+<tr class="row-even"><td><p>QDRANT_HOST</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p>Qdrant service URL host, only valid for Qdrant, please see <code class="docutils literal notranslate"><span class="pre">values.yaml</span></code> for other Qdrant configuration</p></td>
 </tr>
-<tr class="row-even"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
+<tr class="row-odd"><td><p>TEI_EMBEDDING_ENDPOINT</p></td>
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>global.monitoring</p></td>
+<tr class="row-even"><td><p>global.monitoring</p></td>
 <td><p>bool</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
 <td><p>See ../../monitoring.md before enabling!</p></td>
