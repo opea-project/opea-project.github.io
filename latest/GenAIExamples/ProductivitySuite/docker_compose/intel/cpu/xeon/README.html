@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of Productivity Suite on Xeon &mdash; OPEA™ 1.3 documentation</title>
+  <title>Example Productivity Suite Deployment on Intel® Xeon® Platform &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -433,7 +433,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#productivitysuite-application">ProductivitySuite Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Productivity Suite Application</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of Productivity Suite on Xeon</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Example Productivity Suite Deployment on Intel® Xeon® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="keycloak_setup_guide.html">🔐 Keycloak Configuration Setup</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tests/README.html">ProductivitySuite E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../ui/react/README.html">Productivity Suite React UI</a></li>
@@ -2724,7 +2724,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of Productivity Suite on Xeon</li>
+  <li>Example Productivity Suite Deployment on Intel® Xeon® Platform</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/ProductivitySuite/docker_compose/intel/cpu/xeon/README.md.txt" rel="nofollow"> View page source</a>
@@ -2744,440 +2744,339 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-productivity-suite-on-xeon">
-<h1>Build Mega Service of Productivity Suite on Xeon<a class="headerlink" href="#build-mega-service-of-productivity-suite-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for OPEA Productivity Suite utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server and <a class="reference external" href="https://github.com/opea-project/GenAIExamples.git">GenAIExamples</a> solutions. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
-<hr class="docutils" />
-<section id="build-docker-images">
-<h2>🐳 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<p>First of all, you need to build Docker Images locally and install the python package of it.</p>
-<section id="build-embedding-image">
-<h3>1. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/embedding:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/embeddings/src/Dockerfile<span class="w"> </span>.
+  <section id="example-productivity-suite-deployment-on-intel-xeon-platform">
+<h1>Example Productivity Suite Deployment on Intel® Xeon® Platform<a class="headerlink" href="#example-productivity-suite-deployment-on-intel-xeon-platform" title="Link to this heading">¶</a></h1>
+<p>This document outlines the deployment process for OPEA Productivity Suite utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server.This example includes the following sections:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#productivity-suite-quick-start-deployment"><span class="xref myst">Productivity Suite Quick Start Deployment</span></a>: Demonstrates how to quickly deploy a Productivity Suite service/pipeline on Intel® Xeon® platform.</p></li>
+<li><p><a class="reference internal" href="#productivity-suite-docker-compose-files"><span class="xref myst">Productivity Suite Docker Compose Files</span></a>: Describes some example deployments and their docker compose files.</p></li>
+<li><p><a class="reference internal" href="#productivity-suite-service-configuration"><span class="xref myst">Productivity Suite Service Configuration</span></a>: Describes the service and possible configuration changes.</p></li>
+</ul>
+<section id="productivity-suite-quick-start-deployment">
+<h2>Productivity Suite Quick Start Deployment<a class="headerlink" href="#productivity-suite-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the Productivity Suite service manually on Intel® Xeon® platform. The basic steps are:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-service-using-docker-compose"><span class="xref myst">Deploy the Service Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#setup-keycloak"><span class="xref myst">Setup Keycloak</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
+</ol>
+<section id="access-the-code">
+<h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
+<p>Clone the GenAIExample repository and access the Productivity Suite Intel® Xeon® platform Docker Compose files and supporting scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">ProductivitySuite</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Checkout a released version, such as v1.3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.3</span>
 </pre></div>
 </div>
 </section>
-<section id="build-retriever-image">
-<h3>2. Build Retriever Image<a class="headerlink" href="#build-retriever-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/retriever:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/src/Dockerfile<span class="w"> </span>.
+<section id="generate-a-huggingface-access-token">
+<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
+<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+</section>
+<section id="configure-the-deployment-environment">
+<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying Productivity Suite service, source the set_env.sh script in this directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The set_env.sh script will prompt for required and optional environment variables used to configure the Productivity Suite service. If a value is not entered, the script will use a default value for the same. It will also generate a env file defining the desired configuration. Consult the section on <a class="reference internal" href="#productivity-suite-service-configuration"><span class="xref myst">Productivity Suite Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
+</section>
+<section id="deploy-the-service-using-docker-compose">
+<h3>Deploy the Service Using Docker Compose<a class="headerlink" href="#deploy-the-service-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>To deploy the Productivity Suite service, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>The Productivity Suite docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the Intel® Xeon® Platform:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 19/19
+ ✔ Network xeon_default                               Created                                         0.1s
+ ✔ Container tgi-service                              Healthy                                       165.2s
+ ✔ Container promptregistry-mongo-server              Started                                         1.0s
+ ✔ Container redis-vector-db                          Started                                         1.7s
+ ✔ Container tei-reranking-server                     Healthy                                        61.5s
+ ✔ Container chathistory-mongo-server                 Started                                         1.7s
+ ✔ Container tgi_service_codegen                      Healthy                                       165.7s
+ ✔ Container tei-embedding-server                     Healthy                                        12.0s
+ ✔ Container keycloak-server                          Started                                         0.8s
+ ✔ Container whisper-server                           Started                                         1.4s
+ ✔ Container productivity-suite-xeon-react-ui-server  Started                                         2.1s
+ ✔ Container mongodb                                  Started                                         1.2s
+ ✔ Container dataprep-redis-server                    Healthy                                        22.9s
+ ✔ Container retriever-redis-server                   Started                                         2.2s
+ ✔ Container llm-textgen-server-codegen               Started                                       166.0s
+ ✔ Container docsum-xeon-llm-server                   Started                                       165.5s
+ ✔ Container codegen-xeon-backend-server              Started                                       166.3s
+ ✔ Container docsum-xeon-backend-server               Started                                       165.9s
+ ✔ Container chatqna-xeon-backend-server              Started                                       165.9s
 </pre></div>
 </div>
 </section>
-<section id="build-rerank-image">
-<h3>3. Build Rerank Image<a class="headerlink" href="#build-rerank-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/reranking:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/rerankings/src/Dockerfile<span class="w"> </span>.
+<section id="check-the-deployment-status">
+<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<p>For the default deployment, the following 5 containers should be running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                                                       <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>                   <span class="n">PORTS</span>                                                                                  <span class="n">NAMES</span>
+<span class="mf">8e3</span><span class="n">c0e9398ae</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chatqna</span><span class="p">:</span><span class="n">latest</span>                                                                         <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8888</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chatqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">cc317e6feb89</span>   <span class="n">opea</span><span class="o">/</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                                                          <span class="s2">&quot;python docsum.py&quot;</span>       <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8890</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8890</span><span class="o">-&gt;</span><span class="mi">8888</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">docsum</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">683</span><span class="n">dd7cacef2</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codegen</span><span class="p">:</span><span class="n">latest</span>                                                                         <span class="s2">&quot;python codegen.py&quot;</span>      <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7778</span><span class="o">-&gt;</span><span class="mi">7778</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7778</span><span class="o">-&gt;</span><span class="mi">7778</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">codegen</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="n">a38d8d906cd0</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">docsum</span><span class="p">:</span><span class="n">latest</span>                                                                      <span class="s2">&quot;python opea_docsum_…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9003</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9003</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">docsum</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
+<span class="n">f0a61333ae16</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="p">:</span><span class="n">latest</span>                                                                     <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">5</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9001</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9001</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">codegen</span>
+<span class="n">a942446f47c1</span>   <span class="n">opea</span><span class="o">/</span><span class="n">dataprep</span><span class="p">:</span><span class="n">latest</span>                                                                        <span class="s2">&quot;sh -c &#39;python $( [ …&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">5000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6007</span><span class="o">-&gt;</span><span class="mi">5000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">dataprep</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="n">f77b9b69fcaf</span>   <span class="n">opea</span><span class="o">/</span><span class="n">retriever</span><span class="p">:</span><span class="n">latest</span>                                                                       <span class="s2">&quot;python opea_retriev…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7001</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7001</span><span class="o">-&gt;</span><span class="mi">7000</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">retriever</span><span class="o">-</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">0324</span><span class="n">b9efd729</span>   <span class="n">opea</span><span class="o">/</span><span class="n">productivity</span><span class="o">-</span><span class="n">suite</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span><span class="p">:</span><span class="n">latest</span>                                              <span class="s2">&quot;/docker-entrypoint.…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">productivity</span><span class="o">-</span><span class="n">suite</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="mf">747e09</span><span class="n">a5afea</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>                               <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8028</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8028</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tgi_service_codegen</span>
+<span class="n">ea7444faa8b2</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>                               <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9009</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9009</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
+<span class="mi">8</span><span class="n">fdb186853ac</span>   <span class="n">opea</span><span class="o">/</span><span class="n">whisper</span><span class="p">:</span><span class="n">latest</span>                                                                         <span class="s2">&quot;python whisper_serv…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">whisper</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">7982</span><span class="n">f2d1ff89</span>   <span class="n">mongo</span><span class="p">:</span><span class="mf">7.0.11</span>                                                                                <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">27017</span><span class="o">-&gt;</span><span class="mi">27017</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">27017</span><span class="o">-&gt;</span><span class="mi">27017</span><span class="o">/</span><span class="n">tcp</span>                                          <span class="n">mongodb</span>
+<span class="mi">9</span><span class="n">fb471c452ec</span>   <span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">keycloak</span><span class="o">/</span><span class="n">keycloak</span><span class="p">:</span><span class="mf">25.0.2</span>                                                            <span class="s2">&quot;/opt/keycloak/bin/k…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mi">8443</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8080</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8080</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                          <span class="n">keycloak</span><span class="o">-</span><span class="n">server</span>
+<span class="n">a00ac544abb7</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.6</span>                                       <span class="s2">&quot;/bin/sh -c &#39;apt-get…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6006</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">embedding</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">87</span><span class="n">c2996111d5</span>   <span class="n">redis</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">stack</span><span class="p">:</span><span class="mf">7.2.0</span><span class="o">-</span><span class="n">v9</span>                                                                  <span class="s2">&quot;/entrypoint.sh&quot;</span>         <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6379</span><span class="o">-&gt;</span><span class="mi">6379</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8001</span><span class="o">-&gt;</span><span class="mi">8001</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">redis</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
+<span class="mi">536</span><span class="n">b71e4ec67</span>   <span class="n">opea</span><span class="o">/</span><span class="n">chathistory</span><span class="o">-</span><span class="n">mongo</span><span class="p">:</span><span class="n">latest</span>                                                               <span class="s2">&quot;python opea_chathis…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6012</span><span class="o">-&gt;</span><span class="mi">6012</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6012</span><span class="o">-&gt;</span><span class="mi">6012</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">chathistory</span><span class="o">-</span><span class="n">mongo</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">8</span><span class="n">d56c2b03431</span>   <span class="n">opea</span><span class="o">/</span><span class="n">promptregistry</span><span class="o">-</span><span class="n">mongo</span><span class="p">:</span><span class="n">latest</span>                                                            <span class="s2">&quot;python opea_prompt_…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span>             <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">6018</span><span class="o">-&gt;</span><span class="mi">6018</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">6018</span><span class="o">-&gt;</span><span class="mi">6018</span><span class="o">/</span><span class="n">tcp</span>                                              <span class="n">promptregistry</span><span class="o">-</span><span class="n">mongo</span><span class="o">-</span><span class="n">server</span>
+<span class="n">c48921438848</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">embeddings</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="n">cpu</span><span class="o">-</span><span class="mf">1.6</span>                                       <span class="s2">&quot;/bin/sh -c &#39;apt-get…&quot;</span>   <span class="mi">8</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">8</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8808</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>                                                  <span class="n">tei</span><span class="o">-</span><span class="n">reranking</span><span class="o">-</span><span class="n">server</span>
 </pre></div>
 </div>
 </section>
-<section id="build-llm-image">
-<h3>4. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<section id="use-tgi-as-backend">
-<h4>Use TGI as backend<a class="headerlink" href="#use-tgi-as-backend" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/llm-textgen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/llms/src/text-generation/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-</section>
-<section id="build-dataprep-image">
-<h3>5. Build Dataprep Image<a class="headerlink" href="#build-dataprep-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/dataprep:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/dataprep/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-prompt-registry-image">
-<h3>6. Build Prompt Registry Image<a class="headerlink" href="#build-prompt-registry-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/promptregistry-mongo:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/prompt_registry/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-chat-history-image">
-<h3>7. Build Chat History Image<a class="headerlink" href="#build-chat-history-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/chathistory-mongo:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/chathistory/src/Dockerfile<span class="w"> </span>.
-<span class="nb">cd</span><span class="w"> </span>..
-</pre></div>
-</div>
-</section>
-<section id="build-megaservice-docker-images">
-<h3>8. Build MegaService Docker Images<a class="headerlink" href="#build-megaservice-docker-images" title="Link to this heading">¶</a></h3>
-<p>The Productivity Suite is composed of multiple GenAIExample reference solutions composed together.</p>
-<section id="build-chatqna-megaservice-docker-images">
-<h4>8.1 Build ChatQnA MegaService Docker Images<a class="headerlink" href="#build-chatqna-megaservice-docker-images" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/chatqna:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-docsum-megaservice-docker-images">
-<h4>8.2 Build DocSum Megaservice Docker Images<a class="headerlink" href="#build-docsum-megaservice-docker-images" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/docsum:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-codegen-megaservice-docker-images">
-<h4>8.3 Build CodeGen Megaservice Docker Images<a class="headerlink" href="#build-codegen-megaservice-docker-images" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/CodeGen
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/codegen:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-</section>
-<section id="build-ui-docker-image">
-<h3>9. Build UI Docker Image<a class="headerlink" href="#build-ui-docker-image" title="Link to this heading">¶</a></h3>
-<p>Build frontend Docker image that enables via below command:</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ProductivitySuite/ui
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/productivity-suite-react-ui-server:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.react<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-</section>
-<hr class="docutils" />
-<section id="start-microservices">
-<h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
-<section id="setup-environment-variables">
-<h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
-<p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
-<p><strong>Export the value of the public IP address of your Xeon server to the <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> environment variable</strong></p>
-<blockquote>
-<div><p>Change the External_Public_IP below with the actual IPV4 value</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-</pre></div>
-</div>
-<p><strong>Export the value of your Huggingface API token to the <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code> environment variable</strong></p>
-<blockquote>
-<div><p>Change the Your_Huggingface_API_Token below with tyour actual Huggingface API Token value</p>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-</pre></div>
-</div>
-<p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export no_proxy=${no_proxy},&quot;External_Public_IP&quot;
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DB_NAME</span><span class="o">=</span><span class="s2">&quot;opea&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID_CODEGEN</span><span class="o">=</span><span class="s2">&quot;meta-llama/CodeLlama-7b-hf&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;rag-redis&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT_CHATQNA</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8888/v1/chatqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_DELETE_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT_CODEGEN</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:7778/v1/codegen&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT_DOCSUM</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8890/v1/docsum&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHAT_HISTORY_CREATE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6012/v1/chathistory/create&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHAT_HISTORY_DELETE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6012/v1/chathistory/delete&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHAT_HISTORY_GET_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6012/v1/chathistory/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROMPT_SERVICE_GET_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROMPT_SERVICE_CREATE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/create&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROMPT_SERVICE_DELETE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/delete&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">KEYCLOAK_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:8080&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DocSum_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaDocSumTgi&quot;</span>
-
-<span class="c1">#Set no proxy</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">,tgi_service_codegen,llm_codegen,tei-embedding-service,tei-reranking-service,chatqna-xeon-backend-server,retriever,tgi-service,redis-vector-db,whisper,llm-docsum-tgi,docsum-xeon-backend-server,mongo,codegen&quot;</span>
-</pre></div>
-</div>
-<p>Note: Please replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
-</section>
-<section id="start-all-the-services-docker-containers">
-<h3>Start all the services Docker Containers<a class="headerlink" href="#start-all-the-services-docker-containers" title="Link to this heading">¶</a></h3>
-<blockquote>
-<div><p>Before running the docker compose command, you need to be in the folder that has the docker compose yaml file</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ProductivitySuite/docker_compose/intel/cpu/xeon
-
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
 <section id="setup-keycloak">
-<h3>🔐 Setup Keycloak<a class="headerlink" href="#setup-keycloak" title="Link to this heading">¶</a></h3>
+<h3>Setup Keycloak<a class="headerlink" href="#setup-keycloak" title="Link to this heading">¶</a></h3>
 <p>Please refer to <strong><a class="reference internal" href="keycloak_setup_guide.html"><span class="std std-doc">keycloak_setup_guide</span></a></strong> for more detail related to Keycloak configuration setup.</p>
 </section>
-<hr class="docutils" />
-<section id="validate-microservices">
-<h3>✅ Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
-<ol class="arabic">
-<li><p>TEI Embedding Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Retriever Microservice</p>
-<p>To consume the retriever microservice, you need to generate a mock embedding vector by Python script. The length of embedding vector
-is determined by the embedding model.
-Here we use the model <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;</span></code>, which vector size is 768.</p>
-<p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equals to it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7001/v1/retrieval<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>TEI Reranking Service</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8808/rerank<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>LLM backend Service (ChatQnA, DocSum)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9009/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>LLM backend Service (CodeGen)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8028/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;def print_hello_world():&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>CodeGen LLM Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9001/v1/chat/completions<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;def print_hello_world():&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>DocSum LLM Microservice</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9003/v1/docsum<span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5&quot;, &quot;type&quot;: &quot;text&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>ChatQnA MegaService</p>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+<p>Once the Productivity Suite service are running, test the pipeline using the following command:</p>
+<p>ChatQnA MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">     }&#39;</span>
+<span class="s1">    &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
+<span class="s1">    }&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p>DocSum MegaService</p>
+<p>DocSum MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8890/v1/docsum<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,</span>
-<span class="s1">     &quot;type&quot;: &quot;text&quot;</span>
-<span class="s1">     }&#39;</span>
+<span class="s1">    &quot;messages&quot;: &quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,</span>
+<span class="s1">    &quot;type&quot;: &quot;text&quot;</span>
+<span class="s1">    }&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p>CodeGen MegaService</p>
+<p>CodeGen MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;: &quot;def print_hello_world():&quot;</span>
-<span class="s1">     }&#39;</span>
+<span class="s1">      &quot;messages&quot;: &quot;def print_hello_world():&quot;</span>
+<span class="s1">      }&#39;</span>
 </pre></div>
 </div>
-</li>
-<li><p>Dataprep Microservice</p>
-<p>If you want to update the default knowledge base, you can use the following commands:</p>
-<p>Update Knowledge Base via Local File Upload:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
+</section>
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
-<p>This command updates a knowledge base by uploading a local file for processing. Update the file path according to your environment.</p>
-<p>Add Knowledge Base via HTTP Links:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 19/19
+ ✔ Container mongodb                                  Removed                                                     0.5s
+ ✔ Container codegen-xeon-backend-server              Removed                                                    10.4s
+ ✔ Container docsum-xeon-backend-server               Removed                                                    10.6s
+ ✔ Container whisper-server                           Removed                                                     1.3s
+ ✔ Container promptregistry-mongo-server              Removed                                                    10.8s
+ ✔ Container chatqna-xeon-backend-server              Removed                                                    11.0s
+ ✔ Container productivity-suite-xeon-react-ui-server  Removed                                                     0.6s
+ ✔ Container keycloak-server                          Removed                                                     0.7s
+ ✔ Container chathistory-mongo-server                 Removed                                                    10.9s
+ ✔ Container llm-textgen-server-codegen               Removed                                                    10.4s
+ ✔ Container docsum-xeon-llm-server                   Removed                                                    10.4s
+ ✔ Container tei-reranking-server                     Removed                                                    13.0s
+ ✔ Container tei-embedding-server                     Removed                                                    12.8s
+ ✔ Container dataprep-redis-server                    Removed                                                    12.9s
+ ✔ Container retriever-redis-server                   Removed                                                    12.3s
+ ✔ Container tgi_service_codegen                      Removed                                                     3.1s
+ ✔ Container tgi-service                              Removed                                                     3.1s
+ ✔ Container redis-vector-db                          Removed                                                     0.5s
+ ✔ Network xeon_default                               Removed                                                     0.3s
 </pre></div>
 </div>
-<p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
-<p>Also, you are able to get the file list that you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-</pre></div>
-</div>
-<p>To delete the file/link you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete link</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-
-<span class="c1"># delete file</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-
-<span class="c1"># delete all uploaded files and links</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Prompt Registry Microservice</p>
-<p>If you want to update the default Prompts in the application for your user, you can use the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/create&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;prompt_text&quot;: &quot;test prompt&quot;, &quot;user&quot;: &quot;test&quot;</span>
-<span class="s1">}&#39;</span>
-</pre></div>
-</div>
-<p>Retrieve prompt from database based on user or prompt_id</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;}&#39;</span>
-
-curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;, &quot;prompt_id&quot;:&quot;{prompt_id returned from save prompt route above}&quot;}&#39;</span>
-</pre></div>
-</div>
-<p>Delete prompt from database based on prompt_id provided</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6018/v1/prompt/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;, &quot;prompt_id&quot;:&quot;{prompt_id to be deleted}&quot;}&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Chat History Microservice</p>
-<p>To validate the chatHistory Microservice, you can use the following commands.</p>
-<p>Create a sample conversation and get the message ID.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6012/v1/chathistory/create<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;data&quot;: {</span>
-<span class="s1">    &quot;messages&quot;: &quot;test Messages&quot;, &quot;user&quot;: &quot;test&quot;</span>
-<span class="s1">  }</span>
-<span class="s1">}&#39;</span>
-</pre></div>
-</div>
-<p>Retrieve the conversation based on user or conversation id</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6012/v1/chathistory/get<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;}&#39;</span>
-
-curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6012/v1/chathistory/get<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;, &quot;id&quot;:&quot;{Conversation id to retrieve }&quot;}&#39;</span>
-</pre></div>
-</div>
-<p>Delete Conversation from database based on conversation id provided.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6012/v1/chathistory/delete<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;user&quot;: &quot;test&quot;, &quot;id&quot;:&quot;{Conversation id to Delete}&quot;}&#39;</span>
-</pre></div>
-</div>
-</li>
-</ol>
+<p>All the Productivity Suite containers will be stopped and then removed on completion of the “down” command.</p>
 </section>
 </section>
-<hr class="docutils" />
-<section id="launch-the-ui">
-<h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
-<p>To access the frontend, open the following URL in your browser: http://{host_ip}:5174. By default, the UI runs on port 80 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">productivity-suite-xeon-react-ui-server</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/productivity-suite-react-ui-server:latest</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5715:80&quot;</span><span class="w"> </span><span class="c1"># Map port 5715 on the host to port 80 in the container.</span>
-</pre></div>
-</div>
-<p>Here is an example of running Productivity Suite
-<img alt="project-screenshot" src="../../../../../../_images/chat_qna_init.png" />
-<img alt="project-screenshot" src="../../../../../../_images/Login_page.png" /></p>
+<section id="productivity-suite-docker-compose-files">
+<h2>Productivity Suite Docker Compose Files<a class="headerlink" href="#productivity-suite-docker-compose-files" title="Link to this heading">¶</a></h2>
+<p>The compose.yaml is default compose file using tgi as serving framework</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>chathistory-mongo-server</p></td>
+<td><p>opea/chathistory-mongo:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-xeon-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>codegen-xeon-backend-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-server</p></td>
+<td><p>opea/dataprep:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>docsum-xeon-backend-server</p></td>
+<td><p>opea/docsum:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>docsum-xeon-llm-server</p></td>
+<td><p>opea/llm-docsum:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>keycloak-server</p></td>
+<td><p>quay.io/keycloak/keycloak:25.0.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>llm-textgen-server-codegen</p></td>
+<td><p>opea/llm-textgen:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>mongodb</p></td>
+<td><p>mongo:7.0.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>productivity-suite-xeon-react-ui-server</p></td>
+<td><p>opea/productivity-suite-react-ui-server:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>promptregistry-mongo-server</p></td>
+<td><p>opea/promptregistry-mongo:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+</tr>
+<tr class="row-even"><td><p>retriever-redis-server</p></td>
+<td><p>opea/retriever:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>tei-embedding-server</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-server</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</p></td>
+</tr>
+<tr class="row-odd"><td><p>tgi_service_codegen</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+</tr>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+</tr>
+<tr class="row-odd"><td><p>whisper-server</p></td>
+<td><p>opea/whisper:latest</p></td>
+</tr>
+</tbody>
+</table>
 </section>
-<hr class="docutils" />
-<section id="key-features">
-<h2>🛠️ Key Features<a class="headerlink" href="#key-features" title="Link to this heading">¶</a></h2>
-<p>Here’re some of the project’s features:</p>
-<section id="chatqna">
-<h3>💬ChatQnA<a class="headerlink" href="#chatqna" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Start a Text Chat</strong>：Initiate a text chat with the ability to input written conversations, where the dialogue content can also be customized based on uploaded files.</p></li>
-<li><p><strong>Context Awareness</strong>: The AI assistant maintains the context of the conversation, understanding references to previous statements or questions. This allows for more natural and coherent exchanges.</p></li>
-</ul>
-</section>
-<section id="data-source">
-<h3>🎛️ Data Source<a class="headerlink" href="#data-source" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>File Upload or Remote Link</strong>: The choice between uploading locally or copying a remote link. Chat according to uploaded knowledge base.</p></li>
-<li><p><strong>File Management</strong>:Uploaded File would get listed and user would be able add or remove file/links</p></li>
-</ul>
-<section id="screenshots">
-<h4>Screenshots<a class="headerlink" href="#screenshots" title="Link to this heading">¶</a></h4>
-<p><img alt="project-screenshot" src="../../../../../../_images/data_source.png" /></p>
-<ul class="simple">
-<li><p><strong>Clear Chat</strong>: Clear the record of the current dialog box without retaining the contents of the dialog box.</p></li>
-<li><p><strong>Chat history</strong>: Historical chat records can still be retained after refreshing, making it easier for users to view the context.</p></li>
-<li><p><strong>Conversational Chat</strong>: The application maintains a history of the conversation, allowing users to review previous messages and the AI to refer back to earlier points in the dialogue when necessary.</p></li>
-</ul>
-</section>
-<section id="id1">
-<h4>Screenshots<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
-<p><img alt="project-screenshot" src="../../../../../../_images/chat_qna_init.png" />
-<img alt="project-screenshot" src="../../../../../../_images/chatqna_with_conversation.png" /></p>
-</section>
-</section>
-<section id="codegen">
-<h3>💻 Codegen<a class="headerlink" href="#codegen" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Generate code</strong>: generate the corresponding code based on the current user’s input.</p></li>
-</ul>
-<section id="id2">
-<h4>Screenshots<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
-<p><img alt="project-screenshot" src="../../../../../../_images/codegen.png" /></p>
-</section>
-</section>
-<section id="document-summarization">
-<h3>📚 Document Summarization<a class="headerlink" href="#document-summarization" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Summarizing Uploaded Files</strong>: Upload files from their local device, then click ‘Generate Summary’ to summarize the content of the uploaded file. The summary will be displayed on the ‘Summary’ box.</p></li>
-<li><p><strong>Summarizing Text via Pasting</strong>: Paste the text to be summarized into the text box, then click ‘Generate Summary’ to produce a condensed summary of the content, which will be displayed in the ‘Summary’ box on the right.</p></li>
-<li><p><strong>Scroll to Bottom</strong>: The summarized content will automatically scroll to the bottom.</p></li>
-</ul>
-<section id="id3">
-<h4>Screenshots<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
-<p><img alt="project-screenshot" src="../../../../../../_images/doc_summary.png" /></p>
-</section>
-</section>
+<section id="productivity-suite-service-configuration">
+<h2>Productivity Suite Service Configuration<a class="headerlink" href="#productivity-suite-service-configuration" title="Link to this heading">¶</a></h2>
+<p>The table provides a comprehensive overview of the Productivity Suite service utilized across various deployments as illustrated in the example Docker Compose files. Each row in the table represents a distinct service, detailing its possible images used to enable it and a concise description of its function within the deployment architecture.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Possible Image Names</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>chathistory-mongo-server</p></td>
+<td><p>opea/chathistory-mongo:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles chat history storage and retrieval using MongoDB.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chatqna-xeon-backend-server</p></td>
+<td><p>opea/chatqna:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles question answering and chat interactions.</p></td>
+</tr>
+<tr class="row-even"><td><p>codegen-xeon-backend-server</p></td>
+<td><p>opea/codegen:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles code generation tasks.</p></td>
+</tr>
+<tr class="row-odd"><td><p>dataprep-redis-server</p></td>
+<td><p>opea/dataprep:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles data preparation and preprocessing tasks for downstream services.</p></td>
+</tr>
+<tr class="row-even"><td><p>docsum-xeon-backend-server</p></td>
+<td><p>opea/docsum:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles document summarization tasks.</p></td>
+</tr>
+<tr class="row-odd"><td><p>docsum-xeon-llm-server</p></td>
+<td><p>opea/llm-docsum:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles large language model (LLM) based document summarization.</p></td>
+</tr>
+<tr class="row-even"><td><p>keycloak-server</p></td>
+<td><p>quay.io/keycloak/keycloak:25.0.2</p></td>
+<td><p>No</p></td>
+<td><p>Handles authentication and authorization using Keycloak.</p></td>
+</tr>
+<tr class="row-odd"><td><p>llm-textgen-server-codegen</p></td>
+<td><p>opea/llm-textgen:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles large language model (LLM) text generation tasks, providing inference APIs for code and text completion.</p></td>
+</tr>
+<tr class="row-even"><td><p>mongodb</p></td>
+<td><p>mongo:7.0.11</p></td>
+<td><p>No</p></td>
+<td><p>Provides persistent storage for application data using MongoDB.</p></td>
+</tr>
+<tr class="row-odd"><td><p>productivity-suite-xeon-react-ui-server</p></td>
+<td><p>opea/productivity-suite-react-ui-server:latest</p></td>
+<td><p>No</p></td>
+<td><p>Hosts the web-based user interface for interacting with the Productivity Suite services.</p></td>
+</tr>
+<tr class="row-even"><td><p>promptregistry-mongo-server</p></td>
+<td><p>opea/promptregistry-mongo:latest</p></td>
+<td><p>No</p></td>
+<td><p>Manages storage and retrieval of prompt templates and related metadata.</p></td>
+</tr>
+<tr class="row-odd"><td><p>redis-vector-db</p></td>
+<td><p>redis/redis-stack:7.2.0-v9</p></td>
+<td><p>No</p></td>
+<td><p>Offers in-memory data storage and vector database capabilities for fast retrieval and caching.</p></td>
+</tr>
+<tr class="row-even"><td><p>retriever-redis-server</p></td>
+<td><p>opea/retriever:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles retrieval-augmented generation tasks, enabling efficient document and context retrieval.</p></td>
+</tr>
+<tr class="row-odd"><td><p>tei-embedding-server</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</p></td>
+<td><p>No</p></td>
+<td><p>Provides text embedding and sequence classification services for downstream NLP tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p>tei-reranking-server</p></td>
+<td><p>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6</p></td>
+<td><p>No</p></td>
+<td><p>Performs reranking of retrieved documents or results using embedding-based similarity.</p></td>
+</tr>
+<tr class="row-odd"><td><p>tgi_service_codegen</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+<td><p>No</p></td>
+<td><p>Serves code generation models for inference, optimized for Intel Xeon CPUs.</p></td>
+</tr>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+<td><p>No</p></td>
+<td><p>Specific to the TGI deployment, focuses on text generation inference using Xeon hardware.</p></td>
+</tr>
+<tr class="row-odd"><td><p>whisper-server</p></td>
+<td><p>opea/whisper:latest</p></td>
+<td><p>No</p></td>
+<td><p>Provides speech-to-text transcription services using Whisper models.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
