@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Mega Service of AvatarChatbot on Xeon &mdash; OPEA™ 1.3 documentation</title>
+  <title>Example AvatarChatbot Deployment on Intel® Xeon® Platform &mdash; OPEA™ 1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,7 +28,7 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Build Mega Service of AvatarChatbot on Gaudi" href="../../hpu/gaudi/README.html" />
+    <link rel="next" title="Example AvatarChatbot Deployment on Intel® Gaudi® Platform" href="../../hpu/gaudi/README.html" />
     <link rel="prev" title="Build Mega Service of AvatarChatbot on AMD GPU" href="../../../amd/gpu/rocm/README.html" /> 
 </head>
 
@@ -299,8 +299,8 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#avatarchatbot-application">AvatarChatbot Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">AvatarChatbot Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../amd/gpu/rocm/README.html">Build Mega Service of AvatarChatbot on AMD GPU</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Build Mega Service of AvatarChatbot on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Build Mega Service of AvatarChatbot on Gaudi</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Example AvatarChatbot Deployment on Intel® Xeon® Platform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../hpu/gaudi/README.html">Example AvatarChatbot Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tests/README.html">AvatarChatbot E2E test scripts</a></li>
 </ul>
 </li>
@@ -2719,7 +2719,7 @@
   
      <li><a href="../../../../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Build Mega Service of AvatarChatbot on Xeon</li>
+  <li>Example AvatarChatbot Deployment on Intel® Xeon® Platform</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../../../_sources/GenAIExamples/AvatarChatbot/docker_compose/intel/cpu/xeon/README.md.txt" rel="nofollow"> View page source</a>
@@ -2739,145 +2739,88 @@
   
            <div itemprop="articleBody">
              
-  <section id="build-mega-service-of-avatarchatbot-on-xeon">
-<h1>Build Mega Service of AvatarChatbot on Xeon<a class="headerlink" href="#build-mega-service-of-avatarchatbot-on-xeon" title="Link to this heading">¶</a></h1>
-<p>This document outlines the deployment process for a AvatarChatbot application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server.</p>
-<section id="build-docker-images">
-<h2>🚀 Build Docker images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
-<section id="source-code-install-genaicomps">
-<h3>1. Source Code install GenAIComps<a class="headerlink" href="#source-code-install-genaicomps" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
-<span class="nb">cd</span><span class="w"> </span>GenAIComps
-</pre></div>
-</div>
-</section>
-<section id="build-asr-image">
-<h3>2. Build ASR Image<a class="headerlink" href="#build-asr-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/whisper:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/whisper/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-llm-image">
-<h3>3. Build LLM Image<a class="headerlink" href="#build-llm-image" title="Link to this heading">¶</a></h3>
-<p>Intel Xeon optimized image hosted in huggingface repo will be used for TGI service: ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu (https://github.com/huggingface/text-generation-inference)</p>
-</section>
-<section id="build-tts-image">
-<h3>4. Build TTS Image<a class="headerlink" href="#build-tts-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/speecht5:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/speecht5/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-animation-image">
-<h3>5. Build Animation Image<a class="headerlink" href="#build-animation-image" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/wav2lip:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/third_parties/wav2lip/src/Dockerfile<span class="w"> </span>.
-
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/animation:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/animation/src/Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="build-megaservice-docker-image">
-<h3>6. Build MegaService Docker Image<a class="headerlink" href="#build-megaservice-docker-image" title="Link to this heading">¶</a></h3>
-<p>To construct the Mega Service, we utilize the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline within the <code class="docutils literal notranslate"><span class="pre">audioqna.py</span></code> Python script. Build the MegaService Docker image using the command below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/AvatarChatbot/
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>opea/avatarchatbot:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-</pre></div>
-</div>
-<p>Then run the command <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>, you will have following images ready:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/whisper:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/speecht5:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/wav2lip:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/animation:latest</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">opea/avatarchatbot:latest</span></code></p></li>
-</ol>
-</section>
-</section>
-<section id="set-the-environment-variables">
-<h2>🚀 Set the environment variables<a class="headerlink" href="#set-the-environment-variables" title="Link to this heading">¶</a></h2>
-<p>Before starting the services with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code>, you have to recheck the following environment variables.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span>&lt;your_hf_token&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Intel/neural-chat-7b-v3-3
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">WAV2LIP_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$host_ip</span>:7860
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WHISPER_SERVER_PORT</span><span class="o">=</span><span class="m">7066</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SPEECHT5_SERVER_PORT</span><span class="o">=</span><span class="m">7055</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_SERVER_PORT</span><span class="o">=</span><span class="m">3006</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ANIMATION_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ANIMATION_SERVICE_PORT</span><span class="o">=</span><span class="m">3008</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_PORT</span><span class="o">=</span><span class="m">8888</span>
-</pre></div>
-</div>
+  <section id="example-avatarchatbot-deployment-on-intel-xeon-platform">
+<h1>Example AvatarChatbot Deployment on Intel® Xeon® Platform<a class="headerlink" href="#example-avatarchatbot-deployment-on-intel-xeon-platform" title="Link to this heading">¶</a></h1>
+<p>This document outlines the deployment process for a AvatarChatbot application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. This example includes the following sections:</p>
 <ul class="simple">
-<li><p>Xeon CPU</p></li>
+<li><p><a class="reference internal" href="#avatarchatbot-quick-start-deployment"><span class="xref myst">AvatarChatbot Quick Start Deployment</span></a>: Demonstrates how to quickly deploy a AvatarChatbot service/pipeline on Intel Xeon server.</p></li>
+<li><p><a class="reference internal" href="#avatarchatbot-docker-compose-files"><span class="xref myst">AvatarChatbot Docker Compose Files</span></a>: Describes some example deployments and their docker compose files.</p></li>
+<li><p><a class="reference internal" href="#avatarchatbot-service-configuration"><span class="xref myst">AvatarChatbot Service Configuration</span></a>: Describes the service and possible configuration changes.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DEVICE</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WAV2LIP_PORT</span><span class="o">=</span><span class="m">7860</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_MODE</span><span class="o">=</span><span class="s1">&#39;wav2lip_only&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHECKPOINT_PATH</span><span class="o">=</span><span class="s1">&#39;/usr/local/lib/python3.11/site-packages/Wav2Lip/checkpoints/wav2lip_gan.pth&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FACE</span><span class="o">=</span><span class="s2">&quot;assets/img/avatar1.jpg&quot;</span>
-<span class="c1"># export AUDIO=&#39;assets/audio/eg3_ref.wav&#39; # audio file path is optional, will use base64str in the post request as input if is &#39;None&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">AUDIO</span><span class="o">=</span><span class="s1">&#39;None&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FACESIZE</span><span class="o">=</span><span class="m">96</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OUTFILE</span><span class="o">=</span><span class="s2">&quot;/outputs/result.mp4&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GFPGAN_MODEL_VERSION</span><span class="o">=</span><span class="m">1</span>.4<span class="w"> </span><span class="c1"># latest version, can roll back to v1.3 if needed</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">UPSCALE_FACTOR</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FPS</span><span class="o">=</span><span class="m">10</span>
+<section id="avatarchatbot-quick-start-deployment">
+<h2>AvatarChatbot Quick Start Deployment<a class="headerlink" href="#avatarchatbot-quick-start-deployment" title="Link to this heading">¶</a></h2>
+<p>This section describes how to quickly deploy and test the AvatarChatbot service manually on Intel Xeon server. The basic steps are:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-service-using-docker-compose"><span class="xref myst">Deploy the Service Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
+<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
+</ol>
+<section id="access-the-code">
+<h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
+<p>Clone the GenAIExamples repository and access the AvatarChatbot Intel Xeon server Docker Compose files and supporting scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">AvatarChatbot</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">xeon</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Checkout a released version, such as v1.3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">v1</span><span class="mf">.3</span>
 </pre></div>
 </div>
 </section>
-<section id="start-the-megaservice">
-<h2>🚀 Start the MegaService<a class="headerlink" href="#start-the-megaservice" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AvatarChatbot/docker_compose/intel/cpu/xeon/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<section id="generate-a-huggingface-access-token">
+<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
+<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+</section>
+<section id="configure-the-deployment-environment">
+<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
+<p>To set up environment variables for deploying AvatarChatbot service, source the <em>set_env.sh</em> script in this directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The set_env.sh script will prompt for required and optional environment variables used to configure the AvatarChatbot service. If a value is not entered, the script will use a default value for the same. It will also generate a env file defining the desired configuration. Consult the section on <a class="reference internal" href="#avatarchatbot-service-configuration"><span class="xref myst">AvatarChatbot Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
+</section>
+<section id="deploy-the-service-using-docker-compose">
+<h3>Deploy the Service Using Docker Compose<a class="headerlink" href="#deploy-the-service-using-docker-compose" title="Link to this heading">¶</a></h3>
+<p>To deploy the AvatarChatbot service, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>The AvatarChatbot docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the Intel Xeon server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 7/7
+ ✔ Network xeon_default                         Created                                                                                                         0.1s
+ ✔ Container whisper-service                    Started                                                                                                         4.4s
+ ✔ Container speecht5-service                   Started                                                                                                         4.7s
+ ✔ Container wav2lip-service                    Started                                                                                                         4.7s
+ ✔ Container animation-server                   Started                                                                                                         4.1s
+ ✔ Container tgi-service                        Started                                                                                                         4.7s
+ ✔ Container avatarchatbot-xeon-backend-server  Started                                                                                                         1.0s
 </pre></div>
 </div>
 </section>
-<section id="test-microservices">
-<h2>🚀 Test MicroServices<a class="headerlink" href="#test-microservices" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># whisper service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7066/v1/asr<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;audio&quot;: &quot;UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># tgi service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3006/generate<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># speecht5 service</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7055/v1/tts<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Who are you?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># wav2lip service</span>
-<span class="nb">cd</span><span class="w"> </span>../../../..
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7860/v1/wav2lip<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span>@assets/audio/sample_minecraft.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-
-<span class="c1"># animation microservice</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3008/v1/animation<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span>@assets/audio/sample_question.json<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<section id="check-the-deployment-status">
+<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
+<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<p>For the default deployment, the following 5 containers should be running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                                                           <span class="n">COMMAND</span>                  <span class="n">CREATED</span>          <span class="n">STATUS</span>                                  <span class="n">PORTS</span>                                         <span class="n">NAMES</span>
+<span class="mi">706</span><span class="n">f3ae2c4eb</span>   <span class="n">opea</span><span class="o">/</span><span class="n">avatarchatbot</span><span class="p">:</span><span class="n">latest</span>                                       <span class="s2">&quot;python avatarchatbo…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">15</span> <span class="n">seconds</span>                                                 <span class="n">avatarchatbot</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">5</span><span class="n">dfa217b5376</span>   <span class="n">opea</span><span class="o">/</span><span class="n">animation</span><span class="p">:</span><span class="n">latest</span>                                           <span class="s2">&quot;python3 opea_animat…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">15</span> <span class="n">seconds</span>                           <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">3008</span><span class="o">-&gt;</span><span class="mi">9066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">3008</span><span class="o">-&gt;</span><span class="mi">9066</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">animation</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">60</span><span class="n">b69f113f24</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>   <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">15</span> <span class="n">seconds</span>                                                             <span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
+<span class="mi">518</span><span class="n">b409b59c2</span>   <span class="n">opea</span><span class="o">/</span><span class="n">speecht5</span><span class="p">:</span><span class="n">latest</span>                                            <span class="s2">&quot;python speecht5_ser…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">16</span> <span class="n">seconds</span>                           <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7055</span><span class="o">-&gt;</span><span class="mi">7055</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7055</span><span class="o">-&gt;</span><span class="mi">7055</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">speecht5</span><span class="o">-</span><span class="n">service</span>
+<span class="mi">6454</span><span class="n">bf20eb5f</span>   <span class="n">opea</span><span class="o">/</span><span class="n">wav2lip</span><span class="p">:</span><span class="n">latest</span>                                             <span class="s2">&quot;/usr/local/bin/entr…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">2</span> <span class="n">seconds</span>                            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7860</span><span class="o">-&gt;</span><span class="mi">7860</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7860</span><span class="o">-&gt;</span><span class="mi">7860</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">wav2lip</span><span class="o">-</span><span class="n">service</span>
+<span class="n">eb751a90f76a</span>   <span class="n">opea</span><span class="o">/</span><span class="n">whisper</span><span class="p">:</span><span class="n">latest</span>                                             <span class="s2">&quot;python whisper_serv…&quot;</span>   <span class="mi">16</span> <span class="n">seconds</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">15</span> <span class="n">seconds</span>                           <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">7066</span><span class="o">-&gt;</span><span class="mi">7066</span><span class="o">/</span><span class="n">tcp</span>     <span class="n">whisper</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
 </section>
-<section id="test-megaservice">
-<h2>🚀 Test MegaService<a class="headerlink" href="#test-megaservice" title="Link to this heading">¶</a></h2>
+<section id="test-the-pipeline">
+<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
+<p>Once the AvatarChatbot service are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:3009/v1/avatarchatbot<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span>@assets/audio/sample_whoareyou.json<span class="w"> </span><span class="se">\</span>
@@ -2889,28 +2832,102 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </pre></div>
 </div>
 <p>The output file will be saved in the current working directory, as <code class="docutils literal notranslate"><span class="pre">${PWD}</span></code> is mapped to <code class="docutils literal notranslate"><span class="pre">/outputs</span></code> inside the wav2lip-service Docker container.</p>
+<p><strong>Note</strong> The value of <em>host_ip</em> was set using the <em>set_env.sh</em> script and can be found in the <em>.env</em> file.</p>
 </section>
-<section id="gradio-ui">
-<h2>Gradio UI<a class="headerlink" href="#gradio-ui" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKPATH</span>/GenAIExamples/AvatarChatbot
-python3<span class="w"> </span>ui/gradio/app_gradio_demo_avatarchatbot.py
+<section id="cleanup-the-deployment">
+<h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
-<p>The UI can be viewed at http://${host_ip}:7861<br />
-<img src="../../../../assets/img/UI.png" alt="UI Example" width="60%"><br />
-In the current version v1.3, you need to set the avatar figure image/video and the DL model choice in the environment variables before starting AvatarChatbot backend service and running the UI. Please just customize the audio question in the UI.
-** We will enable change of avatar figure between runs in v2.0</p>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AvatarChatbot/tests
-<span class="nb">export</span><span class="w"> </span><span class="nv">IMAGE_REPO</span><span class="o">=</span><span class="s2">&quot;opea&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">IMAGE_TAG</span><span class="o">=</span><span class="s2">&quot;latest&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span>&lt;your_hf_token&gt;
-
-test_avatarchatbot_on_xeon.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[+] Running 7/7
+ ✔ Container wav2lip-service                    Removed                                                                                                        10.9s
+ ✔ Container speecht5-service                   Removed                                                                                                         3.4s
+ ✔ Container whisper-service                    Removed                                                                                                         2.9s
+ ✔ Container avatarchatbot-xeon-backend-server  Removed                                                                                                        10.7s
+ ✔ Container tgi-service                        Removed                                                                                                         3.5s
+ ✔ Container animation-server                   Removed                                                                                                        11.1s
+ ✔ Network xeon_default                         Removed                                                                                                         2.1s
 </pre></div>
 </div>
+<p>All the AvatarChatbot containers will be stopped and then removed on completion of the “down” command.</p>
+</section>
+</section>
+<section id="avatarchatbot-docker-compose-files">
+<h2>AvatarChatbot Docker Compose Files<a class="headerlink" href="#avatarchatbot-docker-compose-files" title="Link to this heading">¶</a></h2>
+<p>The compose.yaml is default compose file using tgi as serving framework</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Image Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+</tr>
+<tr class="row-odd"><td><p>whisper-service</p></td>
+<td><p>opea/whisper:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>speecht5-service</p></td>
+<td><p>opea/speecht5:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>wav2lip-service</p></td>
+<td><p>opea/wav2lip:latest</p></td>
+</tr>
+<tr class="row-even"><td><p>animation</p></td>
+<td><p>opea/animation:latest</p></td>
+</tr>
+<tr class="row-odd"><td><p>avatarchatbot-xeon-backend-server</p></td>
+<td><p>opea/avatarchatbot:latest</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="avatarchatbot-service-configuration">
+<h2>AvatarChatbot Service Configuration<a class="headerlink" href="#avatarchatbot-service-configuration" title="Link to this heading">¶</a></h2>
+<p>The table provides a comprehensive overview of the AvatarChatbot service utilized across various deployments as illustrated in the example Docker Compose files. Each row in the table represents a distinct service, detailing its possible images used to enable it and a concise description of its function within the deployment architecture.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service Name</p></th>
+<th class="head"><p>Possible Image Names</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tgi-service</p></td>
+<td><p>ghcr.io/huggingface/text-generation-inference:2.4.0-intel-cpu</p></td>
+<td><p>No</p></td>
+<td><p>Specific to the TGI deployment, focuses on text generation inference using Xeon hardware.</p></td>
+</tr>
+<tr class="row-odd"><td><p>whisper-service</p></td>
+<td><p>opea/whisper:latest</p></td>
+<td><p>No</p></td>
+<td><p>Provides automatic speech recognition (ASR), converting spoken audio input into text.</p></td>
+</tr>
+<tr class="row-even"><td><p>speecht5-service</p></td>
+<td><p>opea/speecht5:latest</p></td>
+<td><p>No</p></td>
+<td><p>Performs text-to-speech (TTS) synthesis, generating natural-sounding speech from text.</p></td>
+</tr>
+<tr class="row-odd"><td><p>wav2lip-service</p></td>
+<td><p>opea/wav2lip:latest</p></td>
+<td><p>No</p></td>
+<td><p>Generates realistic lip-sync animations by aligning speech audio with a video of a face.</p></td>
+</tr>
+<tr class="row-even"><td><p>animation</p></td>
+<td><p>opea/animation:latest</p></td>
+<td><p>No</p></td>
+<td><p>Handles avatar animation, rendering facial expressions and movements for the chatbot avatar.</p></td>
+</tr>
+<tr class="row-odd"><td><p>avatarchatbot-xeon-backend-server</p></td>
+<td><p>opea/avatarchatbot:latest</p></td>
+<td><p>No</p></td>
+<td><p>Orchestrates the overall AvatarChatbot pipeline, managing requests and integrating all services.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
@@ -2920,7 +2937,7 @@ test_avatarchatbot_on_xeon.sh
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../../../amd/gpu/rocm/README.html" class="btn btn-neutral float-left" title="Build Mega Service of AvatarChatbot on AMD GPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../hpu/gaudi/README.html" class="btn btn-neutral float-right" title="Build Mega Service of AvatarChatbot on Gaudi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../hpu/gaudi/README.html" class="btn btn-neutral float-right" title="Example AvatarChatbot Deployment on Intel® Gaudi® Platform" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

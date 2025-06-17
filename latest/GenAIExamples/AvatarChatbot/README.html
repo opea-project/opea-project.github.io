@@ -301,8 +301,8 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#avatarchatbot-application">AvatarChatbot Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">AvatarChatbot Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build Mega Service of AvatarChatbot on AMD GPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of AvatarChatbot on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build Mega Service of AvatarChatbot on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Example AvatarChatbot Deployment on Intel® Xeon® Platform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Example AvatarChatbot Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">AvatarChatbot E2E test scripts</a></li>
 </ul>
 </li>
@@ -2743,9 +2743,16 @@
              
   <section id="avatarchatbot-application">
 <h1>AvatarChatbot Application<a class="headerlink" href="#avatarchatbot-application" title="Link to this heading">¶</a></h1>
-<p>The AvatarChatbot service can be effortlessly deployed on either Intel Gaudi2 or Intel XEON Scalable Processors.</p>
-<section id="ai-avatar-workflow">
-<h2>AI Avatar Workflow<a class="headerlink" href="#ai-avatar-workflow" title="Link to this heading">¶</a></h2>
+<p>The AvatarChatbot example demonstrates the implementation of AI avatar chatbot using OPEA component-level microservices.</p>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+</ol>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
 <p>The AI Avatar example is implemented using both megaservices and the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different megaservices and microservices for this example.</p>
 <div class="mermaid">
             flowchart LR
@@ -2799,40 +2806,33 @@
 
     USER2 --&gt;|1| UI
     UI &lt;-.-&gt;|6'| WAV2LIP
-        </div></section>
-<section id="deploy-avatarchatbot-service">
-<h2>Deploy AvatarChatbot Service<a class="headerlink" href="#deploy-avatarchatbot-service" title="Link to this heading">¶</a></h2>
-<p>The AvatarChatbot service can be deployed on either Intel Gaudi2 AI Accelerator or Intel Xeon Scalable Processor.</p>
-<section id="deploy-avatarchatbot-on-gaudi">
-<h3>Deploy AvatarChatbot on Gaudi<a class="headerlink" href="#deploy-avatarchatbot-on-gaudi" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> for instructions on deploying AvatarChatbot on Gaudi, and on setting up an UI for the application.</p>
+        </div><p>This AvatarChatbot use case performs AI avatar chatbot across multiple platforms. Currently, we provide the example for <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>, and we invite contributions from other hardware vendors to expand OPEA ecosystem.</p>
 </section>
-<section id="deploy-avatarchatbot-on-xeon">
-<h3>Deploy AvatarChatbot on Xeon<a class="headerlink" href="#deploy-avatarchatbot-on-xeon" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for instructions on deploying AvatarChatbot on Xeon.</p>
-</section>
-</section>
-<section id="supported-models">
-<h2>Supported Models<a class="headerlink" href="#supported-models" title="Link to this heading">¶</a></h2>
-<section id="asr">
-<h3>ASR<a class="headerlink" href="#asr" title="Link to this heading">¶</a></h3>
-<p>The default model is <a class="reference external" href="https://huggingface.co/openai/whisper-small">openai/whisper-small</a>. It also supports all models in the Whisper family, such as <code class="docutils literal notranslate"><span class="pre">openai/whisper-large-v3</span></code>, <code class="docutils literal notranslate"><span class="pre">openai/whisper-medium</span></code>, <code class="docutils literal notranslate"><span class="pre">openai/whisper-base</span></code>, <code class="docutils literal notranslate"><span class="pre">openai/whisper-tiny</span></code>, etc.</p>
-<p>To replace the model, please edit the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> and add the <code class="docutils literal notranslate"><span class="pre">command</span></code> line to pass the name of the model you want to use:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">whisper-service</span><span class="p">:</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--model_name_or_path openai/whisper-tiny</span>
-</pre></div>
-</div>
-</section>
-<section id="tts">
-<h3>TTS<a class="headerlink" href="#tts" title="Link to this heading">¶</a></h3>
-<p>The default model is <a class="reference external" href="https://huggingface.co/microsoft/speecht5_tts">microsoft/SpeechT5</a>. We currently do not support replacing the model. More models under the commercial license will be added in the future.</p>
-</section>
-<section id="animation">
-<h3>Animation<a class="headerlink" href="#animation" title="Link to this heading">¶</a></h3>
-<p>The default model is <a class="reference external" href="https://github.com/Rudrabha/Wav2Lip">Rudrabha/Wav2Lip</a> and <a class="reference external" href="https://github.com/TencentARC/GFPGAN">TencentARC/GFPGAN</a>. We currently do not support replacing the model. More models under the commercial license such as <a class="reference external" href="https://github.com/OpenTalker/SadTalker">OpenTalker/SadTalker</a> will be added in the future.</p>
-</section>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists the available deployment options and their implementation details for different hardware platforms.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Deployment Method</p></th>
+<th class="head"><p>Link</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Intel Xeon</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Intel Gaudi2</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>AMD ROCm</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">Deployment on AMD Rocm</span></a></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 
