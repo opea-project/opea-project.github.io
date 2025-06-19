@@ -1773,7 +1773,9 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">OPEA nginx microservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#using-nginx-chart">Using nginx chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integration-with-opea-applications">Integration with OPEA Applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gateway-mode-central-router">Gateway Mode (Central Router)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deployment-modes">Deployment Modes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../ollama/README.html">ollama</a><ul>
@@ -2740,9 +2742,80 @@
   <section id="opea-nginx-microservice">
 <h1>OPEA nginx microservice<a class="headerlink" href="#opea-nginx-microservice" title="Link to this heading">¶</a></h1>
 <p>Helm chart for deploying OPEA nginx service.</p>
-<section id="using-nginx-chart">
-<h2>Using nginx chart<a class="headerlink" href="#using-nginx-chart" title="Link to this heading">¶</a></h2>
-<p>E2E charts for OPEA applications should provide ConfigMap of name <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">.Release.Name</span> <span class="pre">}}-nginx-config</span></code> with the required environment variables to configure <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/nginx/nginx.conf.template">OPEA nginx microservice</a>.</p>
+<section id="integration-with-opea-applications">
+<h2>Integration with OPEA Applications<a class="headerlink" href="#integration-with-opea-applications" title="Link to this heading">¶</a></h2>
+<p>When used as a simple proxy within OPEA application charts (ChatQnA, CodeGen, etc.), parent charts should provide a ConfigMap named <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">.Release.Name</span> <span class="pre">}}-nginx-config</span></code> containing environment variables for the <a class="reference external" href="https://github.com/opea-project/GenAIComps/blob/main/comps/third_parties/nginx/src/nginx.conf.template">OPEA nginx microservice</a>.</p>
+</section>
+<section id="gateway-mode-central-router">
+<h2>Gateway Mode (Central Router)<a class="headerlink" href="#gateway-mode-central-router" title="Link to this heading">¶</a></h2>
+<p>The nginx chart can be configured to act as a central gateway/router for OPEA services. This mode provides:</p>
+<ul class="simple">
+<li><p>Service routing to multiple OPEA microservices</p></li>
+<li><p>Custom nginx configuration template support</p></li>
+<li><p>Health check endpoints</p></li>
+<li><p>Optional ingress and monitoring support</p></li>
+</ul>
+<section id="how-to-use-gateway-mode">
+<h3>How to Use Gateway Mode<a class="headerlink" href="#how-to-use-gateway-mode" title="Link to this heading">¶</a></h3>
+<p>Gateway mode is designed to be used within E2E (end-to-end) charts. The pattern is:</p>
+<ol class="arabic simple">
+<li><p><strong>Create an E2E chart</strong> that includes nginx as a dependency</p></li>
+<li><p><strong>Define environment variables</strong> in your E2E chart’s <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">.Release.Name</span> <span class="pre">}}-nginx-config</span></code> ConfigMap</p></li>
+<li><p><strong>Use custom nginx template</strong> with environment variable substitution</p></li>
+</ol>
+</section>
+<section id="example-implementation">
+<h3>Example Implementation<a class="headerlink" href="#example-implementation" title="Link to this heading">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your E2E chart&#39;s templates/nginx-config.yaml</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">.Release.Name</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-nginx-config</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">FRONTEND_SERVICE_IP</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ui.ui.svc.cluster.local&quot;</span>
+<span class="w">  </span><span class="nt">FRONTEND_SERVICE_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5173&quot;</span>
+<span class="w">  </span><span class="nt">CHATQNA_SERVICE_IP</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;chatqna.chatqna.svc.cluster.local&quot;</span>
+<span class="w">  </span><span class="nt">CHATQNA_SERVICE_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8888&quot;</span>
+<span class="w">  </span><span class="nt">EMBEDDING_SERVICE_IP</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;embedding-usvc.default.svc.cluster.local&quot;</span>
+<span class="w">  </span><span class="nt">EMBEDDING_SERVICE_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6000&quot;</span>
+<span class="w">  </span><span class="nt">DATAPREP_SERVICE_IP</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data-prep.default.svc.cluster.local&quot;</span>
+<span class="w">  </span><span class="nt">DATAPREP_SERVICE_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6007&quot;</span>
+<span class="w">  </span><span class="c1"># ... other service endpoints</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your E2E chart&#39;s values.yaml</span>
+<span class="nt">nginx</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nginxConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">server {</span>
+<span class="w">        </span><span class="no">location / {</span>
+<span class="w">          </span><span class="no">proxy_pass http://${FRONTEND_SERVICE_IP}:${FRONTEND_SERVICE_PORT};</span>
+<span class="w">        </span><span class="no">}</span>
+<span class="w">        </span><span class="no">location /v1/chatqna {</span>
+<span class="w">          </span><span class="no">proxy_pass http://${CHATQNA_SERVICE_IP}:${CHATQNA_SERVICE_PORT}/v1/chatqna;</span>
+<span class="w">        </span><span class="no">}</span>
+<span class="w">        </span><span class="no">location /v1/embeddings {</span>
+<span class="w">          </span><span class="no">proxy_pass http://${EMBEDDING_SERVICE_IP}:${EMBEDDING_SERVICE_PORT}/v1/embeddings;</span>
+<span class="w">        </span><span class="no">}</span>
+<span class="w">        </span><span class="no">location /v1/dataprep {</span>
+<span class="w">          </span><span class="no">proxy_pass http://${DATAPREP_SERVICE_IP}:${DATAPREP_SERVICE_PORT}/v1/dataprep;</span>
+<span class="w">        </span><span class="no">}</span>
+<span class="w">        </span><span class="no"># ... other routes</span>
+<span class="w">      </span><span class="no">}</span>
+</pre></div>
+</div>
+<p>See <code class="docutils literal notranslate"><span class="pre">gateway-values.yaml</span></code> for a complete example template.</p>
+</section>
+</section>
+<section id="deployment-modes">
+<h2>Deployment Modes<a class="headerlink" href="#deployment-modes" title="Link to this heading">¶</a></h2>
+<p>This chart supports two deployment modes:</p>
+<ul class="simple">
+<li><p><strong>Simple Proxy Mode</strong> (default): Acts as a reverse proxy within OPEA application charts</p></li>
+<li><p><strong>Gateway Mode</strong>: Central router providing unified access to multiple OPEA services (used within E2E charts)</p></li>
+</ul>
+<p>All existing deployments continue to work unchanged. Gateway mode requires creating an E2E chart that follows the pattern shown above.</p>
 </section>
 </section>
 
