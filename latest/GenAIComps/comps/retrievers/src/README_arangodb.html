@@ -684,6 +684,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../dataprep/README.html#dataprep-microservice-with-neo4j">Dataprep Microservice with neo4j</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../dataprep/README.html#dataprep-microservice-for-financial-domain-data">Dataprep Microservice for financial domain data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../dataprep/README.html#dataprep-microservice-with-mariadb-vector">Dataprep Microservice with MariaDB Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../dataprep/README.html#dataprep-microservice-with-arangodb">Dataprep Microservice with ArangoDB</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../dataprep/README.html#running-in-the-air-gapped-environment">Running in the air gapped environment</a></li>
 </ul>
 </li>
@@ -1150,6 +1151,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../README.html#retriever-microservice-with-neo4j">Retriever Microservice with neo4j</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#retriever-microservice-with-pathway">Retriever Microservice with Pathway</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../README.html#retriever-microservice-with-mariadb-vector">Retriever Microservice with MariaDB Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../README.html#retriever-microservice-with-arangodb">Retriever Microservice with ArangoDB</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../deployment/kubernetes/README.html">Deploy retriever microservice on Kubernetes cluster</a><ul>
@@ -2847,7 +2849,7 @@ curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> <
 <li><p><code class="docutils literal notranslate"><span class="pre">ARANGO_USE_APPROX_SEARCH</span></code>: If set to True, the microservice will use the approximate nearest neighbor search for as part of the retrieval step. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>, which means the microservice will use the exact search.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ARANGO_NUM_CENTROIDS</span></code>: The number of centroids to use for the approximate nearest neighbor search. Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ARANGO_SEARCH_START</span></code>: The starting point for the search. Defaults to <code class="docutils literal notranslate"><span class="pre">node</span></code>. Other option could be <code class="docutils literal notranslate"><span class="pre">&quot;edge&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;chunk&quot;</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ARANGO_SEARCH_TYPE</span></code>: The type of search to use for the ArangoDB service. Defaults to <code class="docutils literal notranslate"><span class="pre">vector</span></code>. Other option could be <code class="docutils literal notranslate"><span class="pre">&quot;hybrid&quot;</span></code>, which combines Vector Search + Full Text Search via Reciprocal Rank Fusion (RRF).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ARANGO_SEARCH_MODE</span></code>: The method of search to use for ArangoDB Vector Search. Defaults to <code class="docutils literal notranslate"><span class="pre">vector</span></code>. Other option could be <code class="docutils literal notranslate"><span class="pre">&quot;hybrid&quot;</span></code>, which combines Vector Search + Full Text Search via Reciprocal Rank Fusion (RRF).</p></li>
 </ul>
 <p>ArangoDB Traversal configuration</p>
 <ul class="simple">
@@ -2895,7 +2897,7 @@ curl<span class="w"> </span>http://localhost:7000/v1/retrieval<span class="w"> <
 <span class="k">class</span><span class="w"> </span><span class="nc">RetrievalRequestArangoDB</span><span class="p">(</span><span class="n">RetrievalRequest</span><span class="p">):</span>
     <span class="n">graph_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">search_start</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;node&quot;, &quot;edge&quot;, &quot;chunk&quot;</span>
-    <span class="n">search_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;vector&quot;, &quot;hybrid&quot;</span>
+    <span class="n">search_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &quot;vector&quot;, &quot;hybrid&quot;</span>
     <span class="n">num_centroids</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">distance_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#  # &quot;COSINE&quot;, &quot;EUCLIDEAN_DISTANCE&quot;</span>
     <span class="n">use_approx_search</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
