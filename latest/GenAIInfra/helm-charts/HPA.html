@@ -1678,6 +1678,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#gotchas">Gotchas</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enable-hpa">Enable HPA</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#verify">Verify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scaling-metric-considerations">Scaling metric considerations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="TDX.html">Deployment of the Helm Charts on Intel® Xeon® Processors with Intel® Trust Domain Extensions (Intel® TDX)</a><ul>
@@ -2762,6 +2763,13 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#verify"><span class="xref myst">Verify</span></a></p></li>
+<li><p><a class="reference internal" href="#scaling-metric-considerations"><span class="xref myst">Scaling metric considerations</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#autoscaling-principles"><span class="xref myst">Autoscaling principles</span></a></p></li>
+<li><p><a class="reference internal" href="#current-scaling-metrics"><span class="xref myst">Current scaling metrics</span></a></p></li>
+<li><p><a class="reference internal" href="#other-potential-metrics"><span class="xref myst">Other potential metrics</span></a></p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="introduction">
@@ -2807,8 +2815,10 @@ https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-
 <span class="w">  </span>--set<span class="w"> </span>prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues<span class="o">=</span><span class="nb">false</span>
 </pre></div>
 </div>
-<p>NOTE: the service name given above in <code class="docutils literal notranslate"><span class="pre">prometheus.url</span></code> must match the listed Prometheus service name,
-otherwise adapter cannot access it!</p>
+<blockquote>
+<div><p><strong>NOTE</strong>: the service name given above in <code class="docutils literal notranslate"><span class="pre">prometheus.url</span></code> must match the listed Prometheus
+service name, otherwise adapter cannot access it!</p>
+</div></blockquote>
 <p>(Alternative for setting the above <code class="docutils literal notranslate"><span class="pre">prometheusSpec</span></code> variable to <code class="docutils literal notranslate"><span class="pre">false</span></code> is making sure that
 <code class="docutils literal notranslate"><span class="pre">prometheusRelease</span></code> value in top-level chart matches the release name given to the Prometheus
 install i.e. when it differs from <code class="docutils literal notranslate"><span class="pre">prometheus-stack</span></code> used above. That is used to annotate
@@ -2866,9 +2876,93 @@ one can verify that HPA rules can access custom metrics based on them.</p>
 </pre></div>
 </div>
 <p>(Assumes that HPA scaled chart is installed to <code class="docutils literal notranslate"><span class="pre">default</span></code> namespace with <code class="docutils literal notranslate"><span class="pre">chatqna</span></code> release name.)</p>
-<p><strong>NOTE</strong>: inferencing services provide metrics only after they’ve processed their first request.
+<blockquote>
+<div><p><strong>NOTE</strong>: inferencing services provide metrics only after they’ve processed their first request.
 The reranking service is used only after the query context data has been uploaded. Until then,
 no metrics will be available for them.</p>
+</div></blockquote>
+</section>
+<section id="scaling-metric-considerations">
+<h2>Scaling metric considerations<a class="headerlink" href="#scaling-metric-considerations" title="Link to this heading">¶</a></h2>
+<section id="autoscaling-principles">
+<h3>Autoscaling principles<a class="headerlink" href="#autoscaling-principles" title="Link to this heading">¶</a></h3>
+<p>The used model, underlying HW and engine parameters are supposed to be selected so that engine
+instance can satisfy service SLA (Service Level Agreement) requirements for its own requests,
+also when it’s becoming saturated. Autoscaling is then intended to scale up the service so that
+requests can be directed to unsaturated instances.</p>
+<p>Problem is finding a good metric, and its threshold, for indicatating this saturation point.
+Preferably it should be something that can anticipate this point, so that startup delay for
+the new engine instances does not cause SLA breakage (or in the worst case requests being
+rejected, if the engine queue fills up).</p>
+<blockquote>
+<div><p><strong>NOTE</strong>: Another problem is Kubernetes service routing sending requests (also) to already saturated
+instances, instead of idle ones. Using <a class="reference internal" href="#../kubeai/#readme"><span class="xref myst">KubeAI</span></a> (instead of HPA) to manage
+both engine scaling + query routing can solve that.</p>
+</div></blockquote>
+</section>
+<section id="current-scaling-metrics">
+<h3>Current scaling metrics<a class="headerlink" href="#current-scaling-metrics" title="Link to this heading">¶</a></h3>
+<p>The following inference engine metrics are used to autoscale their replica counts:</p>
+<ul class="simple">
+<li><p>vLLM: Active requests i.e. count of waiting (queued) + (already) running requests</p>
+<ul>
+<li><p>Good overall scaling metric, used also by <a class="reference internal" href="#../kubeai/#readme"><span class="xref myst">KubeAI</span></a> for scaling vLLM</p></li>
+<li><p>Threshold depends on how many requests underlying HW / engine config can process for given model in parallel</p></li>
+</ul>
+</li>
+<li><p>TGI / TEI: Queue size, i.e. how many requests are waiting to be processed</p>
+<ul>
+<li><p>Used because TGI and TEI do not offer metric for (already) running requests, just waiting ones</p></li>
+<li><p>Independent of the used model, so works well as an example, but not that good for production because
+scaling happens late and fluctuates a lot (due to metric being zero when engine is not saturated)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="other-potential-metrics">
+<h3>Other potential metrics<a class="headerlink" href="#other-potential-metrics" title="Link to this heading">¶</a></h3>
+<p>All the metrics provided by the inference engines are listed in their documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.vllm.ai/en/v0.8.5/serving/metrics.html">vLLM metrics</a></p>
+<ul>
+<li><p><a class="reference external" href="https://docs.vllm.ai/en/v0.8.5/design/v1/metrics.html">Metric design</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://huggingface.co/docs/text-generation-inference/en/reference/metrics">TGI metrics</a></p>
+<ul>
+<li><p>TEI (embed and reranking) services provide a subset of these TGI metrics</p></li>
+</ul>
+</li>
+</ul>
+<p>OPEA application <a class="reference internal" href="monitoring.html#dashboards"><span class="std std-ref">dashboard</span></a> provides (Prometheus query) examples
+for deriving service performance metrics out of engine Histogram metrics.</p>
+<p>Their suitability for autoscaling:</p>
+<ul class="simple">
+<li><p>Request latency, request per second (RPS) - not suitable</p>
+<ul>
+<li><p>Depends completely on input and output token counts and is an indicator for past performance, not incoming load</p></li>
+</ul>
+</li>
+<li><p>First token latency (TTFT) - potential</p>
+<ul>
+<li><p>Relevancy depends on use-case; number of used tokens and what’s important</p></li>
+</ul>
+</li>
+<li><p>Next token latency (TPOT, ITL), tokens per second (TPS) - potential</p>
+<ul>
+<li><p>Relevancy depends on use-case; number of used tokens and what’s important</p></li>
+</ul>
+</li>
+</ul>
+<p>Performance metrics will be capped by the performance of the underlying engine setup.
+Beyond a certain point, they no longer reflect the actual incoming load or indicate how
+much scaling is needed.</p>
+<p>Therefore such metrics could be used in production <em>when</em> their thresholds are carefully
+fine-tuned and rechecked every time underlying setup (model, HW, engine config) changes.
+In OPEA Helm charts that setup is user selectable, so such metrics are unsuitable for
+autoscaling examples.</p>
+<p>(General <a class="reference external" href="https://docs.nvidia.com/nim/benchmarking/llm/latest/metrics.html">explanation</a> on how these metrics are measured.)</p>
+</section>
 </section>
 </section>
 
