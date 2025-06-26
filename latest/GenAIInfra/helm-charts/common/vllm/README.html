@@ -2752,7 +2752,7 @@
 <p>Note that you cannot use vllm as the service release name due to <a class="reference external" href="https://docs.vllm.ai/en/stable/serving/env_vars.html#environment-variables">environment variables conflict</a>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/vllm</span>
 <span class="go">export MODELDIR=/mnt/opea-models</span>
-<span class="go">export MODELNAME=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+<span class="go">export MODELNAME=&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
 <span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
 <span class="go">helm install myvllm . --set global.modelUseHostPath=${MODELDIR} --set LLM_MODEL_ID=${MODELNAME} --set global.HUGGINGFACEHUB_API_TOKEN=${HFTOKEN}</span>
 <span class="gp"># </span>To<span class="w"> </span>deploy<span class="w"> </span>on<span class="w"> </span>Gaudi<span class="w"> </span>enabled<span class="w"> </span>kubernetes<span class="w"> </span>cluster
@@ -2761,7 +2761,7 @@
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>vllm-rocm<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MODELNAME</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HUGGINGFACEHUB_API_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>rocm-values.yaml
 </pre></div>
 </div>
-<p>By default, the vllm service will downloading the “Intel/neural-chat-7b-v3-3”.</p>
+<p>By default, the vllm service will downloading the “meta-llama/Meta-Llama-3-8B-Instruct”.</p>
 <p>If you already cached the model locally, you can pass it to container like this example:</p>
 <p>MODELDIR=/mnt/opea-models</p>
 <p>MODELNAME=”facebook/opt-125m”</p>
@@ -2773,7 +2773,7 @@
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:2080/v1/completions \</span>
 <span class="go">  -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">  -d &#39;{&quot;model&quot;: &quot;Intel/neural-chat-7b-v3-3&quot;, &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;</span>
+<span class="go">  -d &#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -2790,7 +2790,7 @@
 <tbody>
 <tr class="row-even"><td><p>LLM_MODEL_ID</p></td>
 <td><p>string</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Intel/neural-chat-7b-v3-3&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span></code></p></td>
 <td><p>Models id from https://huggingface.co/, or predownloaded model directory</p></td>
 </tr>
 <tr class="row-odd"><td><p>global.HUGGINGFACEHUB_API_TOKEN</p></td>
