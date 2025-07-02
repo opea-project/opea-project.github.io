@@ -2759,14 +2759,15 @@
              
   <section id="validate-workflow-agent-microservice">
 <h1>Validate Workflow Agent Microservice<a class="headerlink" href="#validate-workflow-agent-microservice" title="Link to this heading">¶</a></h1>
-<p>Microservice validation for Intel Data Insight Automation platform workflow serving.</p>
+<!-- Microservice validation for Intel Data Insight Automation platform workflow serving. -->
+<p>Microservice validation for example workflow API with sample data and sample workflow.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<p>Configure necessary variables as listed below. Replace the variables according to your usecase.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SDK_BASE_URL</span><span class="o">=</span><span class="si">${</span><span class="nv">SDK_BASE_URL</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVING_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">SERVING_TOKEN</span><span class="si">}</span>
+<p>Configure necessary variables as listed below. Replace the variables according to your test case.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SDK_BASE_URL</span><span class="o">=</span><span class="si">${</span><span class="nv">SDK_BASE_URL</span><span class="si">}</span><span class="w">     </span><span class="c1"># If unspecified, test script defaults to &lt;ip_address&gt;:&lt;workflow_api_port&gt;. Refer to api_server_url variable under GenAIExamples/WorkflowExecAgent/tests/test_compose_vllm_example_wf_on_xeon.sh.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SERVING_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">SERVING_TOKEN</span><span class="si">}</span><span class="w">   </span><span class="c1"># For example workflow test, can be empty as no authentication required.</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">workflow_id</span><span class="o">=</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="w">       </span><span class="c1"># workflow_id of the serving workflow</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">workflow_id</span><span class="o">=</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="w">       </span><span class="c1"># workflow_id of the serving workflow. For example workflow can be left empty</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">vllm_port</span><span class="o">=</span><span class="si">${</span><span class="nv">vllm_port</span><span class="si">}</span><span class="w">           </span><span class="c1"># vllm serving port</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_CPU_OMP_THREADS_BIND</span><span class="o">=</span><span class="si">${</span><span class="nv">VLLM_CPU_OMP_THREADS_BIND</span><span class="si">}</span>
@@ -2774,14 +2775,13 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
 </pre></div>
 </div>
-<p>Note: <code class="docutils literal notranslate"><span class="pre">SDK_BASE_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">SERVING_TOKEN</span></code> can be obtained from Intel Data Insight Automation platform.</p>
-<p>Launch validation by running the following command.</p>
+<p>Launch test script by running the following command.</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/WorkflowExecAgent/tests
-.<span class="w"> </span>/test_compose_on_xeon.sh
+.<span class="w"> </span>/test_compose_vllm_example_wf_on_xeon.sh
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">test_compose_on_xeon.sh</span></code> will run the other <code class="docutils literal notranslate"><span class="pre">.sh</span></code> files under <code class="docutils literal notranslate"><span class="pre">tests/</span></code>. The validation script launches 1 docker container for the agent microservice, and another for the vllm model serving on CPU. When validation is completed, all containers will be stopped.</p>
-<p>The validation is tested by checking if the model reasoning output response matches a partial substring. The expected output is shown below:</p>
+<p><code class="docutils literal notranslate"><span class="pre">test_compose_vllm_example_wf_on_xeon.sh</span></code> will run the other <code class="docutils literal notranslate"><span class="pre">.sh</span></code> files under <code class="docutils literal notranslate"><span class="pre">tests/</span></code>. The validation script launches 1 docker container for the agent microservice, 1 for the vllm model serving on CPU, and 1 for the example workflow API. When validation is completed, all containers will be stopped.</p>
+<p>The test script checks if the model reasoning output response matches a partial substring. Below is an expected output from running the test script:</p>
 <p><img alt="image" src="https://github.com/user-attachments/assets/88081bc8-7b73-470d-970e-92e0fe5f96ec" /></p>
 </section>
 <section id="note">
