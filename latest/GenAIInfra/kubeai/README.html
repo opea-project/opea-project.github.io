@@ -2942,9 +2942,9 @@ kubectl apply -f models/llama-3.3-70b-instruct-gaudi.yaml -n $NAMESPACE
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/containers/nri-plugins">NRI plugins</a> provide a way to
-optimize the resource placement of applications in a Kubernetes cluster. They
-connect to the container runtime and are able, for example, to adjust the CPU
-and memory pinning of containers.</p>
+optimize the node-level resource assignment of applications in a Kubernetes
+cluster. They connect to the container runtime and are able, for example, to
+adjust the CPU and memory pinning of containers.</p>
 <p>This section provides a guide on how to use the
 <a class="reference external" href="https://containers.github.io/nri-plugins/stable/docs/resource-policy/policy/balloons.html">Balloons Policy</a> plugin from the <a class="reference external" href="https://github.com/containers/nri-plugins">NRI Plugins</a>
 project to optimize the performance of CPU-backed KubeAI profiles.</p>
@@ -2952,9 +2952,9 @@ project to optimize the performance of CPU-backed KubeAI profiles.</p>
 <section id="installation-of-balloons-policy-plugin">
 <h2>Installation of Balloons Policy Plugin<a class="headerlink" href="#installation-of-balloons-policy-plugin" title="Link to this heading">¶</a></h2>
 <blockquote>
-<div><p><strong>NOTE:</strong> To avoid disturbing already running workloads it is recommended to
-install the NRI plugin to an empty node (do it right after node bootstrap, or
-drain the node before installation).</p>
+<div><p><strong>NOTE:</strong> To avoid disturbing already running workloads, it is recommended to
+install the NRI plugin on an empty node, that is, before deploying workloads
+(do it right after node bootstrap, or drain the node before installation).</p>
 </div></blockquote>
 <p>Install the balloons policy plugin with Helm:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>nri-plugins<span class="w"> </span>https://containers.github.io/nri-plugins
@@ -2963,11 +2963,10 @@ helm<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </
 </pre></div>
 </div>
 <blockquote>
-<div><p><strong>NOTE</strong>: With containerd version earlier than v2.0 you need to enable
-the NRI support in the containerd configuration file. Instead of manual
-configuration you can provide <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">nri.runtime.patchConfig=true</span></code> to the Helm
-command above, which will automatically patch the containerd configuration
-file on each node.</p>
+<div><p><strong>NOTE</strong>: With containerd version prior to v2.0, first enable
+NRI support in the containerd configuration file. Instead of manually
+editing the configuration file, you can pass in <code class="docutils literal notranslate"><span class="pre">--set</span> <span class="pre">nri.runtime.patchConfig=true</span></code> to the Helm command above, which will
+automatically patch the containerd configuration file on each node.</p>
 </div></blockquote>
 <p>Verify that the balloons policy plugin is running on every node:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>get<span class="w"> </span>ds<span class="w"> </span>nri-resource-policy-balloons
@@ -2978,8 +2977,8 @@ nri-resource-policy-balloons<span class="w">   </span><span class="m">2</span><s
 </section>
 <section id="configuration-of-balloons-policy-plugin">
 <h2>Configuration of Balloons Policy Plugin<a class="headerlink" href="#configuration-of-balloons-policy-plugin" title="Link to this heading">¶</a></h2>
-<p>The aim of the balloons policy configuration is to isolate the model (inference
-engine) containers to minimize the impact of containers on each other.</p>
+<p>The aim of the balloons policy configuration is to isolate the model inference
+engine containers, to minimize noisy neighbor effects between containers.</p>
 <p>An example configuration for the current CPU-backed model profiles:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">cat &lt;&lt;EOF | kubectl apply -f -</span>
 <span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">config.nri/v1alpha1</span>
@@ -3027,7 +3026,7 @@ engine) containers to minimize the impact of containers on each other.</p>
 <span class="l l-Scalar l-Scalar-Plain">EOF</span>
 </pre></div>
 </div>
-<p>The configuration above allocates full CPU cores to inference engine
+<p>The configuration above allocates full CPU cores to the inference engine
 containers by hiding hyperthreads from them. For example, if a pod requests 6
 CPUs, the balloon will reserve 6 full physical CPU cores (i.e., 12 logical
 CPUs), but configure the cpuset so that the inference instance can only use 6
