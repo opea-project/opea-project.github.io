@@ -2769,6 +2769,30 @@
 <span class="go">helm install speecht5 speecht5 --set global.modelUseHostPath=${MODELDIR}</span>
 </pre></div>
 </div>
+<section id="install-the-microservice-in-air-gapped-offline-mode">
+<h3>Install the microservice in air gapped (offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
+<p>To run <code class="docutils literal notranslate"><span class="pre">speecht5</span></code> microservice in an air gapped environment, users are required to pre-download the models <code class="docutils literal notranslate"><span class="pre">microsoft/speecht5_tts</span></code> and <code class="docutils literal notranslate"><span class="pre">microsoft/speecht5_hifigan</span></code> to a shared storage.</p>
+<p>Below is an example for using node level local directory to download the model data:</p>
+<p>Assuming the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
+export MODEL_DIR=/mnt/opea-models
+# Download model, assumes Python huggingface_hub[cli] module is already installed
+huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; microsoft/speecht5_tts
+huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; microsoft/speecht5_hifigan
+# On K8s master node, run the following command:
+# Install using Helm with the following additional parameters:
+helm install ... ... --set global.offline=true,global.modelUseHostPath=${MODEL_DIR}
+</pre></div>
+</div>
+<p>Assuming we share the offline data on cluster level using a persistent volume (PV), first we need to create the persistent volume claim (PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store the model data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download model openai/whisper-small at the root directory of the corresponding PV</span>
+<span class="c1"># ... ...</span>
+<span class="c1"># Install using Helm with the following additional parameters:</span>
+<span class="c1"># export MODEL_PVC=opea-model-pvc</span>
+<span class="c1"># helm install ... ... --set global.offline=true,global.modelUsePVC=${MODEL_PVC}</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
