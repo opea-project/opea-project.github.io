@@ -2770,6 +2770,35 @@
 <span class="go">helm install whisper whisper --set global.modelUseHostPath=${MODELDIR} --set ASR_MODEL_PATH=${ASR_MODEL_PATH}</span>
 </pre></div>
 </div>
+<section id="install-the-microservice-in-air-gapped-offline-mode">
+<h3>Install the microservice in air gapped (offline) mode<a class="headerlink" href="#install-the-microservice-in-air-gapped-offline-mode" title="Link to this heading">¶</a></h3>
+<p>To run <code class="docutils literal notranslate"><span class="pre">whisper</span></code> microservice in an air gapped environment, users are required to pre-download the model <code class="docutils literal notranslate"><span class="pre">openai/whisper-small</span></code> to a shared storage.</p>
+<section id="use-node-local-directory">
+<h4>Use node-local directory<a class="headerlink" href="#use-node-local-directory" title="Link to this heading">¶</a></h4>
+<p>Assuming the model data is shared using node-local directory <code class="docutils literal notranslate"><span class="pre">/mnt/opea-models</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># On every K8s node, run the following command:
+export MODEL_DIR=/mnt/opea-models
+# Download model, assumes Python huggingface_hub[cli] module is already installed
+huggingface-cli download --cache-dir &quot;${MODEL_DIR}&quot; openai/whisper-small
+
+# On K8s master node, run the following command:
+# Install using Helm with the following additional parameters:
+helm install ... --set global.offline=true,global.modelUseHostPath=${MODEL_DIR}
+</pre></div>
+</div>
+</section>
+<section id="use-persistent-volume">
+<h4>Use persistent volume<a class="headerlink" href="#use-persistent-volume" title="Link to this heading">¶</a></h4>
+<p>Assuming we share the offline data on cluster level using a persistent volume (PV), first we need to create the persistent volume claim (PVC) with name <code class="docutils literal notranslate"><span class="pre">opea-model-pvc</span></code> to store the model data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download model openai/whisper-small at the root directory of the corresponding PV</span>
+<span class="c1"># ...</span>
+<span class="c1"># Install using Helm with the following additional parameters:</span>
+<span class="c1"># export MODEL_PVC=opea-model-pvc</span>
+<span class="c1"># helm install ... --set global.offline=true,global.modelUsePVC=${MODEL_PVC}</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 <section id="verify">
 <h2>Verify<a class="headerlink" href="#verify" title="Link to this heading">¶</a></h2>
@@ -2802,6 +2831,26 @@
 <td><p>string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;7066&quot;</span></code></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>global.offline</p></td>
+<td><p>bool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+<td><p>Whether to run the microservice in air gapped environment</p></td>
+</tr>
+<tr class="row-odd"><td><p>global.modelUseHostPath</p></td>
+<td><p>String</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Cached models directory on Kubernetes node, service will not download if the model is cached here. The host path “modelUseHostPath” will be mounted to the container as /data directory. Setting this to null/empty will force the pod to download the model every time during startup. May not be set if <code class="docutils literal notranslate"><span class="pre">global.modelUsePVC</span></code> is also set.</p></td>
+</tr>
+<tr class="row-even"><td><p>global.modelUsePVC</p></td>
+<td><p>String</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+<td><p>Name of Persistent Volume Claim to use for model cache. The Persistent Volume will be mounted to the container as /data directory. Setting this to null/empty will force the pod to download the model every time during startup. May not be set if <code class="docutils literal notranslate"><span class="pre">global.modelUseHostPath</span></code> is also set.</p></td>
+</tr>
+<tr class="row-odd"><td><p>global.HF_TOKEN</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">insert-your-huggingface-token-here</span></code></p></td>
+<td><p>Hugging Face API token</p></td>
 </tr>
 </tbody>
 </table>

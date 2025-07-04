@@ -3042,19 +3042,20 @@ on the configuration options.</p>
 </section>
 <section id="observability">
 <h1>Observability<a class="headerlink" href="#observability" title="Link to this heading">¶</a></h1>
-<p>With <a class="reference internal" href="../helm-charts/monitoring.html"><span class="std std-doc">Prometheus</span></a> running, install script can enable monitoring of the vLLM inference engine instances.</p>
-<p>Script requires Prometheus Helm chart release name for that, e.g.</p>
+<p>With <a class="reference internal" href="../helm-charts/monitoring.html"><span class="std std-doc">kube-prometheus-stack</span></a> Helm chart already deployed, install script will automatically enable monitoring for the vLLM inference engine pods.</p>
+<p>If script did not detect it, one can specify Prometheus Helm chart release manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>release=prometheus-stack
 ./install.sh $release
 </pre></div>
 </div>
-<p>Port-forward Grafana.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n $ns svc/$release-grafana 3000:80
+<p>If script finds also a (running) Grafana instance, it will install “vLLM scaling” and “vLLM details” dashboards for it.</p>
+<p>But they can be installed also manually afterwards:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ns=monitoring # Grafana namespace
+kubectl apply -n $ns -f grafana/vllm-scaling.yaml -f grafana/vllm-details.yaml
 </pre></div>
 </div>
-<p>Install “vLLM scaling” and “vLLM details” dashboards, to the same namespace as Grafana.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ns=monitoring
-kubectl apply -n $ns -f grafana/vllm-scaling.yaml -f grafana/vllm-details.yaml
+<p>Then port-forward Grafana.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>kubectl port-forward -n $ns svc/$release-grafana 3000:80
 </pre></div>
 </div>
 <p>Open web-browser to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> with <code class="docutils literal notranslate"><span class="pre">admin</span></code> / <code class="docutils literal notranslate"><span class="pre">prom-operator</span></code> given as the username / password for login, to view the dashboards.</p>
