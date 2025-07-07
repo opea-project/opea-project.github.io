@@ -2312,7 +2312,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#available-tuners">🧠 Available Tuners</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#online-rag-tuning">🌐 Online RAG Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quickstart-guide">🌐 Quickstart Guide</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#dependencies-and-environment-setup">⚙️ Dependencies and Environment Setup</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#launch-rag-pilot-in-online-mode">🚦 Launch RAG Pilot in Online Mode</a></li>
 </ul>
@@ -2811,23 +2811,36 @@
 <p>These tuners help in optimizing document parsing, chunking strategies, reranking efficiency, and embedding selection for improved RAG performance.</p>
 </section>
 </section>
-<section id="online-rag-tuning">
-<h2>🌐 Online RAG Tuning<a class="headerlink" href="#online-rag-tuning" title="Link to this heading">¶</a></h2>
+<section id="quickstart-guide">
+<h2>🌐 Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Link to this heading">¶</a></h2>
 <section id="dependencies-and-environment-setup">
 <h3>⚙️ Dependencies and Environment Setup<a class="headerlink" href="#dependencies-and-environment-setup" title="Link to this heading">¶</a></h3>
 <section id="setup-edgecraftrag">
-<h4>🛠️ Setup EdgeCraftRAG<a class="headerlink" href="#setup-edgecraftrag" title="Link to this heading">¶</a></h4>
+<h4>Setup EdgeCraftRAG<a class="headerlink" href="#setup-edgecraftrag" title="Link to this heading">¶</a></h4>
 <p>Setup EdgeCraftRAG pipeline based on this <a class="reference external" href="https://github.com/opea-project/GenAIExamples/tree/main/EdgeCraftRAG">link</a>.</p>
 <p>Load documents in EdgeCraftRAG before running RAG Pilot.</p>
 </section>
-<section id="create-running-environment">
-<h4>🧪 Create Running Environment<a class="headerlink" href="#create-running-environment" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a virtual environment</span>
-python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>rag_pilot
-<span class="nb">source</span><span class="w"> </span>rag_pilot/bin/activate
+<section id="setup-rag-pilot">
+<h4>Setup RAG Pilot<a class="headerlink" href="#setup-rag-pilot" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>rag_pilot
 
-<span class="c1"># Install dependencies</span>
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<span class="c1"># (Optional) Build RAG Pilot and UI docker images</span>
+docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="nv">$HTTP_PROXY</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">HTTP_PROXYS</span><span class="o">=</span><span class="nv">$HTTP_PROXYS</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="nv">$NO_PROXY</span><span class="w"> </span>-t<span class="w"> </span>opea/ragpilot:latest<span class="w"> </span>-f<span class="w"> </span>./Dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="nv">$HTTP_PROXY</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">HTTP_PROXYS</span><span class="o">=</span><span class="nv">$HTTP_PROXYS</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="nv">$NO_PROXY</span><span class="w"> </span>-t<span class="w"> </span>opea/ragpilot-ui:latest<span class="w"> </span>-f<span class="w"> </span>./ui/Dockerfile.ui<span class="w"> </span>.
+
+<span class="c1"># Setup ENV</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ECRAG_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="w"> </span><span class="c1"># HOST IP of EC-RAG Service, usually current host ip</span>
+
+<span class="c1"># If EC-RAG Service port is not default</span>
+<span class="c1">#export ECRAG_SERVICE_PORT=16010</span>
+
+<span class="c1"># If you want to change exposed RAG Pilot UI port</span>
+<span class="c1">#export RAGPILOT_UI_SERVICE_PORT=8090</span>
+
+<span class="c1"># If you want to change exposed RAG Pilot service port</span>
+<span class="c1">#export RAGPILOT_SERVICE_PORT=</span>
+
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
@@ -2896,11 +2909,11 @@ python3<span class="w"> </span>-m<span class="w"> </span>run_pilot<span class="w
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">rag_pilot_&lt;timestamp&gt;/</span></code>: Main folder for a tuning session.</p>
 <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">summary.csv</span></code> – Overall performance metrics of all executed pipelines.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">curr_pipeline.json</span></code> – Best pipeline configuration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">curr_rag_results.json</span></code> – Results of the best pipeline.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rag_summary.csv</span></code> – Query-wise summary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rag_contexts.csv</span></code> – Detailed context analysis.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">summary.csv</span></code> – Overall performance metrics.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">entry_&lt;hash&gt;/</span></code>: Subfolders for each tried pipeline with the same file structure:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">pipeline.json</span></code></p></li>
@@ -2922,20 +2935,20 @@ python3<span class="w"> </span>-m<span class="w"> </span>run_pilot<span class="w
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pipeline.json</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">summary.csv</span></code></p></td>
+<td><p>Aggregated summary across all pipelines</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pipeline.json</span></code></p></td>
 <td><p>RAG pipeline configuration used in a specific trial</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rag_results.json</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rag_results.json</span></code></p></td>
 <td><p>List of results for each query, including metadata and context sets</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rag_summary.csv</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rag_summary.csv</span></code></p></td>
 <td><p>Summary of each query’s outcome, including response and context hit counts</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rag_contexts.csv</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rag_contexts.csv</span></code></p></td>
 <td><p>Breakdown of retrieved/reranked contexts and mapping to ground truth</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">summary.csv</span></code></p></td>
-<td><p>Aggregated performance summary across all queries</p></td>
 </tr>
 </tbody>
 </table>
