@@ -273,10 +273,12 @@
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../../../../../examples/examples.html">Examples</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#agentqna-application">AgentQnA Application</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/README.html">Agents for Question Answering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of AgentQnA on AMD ROCm GPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/intel/cpu/xeon/README.html">Single node on-prem deployment with Docker Compose on Xeon Scalable processors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/intel/hpu/gaudi/README.html">Single node on-prem deployment AgentQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/README.html">Agents for Question and Answering Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/README_miscellaneous.html">Agents for Question and Answering Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/README_miscellaneous.html#build-service-docker-image">Build Service Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/amd/gpu/rocm/README.html">Deploy AgentQnA on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/intel/cpu/xeon/README.html">Deploying AgentQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying AgentQnA on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/kubernetes/helm/README.html">Deploy AgentQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../AgentQnA/retrieval_tool/README.html">Retrieval tool for agent</a></li>
 </ul>
@@ -486,10 +488,11 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#visualqna-application">VisualQnA Application</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/README.html">Visual Question and Answering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/README_miscellaneous.html">VisualQnA Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/benchmark/performance/README.html">VisualQnA Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/amd/gpu/rocm/README.html">Build and Deploy VisualQnA Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/intel/cpu/xeon/README.html">Build Mega Service of VisualQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/intel/hpu/gaudi/README.html">Build MegaService of VisualQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/amd/gpu/rocm/README.html">Deploy VisualQnA on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/intel/cpu/xeon/README.html">Deploying VisualQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying VisualQnA on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/kubernetes/gmc/README.html">Deploy VisualQnA in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/kubernetes/helm/README.html">Deploy VisualQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../VisualQnA/tests/README.html">VisualQnA E2E test scripts</a></li>
@@ -2780,20 +2783,15 @@
              
   <section id="deploy-finance-agent-on-intel-gaudi-ai-accelerator-with-docker-compose">
 <h1>Deploy Finance Agent on Intel® Gaudi® AI Accelerator with Docker Compose<a class="headerlink" href="#deploy-finance-agent-on-intel-gaudi-ai-accelerator-with-docker-compose" title="Link to this heading">¶</a></h1>
-<p>This README provides instructions for deploying the Finance Agent application using Docker Compose on systems equipped with Intel® Gaudi® AI Accelerators.</p>
+<p>This README provides instructions for deploying the Finance Agent application using Docker Compose on systems equipped with Intel® Gaudi® AI Accelerators. It leverages containers optimized for Gaudi for the LLM serving component, along with CPU-based containers for other microservices like embedding, retrieval, data preparation and the UI.</p>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
 <li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
-<li><p><a class="reference internal" href="#start-deployment"><span class="xref myst">Start Deployment</span></a></p></li>
+<li><p><a class="reference internal" href="#finance-agent-quick-start-deployment"><span class="xref myst">Finance Agent Quick Start Deployment</span></a></p></li>
 <li><p><a class="reference internal" href="#validate-services"><span class="xref myst">Validate Services</span></a></p></li>
 <li><p><a class="reference internal" href="#accessing-the-user-interface-ui"><span class="xref myst">Accessing the User Interface (UI)</span></a></p></li>
 </ul>
-</section>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>This guide focuses on running the pre-configured Finance Agent service using Docker Compose on Intel® Gaudi® AI Accelerators. It leverages containers optimized for Gaudi for the LLM serving component, along with CPU-based containers for other microservices like embedding, retrieval, data preparation and the UI.</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
@@ -2815,8 +2813,8 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-
 </pre></div>
 </div>
 </section>
-<section id="start-deployment">
-<h2>Start Deployment<a class="headerlink" href="#start-deployment" title="Link to this heading">¶</a></h2>
+<section id="finance-agent-quick-start-deployment">
+<h2>Finance Agent Quick Start Deployment<a class="headerlink" href="#finance-agent-quick-start-deployment" title="Link to this heading">¶</a></h2>
 <p>This uses the default vLLM-based deployment profile (vllm-gaudi-server).</p>
 <section id="configure-environment">
 <h3>Configure Environment<a class="headerlink" href="#configure-environment" title="Link to this heading">¶</a></h3>

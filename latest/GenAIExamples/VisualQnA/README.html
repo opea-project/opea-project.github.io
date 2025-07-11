@@ -30,7 +30,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="VisualQnA Benchmarking" href="benchmark/performance/README.html" />
+    <link rel="next" title="VisualQnA Docker Image Build" href="README_miscellaneous.html" />
     <link rel="prev" title="Build Mega Service of VideoQnA on Xeon" href="../VideoQnA/docker_compose/intel/cpu/xeon/README.html" /> 
 </head>
 
@@ -275,10 +275,12 @@
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../examples/examples.html">Examples</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#agentqna-application">AgentQnA Application</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/README.html">Agents for Question Answering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/amd/gpu/rocm/README.html">Build Mega Service of AgentQnA on AMD ROCm GPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/intel/cpu/xeon/README.html">Single node on-prem deployment with Docker Compose on Xeon Scalable processors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/intel/hpu/gaudi/README.html">Single node on-prem deployment AgentQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/README.html">Agents for Question and Answering Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/README_miscellaneous.html">Agents for Question and Answering Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/README_miscellaneous.html#build-service-docker-image">Build Service Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/amd/gpu/rocm/README.html">Deploy AgentQnA on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/intel/cpu/xeon/README.html">Deploying AgentQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../AgentQnA/docker_compose/intel/hpu/gaudi/README.html">Deploying AgentQnA on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AgentQnA/kubernetes/helm/README.html">Deploy AgentQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../AgentQnA/retrieval_tool/README.html">Retrieval tool for agent</a></li>
 </ul>
@@ -488,10 +490,11 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#visualqna-application">VisualQnA Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Visual Question and Answering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_miscellaneous.html">VisualQnA Docker Image Build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/performance/README.html">VisualQnA Benchmarking</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Build and Deploy VisualQnA Application on AMD GPU (ROCm)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Build Mega Service of VisualQnA on Xeon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Build MegaService of VisualQnA on Gaudi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/amd/gpu/rocm/README.html">Deploy VisualQnA on AMD GPU (ROCm)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Deploying VisualQnA on Intel® Xeon® Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Deploying VisualQnA on Intel® Gaudi® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/gmc/README.html">Deploy VisualQnA in a Kubernetes Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kubernetes/helm/README.html">Deploy VisualQnA on Kubernetes cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">VisualQnA E2E test scripts</a></li>
@@ -2790,7 +2793,16 @@
 <li><p>Customer service and e-commerce: VQA can enhance user experience by letting users ask questions about products.</p></li>
 <li><p>Image retrieval: VQA models can be used to retrieve images with specific characteristics. For example, the user can ask “Is there a dog?” to find all images with dogs from a set of images.</p></li>
 </ul>
-<p>General architecture of VQA shows below:</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+<li><p><a class="reference internal" href="#validated-configurations"><span class="xref myst">Validated Configurations</span></a></p></li>
+</ol>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
 <p><img alt="VQA" src="../../_images/vqa.png" /></p>
 <p>The VisualQnA example is implemented using the component-level microservices defined in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>. The flow chart below shows the information flow between different microservices for this example.</p>
 <div class="mermaid">
@@ -2836,71 +2848,41 @@
         </div><p>This example guides you through how to deploy a <a class="reference external" href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-NeXT</a> (Open Large Multimodal Models) model on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>. We invite contributions from other hardware vendors to expand the OPEA ecosystem.</p>
 <p><img alt="llava screenshot" src="../../_images/llava_screenshot1.png" />
 <img alt="llava-screenshot" src="../../_images/llava_screenshot2.png" /></p>
-<section id="required-models">
-<h2>Required Models<a class="headerlink" href="#required-models" title="Link to this heading">¶</a></h2>
-<p>By default, the model is set to <code class="docutils literal notranslate"><span class="pre">llava-hf/llava-v1.6-mistral-7b-hf</span></code>. To use a different model, update the <code class="docutils literal notranslate"><span class="pre">LVM_MODEL_ID</span></code> variable in the <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/set_env.sh"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code></span></a> file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LVM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;llava-hf/llava-v1.6-mistral-7b-hf&quot;</span>
-</pre></div>
-</div>
-<p>You can choose other llava-next models, such as <code class="docutils literal notranslate"><span class="pre">llava-hf/llava-v1.6-vicuna-13b-hf</span></code>, as needed.</p>
 </section>
-<section id="deploy-visualqna-service">
-<h2>Deploy VisualQnA Service<a class="headerlink" href="#deploy-visualqna-service" title="Link to this heading">¶</a></h2>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
 <p>The VisualQnA service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.</p>
-<p>Currently we support deploying VisualQnA services with docker compose.</p>
-<section id="setup-environment-variable">
-<h3>Setup Environment Variable<a class="headerlink" href="#setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying VisualQnA services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: host_ip=&quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
-<span class="c1"># Example: no_proxy=&quot;localhost, 127.0.0.1, 192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;Your_No_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<blockquote>
-<div><p>Notice that you can only choose <strong>one</strong> command below to set up envs according to your hardware. Other that the port numbers may be set incorrectly.</p>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Gaudi</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/hpu/gaudi/set_env.sh
-<span class="c1"># on Xeon</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/cpu/xeon/set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="deploy-visualqna-on-gaudi">
-<h3>Deploy VisualQnA on Gaudi<a class="headerlink" href="#deploy-visualqna-on-gaudi" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> to build docker images from source.</p>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/hpu/gaudi/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/VisualQnA/docker_compose/intel/hpu/gaudi/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-<section id="deploy-visualqna-on-xeon">
-<h3>Deploy VisualQnA on Xeon<a class="headerlink" href="#deploy-visualqna-on-xeon" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for more instructions on building docker images from source.</p>
-<p>Find the corresponding <a class="reference internal" href="#./docker_compose/intel/cpu/xeon/compose.yaml"><span class="xref myst">compose.yaml</span></a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/VisualQnA/docker_compose/intel/cpu/xeon/
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-<section id="deploy-visualqna-on-kubernetes-using-helm-chart">
-<h3>Deploy VisualQnA on Kubernetes using Helm Chart<a class="headerlink" href="#deploy-visualqna-on-kubernetes-using-helm-chart" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="kubernetes/helm/README.html"><span class="std std-doc">VisualQnA helm chart</span></a> for instructions on deploying VisualQnA on Kubernetes.</p>
-</section>
+<p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Deployment Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>On-premise Deployments</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/cpu/xeon"><span class="xref myst">VisualQnA deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/intel/hpu/gaudi"><span class="xref myst">VisualQnA deployment on Gaudi</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">VisualQnA deployment on AMD ROCm</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Kubernetes</p></td>
+<td><p><a class="reference internal" href="#./kubernetes/helm"><span class="xref myst">Helm Charts</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./kubernetes/gmc"><span class="xref myst">GMC</span></a></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="validated-configurations">
 <h2>Validated Configurations<a class="headerlink" href="#validated-configurations" title="Link to this heading">¶</a></h2>
@@ -2949,7 +2931,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../VideoQnA/docker_compose/intel/cpu/xeon/README.html" class="btn btn-neutral float-left" title="Build Mega Service of VideoQnA on Xeon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="benchmark/performance/README.html" class="btn btn-neutral float-right" title="VisualQnA Benchmarking" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_miscellaneous.html" class="btn btn-neutral float-right" title="VisualQnA Docker Image Build" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
