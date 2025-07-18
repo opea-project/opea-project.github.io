@@ -28,7 +28,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="EdgeCraftRAG E2E test scripts" href="tests/README.html" />
+    <link rel="next" title="Edge Craft Retrieval-Augmented Generation API guide" href="docs/API_Guide.html" />
     <link rel="prev" title="Doc Summary" href="../DocSum/ui/svelte/README.html" /> 
 </head>
 
@@ -394,6 +394,11 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Edge Craft Retrieval-Augmented Generation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docs/API_Guide.html">Edge Craft Retrieval-Augmented Generation API guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docs/Advanced_Setup.html">Edge Craft Retrieval-Augmented Generation Advanced Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docs/Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docs/Query_Search_Zh.html">Query Search</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docs/Quick_Start_Guide_Zh.html">快速启动指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
 </ul>
 </li>
@@ -2832,42 +2837,48 @@ quality and performance.</p>
 <li><p>Support EC-RAG service recovery after restart</p></li>
 <li><p>Add query search in EC-RAG pipeline to improve RAG quality</p></li>
 <li><p>Support Qwen3-8B as the default LLM for EC-RAG</p></li>
-<li><p>Improve container scaling logic to run multi Intel Arc GPUs inference</p></li>
+<li><p>Enable chat history round setting for Users</p></li>
 </ul>
 </section>
 <section id="quick-start-guide">
 <h2>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading">¶</a></h2>
-<section id="optional-build-docker-images-for-mega-service-server-and-ui-by-your-own">
-<h3>(Optional) Build Docker Images for Mega Service, Server and UI by your own<a class="headerlink" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own" title="Link to this heading">¶</a></h3>
-<p><strong>All the docker images can be automatically‌ pulled</strong>, If you want to build the images by your own, please follow the steps:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG
+<section id="prerequisites">
+<h3>1. Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<p>EC-RAG supports vLLM deployment(default method) and local OpenVINO deployment for Intel Arc GPU. Prerequisites are shown as below:<br />
+Hardware: Intel Arc A770<br />
+OS: Ubuntu Server 22.04.1 or newer (at least 6.2 LTS kernel)<br />
+Driver &amp; libraries: please to <a class="reference external" href="https://dgpu-docs.intel.com/driver/client/overview.html">Installing Client GPUs</a> for detailed driver &amp; libraries setup</p>
+<p>Below steps are based on <strong>vLLM</strong> as inference engine, if you want to choose <strong>OpenVINO</strong>, please refer to <a class="reference internal" href="docs/Advanced_Setup.html#openvino-local-inference"><span class="std std-ref">OpenVINO Local Inference</span></a></p>
+</section>
+<section id="prepare-models">
+<h3>2. Prepare models<a class="headerlink" href="#prepare-models" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG
+<span class="c1"># Prepare models for embedding, reranking:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
+optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
+optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
 
-docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag-server:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile.server<span class="w"> </span>.
-docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag-ui:latest<span class="w"> </span>-f<span class="w"> </span>ui/docker/Dockerfile.ui<span class="w"> </span>.
+<span class="c1"># Prepare LLM model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span><span class="w"> </span><span class="c1"># Your model id</span>
+pip<span class="w"> </span>install<span class="w"> </span>modelscope
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># Optionally, you can also download models with huggingface:</span>
+<span class="c1"># pip install -U huggingface_hub</span>
+<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir &quot;${MODEL_PATH}/${LLM_MODEL}&quot;</span>
 </pre></div>
 </div>
 </section>
-<section id="using-intel-arc-gpu">
-<h3>Using Intel Arc GPU<a class="headerlink" href="#using-intel-arc-gpu" title="Link to this heading">¶</a></h3>
-<section id="local-inference-with-openvino-for-intel-arc-gpu">
-<h4>Local inference with OpenVINO for Intel Arc GPU<a class="headerlink" href="#local-inference-with-openvino-for-intel-arc-gpu" title="Link to this heading">¶</a></h4>
-<p>You can select “local” type in generation field which is the default approach to enable Intel Arc GPU for LLM. You don’t need to build images for “local” type.</p>
-</section>
-</section>
-<section id="start-edge-craft-rag-services-with-docker-compose">
-<h3>Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#start-edge-craft-rag-services-with-docker-compose" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG/docker_compose/intel/gpu/arc
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;your model path for all your local models&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="s2">&quot;your doc path for uploading a dir of files&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">UI_TMPFILE_PATH</span><span class="o">=</span><span class="s2">&quot;your UI cache path for transferring files&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_VOLUME_DIRECTORY</span><span class="o">=</span><span class="s2">&quot;currently we support MilvusDB as persistent storage, this is your storage path&quot;</span>
-<span class="c1"># If you have a specific prompt template, please uncomment the following line</span>
-<span class="c1"># export PROMPT_PATH=&quot;your prompt path for prompt templates&quot;</span>
-
+<section id="prepare-env-variables-and-configurations">
+<h3>3. Prepare env variables and configurations<a class="headerlink" href="#prepare-env-variables-and-configurations" title="Link to this heading">¶</a></h3>
+<p>Below steps are for single Intel Arc GPU inference, if you want to setup multi Intel Arc GPUs inference, please refer to <a class="reference internal" href="docs/Advanced_Setup.html#multi-arc-setup"><span class="std std-ref">Multi-ARC Setup</span></a></p>
+<section id="prepare-env-variables-for-vllm-deployment">
+<h4>Prepare env variables for vLLM deployment<a class="headerlink" href="#prepare-env-variables-for-vllm-deployment" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="c1"># Use `ip a` to check your active ip</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="s2">&quot;your host ip&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
 
 <span class="c1"># Check group id of video and render</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
@@ -2877,358 +2888,64 @@ docker<span class="w"> </span>build<span class="w"> </span>--build-arg<span clas
 <span class="c1"># export no_proxy=${no_proxy},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
 <span class="c1"># export NO_PROXY=${NO_PROXY},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
 <span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
-<span class="c1"># export HF_ENDPOINT=&quot;your HF mirror endpoint&quot;</span>
-
-<span class="c1"># By default, the ports of the containers are set, uncomment if you want to change</span>
-<span class="c1"># export MEGA_SERVICE_PORT=16011</span>
-<span class="c1"># export PIPELINE_SERVICE_PORT=16011</span>
-<span class="c1"># export UI_SERVICE_PORT=&quot;8082&quot;</span>
-
-<span class="c1"># Prepare models for embedding, reranking and generation, you can also choose other OpenVINO optimized models</span>
-<span class="c1"># Here is the example:</span>
-pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
-
-optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
-optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
-optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>--model<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/Qwen/Qwen3-8B/INT4_compressed_weights<span class="w"> </span>--task<span class="w"> </span>text-generation-with-past<span class="w"> </span>--weight-format<span class="w"> </span>int4<span class="w"> </span>--group-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--ratio<span class="w"> </span><span class="m">0</span>.8
+<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${UI_TMPFILE_PATH}</span>
+<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${PWD} # the default value of DOC_PATH and TMPFILE_PATH is PWD ,so here we give permission to ${PWD}</span>
 <span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 $HOME/.cache</span>
+<span class="c1"># chown 1000:1000 -R $HOME/.cache</span>
 </pre></div>
 </div>
-<section id="launch-services-with-local-inference">
-<h4>Launch services with local inference<a class="headerlink" href="#launch-services-with-local-inference" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, you can set START_MILVUS=1 to enable it</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">START_MILVUS</span><span class="o">=</span><span class="c1"># 1 for enable, 0 for disable</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
+<p>For more advanced env variables and configurations, please refer to <a class="reference internal" href="docs/Advanced_Setup.html#prepare-env-variables-for-vllm-deployment"><span class="std std-ref">Prepare env variables for vLLM deployment</span></a></p>
 </section>
-<section id="launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service">
-<h4>Launch services with vLLM for multi Intel Arc GPUs inference service<a class="headerlink" href="#launch-services-with-vllm-for-multi-intel-arc-gpus-inference-service" title="Link to this heading">¶</a></h4>
-<p>The docker file can be pulled automatically‌, you can also pull the image manually:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>intelanalytics/ipex-llm-serving-xpu:0.8.3-b20
-</pre></div>
-</div>
-<p>Prepare LLM model(vLLM service requires original huggingface/modelscope models, <em>NOT the OpenVINO models!</em>):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Notice! LLM_MODEL_PATH is the path to huggingface/modelscope models, NOT OpenVINO models!</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_PATH</span><span class="o">=</span><span class="c1">#your model path</span>
-pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>huggingface_hub
-huggingface-cli<span class="w"> </span>download<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span>--local-dir<span class="w"> </span><span class="nv">$LLM_MODEL_PATH</span>
-</pre></div>
-</div>
-<p>Generate your nginx config file</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="c1">#your host ip</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="m">8086</span><span class="w"> </span><span class="c1">#set port for nginx</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DP_NUM</span><span class="o">=</span><span class="c1">#how many containers you want to start to run inference</span>
-<span class="c1"># If you are running with 1 vllm container:</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
-<span class="c1"># If you are running with 2 vllm containers:</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_1</span><span class="o">=</span><span class="m">8200</span><span class="w"> </span><span class="c1"># you can change the port to your preferrance</span>
-<span class="c1"># If you are running with more vllm containers, you can set VLLM_SERVICE_PORT_0 to VLLM_SERVICE_PORT_X</span>
-
+<section id="generate-nginx-config-file">
+<h4>Generate nginx config file<a class="headerlink" href="#generate-nginx-config-file" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># You can set your own port for vllm service</span>
 <span class="c1"># Generate your nginx config file</span>
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG/nginx
 <span class="c1"># nginx-conf-generator.sh requires 2 parameters: DP_NUM and output filepath</span>
-bash<span class="w"> </span>nginx-conf-generator.sh<span class="w"> </span><span class="nv">$DP_NUM</span><span class="w"> </span>&lt;your_nginx_config_path&gt;/nginx.conf
+bash<span class="w"> </span>nginx/nginx-conf-generator.sh<span class="w"> </span><span class="m">1</span><span class="w"> </span>nginx/nginx.conf
 <span class="c1"># set NGINX_CONFIG_PATH</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;your_nginx_config_path&gt;/nginx.conf&quot;</span>
-</pre></div>
-</div>
-<p>Generate compose_vllm_multi-arc.yaml file</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG/docker_compose/intel/gpu/arc
-<span class="c1"># multi-arc-yaml-generator.sh requires 2 parameters: DP_NUM and output filepath</span>
-bash<span class="w"> </span>multi-arc-yaml-generator.sh<span class="w"> </span><span class="nv">$DP_NUM</span><span class="w"> </span>compose_vllm_multi-arc.yaml
-</pre></div>
-</div>
-<p>Set up Additional Environment Variables and start with compose_vllm_multi-arc.yaml</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="c1">#your model id</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="c1">#your Intel Arc GPU number to do inference</span>
-<span class="c1"># set SELECTED_XPU according to DP num, e.g.:</span>
-<span class="c1"># For 1 vLLM container(1 DP) with  multi Intel Arc GPUs</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run&gt;<span class="w"> </span><span class="c1"># example for selecting 2 Arc GPUs: SELECTED_XPU_0=0,1</span>
-<span class="c1"># For 2 vLLM container(2 DP) with  multi Intel Arc GPUs</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">0</span>&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_1</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">1</span>&gt;
-<span class="c1"># For 3 vLLM container(3 DP) with  multi Intel Arc GPUs</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">0</span>&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_1</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">1</span>&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_2</span><span class="o">=</span>&lt;which<span class="w"> </span>GPU<span class="w"> </span>to<span class="w"> </span><span class="k">select</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>container<span class="w"> </span><span class="m">2</span>&gt;
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Below are the extra env you can set for vllm</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_SEQS</span><span class="o">=</span>&lt;MAX_NUM_SEQS<span class="w"> </span>value&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span>&lt;MAX_NUM_BATCHED_TOKENS<span class="w"> </span>value&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span>&lt;MAX_MODEL_LEN<span class="w"> </span>value&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">LOAD_IN_LOW_BIT</span><span class="o">=</span>&lt;the<span class="w"> </span>weight<span class="w"> </span><span class="nb">type</span><span class="w"> </span>value&gt;<span class="w"> </span><span class="c1"># expected: sym_int4, asym_int4, sym_int5, asym_int5 or sym_int8</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CCL_DG2_USM</span><span class="o">=</span>&lt;CCL_DG2_USM<span class="w"> </span>value&gt;<span class="w"> </span><span class="c1"># Needed on Core to enable USM (Shared Memory GPUDirect). Xeon supports P2P and doesn&#39;t need this.</span>
-</pre></div>
-</div>
-<p>start with compose_vllm_multi-arc.yaml</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, you can set START_MILVUS=1 to enable it</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">START_MILVUS</span><span class="o">=</span><span class="c1"># 1 for enable, 0 for disable</span>
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG/docker_compose/intel/gpu/arc
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm_multi-arc.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/nginx/nginx.conf&quot;</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="chatqna-with-llm-example-command-line">
-<h3>ChatQnA with LLM Example (Command Line)<a class="headerlink" href="#chatqna-with-llm-example-command-line" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG
+<section id="start-edge-craft-rag-services-with-docker-compose">
+<h3>4. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#start-edge-craft-rag-services-with-docker-compose" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, by default milvus is disabled, you can choose to set MILVUS_ENABLED=1 to enable it</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MILVUS_ENABLED</span><span class="o">=</span><span class="m">0</span>
+<span class="c1"># If you enable Milvus, the default storage path is PWD, uncomment if you want to change:</span>
+<span class="c1"># export DOCKER_VOLUME_DIRECTORY= # change to your preference</span>
 
-<span class="c1"># Activate pipeline test_pipeline_local_llm</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-
-<span class="c1"># Will need to wait for several minutes</span>
-<span class="c1"># Expected output:</span>
-<span class="c1"># {</span>
-<span class="c1">#   &quot;idx&quot;: &quot;3214cf25-8dff-46e6-b7d1-1811f237cf8c&quot;,</span>
-<span class="c1">#   &quot;name&quot;: &quot;rag_test&quot;,</span>
-<span class="c1">#   &quot;comp_type&quot;: &quot;pipeline&quot;,</span>
-<span class="c1">#   &quot;node_parser&quot;: {</span>
-<span class="c1">#     &quot;idx&quot;: &quot;ababed12-c192-4cbb-b27e-e49c76a751ca&quot;,</span>
-<span class="c1">#     &quot;parser_type&quot;: &quot;simple&quot;,</span>
-<span class="c1">#     &quot;chunk_size&quot;: 400,</span>
-<span class="c1">#     &quot;chunk_overlap&quot;: 48</span>
-<span class="c1">#   },</span>
-<span class="c1">#   &quot;indexer&quot;: {</span>
-<span class="c1">#     &quot;idx&quot;: &quot;46969b63-8a32-4142-874d-d5c86ee9e228&quot;,</span>
-<span class="c1">#     &quot;indexer_type&quot;: &quot;faiss_vector&quot;,</span>
-<span class="c1">#     &quot;model&quot;: {</span>
-<span class="c1">#       &quot;idx&quot;: &quot;7aae57c0-13a4-4a15-aecb-46c2ec8fe738&quot;,</span>
-<span class="c1">#       &quot;type&quot;: &quot;embedding&quot;,</span>
-<span class="c1">#       &quot;model_id&quot;: &quot;BAAI/bge-small-en-v1.5&quot;,</span>
-<span class="c1">#       &quot;model_path&quot;: &quot;/home/user/models/bge_ov_embedding&quot;,</span>
-<span class="c1">#       &quot;device&quot;: &quot;auto&quot;</span>
-<span class="c1">#     }</span>
-<span class="c1">#   },</span>
-<span class="c1">#   &quot;retriever&quot;: {</span>
-<span class="c1">#     &quot;idx&quot;: &quot;3747fa59-ff9b-49b6-a8e8-03cdf8c979a4&quot;,</span>
-<span class="c1">#     &quot;retriever_type&quot;: &quot;vectorsimilarity&quot;,</span>
-<span class="c1">#     &quot;retrieve_topk&quot;: 30</span>
-<span class="c1">#   },</span>
-<span class="c1">#   &quot;postprocessor&quot;: [</span>
-<span class="c1">#     {</span>
-<span class="c1">#       &quot;idx&quot;: &quot;d46a6cae-ba7a-412e-85b7-d334f175efaa&quot;,</span>
-<span class="c1">#       &quot;postprocessor_type&quot;: &quot;reranker&quot;,</span>
-<span class="c1">#       &quot;model&quot;: {</span>
-<span class="c1">#         &quot;idx&quot;: &quot;374e7471-bd7d-41d0-b69d-a749a052b4b0&quot;,</span>
-<span class="c1">#         &quot;type&quot;: &quot;reranker&quot;,</span>
-<span class="c1">#         &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;,</span>
-<span class="c1">#         &quot;model_path&quot;: &quot;/home/user/models/bge_ov_reranker&quot;,</span>
-<span class="c1">#         &quot;device&quot;: &quot;auto&quot;</span>
-<span class="c1">#       },</span>
-<span class="c1">#       &quot;top_n&quot;: 2</span>
-<span class="c1">#     }</span>
-<span class="c1">#   ],</span>
-<span class="c1">#   &quot;generator&quot;: {</span>
-<span class="c1">#     &quot;idx&quot;: &quot;52d8f112-6290-4dd3-bc28-f9bd5deeb7c8&quot;,</span>
-<span class="c1">#     &quot;generator_type&quot;: &quot;local&quot;,</span>
-<span class="c1">#     &quot;model&quot;: {</span>
-<span class="c1">#       &quot;idx&quot;: &quot;fa0c11e1-46d1-4df8-a6d8-48cf6b99eff3&quot;,</span>
-<span class="c1">#       &quot;type&quot;: &quot;llm&quot;,</span>
-<span class="c1">#       &quot;model_id&quot;: &quot;Qwen3-8B&quot;,</span>
-<span class="c1">#       &quot;model_path&quot;: &quot;/home/user/models/Qwen3-8B/INT4_compressed_weights&quot;,</span>
-<span class="c1">#       &quot;device&quot;: &quot;auto&quot;</span>
-<span class="c1">#     }</span>
-<span class="c1">#   },</span>
-<span class="c1">#   &quot;status&quot;: {</span>
-<span class="c1">#     &quot;active&quot;: true</span>
-<span class="c1">#   }</span>
-<span class="c1"># }</span>
-
-<span class="c1"># Prepare data from local directory</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR DIR WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-
-<span class="c1"># Validate Mega Service</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16011/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;#REPLACE WITH YOUR QUESTION HERE#&quot;, &quot;top_n&quot;:5, &quot;max_tokens&quot;:512}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<span class="c1"># Launch EC-RAG service with compose</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </section>
-<section id="chatqna-with-llm-example-ui">
-<h3>ChatQnA with LLM Example (UI)<a class="headerlink" href="#chatqna-with-llm-example-ui" title="Link to this heading">¶</a></h3>
+<section id="access-ui">
+<h3>5. Access UI<a class="headerlink" href="#access-ui" title="Link to this heading">¶</a></h3>
 <p>Open your browser, access http://${HOST_IP}:8082</p>
 <blockquote>
 <div><p>Your browser should be running on the same host of your console, otherwise you will need to access UI with your host domain name instead of ${HOST_IP}.</p>
 </div></blockquote>
-<p>To create a default pipeline, you need to click the <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">Pipeline</span></code> button on the <code class="docutils literal notranslate"><span class="pre">RAG</span> <span class="pre">Settings</span></code> page. You can also create multiple pipelines or update existing pipelines through the <code class="docutils literal notranslate"><span class="pre">Pipeline</span> <span class="pre">Configuration</span></code>, but please note that active pipelines cannot be updated.
-<img alt="create_pipeline" src="../../_images/create_pipeline.png" /></p>
-<p>After the pipeline creation, you can upload your data in the <code class="docutils literal notranslate"><span class="pre">Chatbot</span></code> page.
-<img alt="upload_data" src="../../_images/upload_data.png" /></p>
-<p>Then, you can submit messages in the chat box.
-<img alt="chat_with_rag" src="../../_images/chat_with_rag.png" /></p>
-</section>
-</section>
-<section id="advanced-user-guide">
-<h2>Advanced User Guide<a class="headerlink" href="#advanced-user-guide" title="Link to this heading">¶</a></h2>
-<section id="pipeline-management">
-<h3>Pipeline Management<a class="headerlink" href="#pipeline-management" title="Link to this heading">¶</a></h3>
-<section id="create-a-pipeline">
-<h4>Create a pipeline<a class="headerlink" href="#create-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="update-a-pipeline">
-<h4>Update a pipeline<a class="headerlink" href="#update-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-all-pipelines">
-<h4>Check all pipelines<a class="headerlink" href="#check-all-pipelines" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="activate-a-pipeline">
-<h4>Activate a pipeline<a class="headerlink" href="#activate-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;true&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="remove-a-pipeline">
-<h4>Remove a pipeline<a class="headerlink" href="#remove-a-pipeline" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Firstly, deactivate the pipeline if the pipeline status is active</span>
-curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;false&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-<span class="c1"># Then delete the pipeline</span>
-curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="get-pipeline-json">
-<h4>Get pipeline json<a class="headerlink" href="#get-pipeline-json" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span>/json<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="import-pipeline-from-a-json-file">
-<h4>Import pipeline from a json file<a class="headerlink" href="#import-pipeline-from-a-json-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/import<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_test_pipeline_json_file.txt&quot;</span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="enable-and-check-benchmark-for-pipelines">
-<h4>Enable and check benchmark for pipelines<a class="headerlink" href="#enable-and-check-benchmark-for-pipelines" title="Link to this heading">¶</a></h4>
-<section id="notice">
-<h5>⚠️ NOTICE ⚠️<a class="headerlink" href="#notice" title="Link to this heading">¶</a></h5>
-<p>Benchmarking activities may significantly reduce system performance.</p>
-<p><strong>DO NOT</strong> perform benchmarking in a production environment.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ENABLE_BENCHMARK as true before launch services</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_BENCHMARK</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
-
-<span class="c1"># check the benchmark data for pipeline {pipeline_name}</span>
-curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>pipeline_name<span class="o">}</span>/benchmark<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-<section id="model-management">
-<h3>Model Management<a class="headerlink" href="#model-management" title="Link to this heading">¶</a></h3>
-<section id="load-a-model">
-<h4>Load a model<a class="headerlink" href="#load-a-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;cpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-<p>It will take some time to load the model.</p>
-</section>
-<section id="check-all-models">
-<h4>Check all models<a class="headerlink" href="#check-all-models" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="update-a-model">
-<h4>Update a model<a class="headerlink" href="#update-a-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;gpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-a-certain-model">
-<h4>Check a certain model<a class="headerlink" href="#check-a-certain-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="delete-a-model">
-<h4>Delete a model<a class="headerlink" href="#delete-a-model" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="file-management">
-<h3>File Management<a class="headerlink" href="#file-management" title="Link to this heading">¶</a></h3>
-<section id="add-a-text">
-<h4>Add a text<a class="headerlink" href="#add-a-text" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;#REPLACE WITH YOUR TEXT&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="add-files-from-existed-file-path">
-<h4>Add files from existed file path<a class="headerlink" href="#add-files-from-existed-file-path" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR DIR WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR FILE WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-all-files">
-<h4>Check all files<a class="headerlink" href="#check-all-files" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-one-file">
-<h4>Check one file<a class="headerlink" href="#check-one-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test2.docx<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="delete-a-file">
-<h4>Delete a file<a class="headerlink" href="#delete-a-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test2.docx<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="update-a-file">
-<h4>Update a file<a class="headerlink" href="#update-a-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test.pdf<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR FILE WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="system-prompt-management">
-<h3>System Prompt Management<a class="headerlink" href="#system-prompt-management" title="Link to this heading">¶</a></h3>
-<section id="get-system-prompt">
-<h4>Get system prompt<a class="headerlink" href="#get-system-prompt" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="update-system-prompt">
-<h4>Update system prompt<a class="headerlink" href="#update-system-prompt" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;:&quot;This is a template prompt&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="reset-system-prompt">
-<h4>Reset system prompt<a class="headerlink" href="#reset-system-prompt" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/reset<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="use-custom-system-prompt-file">
-<h4>Use custom system prompt file<a class="headerlink" href="#use-custom-system-prompt-file" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt-file<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span>
-</pre></div>
-</div>
-</section>
+<p>Below is the UI front page, for detailed operations on UI and EC-RAG settings, please refer to <a class="reference internal" href="docs/Explore_Edge_Craft_RAG.html"><span class="std std-doc">Explore_Edge_Craft_RAG</span></a>
+<img alt="front_page" src="../../_images/front_page.png" /></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Deploy Method</strong></p></th>
+<th class="head"><p><strong>LLM Engine</strong></p></th>
+<th class="head"><p><strong>LLM Model</strong></p></th>
+<th class="head"><p><strong>Hardware</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Docker Compose</p></td>
+<td><p>vLLM</p></td>
+<td><p>Qwen3-8B</p></td>
+<td><p>Intel Arc</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -3239,7 +2956,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../DocSum/ui/svelte/README.html" class="btn btn-neutral float-left" title="Doc Summary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tests/README.html" class="btn btn-neutral float-right" title="EdgeCraftRAG E2E test scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docs/API_Guide.html" class="btn btn-neutral float-right" title="Edge Craft Retrieval-Augmented Generation API guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
