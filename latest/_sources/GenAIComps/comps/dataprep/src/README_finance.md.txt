@@ -1,5 +1,11 @@
 # Dataprep microservice for financial domain data
 
+## Table of contents
+
+1. [1. Overview](#overview)
+2. [2. Deploy with docker](#deploy-with-docker)
+3. [3. Consume Microservice](#consume-microservice)
+
 ## 1. Overview
 
 We currently support ingestion of PDFs and URL links. The data should be financial domain, such as SEC filings and earnings call transcripts. If the data is not financial domain, you may encounter accuracy problems or errors.

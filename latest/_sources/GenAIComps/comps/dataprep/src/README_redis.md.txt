@@ -2,6 +2,13 @@
 
 We have provided dataprep microservice for multimodal data input (e.g., text and image) [here](./README_multimodal.md).
 
+## Table of contents
+
+1. [🚀1. Start Microservice with Docker](#start-microservice-with-docker)
+2. [🚀2. Status Microservice](#status-microservice)
+3. [🚀3. Consume Microservice](#consume-microservice)
+4. [Running in the air gapped environment](#running-in-the-air-gapped-environment)
+
 ## 🚀1. Start Microservice with Docker
 
 ### 1.1 Start Redis Stack Server
