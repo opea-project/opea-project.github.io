@@ -2856,29 +2856,41 @@
   <section id="rerank-model-finetuning">
 <h1>Rerank Model Finetuning<a class="headerlink" href="#rerank-model-finetuning" title="Link to this heading">¶</a></h1>
 <p>Rerank model finetuning is the process of further training rerank model on a dataset for improving its capability on specific field.</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#deploy-rerank-model-finetuning-service"><span class="xref myst">Deploy Rerank Model Finetuning Service</span></a></p></li>
+<li><p><a class="reference internal" href="#consume-rerank-model-finetuning-service"><span class="xref myst">Consume Rerank Model Finetuning Service</span></a></p></li>
+<li><p><a class="reference internal" href="#validated-configurations"><span class="xref myst">Validated Configurations</span></a></p></li>
+</ul>
+</section>
 <section id="deploy-rerank-model-finetuning-service">
 <h2>Deploy Rerank Model Finetuning Service<a class="headerlink" href="#deploy-rerank-model-finetuning-service" title="Link to this heading">¶</a></h2>
 <section id="deploy-rerank-model-finetuning-service-on-xeon">
 <h3>Deploy Rerank Model Finetuning Service on Xeon<a class="headerlink" href="#deploy-rerank-model-finetuning-service-on-xeon" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for detail.</p>
+<p>Refer to the <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Guide</span></a> for details.</p>
 </section>
 <section id="deploy-rerank-model-finetuning-service-on-gaudi">
 <h3>Deploy Rerank Model Finetuning Service on Gaudi<a class="headerlink" href="#deploy-rerank-model-finetuning-service-on-gaudi" title="Link to this heading">¶</a></h3>
-<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> for detail.</p>
+<p>Refer to the <a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Guide</span></a> for details.</p>
 </section>
 </section>
 <section id="consume-rerank-model-finetuning-service">
 <h2>Consume Rerank Model Finetuning Service<a class="headerlink" href="#consume-rerank-model-finetuning-service" title="Link to this heading">¶</a></h2>
 <section id="upload-a-training-file">
-<h3>1. Upload a training file<a class="headerlink" href="#upload-a-training-file" title="Link to this heading">¶</a></h3>
+<h3>Upload a training file<a class="headerlink" href="#upload-a-training-file" title="Link to this heading">¶</a></h3>
 <p>Download a toy example training file <code class="docutils literal notranslate"><span class="pre">toy_finetune_data.jsonl</span></code> and upload it to the server with below command, this file can be downloaded in <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/blob/JUNJIE99-patch-1/examples/finetune/toy_finetune_data.jsonl">here</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># upload a training file</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@./toy_finetune_data.jsonl&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;file=@./toy_finetune_data.jsonl&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="create-fine-tuning-job">
-<h3>2. Create fine-tuning job<a class="headerlink" href="#create-fine-tuning-job" title="Link to this heading">¶</a></h3>
+<h3>Create fine-tuning job<a class="headerlink" href="#create-fine-tuning-job" title="Link to this heading">¶</a></h3>
 <p>After a training file <code class="docutils literal notranslate"><span class="pre">toy_finetune_data.jsonl</span></code> is uploaded, use the following command to launch a finetuning job using <code class="docutils literal notranslate"><span class="pre">BAAI/bge-reranker-large</span></code> as base model:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
@@ -2896,19 +2908,29 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 </div>
 </section>
 <section id="manage-fine-tuning-job">
-<h3>3. Manage fine-tuning job<a class="headerlink" href="#manage-fine-tuning-job" title="Link to this heading">¶</a></h3>
+<h3>Manage fine-tuning job<a class="headerlink" href="#manage-fine-tuning-job" title="Link to this heading">¶</a></h3>
 <p>Below commands show how to list finetuning jobs, retrieve a finetuning job, cancel a finetuning job and list checkpoints of a finetuning job.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># list finetuning jobs</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span>-X<span class="w"> </span>GET
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>GET
 
 <span class="c1"># retrieve one finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
 
 <span class="c1"># cancel one finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
 
 <span class="c1"># list checkpoints of a finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
 </pre></div>
 </div>
 </section>
