@@ -317,6 +317,7 @@
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/amd/cpu/epyc/README.html">Deploying ChatQnA on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/amd/cpu/epyc/README_faqgen.html">Deploying FAQ Generation on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/amd/cpu/epyc/README_pinecone.html">Deploying ChatQnA with Pinecone on AMD EPYC™ Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/amd/cpu/epyc/README_qdrant.html">Deploying ChatQnA with Qdrant on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/amd/gpu/rocm/README.html">Deploying ChatQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ChatQnA/docker_compose/intel/cpu/xeon/README.html">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
@@ -2856,7 +2857,7 @@
 <h1>Generative AI Examples<a class="headerlink" href="#generative-ai-examples" title="Link to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>GenAIExamples are designed to give developers an easy entry into generative AI, featuring microservice-based samples that simplify the processes of deploying, testing, and scaling GenAI applications. All examples are fully compatible with both Docker and Kubernetes, supporting a wide range of hardware platforms such as Gaudi, Xeon, NVIDIA GPUs, and other hardwares including AMD GPUs, ensuring flexibility and efficiency for your GenAI adoption.</p>
+<p>GenAIExamples are designed to give developers an easy entry into generative AI, featuring microservice-based samples that simplify the processes of deploying, testing, and scaling GenAI applications. All examples are fully compatible with both Docker and Kubernetes, supporting a wide range of hardware platforms such as Gaudi, Xeon, AMD EPYC CPUs, AMD Instinct GPUs, and other hardwares including NVIDIA GPUs, ensuring flexibility and efficiency for your GenAI adoption.</p>
 </section>
 <section id="architecture">
 <h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h2>
@@ -2920,6 +2921,8 @@
 </li>
 <li><p>Recommended Hardware Reference</p>
 <p>Based on different deployment model sizes and performance requirements, you may choose different hardware platforms or cloud instances. Here are some of the reference platforms:</p>
+</li>
+</ul>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Use Case</p></th>
@@ -2931,23 +2934,31 @@
 <tbody>
 <tr class="row-even"><td><p>Xeon</p></td>
 <td><p>Intel/neural-chat-7b-v3-3</p></td>
-<td><p>64 vCPUs, 365 GB disk 100 GB RAM, and Ubuntu 24.04</p></td>
-<td><p>visit the <a class="reference external" href="https://console.cloud.intel.com/">[Intel Tiber Developer Cloud]</a>.</p></td>
+<td><p>64 vCPUs, 365 GB disk, 100 GB RAM, and Ubuntu 24.04</p></td>
+<td><p><a class="reference external" href="https://console.cloud.intel.com/">Intel Tiber Developer Cloud</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Gaudi</p></td>
 <td><p>Intel/neural-chat-7b-v3-3</p></td>
-<td><p>1 or 2 Gaudi Card, 16vCPUs, 365 GB disk 100 GB RAM, and Ubuntu 24.04</p></td>
-<td><p>visit the <a class="reference external" href="https://console.cloud.intel.com/">[Intel Tiber Developer Cloud]</a>.</p></td>
+<td><p>1 or 2 Gaudi Cards, 16 vCPUs, 365 GB disk, 100 GB RAM, and Ubuntu 24.04</p></td>
+<td><p><a class="reference external" href="https://console.cloud.intel.com/">Intel Tiber Developer Cloud</a></p></td>
 </tr>
-<tr class="row-even"><td><p>Xeon</p></td>
+<tr class="row-even"><td><p>Xeon (AWS)</p></td>
 <td><p>Intel/neural-chat-7b-v3-3</p></td>
-<td><p>64 vCPUs, 100 GB disk 64 GB RAM, and Ubuntu 24.04</p></td>
-<td><p>AWS Cloud/c7i.16xlarge</p></td>
+<td><p>64 vCPUs, 100 GB disk, 64 GB RAM, and Ubuntu 24.04</p></td>
+<td><p>AWS Cloud (e.g., <code class="docutils literal notranslate"><span class="pre">c7i.16xlarge</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>AMD EPYC</p></td>
+<td><p>meta-llama/Meta-Llama-3-8B-Instruct</p></td>
+<td><p>64 vCPUs, 100 GB disk, 256 GB RAM, and Ubuntu 24.04</p></td>
+<td><p><a class="reference external" href="https://www.amd.com/en/ecosystem/csp/google-cloud.html">Google Cloud Platform</a><br><a class="reference external" href="https://www.amd.com/en/ecosystem/csp/microsoft-azure.html">Microsoft Azure</a><br><a class="reference external" href="https://aws.amazon.com/ec2/amd/#topic-0">AWS</a></p></td>
+</tr>
+<tr class="row-even"><td><p>AMD Instinct</p></td>
+<td><p>meta-llama/Llama-3.1-405B</p></td>
+<td><p>GPU: 8× MI300X, 1536 GB vRAM, and Ubuntu 24.04</p></td>
+<td><p><a class="reference external" href="https://amd.digitalocean.com/login">AMD Developer Cloud</a><br><a class="reference external" href="https://www.amd.com/de/products/accelerators/instinct/eval-request/oracle-cloud-infrastructure.html">Oracle Cloud Infrastructure</a><br><a class="reference external" href="https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ndmi300xv5-series?tabs=sizebasic">Microsoft Azure</a></p></td>
 </tr>
 </tbody>
 </table>
-</li>
-</ul>
 </section>
 <section id="deploy-examples">
 <h4>Deploy Examples<a class="headerlink" href="#deploy-examples" title="Link to this heading">¶</a></h4>
@@ -2957,9 +2968,10 @@
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Use Case</p></th>
-<th class="head"><p>Docker Compose<br/>Deployment on Xeon</p></th>
-<th class="head"><p>Docker Compose<br/>Deployment on Gaudi</p></th>
-<th class="head"><p>Docker Compose<br/>Deployment on ROCm</p></th>
+<th class="head"><p>Docker Compose Deployment on Xeon</p></th>
+<th class="head"><p>Docker Compose Deployment on Gaudi</p></th>
+<th class="head"><p>Docker Compose Deployment on AMD EPYC</p></th>
+<th class="head"><p>Docker Compose Deployment on ROCm</p></th>
 <th class="head"><p>Kubernetes with Helm Charts</p></th>
 <th class="head"><p>Kubernetes with GMC</p></th>
 </tr>
@@ -2968,6 +2980,7 @@
 <tr class="row-even"><td><p>ChatQnA</p></td>
 <td><p><a class="reference internal" href="ChatQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="ChatQnA/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="ChatQnA/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="ChatQnA/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="ChatQnA/kubernetes/helm/README.html"><span class="std std-doc">ChatQnA with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="ChatQnA/kubernetes/gmc/README.html"><span class="std std-doc">ChatQnA with GMC</span></a></p></td>
@@ -2975,6 +2988,7 @@
 <tr class="row-odd"><td><p>CodeGen</p></td>
 <td><p><a class="reference internal" href="CodeGen/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeGen/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="CodeGen/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeGen/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeGen/kubernetes/helm/README.html"><span class="std std-doc">CodeGen with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="CodeGen/kubernetes/gmc/README.html"><span class="std std-doc">CodeGen with GMC</span></a></p></td>
@@ -2982,6 +2996,7 @@
 <tr class="row-even"><td><p>CodeTrans</p></td>
 <td><p><a class="reference internal" href="CodeTrans/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeTrans/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="CodeTrans/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeTrans/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="CodeTrans/kubernetes/helm/README.html"><span class="std std-doc">CodeTrans with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="CodeTrans/kubernetes/gmc/README.html"><span class="std std-doc">CodeTrans with GMC</span></a></p></td>
@@ -2989,6 +3004,7 @@
 <tr class="row-odd"><td><p>DocSum</p></td>
 <td><p><a class="reference internal" href="DocSum/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="DocSum/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="DocSum/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="DocSum/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="DocSum/kubernetes/helm/README.html"><span class="std std-doc">DocSum with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="DocSum/kubernetes/gmc/README.html"><span class="std std-doc">DocSum with GMC</span></a></p></td>
@@ -2996,6 +3012,7 @@
 <tr class="row-even"><td><p>SearchQnA</p></td>
 <td><p><a class="reference internal" href="SearchQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="SearchQnA/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="SearchQnA/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p>Not Supported</p></td>
 <td><p><a class="reference internal" href="SearchQnA/kubernetes/helm/README.html"><span class="std std-doc">SearchQnA with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="SearchQnA/kubernetes/gmc/README.html"><span class="std std-doc">SearchQnA with GMC</span></a></p></td>
@@ -3003,6 +3020,7 @@
 <tr class="row-odd"><td><p>Translation</p></td>
 <td><p><a class="reference internal" href="Translation/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="Translation/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="Translation/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="Translation/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p>Not Supported</p></td>
 <td><p><a class="reference internal" href="Translation/kubernetes/gmc/README.html"><span class="std std-doc">Translation with GMC</span></a></p></td>
@@ -3010,6 +3028,7 @@
 <tr class="row-even"><td><p>AudioQnA</p></td>
 <td><p><a class="reference internal" href="AudioQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="AudioQnA/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="AudioQnA/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="AudioQnA/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="AudioQnA/kubernetes/helm/README.html"><span class="std std-doc">AudioQnA with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="AudioQnA/kubernetes/gmc/README.html"><span class="std std-doc">AudioQnA with GMC</span></a></p></td>
@@ -3017,6 +3036,7 @@
 <tr class="row-odd"><td><p>VisualQnA</p></td>
 <td><p><a class="reference internal" href="VisualQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="VisualQnA/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="VisualQnA/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="VisualQnA/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="VisualQnA/kubernetes/helm/README.html"><span class="std std-doc">VisualQnA with Helm Charts</span></a></p></td>
 <td><p><a class="reference internal" href="VisualQnA/kubernetes/gmc/README.html"><span class="std std-doc">VisualQnA with GMC</span></a></p></td>
@@ -3024,13 +3044,15 @@
 <tr class="row-even"><td><p>MultimodalQnA</p></td>
 <td><p><a class="reference internal" href="MultimodalQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="MultimodalQnA/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="MultimodalQnA/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="MultimodalQnA/docker_compose/amd/gpu/rocm/README.html"><span class="std std-doc">ROCm Instructions</span></a></p></td>
-<td><p>Not supported</p></td>
-<td><p>Not supported</p></td>
+<td><p>Not Supported</p></td>
+<td><p>Not Supported</p></td>
 </tr>
 <tr class="row-odd"><td><p>ProductivitySuite</p></td>
 <td><p><a class="reference internal" href="ProductivitySuite/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p>Not Supported</p></td>
+<td><p><a class="reference internal" href="ProductivitySuite/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p>Not Supported</p></td>
 <td><p>Not Supported</p></td>
 <td><p>Not Supported</p></td>
@@ -3038,6 +3060,7 @@
 <tr class="row-even"><td><p>Text2Image</p></td>
 <td><p><a class="reference internal" href="Text2Image/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Instructions</span></a></p></td>
 <td><p><a class="reference internal" href="Text2Image/docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Instructions</span></a></p></td>
+<td><p><a class="reference internal" href="Text2Image/docker_compose/amd/cpu/epyc/README.html"><span class="std std-doc">EPYC Instructions</span></a></p></td>
 <td><p>Not Supported</p></td>
 <td><p><a class="reference internal" href="Text2Image/kubernetes/helm/README.html"><span class="std std-doc">Text2Image with Helm Charts</span></a></p></td>
 <td><p>Not Supported</p></td>

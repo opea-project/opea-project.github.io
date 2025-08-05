@@ -319,6 +319,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/amd/cpu/epyc/README.html">Deploying ChatQnA on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/amd/cpu/epyc/README_faqgen.html">Deploying FAQ Generation on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/amd/cpu/epyc/README_pinecone.html">Deploying ChatQnA with Pinecone on AMD EPYC™ Processors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/amd/cpu/epyc/README_qdrant.html">Deploying ChatQnA with Qdrant on AMD EPYC™ Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/amd/gpu/rocm/README.html">Deploying ChatQnA on AMD ROCm GPU</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/intel/cpu/aipc/README.html">Build Mega Service of ChatQnA on AIPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ChatQnA/docker_compose/intel/cpu/xeon/README.html">Deploying ChatQnA on Intel® Xeon® Processors</a></li>
@@ -2918,13 +2919,13 @@
     %% Embedding service flow
     direction LR
     LVM &lt;-.-&gt; LVM_gen
-        </div><p>This example guides you through how to deploy a <a class="reference external" href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-NeXT</a> (Open Large Multimodal Models) model on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> and <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>. We invite contributions from other hardware vendors to expand the OPEA ecosystem.</p>
+        </div><p>This example guides you through how to deploy a <a class="reference external" href="https://github.com/LLaVA-VL/LLaVA-NeXT">LLaVA-NeXT</a> (Open Large Multimodal Models) model on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi.html">Intel Gaudi2</a>, <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a> and <a class="reference external" href="https://www.amd.com/en/products/processors/server/epyc.html">AMD EPYC™ Processors</a>. We invite contributions from other hardware vendors to expand the OPEA ecosystem.</p>
 <p><img alt="llava screenshot" src="../../_images/llava_screenshot1.png" />
 <img alt="llava-screenshot" src="../../_images/llava_screenshot2.png" /></p>
 </section>
 <section id="deployment-options">
 <h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
-<p>The VisualQnA service can be effortlessly deployed on either Intel Gaudi2 or Intel Xeon Scalable Processors.</p>
+<p>The VisualQnA service can be effortlessly deployed on Intel Gaudi2 or Intel Xeon Scalable Processors and AMD EPYC™ Processors.</p>
 <p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
 <table class="docutils align-default">
 <thead>
@@ -2944,13 +2945,17 @@
 </tr>
 <tr class="row-even"><td><p></p></td>
 <td><p></p></td>
-<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">VisualQnA deployment on AMD ROCm</span></a></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/cpu/epyc"><span class="xref myst">VisualQnA deployment on AMD EPYC</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p></p></td>
+<td><p></p></td>
+<td><p><a class="reference internal" href="#./docker_compose/amd/gpu/rocm"><span class="xref myst">VisualQnA deployment on AMD ROCm</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
 <td><p>Kubernetes</p></td>
 <td><p><a class="reference internal" href="#./kubernetes/helm"><span class="xref myst">Helm Charts</span></a></p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
+<tr class="row-odd"><td><p></p></td>
 <td><p></p></td>
 <td><p><a class="reference internal" href="#./kubernetes/gmc"><span class="xref myst">GMC</span></a></p></td>
 </tr>
@@ -2980,15 +2985,20 @@
 </tr>
 <tr class="row-even"><td><p>Docker Compose</p></td>
 <td><p>TGI, vLLM</p></td>
+<td><p>llava-hf/llava-v1.6-mistral-7b-hf</p></td>
+<td><p>AMD EPYC</p></td>
+</tr>
+<tr class="row-odd"><td><p>Docker Compose</p></td>
+<td><p>TGI, vLLM</p></td>
 <td><p>Xkev/Llama-3.2V-11B-cot</p></td>
 <td><p>AMD ROCm</p></td>
 </tr>
-<tr class="row-odd"><td><p>Helm Charts</p></td>
+<tr class="row-even"><td><p>Helm Charts</p></td>
 <td><p>TGI, vLLM</p></td>
 <td><p>llava-hf/llava-v1.6-mistral-7b-hf</p></td>
 <td><p>Intel Gaudi</p></td>
 </tr>
-<tr class="row-even"><td><p>Helm Charts</p></td>
+<tr class="row-odd"><td><p>Helm Charts</p></td>
 <td><p>TGI, vLLM</p></td>
 <td><p>llava-hf/llava-v1.6-mistral-7b-hf</p></td>
 <td><p>Intel Xeon</p></td>
