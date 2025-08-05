@@ -2894,7 +2894,8 @@
 <section id="configure-the-deployment-environment">
 <h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
 <p>To set up environment variables for deploying Productivity Suite service, source the set_env.sh script in this directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=&lt;</span><span class="n">ip</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">machine</span><span class="o">&gt;</span>
+<span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>The set_env.sh script will prompt for required and optional environment variables used to configure the Productivity Suite service. If a value is not entered, the script will use a default value for the same. It will also generate a env file defining the desired configuration. Consult the section on <a class="reference internal" href="#productivity-suite-service-configuration"><span class="xref myst">Productivity Suite Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
@@ -3187,6 +3188,27 @@
 </tr>
 </tbody>
 </table>
+<section id="running-llm-models-with-remote-endpoints">
+<h3>Running LLM models with remote endpoints<a class="headerlink" href="#running-llm-models-with-remote-endpoints" title="Link to this heading">¶</a></h3>
+<p>When models are deployed on a remote server, a base URL and an API key are required to access them. To set up a remote server and acquire the base URL and API key, refer to <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/topic-technology/artificial-intelligence/enterprise-inference.html">Intel® AI for Enterprise Inference</a> offerings.</p>
+<p>Set the following environment variables.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> is the HTTPS endpoint of the remote server with the model of choice (i.e. https://api.example.com). <strong>Note:</strong> If the API for the models does not use LiteLLM, the second part of the model card needs to be appended to the URL. For example, set <code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> to https://api.example.com/Llama-3.3-70B-Instruct if the model card is <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-3.3-70B-Instruct</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">API_KEY</span></code> is the access token or key to access the model(s) on the server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is the model card which may need to be overwritten depending on what it is set to <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DocSum_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaDocSumvLLM&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REMOTE_ENDPOINT</span><span class="o">=</span>&lt;https-endpoint-of-remote-server&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>&lt;model-card&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID_CODEGEN</span><span class="o">=</span>&lt;model-card&gt;
+</pre></div>
+</div>
+<p>After setting these environment variables, run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> with <code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_remote.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

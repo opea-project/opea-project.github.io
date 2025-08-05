@@ -2987,10 +2987,32 @@ fds3dd5b9fd8<span class="w">   </span>opea/docsum:latest<span class="w">        
 <td><p>Default compose file using vllm as serving framework</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_tgi.yaml"><span class="xref myst">compose_tgi.yaml</span></a></p></td>
-<td><p>The LLM serving framework is TGI. All other configurations remain the same as the default</p></td>
+<td><p>The LLM serving framework is TGI. All other configurations remain the same as default</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose_remote.yaml"><span class="xref myst">compose_remote.yaml</span></a></p></td>
+<td><p>Uses remote inference endpoints for LLMs. All other configurations are same as default</p></td>
 </tr>
 </tbody>
 </table>
+<section id="running-llm-models-with-remote-endpoints">
+<h3>Running LLM models with remote endpoints<a class="headerlink" href="#running-llm-models-with-remote-endpoints" title="Link to this heading">¶</a></h3>
+<p>When models are deployed on a remote server, a base URL and an API key are required to access them. To set up a remote server and acquire the base URL and API key, refer to <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/topic-technology/artificial-intelligence/enterprise-inference.html">Intel® AI for Enterprise Inference</a> offerings.</p>
+<p>Set the following environment variables.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> is the HTTPS endpoint of the remote server with the model of choice (i.e. https://api.example.com). <strong>Note:</strong> If the API for the models does not use LiteLLM, the second part of the model card needs to be appended to the URL. For example, set <code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> to https://api.example.com/Llama-3.3-70B-Instruct if the model card is <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-3.3-70B-Instruct</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">API_KEY</span></code> is the access token or key to access the model(s) on the server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is the model card which may need to be overwritten depending on what it is set to <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">REMOTE_ENDPOINT</span><span class="o">=</span>&lt;https-endpoint-of-remote-server&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>&lt;model-card&gt;
+</pre></div>
+</div>
+<p>After setting these environment variables, run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> with <code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_remote.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
 </section>
 <section id="docsum-detailed-usage">
 <h2>DocSum Detailed Usage<a class="headerlink" href="#docsum-detailed-usage" title="Link to this heading">¶</a></h2>

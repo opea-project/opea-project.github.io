@@ -2950,8 +2950,29 @@ Wait several minutes for models to download (especially the first time) and serv
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
+<h4 class="rubric" id="deployment-with-remote-endpoints-compose-remote-yaml">Deployment with remote endpoints (<code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code>)</h4>
 </li>
+<li><p><strong>Compose File:</strong> <code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code></p></li>
+<li><p><strong>Description:</strong> Uses remote endpoints to access the served LLM’s. This is the default configurations except for the LLM serving engine.</p></li>
+<li><p><strong>Services Deployed:</strong> <code class="docutils literal notranslate"><span class="pre">codegen-tei-embedding-server</span></code>, <code class="docutils literal notranslate"><span class="pre">codegen-retriever-server</span></code>, <code class="docutils literal notranslate"><span class="pre">redis-vector-db</span></code>, <code class="docutils literal notranslate"><span class="pre">codegen-dataprep-server</span></code>, <code class="docutils literal notranslate"><span class="pre">codegen-backend-server</span></code>, <code class="docutils literal notranslate"><span class="pre">codegen-gradio-ui-server</span></code>.</p></li>
+<li><p><strong>To Run:</strong></p></li>
 </ul>
+<p>When models are deployed on a remote server, a base URL and an API key are required to access them. To set up a remote server and acquire the base URL and API key, refer to <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/topic-technology/artificial-intelligence/enterprise-inference.html">Intel® AI for Enterprise Inference</a> offerings.</p>
+<p>Set the following environment variables.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> is the HTTPS endpoint of the remote server with the model of choice (i.e. https://api.example.com). <strong>Note:</strong> If the API for the models does not use LiteLLM, the second part of the model card needs to be appended to the URL. For example, set <code class="docutils literal notranslate"><span class="pre">REMOTE_ENDPOINT</span></code> to https://api.example.com/Llama-3.3-70B-Instruct if the model card is <code class="docutils literal notranslate"><span class="pre">meta-llama/Llama-3.3-70B-Instruct</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">API_KEY</span></code> is the access token or key to access the model(s) on the server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> is the model card which may need to be overwritten depending on what it is set to <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">REMOTE_ENDPOINT</span><span class="o">=</span>&lt;https-endpoint-of-remote-server&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>&lt;model-card&gt;
+</pre></div>
+</div>
+<p>After setting these environment variables, run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span></code> with <code class="docutils literal notranslate"><span class="pre">compose_remote.yaml</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_remote.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 </section>
 </section>
 <section id="configuration-parameters">
