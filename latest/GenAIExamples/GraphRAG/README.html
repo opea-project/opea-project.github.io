@@ -422,6 +422,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">GraphRAG Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/GraphRAG_LLM_notes.html">About GraphRAG LLMs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">GraphRAG Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html">Example GraphRAG Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="example_data/README.html">GraphRAG Example Datasets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">GraphRAG E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ui/react/README.html">ChatQnA Conversational UI</a></li>
@@ -2867,74 +2868,12 @@ GraphRAG was introduced by Microsoft paper “From Local to Global: A Graph RAG 
 <li><p>For an input query the relevant communities are identified and partial answers are generated from each of the community summaries (query-focused summarization (QFS))</p></li>
 <li><p>There is a final generation stage that responds to the query based on the intermediate community answers.</p></li>
 </ul>
-<section id="deploy-graphrag-service">
-<h2>Deploy GraphRAG Service<a class="headerlink" href="#deploy-graphrag-service" title="Link to this heading">¶</a></h2>
-<p>The GraphRAG service can be effortlessly deployed on Intel Gaudi2, Intel Xeon Scalable Processors.</p>
-<p>Quick Start Deployment Steps:</p>
+<section id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Set up the environment variables.</p></li>
-<li><p>Run Docker Compose.</p></li>
-<li><p>Consume the GraphRAG Service.</p></li>
+<li><p><a class="reference internal" href="#architecture"><span class="xref myst">Architecture</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
 </ol>
-<p>Note: If you do not have Docker installed you can <a class="reference external" href="https://docs.docker.com/engine/install/">install Docker</a> first</p>
-<section id="quick-start-1-setup-environment-variable">
-<h3>Quick Start: 1.Setup Environment Variable<a class="headerlink" href="#quick-start-1-setup-environment-variable" title="Link to this heading">¶</a></h3>
-<p>To set up environment variables for deploying GraphRAG services, follow these steps:</p>
-<ol class="arabic">
-<li><p>Set the required private environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hostname</span><span class="p"> IP</span><span class="si">}</span><span class="w"> </span><span class="c1">#local IP, i.e &quot;192.168.1.1&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URI</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_url</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USERNAME</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_username</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span><span class="si">${</span><span class="nv">your_neo4j_password</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">path_to_comps</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_openai_api_key</span><span class="si">}</span><span class="w"> </span><span class="c1">#optional, when not provided will use smaller models TGI/TEI</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_token</span><span class="si">}</span><span class="w"> </span><span class="c1">#needed for TGI/TEI models</span>
-</pre></div>
-</div>
-</li>
-<li><p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span>,<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="w"> </span><span class="c1">#important to add {host_ip} for containers communication</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set up other environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># on Gaudi</span>
-<span class="nb">source</span><span class="w"> </span>./docker_compose/intel/hpu/gaudi/set_env.sh
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="quick-start-2-run-docker-compose">
-<h3>Quick Start: 2.Run Docker Compose<a class="headerlink" href="#quick-start-2-run-docker-compose" title="Link to this heading">¶</a></h3>
-<p>If the microservice images are available in Docker Hub they will be pulled, otherwise you will need to build the container images manually. Please refer to the ‘Build Docker Images’ in <a class="reference internal" href="../ChatQnA/docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Guide</span></a>. <a class="reference internal" href="#tests/test_compose_on_gaudi.sh"><span class="xref myst">test_compose_on_gaudi.sh</span></a> can be a good resource as it shows how to do image build, starting services, validated each microservices and megaservices. This is what is used in CI/CD.</p>
-<p>Docker compose will start 8 services: <img alt="8 servicesi in GraphRAG" src="../../_images/8microservices.png" /></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GraphRAG/docker_compose/intel/hpu/gaudi
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-<section id="quickstart-3-upload-rag-files-and-consume-the-graphrag-service">
-<h3>QuickStart: 3.Upload RAG Files and Consume the GraphRAG Service<a class="headerlink" href="#quickstart-3-upload-rag-files-and-consume-the-graphrag-service" title="Link to this heading">¶</a></h3>
-<p>To chat with retrieved information, you need to upload a file using <code class="docutils literal notranslate"><span class="pre">Dataprep</span></code> service.</p>
-<p>Here is an example of <code class="docutils literal notranslate"><span class="pre">Nike</span> <span class="pre">2023</span></code> pdf.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># download pdf file</span>
-wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIComps/v1.3/comps/third_parties/pathway/src/data/nke-10k-2023.pdf
-<span class="c1"># upload pdf file with dataprep</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:11103/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/graphrag<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w">  </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;,&quot;content&quot;: &quot;where do Nike subsidiaries operate?</span>
-<span class="s1">    &quot;}]}&#39;</span>
-</pre></div>
-</div>
-</section>
 </section>
 <section id="architecture-and-deploy-details">
 <h2>Architecture and Deploy details<a class="headerlink" href="#architecture-and-deploy-details" title="Link to this heading">¶</a></h2>
@@ -3002,133 +2941,24 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
         </div><blockquote>
 <div><p><strong>Note</strong>: The Dataprep and Retriever microservices use the LLM Microservice and Embedding Microservice in their implementation. For example, Dataprep uses LLM to extract entities and relationships from text to build graph and Retriever uses LLM to summarize communities (these are clusters of similar entities and their properties). Those endpoint interactions with the corresponding prompt templates are buried in the microservice implementation thus not managed by the megaservice orchestrator scheduler and not exposed in the megaservice. Shown as thin black lines in diagram.</p>
 </div></blockquote>
-<p>This GraphRAG use case performs RAG using Llama-index, Neo4J Graph Property Store and Text Generation Inference on <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi-overview.html">Intel Gaudi2</a> or <a class="reference external" href="https://www.intel.com/content/www/us/en/products/details/processors/xeon.html">Intel Xeon Scalable Processors</a>.
-In the below, we provide a table that describes for each microservice component in the GraphRAG architecture, the default configuration of the open source project, hardware, port, and endpoint.</p>
-<p>Gaudi default compose.yaml</p>
+</section>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists the available deployment options and implementation details.</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>MicroService</p></th>
-<th class="head"><p>Open Source Project</p></th>
-<th class="head"><p>HW</p></th>
-<th class="head"><p>Port</p></th>
-<th class="head"><p>Endpoint</p></th>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Deployment Method</p></th>
+<th class="head"><p>Link</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Embedding</p></td>
-<td><p>Llama-index</p></td>
-<td><p>Xeon</p></td>
-<td><p>6006</p></td>
-<td><p>/v1/embaddings</p></td>
-</tr>
-<tr class="row-odd"><td><p>Retriever</p></td>
-<td><p>Llama-index, Neo4j</p></td>
-<td><p>Xeon</p></td>
-<td><p>6009</p></td>
-<td><p>/v1/retrieval</p></td>
-</tr>
-<tr class="row-even"><td><p>LLM</p></td>
-<td><p>Llama-index, TGI</p></td>
-<td><p>Gaudi</p></td>
-<td><p>6005</p></td>
-<td><p>/v1/chat/completions</p></td>
-</tr>
-<tr class="row-odd"><td><p>Dataprep</p></td>
-<td><p>Neo4j, LlamaIndex</p></td>
-<td><p>Xeon</p></td>
-<td><p>6004</p></td>
-<td><p>/v1/dataprep/ingest</p></td>
+<tr class="row-even"><td><p>Intel Gaudi2</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Deployment on Gaudi</span></a></p></td>
 </tr>
 </tbody>
 </table>
-<section id="models-selection">
-<h3>Models Selection<a class="headerlink" href="#models-selection" title="Link to this heading">¶</a></h3>
-<p>GraphRAG quality dependents heavily on the ability to extract a high quality graph. We highly recommend using the best model available to you. Table below shows default models specified in the codebase when OPENAI_API_KEY is available and for local inference w TEI/TGI. The local models are small since those will be used in CI/CD but users should improve upon these by changing the <code class="docutils literal notranslate"><span class="pre">xxx_MODEL_ID</span></code> in <code class="docutils literal notranslate"><span class="pre">docker_compose/xxx/set_env.sh</span></code>.</p>
-<p>Working on a table comparison of various model sizes vs. naive RAG with a dataset that reflects well the benefits of GraphRAG. Stay tuned!</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Service</p></th>
-<th class="head"><p>Model</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Embedding</p></td>
-<td><p>BAAI/bge-base-en-v1.5</p></td>
-</tr>
-<tr class="row-odd"><td><p>Embedding</p></td>
-<td><p>“text-embedding-3-small”</p></td>
-</tr>
-<tr class="row-even"><td><p>LLM</p></td>
-<td><p>gpt-4o</p></td>
-</tr>
-<tr class="row-odd"><td><p>LLM</p></td>
-<td><p>“meta-llama/Meta-Llama-3-8B-Instruct”</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="consume-graphrag-service-with-rag">
-<h2>Consume GraphRAG Service with RAG<a class="headerlink" href="#consume-graphrag-service-with-rag" title="Link to this heading">¶</a></h2>
-<section id="check-service-status">
-<h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
-<p>Before consuming GraphRAG Service, make sure each microservice is ready by checking the docker logs of each microservice. <a class="reference internal" href="#tests/test_compose_on_gaudi.sh"><span class="xref myst">test_compose_on_gaudi.sh</span></a> can be a good resource as it shows how CI/CD validated each microservices based on returned HTTP status and response body.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>container_name
-</pre></div>
-</div>
-</section>
-<section id="upload-rag-files">
-<h3>Upload RAG Files<a class="headerlink" href="#upload-rag-files" title="Link to this heading">¶</a></h3>
-<p>To chat with retrieved information, you need to upload a file using <code class="docutils literal notranslate"><span class="pre">Dataprep</span></code> service.</p>
-<p>Here is an example of <code class="docutils literal notranslate"><span class="pre">Nike</span> <span class="pre">2023</span></code> pdf.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># download pdf file</span>
-wget<span class="w"> </span>https://raw.githubusercontent.com/opea-project/GenAIComps/v1.3/comps/third_parties/pathway/src/data/nke-10k-2023.pdf
-<span class="c1"># upload pdf file with dataprep</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="consume-graphrag-service">
-<h3>Consume GraphRAG Service<a class="headerlink" href="#consume-graphrag-service" title="Link to this heading">¶</a></h3>
-<p>Two ways of consuming GraphRAG Service:</p>
-<ol class="arabic simple">
-<li><p>Use cURL command on terminal</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/graphrag<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w">  </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;model&quot;: &quot;gpt-4o-mini&quot;,&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;,&quot;content&quot;: &quot;Who is John Brady and has he had any confrontations?</span>
-<span class="s1">    &quot;}]}&#39;</span>
-</pre></div>
-</div>
-<ol class="arabic" start="2">
-<li><p>Access via frontend</p>
-<p>To access the frontend, open the following URL in your browser: <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5173</span></code></p>
-<p>By default, the UI runs on port 5173 internally.</p>
-<p>If you choose conversational UI, use this URL: <code class="docutils literal notranslate"><span class="pre">http://{host_ip}:5174</span></code></p>
-</li>
-</ol>
-</section>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>If you get errors like “Access Denied”, <a class="reference internal" href="../ChatQnA/docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span>-X<span class="w"> </span>POST<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p>(Docker only) If all microservices work well, check the port ${host_ip}:8888, the port may be allocated by other users, you can modify the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-<li><p>(Docker only) If you get errors like “The container name is in use”, change container name in <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code>.</p></li>
-</ol>
-</section>
-<section id="monitoring-opea-service-with-prometheus-and-grafana-dashboard">
-<h2>Monitoring OPEA Service with Prometheus and Grafana dashboard<a class="headerlink" href="#monitoring-opea-service-with-prometheus-and-grafana-dashboard" title="Link to this heading">¶</a></h2>
-<p>OPEA microservice deployment can easily be monitored through Grafana dashboards in conjunction with Prometheus data collection. Follow the <a class="reference internal" href="../../GenAIEval/evals/benchmark/grafana/README.html"><span class="std std-doc">README</span></a> to setup Prometheus and Grafana servers and import dashboards to monitor the OPEA service.</p>
-<p><img alt="chatqna dashboards" src="../../_images/chatqna_dashboards.png" />
-<img alt="tgi dashboard" src="../../_images/tgi_dashboard1.png" /></p>
 </section>
 <section id="validated-configurations">
 <h2>Validated Configurations<a class="headerlink" href="#validated-configurations" title="Link to this heading">¶</a></h2>

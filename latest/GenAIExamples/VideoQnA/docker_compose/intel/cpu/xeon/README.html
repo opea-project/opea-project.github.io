@@ -420,6 +420,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/README.html">GraphRAG Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/docker_compose/intel/cpu/xeon/GraphRAG_LLM_notes.html">About GraphRAG LLMs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/docker_compose/intel/cpu/xeon/README.html">GraphRAG Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/docker_compose/intel/hpu/gaudi/README.html">Example GraphRAG Deployment on Intel® Gaudi® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/example_data/README.html">GraphRAG Example Datasets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/tests/README.html">GraphRAG E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../GraphRAG/ui/react/README.html">ChatQnA Conversational UI</a></li>
@@ -2859,48 +2860,58 @@
 <h1>Build Mega Service of VideoQnA on Xeon<a class="headerlink" href="#build-mega-service-of-videoqna-on-xeon" title="Link to this heading">¶</a></h1>
 <p>This document outlines the deployment process for a videoqna application utilizing the <a class="reference external" href="https://github.com/opea-project/GenAIComps.git">GenAIComps</a> microservice pipeline on Intel Xeon server. The steps include Docker image creation, container deployment via Docker Compose, and service execution to integrate microservices such as <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, <code class="docutils literal notranslate"><span class="pre">rerank</span></code>, and <code class="docutils literal notranslate"><span class="pre">lvm</span></code>. We will publish the Docker images to Docker Hub soon, it will simplify the deployment process for this service.</p>
 <p>VideoQnA is a pipeline that retrieves video based on provided user prompt. It uses only the video embeddings to perform vector similarity search in Intel’s VDMS vector database and performs all operations on Intel Xeon CPU. The pipeline supports long form videos and time-based search.</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#port-used-for-the-microservices"><span class="xref myst">Port used for the microservices</span></a></p></li>
+<li><p><a class="reference internal" href="#build-docker-images"><span class="xref myst">Build Docker Images</span></a></p></li>
+<li><p><a class="reference internal" href="#start-microservices"><span class="xref myst">Start Microservices</span></a></p></li>
+<li><p><a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-ui"><span class="xref myst">Launch the UI</span></a></p></li>
+<li><p><a class="reference internal" href="#clean-microservices"><span class="xref myst">Clean Microservices</span></a></p></li>
+</ul>
+</section>
 <section id="port-used-for-the-microservices">
-<h2>🚀 Port used for the microservices<a class="headerlink" href="#port-used-for-the-microservices" title="Link to this heading">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dataprep</span>
-<span class="o">========</span>
-<span class="n">Port</span> <span class="mi">6007</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">vdms</span><span class="o">-</span><span class="n">vector</span><span class="o">-</span><span class="n">db</span>
-<span class="o">===============</span>
-<span class="n">Port</span> <span class="mi">8001</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">embedding</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">6990</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">retriever</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">7000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">reranking</span>
-<span class="o">=========</span>
-<span class="n">Port</span> <span class="mi">8000</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">lvm</span> <span class="n">video</span><span class="o">-</span><span class="n">llama</span>
-<span class="o">===============</span>
-<span class="n">Port</span> <span class="mi">9009</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">lvm</span>
-<span class="o">===</span>
-<span class="n">Port</span> <span class="mi">9399</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">videoqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="o">==========================</span>
-<span class="n">Port</span> <span class="mi">8888</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-
-<span class="n">videoqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="o">=====================</span>
-<span class="n">Port</span> <span class="mi">5173</span> <span class="o">-</span> <span class="n">Open</span> <span class="n">to</span> <span class="mf">0.0.0.0</span><span class="o">/</span><span class="mi">0</span>
-</pre></div>
-</div>
+<h2>Port used for the microservices<a class="headerlink" href="#port-used-for-the-microservices" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Service</p></th>
+<th class="head"><p>Port</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dataprep</p></td>
+<td><p>6007</p></td>
+</tr>
+<tr class="row-odd"><td><p>vdms-vector-db</p></td>
+<td><p>8001</p></td>
+</tr>
+<tr class="row-even"><td><p>embedding</p></td>
+<td><p>6990</p></td>
+</tr>
+<tr class="row-odd"><td><p>retriever</p></td>
+<td><p>7000</p></td>
+</tr>
+<tr class="row-even"><td><p>reranking</p></td>
+<td><p>8000</p></td>
+</tr>
+<tr class="row-odd"><td><p>lvm video-llama</p></td>
+<td><p>9009</p></td>
+</tr>
+<tr class="row-even"><td><p>lvm</p></td>
+<td><p>9399</p></td>
+</tr>
+<tr class="row-odd"><td><p>videoqna-xeon-backend-server</p></td>
+<td><p>8888</p></td>
+</tr>
+<tr class="row-even"><td><p>videoqna-xeon-ui-server</p></td>
+<td><p>5173</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="build-docker-images">
-<h2>🚀 Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
+<h2>Build Docker Images<a class="headerlink" href="#build-docker-images" title="Link to this heading">¶</a></h2>
 <p>First of all, you need to build Docker Images locally and install the python package of it.</p>
 <section id="build-embedding-image">
 <h3>1. Build Embedding Image<a class="headerlink" href="#build-embedding-image" title="Link to this heading">¶</a></h3>
@@ -2968,7 +2979,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 </section>
 <section id="start-microservices">
-<h2>🚀 Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
+<h2>Start Microservices<a class="headerlink" href="#start-microservices" title="Link to this heading">¶</a></h2>
 <section id="setup-environment-variables">
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
 <p>Since the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> will consume some environment variables, you need to setup them in advance as below.</p>
@@ -2976,72 +2987,21 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <blockquote>
 <div><p>Change the <code class="docutils literal notranslate"><span class="pre">External_Public_IP</span></code> below with the actual IPV4 value</p>
 </div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span>
 </pre></div>
 </div>
 <p><strong>Export the value of your Huggingface API token to the <code class="docutils literal notranslate"><span class="pre">HF_TOKEN</span></code> environment variable</strong></p>
 <blockquote>
 <div><p>Change the <code class="docutils literal notranslate"><span class="pre">Your_Huggingface_API_Token</span></code> below with your actual Huggingface API Token value</p>
 </div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
 </pre></div>
 </div>
 <p><strong>Append the value of the public IP address to the no_proxy list</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{your_no_proxy}</span><span class="s2">,$</span><span class="si">{host_ip}</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span><span class="s2">,</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p>Then you can run below commands or <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">set_env.sh</span></code> to set all the variables</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_no_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">your_http_proxy</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">INDEX_NAME</span><span class="o">=</span><span class="s2">&quot;mega-videoqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_DOWNLOAD</span><span class="o">=</span><span class="s2">&quot;True&quot;</span><span class="w"> </span><span class="c1"># Set to &quot;False&quot; before redeploy LVM server to avoid model download</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_VIDEO_RERANKING&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_VIDEO_LLAMA_LVM&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_CLIP_EMBEDDING&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">USECLIP</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MEGA_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_SERVICE_HOST_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_PORT</span><span class="o">=</span><span class="m">8888</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_PORT</span><span class="o">=</span><span class="m">6007</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="m">6990</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MULTIMODAL_CLIP_EMBEDDER_PORT</span><span class="o">=</span><span class="m">6991</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANKING_PORT</span><span class="o">=</span><span class="m">8000</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_PORT</span><span class="o">=</span><span class="m">7000</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">UI_PORT</span><span class="o">=</span><span class="m">5173</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VDMS_PORT</span><span class="o">=</span><span class="m">8001</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_LLAMA_PORT</span><span class="o">=</span><span class="m">9009</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_HEALTH_CHECK_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">BACKEND_PORT</span><span class="si">}</span><span class="s2">/v1/health_check&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BACKEND_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">BACKEND_PORT</span><span class="si">}</span><span class="s2">/v1/videoqna&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIP_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">MULTIMODAL_CLIP_EMBEDDER_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_FILE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_GET_VIDEO_LIST_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/get_videos&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATAPREP_INGEST_SERVICE_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">DATAPREP_PORT</span><span class="si">}</span><span class="s2">/v1/dataprep/ingest&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">EMBEDDER_PORT</span><span class="si">}</span><span class="s2">/v1/embeddings&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FRONTEND_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">UI_PORT</span><span class="si">}</span><span class="s2">/_stcore/health&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VIDEO_LLAMA_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_VIDEO_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">VIDEO_LLAMA_PORT</span><span class="si">}</span><span class="s2">/generate&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">RERANKING_PORT</span><span class="si">}</span><span class="s2">/v1/reranking&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RETRIEVER_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">RETRIEVER_PORT</span><span class="si">}</span><span class="s2">/v1/retrieval&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">UI_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">UI_PORT</span><span class="si">}</span><span class="s2">/_stcore/health&quot;</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span><span class="s2">,</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">,vdms-vector-db,dataprep-vdms-server,clip-embedding-server,reranking-tei-server,retriever-vdms-server,lvm-video-llama,lvm,videoqna-xeon-backend-server,videoqna-xeon-ui-server&quot;</span>
-</pre></div>
-</div>
+<p>Then you can run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">set_env.sh</span></code> to set all the variables</p>
 <p>Note: Replace with <code class="docutils literal notranslate"><span class="pre">host_ip</span></code> with you external IP address, do not use localhost.</p>
 </section>
 <section id="start-all-the-services-with-docker-containers">
@@ -3071,8 +3031,9 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </pre></div>
 </div>
 </section>
+</section>
 <section id="validate-microservices">
-<h3>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h3>
+<h2>Validate Microservices<a class="headerlink" href="#validate-microservices" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p>Dataprep Microservice</p>
 <p>Once the microservice is up, ingest the videos files into vector store using dataprep microservice. Both single and multiple file(s) uploads are supported.</p>
@@ -3173,9 +3134,8 @@ curl<span class="w"> </span><span class="si">${</span><span class="nv">RETRIEVER
 </li>
 </ol>
 </section>
-</section>
 <section id="launch-the-ui">
-<h2>🚀 Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
+<h2>Launch the UI<a class="headerlink" href="#launch-the-ui" title="Link to this heading">¶</a></h2>
 <p>To access the frontend, open the following URL in your browser: http://{host_ip}:5173. By default, the UI runs on port 5173 internally. If you prefer to use a different host port to access the frontend, you can modify the port mapping in the <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file as shown below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">videoqna-xeon-ui-server</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/videoqna-ui:latest</span>
