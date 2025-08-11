@@ -28,7 +28,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Validate Workflow Agent Microservice" href="tests/README.html" />
+    <link rel="next" title="Deploying WorkflowExecAgent on Intel® Xeon® Processors" href="docker_compose/intel/cpu/xeon/README.html" />
     <link rel="prev" title="VisualQnA E2E test scripts" href="../VisualQnA/tests/README.html" /> 
 </head>
 
@@ -525,6 +525,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#workflowexecagent-application">WorkflowExecAgent Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Workflow Executor Agent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html">Deploying WorkflowExecAgent on Intel® Xeon® Processors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tests/README.html">Validate Workflow Agent Microservice</a></li>
 </ul>
 </li>
@@ -633,21 +634,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../microservices/index.html#animation-microservice">Animation Microservice</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html">Avatar Animation Microservice</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#start-microservice-with-docker-option-1">🚀1. Start Microservice with Docker (option 1)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#build-the-docker-images">1.1 Build the Docker images</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#set-environment-variables">1.2. Set environment variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/deployment/docker_compose/README.html">Deploying Avatar Animation Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/deployment/docker_compose/README.html#quick-start-with-docker-compose">🚀 1. Quick Start with Docker Compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/deployment/docker_compose/README.html#manual-step-by-step-deployment-advanced">🚀 2. Manual Step-by-Step Deployment (Advanced)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-the-docker-container">🚀2. Run the Docker container</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-wav2lip-microservice">2.1 Run Wav2Lip Microservice</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#run-animation-microservice">2.2 Run Animation Microservice</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#start-microservice-with-docker-compose">🚀3. Start Microservice with Docker Compose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-microservice">🚀4. Validate Microservice</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-wav2lip-service">4.1 Validate Wav2Lip service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validate-animation-service">4.2 Validate Animation service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html">Avatar Animation Microservice</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#architecture">Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#deployment-options">Deployment Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../GenAIComps/comps/animation/src/README.html#validated-configurations">Validated Configurations</a></li>
 </ul>
 </li>
 </ul>
@@ -2858,59 +2854,43 @@
              
   <section id="workflow-executor-agent">
 <h1>Workflow Executor Agent<a class="headerlink" href="#workflow-executor-agent" title="Link to this heading">¶</a></h1>
-<section id="quick-start-key-configuration-variables">
-<h2>Quick Start: Key Configuration Variables<a class="headerlink" href="#quick-start-key-configuration-variables" title="Link to this heading">¶</a></h2>
-<p>Before proceeding, here are some key configuration variables needed for the workflow executor agent.</p>
-<ul>
-<li><p><strong>SDK_BASE_URL</strong>: The URL to your platform workflow serving API.</p>
-<p>Example: <code class="docutils literal notranslate"><span class="pre">http://&lt;your-server-ip&gt;:5000/</span></code></p>
-<p>This is where the agent will send workflow execution requests.</p>
-</li>
-<li><p><strong>SERVING_TOKEN</strong>: The authentication bearer token which is used in the <code class="docutils literal notranslate"><span class="pre">RequestHandler</span></code> class as <code class="docutils literal notranslate"><span class="pre">api_key</span></code>. This is used for authenticating API requests. 3rd party platforms can design their serving workflow API this way for user authentication.</p>
-<p>More details can be found in the code <a class="reference internal" href="#tools/utils/handle_requests.py#L23"><span class="xref myst">handle_requests.py</span></a></p>
-</li>
-</ul>
-<blockquote>
-<div><p><strong>How to get these values:</strong></p>
-<ul class="simple">
-<li><p>If you are using the provided example workflow API, refer to the test <a class="reference internal" href="tests/README.html"><span class="std std-doc">README.md</span></a></p></li>
-<li><p>For your own platform, refer to your API documentation or administrator for the correct values. If you are a platform provider you may refer to <a class="reference internal" href="#workflow-building-platform"><span class="xref myst">Workflow Building Platform</span></a> section for prerequisites on setting up a serving workflow.</p></li>
-</ul>
-</div></blockquote>
-<p>For more info on using these variables, refer to the <a class="reference internal" href="#microservice-setup"><span class="xref myst">Microservice Setup</span></a> section below on using the <a class="reference internal" href="#tests/example_workflow/"><span class="xref myst">Example Workflow API</span></a> for a working example.</p>
-<p>Set these variables in your environment before starting the service.</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#overview"><span class="xref myst">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#deployment-options"><span class="xref myst">Deployment Options</span></a></p></li>
+<li><p><a class="reference internal" href="#roadmap"><span class="xref myst">Roadmap</span></a></p></li>
+</ol>
 </section>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>GenAI Workflow Executor Example showcases the capability to handle data/AI workflow operations via LangChain agents to execute custom-defined workflow-based tools. These workflow tools can be interfaced from any 3rd-party tools in the market (no-code/low-code/IDE) such as Alteryx, RapidMiner, Power BI, Intel Data Insight Automation which allows users to create complex data/AI workflow operations for different use-cases.</p>
+<p>GenAI Workflow Executor Example showcases the capability to handle data/AI workflow operations via LangChain agents to execute custom-defined workflow-based tools. These workflow tools can be interfaced from any 3rd-party tools in the market (no-code/low-code/IDE) such as Alteryx, RapidMiner, Power BI, and Intel Data Insight Automation, which allows users to create complex data/AI workflow operations for different use-cases.</p>
 <section id="definitions">
 <h3>Definitions<a class="headerlink" href="#definitions" title="Link to this heading">¶</a></h3>
-<p>Before we begin, here are the definitions to some terms for clarity:</p>
+<p>Before we begin, here are the definitions for some terms for clarity:</p>
 <ul class="simple">
-<li><p>servable/serving workflow - A workflow made ready to be executed through API. It should be able to accept parameter injection for workflow scheduling and have a way to retrieve the final output data. It should also have a unique workflow ID for referencing. For platform providers guide to create their own servable workflows compatible with this example, refer to <a class="reference internal" href="#workflow-building-platform"><span class="xref myst">Workflow Building Platform</span></a></p></li>
-<li><p>SDK Class - Performs requests to interface with a 3rd-party API to perform workflow operations on the servable workflow. Found in <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code>.</p></li>
-<li><p>workflow ID - A unique ID for the servable workflow.</p></li>
-<li><p>workflow instance - An instance created from the servable workflow. It is represented as a <code class="docutils literal notranslate"><span class="pre">Workflow</span></code> class created using <code class="docutils literal notranslate"><span class="pre">DataInsightAutomationSDK.create_workflow()</span></code> under <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code>. Contains methods to <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">get_status</span></code> and <code class="docutils literal notranslate"><span class="pre">get_results</span></code> from the workflow.</p></li>
+<li><p><strong>Servable/Serving Workflow</strong>: A workflow made ready to be executed through an API. It should be able to accept parameter injection for workflow scheduling and have a way to retrieve the final output data. It should also have a unique workflow ID for referencing.</p></li>
+<li><p><strong>SDK Class</strong>: Performs requests to interface with a 3rd-party API to perform workflow operations on the servable workflow. Found in <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code>.</p></li>
+<li><p><strong>Workflow ID</strong>: A unique ID for the servable workflow.</p></li>
+<li><p><strong>Workflow Instance</strong>: An instance created from the servable workflow. It is represented as a <code class="docutils literal notranslate"><span class="pre">Workflow</span></code> class created using <code class="docutils literal notranslate"><span class="pre">DataInsightAutomationSDK.create_workflow()</span></code> under <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code>. It contains methods to <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">get_status</span></code>, and <code class="docutils literal notranslate"><span class="pre">get_results</span></code> from the workflow.</p></li>
 </ul>
 </section>
-<section id="workflow-executor">
-<h3>Workflow Executor<a class="headerlink" href="#workflow-executor" title="Link to this heading">¶</a></h3>
-<p>Strategy - This example demonstrates a single React-LangGraph with a <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool to ingest a user prompt to execute workflows and return an agent reasoning response based on the workflow output data.</p>
-<p>First the LLM extracts the relevant information from the user query based on the schema of the tool in <code class="docutils literal notranslate"><span class="pre">tools/tools.yaml</span></code>. Then the agent sends this <code class="docutils literal notranslate"><span class="pre">AgentState</span></code> to the <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool.</p>
-<p><code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool requires a SDK class to call the servable workflow API. In the code, <code class="docutils literal notranslate"><span class="pre">DataInsightAutomationSDK</span></code> is the example class as seen under <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code> to interface with several high-level API’s. There are 3 steps to this tool implementation:</p>
+<section id="workflow-executor-strategy">
+<h3>Workflow Executor Strategy<a class="headerlink" href="#workflow-executor-strategy" title="Link to this heading">¶</a></h3>
+<p>This example demonstrates a single ReAct-LangGraph with a <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool to ingest a user prompt, execute workflows, and return an agent-reasoned response based on the workflow output data.</p>
+<p>First, the LLM extracts the relevant information from the user query based on the schema of the tool in <code class="docutils literal notranslate"><span class="pre">tools/tools.yaml</span></code>. Then the agent sends this <code class="docutils literal notranslate"><span class="pre">AgentState</span></code> to the <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool requires an SDK class to call the servable workflow API. In the code, <code class="docutils literal notranslate"><span class="pre">DataInsightAutomationSDK</span></code> is the example class (as seen under <code class="docutils literal notranslate"><span class="pre">tools/sdk.py</span></code>) to interface with several high-level APIs. There are 3 steps to this tool implementation:</p>
 <ol class="arabic simple">
-<li><p>Starts the workflow with workflow parameters and workflow id extracted from the user query.</p></li>
-<li><p>Periodically checks the workflow status for completion or failure. This may be through a database which stores the current status of the workflow</p></li>
+<li><p>Starts the workflow with workflow parameters and a workflow ID extracted from the user query.</p></li>
+<li><p>Periodically checks the workflow status for completion or failure. This may be through a database which stores the current status of the workflow.</p></li>
 <li><p>Retrieves the output data from the workflow through a storage service.</p></li>
 </ol>
 <p>The <code class="docutils literal notranslate"><span class="pre">AgentState</span></code> is sent back to the LLM for reasoning. Based on the output data, the LLM generates a response to answer the user’s input prompt.</p>
-<p>Below shows an illustration of this flow:</p>
+<p>Below is an illustration of this flow:</p>
 <p><img alt="image" src="https://github.com/user-attachments/assets/cb135042-1505-4aef-8822-c78c2f72aa2a" /></p>
 </section>
 <section id="workflow-serving-for-agent">
 <h3>Workflow Serving for Agent<a class="headerlink" href="#workflow-serving-for-agent" title="Link to this heading">¶</a></h3>
-<section id="workflow-building-platform">
-<h4>Workflow Building Platform<a class="headerlink" href="#workflow-building-platform" title="Link to this heading">¶</a></h4>
 <p>The first step is to prepare a servable workflow using a platform with the capabilities to do so.</p>
 <p>As an example, here we have a Churn Prediction use-case workflow as the serving workflow for the agent execution. It is created through Intel Data Insight Automation platform. The image below shows a snapshot of the Churn Prediction workflow.</p>
 <p><img alt="image" src="https://github.com/user-attachments/assets/c067f8b3-86cf-4abc-a8bd-51a98de8172d" /></p>
@@ -2931,93 +2911,28 @@
 Remember to create a unique workflow ID along with the servable workflow.</p>
 </div></blockquote>
 </section>
-<section id="using-servable-workflow">
-<h4>Using Servable Workflow<a class="headerlink" href="#using-servable-workflow" title="Link to this heading">¶</a></h4>
-<p>Once we have our servable workflow ready, the serving workflow API can be prepared to accept requests from the SDK class. Refer to <a class="reference internal" href="#start-agent-microservice"><span class="xref myst">Start Agent Microservice</span></a> on how to do this.</p>
-<p>To start prompting the agent microservice, we will use the following command for this churn prediction use-case:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;query&quot;: &quot;I have a data with gender Female, tenure 55, MonthlyAvgCharges 103.7. Predict if this entry will churn. My workflow id is &#39;</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="s1">&#39;.&quot;</span>
-<span class="s1">    }&#39;</span>
-</pre></div>
-</div>
-<p>The user has to provide a <code class="docutils literal notranslate"><span class="pre">workflow_id</span></code> and workflow <code class="docutils literal notranslate"><span class="pre">params</span></code> in the query. Notice that the <code class="docutils literal notranslate"><span class="pre">query</span></code> string includes all the workflow <code class="docutils literal notranslate"><span class="pre">params</span></code> which the user has defined in the workflow. The LLM will extract these parameters into a dictionary format for the workflow <code class="docutils literal notranslate"><span class="pre">Serving</span> <span class="pre">Parameters</span></code> as shown below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">,</span> <span class="s2">&quot;tenure&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> <span class="s2">&quot;MonthlyAvgCharges&quot;</span><span class="p">:</span> <span class="mf">103.7</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>These parameters will be passed into the <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Executor</span></code> tool to start the workflow execution of specified <code class="docutils literal notranslate"><span class="pre">workflow_id</span></code>. Thus, everything will be handled via the microservice.</p>
-<p>And finally here are the results from the microservice logs:</p>
-<p><img alt="image" src="https://github.com/user-attachments/assets/969fefb7-543d-427f-a56c-dc70e474ae60" /></p>
 </section>
-</section>
-</section>
-<section id="microservice-setup">
-<h2>Microservice Setup<a class="headerlink" href="#microservice-setup" title="Link to this heading">¶</a></h2>
-<section id="start-agent-microservice">
-<h3>Start Agent Microservice<a class="headerlink" href="#start-agent-microservice" title="Link to this heading">¶</a></h3>
-<p>For an out-of-box experience there is an example workflow serving API service prepared for users under <a class="reference internal" href="#tests/example_workflow/"><span class="xref myst">Example Workflow API</span></a> to interface with the SDK. This section will guide users on setting up this service as well. Users may modify the logic, add your own database etc for your own use-case.</p>
-<p>There are 3 services needed for the setup:</p>
-<ol class="arabic simple">
-<li><p>Agent microservice</p></li>
-<li><p>LLM inference service - specified as <code class="docutils literal notranslate"><span class="pre">llm_endpoint_url</span></code>.</p></li>
-<li><p>workflow serving API service - specified as <code class="docutils literal notranslate"><span class="pre">SDK_BASE_URL</span></code></p></li>
-</ol>
-<p>Workflow Executor will have a single docker image. First, build the agent docker image.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples//WorkflowExecAgent/docker_image_build/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>build.yaml<span class="w"> </span>build<span class="w"> </span>--no-cache
-</pre></div>
-</div>
-<p>Configure <code class="docutils literal notranslate"><span class="pre">GenAIExamples/WorkflowExecAgent/docker_compose/.env</span></code> file with the following. Replace the variables according to your usecase.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">wf_api_port</span><span class="o">=</span><span class="m">5000</span><span class="w">     </span><span class="c1"># workflow serving API port to use</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SDK_BASE_URL</span><span class="o">=</span>http://<span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>:<span class="si">${</span><span class="nv">wf_api_port</span><span class="si">}</span>/<span class="w">      </span><span class="c1"># The workflow server will use this example workflow API url</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SERVING_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">SERVING_TOKEN</span><span class="si">}</span><span class="w">           </span><span class="c1"># Authentication token. For example_workflow test, can be empty as no authentication required.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span><span class="si">${</span><span class="nv">llm_engine</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span><span class="si">${</span><span class="nv">llm_endpoint_url</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">WORKDIR</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKDIR</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TOOLSET_PATH</span><span class="o">=</span><span class="nv">$WORKDIR</span>/GenAIExamples/WorkflowExecAgent/tools/
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
-
-<span class="c1"># LLM variables</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="si">${</span><span class="nv">recursion_limit</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">temperature</span><span class="o">=</span><span class="m">0</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">max_new_tokens</span><span class="o">=</span><span class="m">1000</span>
-</pre></div>
-</div>
-<p>Launch service by running the docker compose command.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/WorkflowExecAgent/docker_compose
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-<p>To launch the example workflow API server, open a new terminal and run the following:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/WorkflowExecAgent/tests/example_workflow
-.<span class="w"> </span>launch_workflow_service.sh
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">launch_workflow_service.sh</span></code> will setup all the packages locally and launch the uvicorn server to host the API on port 5000. For a Dockerfile method, please refer to <code class="docutils literal notranslate"><span class="pre">Dockerfile.example_workflow_api</span></code> file.</p>
-</section>
-<section id="validate-service">
-<h3>Validate service<a class="headerlink" href="#validate-service" title="Link to this heading">¶</a></h3>
-<p>The agent microservice logs can be viewed using:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>workflowexec-agent-endpoint
-</pre></div>
-</div>
-<p>You should be able to see “HTTP server setup successful” upon successful startup.</p>
-<p>You can validate the service using the following command:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;query&quot;: &quot;I have a data with gender Female, tenure 55, MonthlyCharges 103.7, TotalCharges 1840.75. Predict if this entry will churn. My workflow id is &#39;</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="s1">&#39;.&quot;</span>
-<span class="s1">    }&#39;</span>
-</pre></div>
-</div>
-<p>Update the <code class="docutils literal notranslate"><span class="pre">query</span></code> with the workflow parameters, workflow id, etc based on the workflow context.</p>
-</section>
-</section>
-<section id="roadmap">
-<h2>Roadmap<a class="headerlink" href="#roadmap" title="Link to this heading">¶</a></h2>
-<p>Phase II: Agent memory integration to enable capability to store tool intermediate results, such as workflow instance key.</p>
+<section id="deployment-options">
+<h2>Deployment Options<a class="headerlink" href="#deployment-options" title="Link to this heading">¶</a></h2>
+<p>The table below lists currently available deployment options. They outline in detail the implementation of this example on selected hardware.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Deployment Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>On-premise Deployments</p></td>
+<td><p>Docker compose</p></td>
+<td><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">WorkflowExecAgent deployment on Xeon</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Kubernetes</p></td>
+<td><p>Work-in-progress</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="validated-configurations">
 <h2>Validated Configurations<a class="headerlink" href="#validated-configurations" title="Link to this heading">¶</a></h2>
@@ -3034,6 +2949,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </tbody>
 </table>
 </section>
+<section id="roadmap">
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Link to this heading">¶</a></h2>
+<p>Phase II: Agent memory integration to enable the capability to store tool intermediate results, such as a workflow instance key.</p>
+</section>
 </section>
 
 
@@ -3042,7 +2961,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../VisualQnA/tests/README.html" class="btn btn-neutral float-left" title="VisualQnA E2E test scripts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tests/README.html" class="btn btn-neutral float-right" title="Validate Workflow Agent Microservice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docker_compose/intel/cpu/xeon/README.html" class="btn btn-neutral float-right" title="Deploying WorkflowExecAgent on Intel® Xeon® Processors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
