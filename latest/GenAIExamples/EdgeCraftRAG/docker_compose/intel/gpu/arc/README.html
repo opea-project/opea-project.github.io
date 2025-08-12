@@ -409,6 +409,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../docs/Query_Search_Zh.html">Query Search</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../docs/Quick_Start_Guide_Zh.html">快速启动指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tools/README.html">EdgeCraftRAG one-click deployment script</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -2885,11 +2886,11 @@
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
 <li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
-<li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
+<li><p><a class="reference internal" href="#prepare-models"><span class="xref myst">Prepare models</span></a></p></li>
+<li><p><a class="reference internal" href="#prepare-env-variables-and-configurations"><span class="xref myst">Prepare env variables and configurations</span></a></p></li>
 <li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
 <li><p><a class="reference internal" href="#deploy-the-service-using-docker-compose"><span class="xref myst">Deploy the Service Using Docker Compose</span></a></p></li>
-<li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
-<li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
+<li><p><a class="reference internal" href="#access-ui"><span class="xref myst">Access UI</span></a></p></li>
 <li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
 </ol>
 <section id="prerequisites">
@@ -2897,14 +2898,14 @@
 <p>EC-RAG supports vLLM deployment(default method) and local OpenVINO deployment for Intel Arc GPU. Prerequisites are shown as below:<br />
 Hardware: Intel Arc A770<br />
 OS: Ubuntu Server 22.04.1 or newer (at least 6.2 LTS kernel)<br />
-Driver &amp; libraries: please refer to <a class="reference external" href="https://dgpu-docs.intel.com/driver/client/overview.html">Installing Client GPUs</a> for detailed driver &amp; libraries setup</p>
+Driver &amp; libraries: please to <a class="reference external" href="https://dgpu-docs.intel.com/driver/installation-rolling.html#installing-gpu-drivers">Installing GPUs Drivers</a> for detailed driver &amp; libraries setup</p>
 <p>Below steps are based on <strong>vLLM</strong> as inference engine, if you want to choose <strong>OpenVINO</strong>, please refer to <a class="reference internal" href="../../../../docs/Advanced_Setup.html#openvino-local-inference"><span class="std std-ref">OpenVINO Local Inference</span></a></p>
 </section>
 <section id="access-the-code">
 <h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
 <p>Clone the GenAIExample repository and access the EdgeCraftRAG Intel® Arc® platform Docker Compose files and supporting scripts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">opea</span><span class="o">-</span><span class="n">project</span><span class="o">/</span><span class="n">GenAIExamples</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">EdgeCraftRAG</span><span class="o">/</span><span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span><span class="n">arc</span><span class="o">/</span>
+<span class="n">cd</span> <span class="n">GenAIExamples</span><span class="o">/</span><span class="n">EdgeCraftRAG</span>
 </pre></div>
 </div>
 <p>Checkout a released version, such as v1.3:</p>
@@ -2912,49 +2913,92 @@ Driver &amp; libraries: please refer to <a class="reference external" href="http
 </pre></div>
 </div>
 </section>
-<section id="generate-a-huggingface-access-token">
-<h3>Generate a HuggingFace Access Token<a class="headerlink" href="#generate-a-huggingface-access-token" title="Link to this heading">¶</a></h3>
-<p>Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
+<section id="prepare-models">
+<h3>Prepare models<a class="headerlink" href="#prepare-models" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare models for embedding, reranking:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
+optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
+optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
+
+<span class="c1"># Prepare LLM model</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span><span class="w"> </span><span class="c1"># Your model id</span>
+pip<span class="w"> </span>install<span class="w"> </span>modelscope
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># Optionally, you can also download models with huggingface:</span>
+<span class="c1"># pip install -U huggingface_hub</span>
+<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir &quot;${MODEL_PATH}/${LLM_MODEL}&quot;</span>
+</pre></div>
+</div>
 </section>
-<section id="configure-the-deployment-environment">
-<h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
-<p>Below steps are for single Intel Arc GPU inference, if you want to setup multi Intel Arc GPUs inference, please refer to <a class="reference internal" href="../../../../docs/Advanced_Setup.html#multi-arc-setup"><span class="std std-ref">Multi-ARC Setup</span></a>
-To set up environment variables for deploying EdgeCraftRAG service, source the set_env.sh script in this directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
+<section id="prepare-env-variables-and-configurations">
+<h3>Prepare env variables and configurations<a class="headerlink" href="#prepare-env-variables-and-configurations" title="Link to this heading">¶</a></h3>
+<p>Below steps are for single Intel Arc GPU inference, if you want to setup multi Intel Arc GPUs inference, please refer to <a class="reference internal" href="../../../../docs/Advanced_Setup.html#multi-arc-setup"><span class="std std-ref">Multi-ARC Setup</span></a></p>
+<section id="prepare-env-variables-for-vllm-deployment">
+<h4>Prepare env variables for vLLM deployment<a class="headerlink" href="#prepare-env-variables-for-vllm-deployment" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="c1"># Use `ip a` to check your active ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
+
+<span class="c1"># Check group id of video and render</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RENDERGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
+
+<span class="c1"># If you have a proxy configured, uncomment below line</span>
+<span class="c1"># export no_proxy=${no_proxy},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
+<span class="c1"># export NO_PROXY=${NO_PROXY},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
+<span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
+<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
+
+<span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
+<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${PWD} # the default value of DOC_PATH and TMPFILE_PATH is PWD ,so here we give permission to ${PWD}</span>
+<span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
+<span class="c1"># chown 1000:1000 -R $HOME/.cache</span>
 </pre></div>
 </div>
 <p>For more advanced env variables and configurations, please refer to <a class="reference internal" href="../../../../docs/Advanced_Setup.html#prepare-env-variables-for-vllm-deployment"><span class="std std-ref">Prepare env variables for vLLM deployment</span></a></p>
 </section>
+<section id="generate-nginx-config-file">
+<h4>Generate nginx config file<a class="headerlink" href="#generate-nginx-config-file" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># You can set your own port for vllm service</span>
+<span class="c1"># Generate your nginx config file</span>
+<span class="c1"># nginx-conf-generator.sh requires 2 parameters: DP_NUM and output filepath</span>
+bash<span class="w"> </span>nginx/nginx-conf-generator.sh<span class="w"> </span><span class="m">1</span><span class="w"> </span>nginx/nginx.conf
+<span class="c1"># set NGINX_CONFIG_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/nginx/nginx.conf&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="deploy-the-service-using-docker-compose">
 <h3>Deploy the Service Using Docker Compose<a class="headerlink" href="#deploy-the-service-using-docker-compose" title="Link to this heading">¶</a></h3>
-<p>To deploy the EdgeCraftRAG service, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, by default milvus is disabled, you can choose to set MILVUS_ENABLED=1 to enable it</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MILVUS_ENABLED</span><span class="o">=</span><span class="m">0</span>
+<span class="c1"># If you enable Milvus, the default storage path is PWD, uncomment if you want to change:</span>
+<span class="c1"># export DOCKER_VOLUME_DIRECTORY= # change to your preference</span>
+
+<span class="c1"># EC-RAG support chat history round setting, by default chat history is disabled, you can set CHAT_HISTORY_ROUND to control it</span>
+<span class="c1"># export CHAT_HISTORY_ROUND= # change to your preference</span>
+
+<span class="c1"># Launch EC-RAG service with compose</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose_vllm.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>The EdgeCraftRAG docker images should automatically be downloaded from the <code class="docutils literal notranslate"><span class="pre">OPEA</span> <span class="pre">registry</span></code> and deployed on the Intel® Arc® Platform</p>
 </section>
-<section id="check-the-deployment-status">
-<h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
-<p>After running docker compose, check if all the containers launched via docker compose have started:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
-</pre></div>
-</div>
-<p>For the default deployment, the following 5 containers should be running:</p>
-</section>
-<section id="test-the-pipeline">
-<h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
-<p>Once the EdgeCraftRAG service are running, test the pipeline using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:16011/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;messages&quot;:&quot;What is the test id?&quot;,&quot;max_tokens&quot;:5 }&#39;</span>
-</pre></div>
-</div>
-<p>For detailed operations on UI and EC-RAG settings, please refer to <a class="reference internal" href="../../../../docs/Explore_Edge_Craft_RAG.html"><span class="std std-doc">Explore_Edge_Craft_RAG</span></a></p>
-<p><strong>Note</strong> The value of <em>host_ip</em> was set using the <em>set_env.sh</em> script and can be found in the <em>.env</em> file.</p>
+<section id="access-ui">
+<h3>Access UI<a class="headerlink" href="#access-ui" title="Link to this heading">¶</a></h3>
+<p>Open your browser, access http://${HOST_IP}:8082</p>
+<blockquote>
+<div><p>Your browser should be running on the same host of your console, otherwise you will need to access UI with your host domain name instead of ${HOST_IP}.</p>
+</div></blockquote>
+<p>Below is the UI front page, for detailed operations on UI and EC-RAG settings, please refer to <a class="reference internal" href="../../../../docs/Explore_Edge_Craft_RAG.html"><span class="std std-doc">Explore_Edge_Craft_RAG</span></a>
+<img alt="front_page" src="../../../../../../_images/front_page.png" /></p>
 </section>
 <section id="cleanup-the-deployment">
 <h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
 <p>To stop the containers associated with the deployment, execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">gpu</span><span class="o">/</span><span class="n">arc</span><span class="o">/</span><span class="n">compose_vllm</span><span class="o">.</span><span class="n">yaml</span> <span class="n">down</span>
 </pre></div>
 </div>
 <p>All the EdgeCraftRAG containers will be stopped and then removed on completion of the “down” command.</p>

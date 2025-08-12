@@ -409,6 +409,7 @@
 <li class="toctree-l4"><a class="reference internal" href="Query_Search_Zh.html">Query Search</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Quick_Start_Guide_Zh.html">快速启动指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG one-click deployment script</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -2961,7 +2962,7 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 
 <span class="c1"># By default, the ports of the containers are set, uncomment if you want to change</span>
 <span class="c1"># export MEGA_SERVICE_PORT=16011</span>
-<span class="c1"># export PIPELINE_SERVICE_PORT=16011</span>
+<span class="c1"># export PIPELINE_SERVICE_PORT=16010</span>
 <span class="c1"># export UI_SERVICE_PORT=&quot;8082&quot;</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
@@ -2978,6 +2979,12 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <span class="c1"># If you enable Milvus, the default storage path is PWD, uncomment if you want to change:</span>
 <span class="c1"># export DOCKER_VOLUME_DIRECTORY= # change to your preference</span>
 
+<span class="c1"># EC-RAG support chat history round setting, by default chat history is disabled, you can set CHAT_HISTORY_ROUND to control it</span>
+<span class="c1"># export CHAT_HISTORY_ROUND= # change to your preference</span>
+
+<span class="c1"># EC-RAG support pipeline performance benchmark, use ENABLE_BENCHMARK=true/false to turn on/off benchmark</span>
+<span class="c1"># export ENABLE_BENCHMARK= # change to your preference</span>
+
 <span class="c1"># Launch EC-RAG service with compose</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
@@ -2988,7 +2995,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h2>Multi-ARC Setup<a class="headerlink" href="#multi-arc-setup" title="Link to this heading">¶</a></h2>
 <p>EC-RAG support run inference with multi-ARC in multiple isolated containers
 Docker Images preparation is the same as local inference section, please refer to <a class="reference internal" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own"><span class="xref myst">Build Docker Images</span></a>
-Model preparation is the same as vLLM inference section, please refer to <a class="reference internal" href="../README.html#prepare-models"><span class="std std-ref">Prepare models</span></a>
+Model preparation is the same as vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-models"><span class="std std-ref">Prepare models</span></a>
 After docker images preparation and model preparation, please follow below steps to run multi-ARC Setup(Below steps show 2 vLLM container(2 DP) with multi Intel Arc GPUs):</p>
 <section id="id1">
 <h3>1. Prepare env variables and configurations<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
@@ -3015,7 +3022,7 @@ After docker images preparation and model preparation, please follow below steps
 
 <span class="c1"># By default, the ports of the containers are set, uncomment if you want to change</span>
 <span class="c1"># export MEGA_SERVICE_PORT=16011</span>
-<span class="c1"># export PIPELINE_SERVICE_PORT=16011</span>
+<span class="c1"># export PIPELINE_SERVICE_PORT=16010</span>
 <span class="c1"># export UI_SERVICE_PORT=&quot;8082&quot;</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
@@ -3034,8 +3041,8 @@ After docker images preparation and model preparation, please follow below steps
 
 <span class="c1"># Below are the extra env you can set for vllm</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_SEQS</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="c1"># MAX_NUM_SEQS value</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span><span class="m">4000</span><span class="w"> </span><span class="c1"># MAX_NUM_BATCHED_TOKENS value</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">3000</span><span class="w"> </span><span class="c1"># MAX_MODEL_LEN value</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="c1"># MAX_NUM_BATCHED_TOKENS value</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="c1"># MAX_MODEL_LEN value</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LOAD_IN_LOW_BIT</span><span class="o">=</span>fp8<span class="w"> </span><span class="c1"># the weight type value, expected: sym_int4, asym_int4, sym_int5, asym_int5 or sym_int8</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">CCL_DG2_USM</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="c1"># Need to set to 1 on Core to enable USM (Shared Memory GPUDirect). Xeon supports P2P and doesn&#39;t need this.</span>
 </pre></div>
@@ -3058,7 +3065,7 @@ bash<span class="w"> </span>docker_compose/intel/gpu/arc/multi-arc-yaml-generato
 </section>
 <section id="id2">
 <h3>3. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<p>This section is the same as default vLLM inference section, please refer to <a class="reference internal" href="../README.html#start-edge-craft-rag-services-with-docker-compose"><span class="std std-ref">Start Edge Craft RAG Services with Docker Compose</span></a></p>
+<p>This section is the same as default vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#deploy-the-service-using-docker-compose"><span class="std std-ref">Start Edge Craft RAG Services with Docker Compose</span></a></p>
 </section>
 </section>
 </section>
