@@ -901,6 +901,21 @@
 <li class="toctree-l4"><a class="reference internal" href="doc/Prepare_dataset.html#dataset-for-clip">Dataset for CLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="doc/Prepare_dataset.html#dataset-for-adaclip">Dataset for AdaCLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="doc/Prepare_dataset.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Prepare_dataset.html#dataset-for-qwen2-vl-finetune">Dataset for Qwen2-VL Finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Prepare_dataset.html#update-dataset-info-json">Update dataset_info.json</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="doc/Qwen2-VL_README.html">Qwen2-VL Training and Hyperparameter Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#features">🚀 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#running-modes">📋 Running Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#usage">🛠️ Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#id1"></a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#configuration-parameters">⚙️ Configuration Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#optuna-features">🔍 Optuna features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#log-control">💡 Log Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#output-and-results">📊 Output and Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#complete-examples">📝 Complete Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="doc/Qwen2-VL_README.html#finetune-qwen2-vl-with-logging-eval-loss">Finetune qwen2-vl with logging eval loss</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="doc/adaclip_readme.html">AdaCLIP-Finetune</a></li>
@@ -3005,6 +3020,77 @@ You can access in web through http://localhost:7860/</p>
 <span class="c1"># Please see README.md in src/llamafactory/adaclip_finetune for detail</span>
 </pre></div>
 </div>
+</section>
+<section id="qwen2-vl-training-and-hyperparameter-optimization">
+<h3>Qwen2-VL Training and Hyperparameter Optimization<a class="headerlink" href="#qwen2-vl-training-and-hyperparameter-optimization" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Please see Qwen2-VL_README.md in doc for detail, bolow are simple use</span>
+</pre></div>
+</div>
+<section id="step-1-finetune-qwen2-vl-with-logging-eval-loss">
+<h4>Step 1: Finetune qwen2-vl with logging eval loss<a class="headerlink" href="#step-1-finetune-qwen2-vl-with-logging-eval-loss" title="Link to this heading">¶</a></h4>
+<p>If you want to finetune with plotting eval loss, please set eval_strategy as steps, eval_stepsand eval_dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Finetune qwen2-vl with logging eval loss
+export DATA=&#39;where you can find dataset_info.json&#39;
+export dataset=activitynet_qa_2000_limit_20s                    # to point which dataset llamafactory will use
+export eval_dataset=activitynet_qa_val_500_limit_20s
+llamafactory-cli train \
+    --stage sft \
+    --do_train True \
+    --model_name_or_path $models/Qwen2-VL-7B-Instruct-GPTQ-Int8 \
+    --preprocessing_num_workers 16 \
+    --finetuning_type lora \
+    --template qwen2_vl \
+    --flash_attn auto \
+    --dataset_dir $DATA \
+    --dataset $dataset \
+    --cutoff_len 2048 \
+    --learning_rate 5e-05 \
+    --num_train_epochs 20.0 \
+    --max_samples 100000 \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 8 \
+    --lr_scheduler_type cosine \
+    --max_grad_norm 1.0 \
+    --logging_steps 10 \
+    --save_steps 100 \
+    --warmup_steps 100 \
+    --packing False \
+    --report_to none \
+    --output_dir saves/Qwen2-VL-7B-Instruct-GPTQ-Int8/lora/finetune_test_valmetrics_evalstep8 \
+    --bf16 True \
+    --plot_loss True \
+    --ddp_timeout 180000000 \
+    --optim adamw_torch \
+    --video_fps 0.1 \
+    --per_device_eval_batch_size 1 \
+    --eval_strategy steps \
+    --eval_steps 100 \
+    --eval_dataset ${eval_dataset} \
+    --predict_with_generate true \
+    --lora_rank 8 \
+    --lora_alpha 16 \
+    --lora_dropout 0 \
+    --lora_target all
+</pre></div>
+</div>
+</section>
+<section id="step-2-evaluation-metrics-calculation-and-plotting">
+<h4>step 2: Evaluation metrics calculation and plotting<a class="headerlink" href="#step-2-evaluation-metrics-calculation-and-plotting" title="Link to this heading">¶</a></h4>
+<p>If you want to plot eval metrics:
+Change <code class="docutils literal notranslate"><span class="pre">MODEL_NAME</span></code>,<code class="docutils literal notranslate"><span class="pre">EXPERIENT_NAME</span></code>,<code class="docutils literal notranslate"><span class="pre">EVAL_DATASET</span></code> as you need and run evaluation metrics calculation sctrpt:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">MODEL_DIR</span> <span class="o">=</span> <span class="n">where</span> <span class="n">can</span> <span class="n">find</span> <span class="nb">eval</span> <span class="n">model</span>
+<span class="n">export</span> <span class="n">MODEL_NAME</span><span class="o">=</span><span class="s2">&quot;Qwen2-VL-2B-Instruct&quot;</span>
+<span class="n">export</span> <span class="n">EXPERIENT_NAME</span><span class="o">=</span><span class="s2">&quot;finetune_onlyplot_evalloss_5e-6&quot;</span>
+<span class="n">export</span> <span class="n">EVAL_DATASET</span><span class="o">=</span><span class="n">activitynet_qa_val_500_limit_20s</span>
+<span class="n">chmod</span> <span class="n">a</span><span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="n">doc</span><span class="o">/</span><span class="n">run_eval</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">doc</span><span class="o">/</span><span class="n">run_eval</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Change <code class="docutils literal notranslate"><span class="pre">model_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">plot_metrics</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">model_name</span> <span class="n">your_model_name</span> <span class="o">--</span><span class="n">experiment_name</span> <span class="n">your_experiment_name</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="deepseek-r1-distillation-not-main-function">
 <h3>DeepSeek-R1 Distillation(not main function)<a class="headerlink" href="#deepseek-r1-distillation-not-main-function" title="Link to this heading">¶</a></h3>

@@ -28,7 +28,7 @@
     <script src="../../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../../search.html" />
-    <link rel="next" title="AdaCLIP-Finetune" href="adaclip_readme.html" />
+    <link rel="next" title="Qwen2-VL Training and Hyperparameter Optimization" href="Qwen2-VL_README.html" />
     <link rel="prev" title="XTune - Model finetune tool for Intel GPU" href="../README.html" /> 
 </head>
 
@@ -901,6 +901,21 @@
 <li class="toctree-l4"><a class="reference internal" href="#dataset-for-clip">Dataset for CLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dataset-for-adaclip">Dataset for AdaCLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dataset-for-qwen2-vl-finetune">Dataset for Qwen2-VL Finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-dataset-info-json">Update dataset_info.json</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Qwen2-VL_README.html">Qwen2-VL Training and Hyperparameter Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#features">🚀 Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#running-modes">📋 Running Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#usage">🛠️ Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#id1"></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#configuration-parameters">⚙️ Configuration Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#optuna-features">🔍 Optuna features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#log-control">💡 Log Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#output-and-results">📊 Output and Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#complete-examples">📝 Complete Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#finetune-qwen2-vl-with-logging-eval-loss">Finetune qwen2-vl with logging eval loss</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="adaclip_readme.html">AdaCLIP-Finetune</a></li>
@@ -2992,6 +3007,156 @@
 </ul>
 </section>
 </section>
+<section id="dataset-for-qwen2-vl-finetune">
+<h2>Dataset for Qwen2-VL Finetune<a class="headerlink" href="#dataset-for-qwen2-vl-finetune" title="Link to this heading">¶</a></h2>
+<section id="activitynet-qa">
+<h3>ActivityNet-QA<a class="headerlink" href="#activitynet-qa" title="Link to this heading">¶</a></h3>
+<p>Please follow https://github.com/MILVLG/activitynet-qa/tree/master to download and seperata train/val dataset</p>
+<p>Then use below python generate_llama_json_limit_frames.py file to generate our train and test dataset:
+python generate_llama_json_limit_frames.py -name val_q -type val -n 500 -seconds 20</p>
+<p>generate_llama_json_limit_frames.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ffmpeg</span>
+
+<span class="c1"># Define the path to the directory where the video files are stored</span>
+<span class="n">video_directory</span> <span class="o">=</span> <span class="s2">&quot;where to find dataset&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_video_duration</span><span class="p">(</span><span class="n">video_path</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">probe</span> <span class="o">=</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">probe</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+        <span class="n">video_stream</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">stream</span> <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">probe</span><span class="p">[</span><span class="s2">&quot;streams&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">stream</span><span class="p">[</span><span class="s2">&quot;codec_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;video&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">video_stream</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting duration for video </span><span class="si">{</span><span class="n">video_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Parse command line arguments</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate LLaMA JSON&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;train_q_3000&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of questions to process&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;data type&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-fps&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;data type&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;data type&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-seconds&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;minimum video duration in seconds&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">fps</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">fps</span>
+    <span class="n">basic_seconds</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">seconds</span>
+    <span class="n">question_json</span> <span class="o">=</span> <span class="s2">&quot;../activitynet-qa/dataset/</span><span class="si">{}</span><span class="s2">.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">answer_json</span> <span class="o">=</span> <span class="s2">&quot;../activitynet-qa/dataset/</span><span class="si">{}</span><span class="s2">_a.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+    <span class="n">combine_json</span> <span class="o">=</span> <span class="s2">&quot;../data/activitynet_qa_</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">_limit_</span><span class="si">{}</span><span class="s2">s.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">basic_seconds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;combine_json:&quot;</span><span class="p">,</span> <span class="n">combine_json</span><span class="p">)</span>
+
+    <span class="c1"># Supported video file extensions</span>
+    <span class="n">video_extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;.mp4&quot;</span><span class="p">,</span> <span class="s2">&quot;.mkv&quot;</span><span class="p">,</span> <span class="s2">&quot;webm&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load the questions and answers JSON files</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">question_json</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">question_file</span><span class="p">:</span>
+        <span class="n">questions</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">question_file</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">answer_json</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">answer_file</span><span class="p">:</span>
+        <span class="n">answers</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">answer_file</span><span class="p">)</span>
+
+    <span class="c1"># Create a dictionary to map question_id to answer for quick lookup</span>
+    <span class="n">answer_lookup</span> <span class="o">=</span> <span class="p">{</span><span class="n">answer</span><span class="p">[</span><span class="s2">&quot;question_id&quot;</span><span class="p">]:</span> <span class="n">answer</span> <span class="k">for</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">answers</span><span class="p">}</span>
+
+    <span class="n">combined_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">len_pairs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">questions</span><span class="p">)</span>
+    <span class="c1"># Process each question and look for a corresponding answer</span>
+    <span class="k">for</span> <span class="n">question</span> <span class="ow">in</span> <span class="n">questions</span><span class="p">:</span>
+        <span class="n">question_id</span> <span class="o">=</span> <span class="n">question</span><span class="p">[</span><span class="s2">&quot;question_id&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">question_id</span> <span class="ow">in</span> <span class="n">answer_lookup</span><span class="p">:</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">answer_lookup</span><span class="p">[</span><span class="n">question_id</span><span class="p">]</span>
+
+            <span class="c1"># Extract the video name typically between &#39;v_&#39; and the second underscore or end</span>
+            <span class="n">video_name_without_path</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">question_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1"># Search for the video file that matches the extracted name</span>
+            <span class="n">video_path</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">find_flag</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Walk through the directory to find matching video files</span>
+            <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">video_directory</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">video_name_without_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">video_extensions</span><span class="p">):</span>
+                        <span class="n">video_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                        <span class="n">find_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">video_path</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">find_flag</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;!!not find:&quot;</span><span class="p">,</span> <span class="n">video_name_without_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">video_path</span><span class="p">:</span>
+                <span class="n">video_duration</span> <span class="o">=</span> <span class="n">get_video_duration</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">video_duration</span> <span class="o">&gt;</span> <span class="n">basic_seconds</span><span class="p">:</span>
+                    <span class="n">combined_entry</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+                            <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&lt;video&gt;</span><span class="si">{</span><span class="n">question</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">},</span>
+                            <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">answer</span><span class="p">[</span><span class="s2">&quot;answer&quot;</span><span class="p">],</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">},</span>
+                        <span class="p">],</span>
+                        <span class="s2">&quot;videos&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">video_path</span><span class="p">],</span>
+                    <span class="p">}</span>
+                    <span class="n">combined_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">combined_entry</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">combined_data</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">combined_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">combined_data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;video_duration &lt; basic_seconds&quot;</span><span class="p">,</span> <span class="n">video_duration</span><span class="p">,</span> <span class="n">video_path</span><span class="p">)</span>
+    <span class="c1"># Write the combined data to the output JSON file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">combine_json</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">combine_file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">combined_data</span><span class="p">,</span> <span class="n">combine_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="update-dataset-info-json">
+<h2>Update dataset_info.json<a class="headerlink" href="#update-dataset-info-json" title="Link to this heading">¶</a></h2>
+<section id="dataset-info-json">
+<h3>dataset_info.json<a class="headerlink" href="#dataset-info-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;caltech101&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;file_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;caltech101.json&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ActivityNet&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;file_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ActivityNet.json&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;activitynet_qa_2000_limit_20s&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;file_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;activitynet_qa_2000_limit_20s.json&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;formatting&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sharegpt&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;messages&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;videos&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;videos&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;role_tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;role&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;content_tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;user_tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;assistant_tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="caltech101-json">
+<h3>caltech101.json<a class="headerlink" href="#caltech101-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="activitynet-json">
+<h3>ActivityNet.json<a class="headerlink" href="#activitynet-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="activitynet-qa-2000-limit-20s-json">
+<h3>activitynet_qa_2000_limit_20s.json<a class="headerlink" href="#activitynet-qa-2000-limit-20s-json" title="Link to this heading">¶</a></h3>
+<p>Generate by generate_llama_json_limit_frames.py</p>
+</section>
+</section>
 </section>
 
 
@@ -3000,7 +3165,7 @@
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../README.html" class="btn btn-neutral float-left" title="XTune - Model finetune tool for Intel GPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="adaclip_readme.html" class="btn btn-neutral float-right" title="AdaCLIP-Finetune" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Qwen2-VL_README.html" class="btn btn-neutral float-right" title="Qwen2-VL Training and Hyperparameter Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
