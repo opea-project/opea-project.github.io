@@ -3122,6 +3122,39 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 </pre></div>
 </div>
 </section>
+<section id="reasoning-model-finetuning">
+<h4>3.2.6 Reasoning model finetuning<a class="headerlink" href="#reasoning-model-finetuning" title="Link to this heading">¶</a></h4>
+<p>Use the following command to launch a job for finetuning reasoning model, such as <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen2.5-7B</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">    &quot;training_file&quot;: &quot;medical_o1_sft.json&quot;,</span>
+<span class="s1">    &quot;model&quot;: &quot;Qwen/Qwen2.5-3B&quot;,</span>
+<span class="s1">    &quot;Dataset&quot;: {</span>
+<span class="s1">      &quot;max_length&quot;:2048</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;Training&quot;:{</span>
+<span class="s1">      &quot;epochs&quot;:1,</span>
+<span class="s1">      &quot;batch_size&quot;:1,</span>
+<span class="s1">      &quot;gradient_accumulation_steps&quot;:8</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;General&quot;: {</span>
+<span class="s1">      &quot;task&quot;:&quot;reasoning&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  }&#39;</span>
+</pre></div>
+</div>
+<p>Below is an example for the format of the reasoning dataset <a class="reference external" href="https://huggingface.co/datasets/FreedomIntelligence/medical-o1-reasoning-SFT">FreedomIntelligence/medical-o1-reasoning-SFT</a>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Given the symptoms of sudden weakness in the left arm and leg, recent long-distance travel, and the presence of swollen and tender right lower leg, what specific cardiac abnormality is most likely to be found upon further evaluation that could explain these findings?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;Complex_CoT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Okay, let&#39;s see what&#39;s going on here. We&#39;ve got sudden weakness in the person&#39;s left arm and leg - and that screams something neuro-related, maybe a stroke?\n\nBut wait, there&#39;s more. The right lower leg is swollen and tender, which is like waving a big flag for deep vein thrombosis, especially after a long flight or sitting around a lot.\n\nSo, now I&#39;m thinking, how could a clot in the leg end up causing issues like weakness or stroke symptoms?\n\nOh, right! There&#39;s this thing called a paradoxical embolism. It can happen if there&#39;s some kind of short circuit in the heart - like a hole that shouldn&#39;t be there.\n\nLet&#39;s put this together: if a blood clot from the leg somehow travels to the left side of the heart, it could shoot off to the brain and cause that sudden weakness by blocking blood flow there.\n\nHmm, but how would the clot get from the right side of the heart to the left without going through the lungs and getting filtered out?\n\nHere&#39;s where our cardiac anomaly comes in: a patent foramen ovale or PFO. That&#39;s like a sneaky little shortcut in the heart between the right and left atria.\n\nAnd it&#39;s actually pretty common, found in about a quarter of adults, which definitely makes it the top suspect here.\n\nSo with all these pieces - long travel, leg clot, sudden weakness - a PFO fits the bill perfectly, letting a clot cross over and cause all this.\n\nEverything fits together pretty neatly, so I&#39;d bet PFO is the heart issue waiting to be discovered. Yeah, that really clicks into place!&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;Response&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specific cardiac abnormality most likely to be found in this scenario is a patent foramen ovale (PFO). This condition could allow a blood clot from the venous system, such as one from a deep vein thrombosis in the leg, to bypass the lungs and pass directly into the arterial circulation. This can occur when the clot moves from the right atrium to the left atrium through the PFO. Once in the arterial system, the clot can travel to the brain, potentially causing an embolic stroke, which would explain the sudden weakness in the left arm and leg. The connection between the recent travel, which increases the risk of deep vein thrombosis, and the neurological symptoms suggests the presence of a PFO facilitating a paradoxical embolism.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="manage-fine-tuning-job">
 <h3>3.3 Manage fine-tuning job<a class="headerlink" href="#manage-fine-tuning-job" title="Link to this heading">¶</a></h3>
