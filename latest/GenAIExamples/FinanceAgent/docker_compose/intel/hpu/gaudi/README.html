@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
     <link rel="next" title="GraphRAG Application" href="../../../../../GraphRAG/README.html" />
-    <link rel="prev" title="Finance Agent Example" href="../../../../README.html" /> 
+    <link rel="prev" title="Deploy Finance Agent on Intel® Xeon® Scalable processors with Docker Compose" href="../../cpu/xeon/README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -426,6 +426,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../README.html">Finance Agent Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cpu/xeon/README.html">Deploy Finance Agent on Intel® Xeon® Scalable processors with Docker Compose</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Deploy Finance Agent on Intel® Gaudi® AI Accelerator with Docker Compose</a></li>
 </ul>
 </li>
@@ -2910,8 +2911,8 @@
 <li><p>Git installed (for cloning repository).</p></li>
 <li><p>Hugging Face Hub API Token (for downloading models).</p></li>
 <li><p>Access to the internet (or a private model cache).</p></li>
-<li><p>Finnhub API Key. Go to https://docs.financialdatasets.ai/ to get your free api key</p></li>
-<li><p>Financial Datgasets API Key. Go to https://docs.financialdatasets.ai/ to get your free api key</p></li>
+<li><p>Finnhub API Key. Go to https://finnhub.io/ to get your free api key.</p></li>
+<li><p>Financial Datasets API Key. Go to https://docs.financialdatasets.ai/ to get your free api key.</p></li>
 </ul>
 <p>Clone the GenAIExamples repository:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>/path/to/your/workspace/
@@ -2933,21 +2934,21 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-
 <span class="c1"># Some models from Hugging Face require approval beforehand. Ensure you have the necessary permissions to access them.</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_huggingface_token&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">FINNHUB_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-finnhub-api-key&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FINANCIAL_DATASETS_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-financial-datgasets-api-key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">FINANCIAL_DATASETS_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-financial-datasets-api-key&quot;</span>
 
-<span class="c1"># Optional: Configure HOST_IP if needed</span>
+<span class="c1"># Configure HOST_IP</span>
 <span class="c1"># Replace with your host&#39;s external IP address (do not use localhost or 127.0.0.1).</span>
-<span class="c1"># export HOST_IP=$(hostname -I | awk &#39;{print $1}&#39;)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 
 <span class="c1"># Optional: Configure proxy if needed</span>
 <span class="c1"># export HTTP_PROXY=&quot;${http_proxy}&quot;</span>
 <span class="c1"># export HTTPS_PROXY=&quot;${https_proxy}&quot;</span>
 <span class="c1"># export NO_PROXY=&quot;${NO_PROXY},${HOST_IP}&quot;</span>
 
-<span class="nb">source</span><span class="w"> </span>../../set_env.sh
+<span class="nb">source</span><span class="w"> </span>set_env.sh
 </pre></div>
 </div>
-<p>Note: The compose file might read additional variables from set_env.sh. Ensure all required variables like ports (LLM_SERVICE_PORT, TEI_EMBEDDER_PORT, etc.) are set if not using defaults from the compose file. For instance, edit the set_env.sh to change the LLM model:</p>
+<p>Note: The compose file might read additional variables from <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>. Ensure all required variables like ports (LLM_SERVICE_PORT, TEI_EMBEDDER_PORT, etc.) are set if not using defaults from the compose file. For instance, edit the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> or overwrite LLM_MODEL_ID to change the LLM model.</p>
 </section>
 <section id="start-services">
 <h3>Start Services<a class="headerlink" href="#start-services" title="Link to this heading">¶</a></h3>
@@ -2955,7 +2956,6 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-
 <h4>Deploy with Docker Compose<a class="headerlink" href="#deploy-with-docker-compose" title="Link to this heading">¶</a></h4>
 <p>Below is the command to launch services</p>
 <ul class="simple">
-<li><p>vllm-gaudi-server</p></li>
 <li><p>tei-embedding-serving</p></li>
 <li><p>redis-vector-db</p></li>
 <li><p>redis-kv-store</p></li>
@@ -3039,7 +3039,8 @@ python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/Fi
 </pre></div>
 </div>
 <p>Supervisor Agent multi turn:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--multi-turn<span class="w"> </span>--stream
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">agent_port</span><span class="o">=</span><span class="s2">&quot;9090&quot;</span>
+python3<span class="w"> </span><span class="nv">$WORKDIR</span>/GenAIExamples/FinanceAgent/tests/test.py<span class="w"> </span>--agent_role<span class="w"> </span><span class="s2">&quot;supervisor&quot;</span><span class="w"> </span>--ext_port<span class="w"> </span><span class="nv">$agent_port</span><span class="w"> </span>--multi-turn<span class="w"> </span>--stream
 </pre></div>
 </div>
 </section>
@@ -3081,7 +3082,7 @@ Note: the data ingestion may take a few minutes depending on the length of the d
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../../../README.html" class="btn btn-neutral float-left" title="Finance Agent Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../cpu/xeon/README.html" class="btn btn-neutral float-left" title="Deploy Finance Agent on Intel® Xeon® Scalable processors with Docker Compose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../../../../GraphRAG/README.html" class="btn btn-neutral float-right" title="GraphRAG Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
@@ -3090,7 +3091,7 @@ Note: the data ingestion may take a few minutes depending on the length of the d
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Aug 15, 2025.</span>
+<span class="lastupdated">Published on Aug 16, 2025.</span>
 
   </div>
 
