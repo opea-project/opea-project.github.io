@@ -889,6 +889,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">🗨 Feedback Management Microservice</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#features">🛠️ Features</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#implementation">⚙️ Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcp-model-context-protocol-support">🤖 MCP (Model Context Protocol) Support</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="src/README.html">🗨 Feedback Management Microservice with MongoDB</a><ul>
@@ -2909,6 +2910,7 @@
 <li><p><strong>Retrieve Feedback</strong>: Fetch feedback data from database based on user or id.</p></li>
 <li><p><strong>Update Feedback</strong>: Update feedback data info in the database based on id.</p></li>
 <li><p><strong>Delete Feedback</strong>: Remove feedback record from database.</p></li>
+<li><p><strong>MCP Support</strong>: Enable AI agents to programmatically interact with feedback data through Model Context Protocol.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -2918,6 +2920,39 @@
 <section id="feedback-management-with-mongodb">
 <h3>Feedback Management with MongoDB<a class="headerlink" href="#feedback-management-with-mongodb" title="Link to this heading">¶</a></h3>
 <p>For more detail, please refer to this <a class="reference internal" href="src/README.html"><span class="std std-doc">README</span></a></p>
+</section>
+</section>
+<section id="mcp-model-context-protocol-support">
+<h2>🤖 MCP (Model Context Protocol) Support<a class="headerlink" href="#mcp-model-context-protocol-support" title="Link to this heading">¶</a></h2>
+<p>The Feedback Management microservice supports MCP, allowing AI agents to discover and use its functionality programmatically.</p>
+<section id="enabling-mcp">
+<h3>Enabling MCP<a class="headerlink" href="#enabling-mcp" title="Link to this heading">¶</a></h3>
+<p>To enable MCP support, set the environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_MCP</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>Or in your docker-compose.yaml:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ENABLE_MCP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</section>
+<section id="mcp-tools-available">
+<h3>MCP Tools Available<a class="headerlink" href="#mcp-tools-available" title="Link to this heading">¶</a></h3>
+<p>When MCP is enabled, the following tools are exposed to AI agents:</p>
+<ol class="arabic simple">
+<li><p><strong>create_feedback_data</strong> - Create or update feedback data for AI-generated responses including ratings and comments</p></li>
+<li><p><strong>get_feedback</strong> - Retrieve feedback data by ID or get all feedback for a specific user</p></li>
+<li><p><strong>delete_feedback</strong> - Delete specific feedback data by user ID and feedback ID</p></li>
+</ol>
+</section>
+<section id="using-with-ai-agents">
+<h3>Using with AI Agents<a class="headerlink" href="#using-with-ai-agents" title="Link to this heading">¶</a></h3>
+<p>AI agents can connect to the service via the SSE transport endpoint at <code class="docutils literal notranslate"><span class="pre">/sse</span></code> when MCP is enabled. The service will be automatically discovered by agents using the OPEA MCP Tools Manager.</p>
+</section>
+<section id="backward-compatibility">
+<h3>Backward Compatibility<a class="headerlink" href="#backward-compatibility" title="Link to this heading">¶</a></h3>
+<p>MCP support is disabled by default to maintain backward compatibility. The service continues to work normally via HTTP endpoints regardless of the MCP setting.</p>
 </section>
 </section>
 </section>
