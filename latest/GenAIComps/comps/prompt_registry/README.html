@@ -1227,6 +1227,7 @@
 <li class="toctree-l4"><a class="reference internal" href="src/README.html#setup-environment-variables">Setup Environment Variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README.html#start-microservice-with-docker-option-1">🚀 Start Microservice with Docker (Option 1)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="src/README.html#start-microservice-with-docker-compose-option-2">🚀 Start Microservice with Docker Compose (Option 2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src/README.html#mcp-model-context-protocol-usage">🤖 MCP (Model Context Protocol) Usage</a></li>
 </ul>
 </li>
 </ul>
@@ -2907,6 +2908,7 @@
 <li><p><strong>Store Prompt</strong>: Save user’s preferred prompt into database.</p></li>
 <li><p><strong>Retrieve Prompt</strong>: Fetch prompt from database based on user, id or even a keyword search.</p></li>
 <li><p><strong>Delete Prompt</strong>: Remove prompt from database.</p></li>
+<li><p><strong>MCP Support</strong>: Enable AI agents to discover and use prompt management capabilities via Model Context Protocol.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -2916,6 +2918,38 @@
 <section id="prompt-registry-with-mongodb">
 <h3>Prompt Registry with MongoDB<a class="headerlink" href="#prompt-registry-with-mongodb" title="Link to this heading">¶</a></h3>
 <p>For more detail, please refer to this <a class="reference internal" href="src/README.html"><span class="std std-doc">README</span></a></p>
+</section>
+<section id="mcp-model-context-protocol-support">
+<h3>MCP (Model Context Protocol) Support<a class="headerlink" href="#mcp-model-context-protocol-support" title="Link to this heading">¶</a></h3>
+<p>The Prompt Registry microservice supports MCP, allowing AI agents to discover and utilize its prompt management capabilities. When MCP is enabled, the service exposes three tools:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create_prompt</span></code>: Store a user’s preferred prompt in the database</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_prompt</span></code>: Retrieve prompts by user, ID, or keyword search</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete_prompt</span></code>: Delete a prompt by ID from the database</p></li>
+</ul>
+<p>To enable MCP support, set the <code class="docutils literal notranslate"><span class="pre">ENABLE_MCP</span></code> environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_MCP</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>Or in Docker Compose:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ENABLE_MCP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p><strong>Important Note</strong>: When MCP is enabled (<code class="docutils literal notranslate"><span class="pre">ENABLE_MCP=true</span></code>), the service operates in MCP-only mode:</p>
+<ul class="simple">
+<li><p>Regular HTTP endpoints (<code class="docutils literal notranslate"><span class="pre">/v1/prompt/create</span></code>, <code class="docutils literal notranslate"><span class="pre">/v1/prompt/get</span></code>, <code class="docutils literal notranslate"><span class="pre">/v1/prompt/delete</span></code>) are not available</p></li>
+<li><p>The service only exposes the SSE endpoint (<code class="docutils literal notranslate"><span class="pre">/sse</span></code>) for MCP protocol communication</p></li>
+<li><p>AI agents interact with the service through MCP tools, not HTTP APIs</p></li>
+<li><p>To use both HTTP endpoints and MCP, you would need to run two instances of the service (one with MCP enabled, one without)</p></li>
+</ul>
+<p>When MCP is enabled, AI agents can:</p>
+<ul class="simple">
+<li><p>Build and manage prompt libraries dynamically</p></li>
+<li><p>Reuse prompts across conversations</p></li>
+<li><p>Create personalized prompt repositories</p></li>
+<li><p>Share and discover prompts programmatically</p></li>
+</ul>
 </section>
 </section>
 </section>
