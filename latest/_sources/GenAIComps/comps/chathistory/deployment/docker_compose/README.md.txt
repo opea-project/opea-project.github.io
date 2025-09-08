@@ -24,7 +24,7 @@ export COLLECTION_NAME=${COLLECTION_NAME}
 
 ```bash
 cd ../../../../
-docker build -t opea/chathistory-mongo:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/chathistory/src/Dockerfile .
+docker build -t opea/chathistory:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/chathistory/src/Dockerfile .
 ```
 
 ### Run Docker with CLI
@@ -38,7 +38,7 @@ docker build -t opea/chathistory-mongo:latest --build-arg https_proxy=$https_pro
 - Run the Chat History microservice
 
   ```bash
-  docker run -d --name="chathistory-mongo" -p 6012:6012 -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e no_proxy=$no_proxy -e MONGO_HOST=${MONGO_HOST} -e MONGO_PORT=${MONGO_PORT} -e DB_NAME=${DB_NAME} -e COLLECTION_NAME=${COLLECTION_NAME} opea/chathistory-mongo:latest
+  docker run -d --name="chathistory-mongo" -p 6012:6012 -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e no_proxy=$no_proxy -e MONGO_HOST=${MONGO_HOST} -e MONGO_PORT=${MONGO_PORT} -e DB_NAME=${DB_NAME} -e COLLECTION_NAME=${COLLECTION_NAME} opea/chathistory:latest
   ```
 
 ---
@@ -46,7 +46,7 @@ docker build -t opea/chathistory-mongo:latest --build-arg https_proxy=$https_pro
 ## 🚀 Start Microservice with Docker Compose (Option 2)
 
 ```bash
-docker compose -f ../deployment/docker_compose/compose.yaml up -d
+docker compose -f ../deployment/docker_compose/compose.yaml up -d chathistory-mongo
 ```
 
 ---

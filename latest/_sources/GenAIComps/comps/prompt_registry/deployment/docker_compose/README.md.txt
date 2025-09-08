@@ -25,7 +25,7 @@ export ENABLE_MCP=false  # Set to true to enable MCP support
 
 ```bash
 cd ~/GenAIComps
-docker build -t opea/promptregistry-mongo:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/prompt_registry/src/Dockerfile .
+docker build -t opea/promptregistry:latest --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy -f comps/prompt_registry/src/Dockerfile .
 ```
 
 ### Run Docker with CLI
@@ -39,7 +39,7 @@ docker build -t opea/promptregistry-mongo:latest --build-arg https_proxy=$https_
 - Run Prompt Registry microservice
 
   ```bash
-  docker run -d --name="promptregistry-mongo-server" -p 6018:6018 -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e no_proxy=$no_proxy -e MONGO_HOST=${MONGO_HOST} -e MONGO_PORT=${MONGO_PORT} -e DB_NAME=${DB_NAME} -e COLLECTION_NAME=${COLLECTION_NAME} -e ENABLE_MCP=${ENABLE_MCP} opea/promptregistry-mongo:latest
+  docker run -d --name="promptregistry-mongo-server" -p 6018:6018 -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e no_proxy=$no_proxy -e MONGO_HOST=${MONGO_HOST} -e MONGO_PORT=${MONGO_PORT} -e DB_NAME=${DB_NAME} -e COLLECTION_NAME=${COLLECTION_NAME} -e ENABLE_MCP=${ENABLE_MCP} opea/promptregistry:latest
   ```
 
 ---
@@ -47,7 +47,7 @@ docker build -t opea/promptregistry-mongo:latest --build-arg https_proxy=$https_
 ## 🚀 Start Microservice with Docker Compose (Option 2)
 
 ```bash
-docker compose -f ../deployment/docker_compose/compose.yaml up -d
+docker compose -f ../deployment/docker_compose/compose.yaml up -d promptregistry-mongo
 ```
 
 ---
