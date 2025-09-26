@@ -3017,7 +3017,11 @@
 <section id="dbqna-quick-start-deployment">
 <h2>DBQnA Quick Start Deployment<a class="headerlink" href="#dbqna-quick-start-deployment" title="Link to this heading">¶</a></h2>
 <p>This section describes how to quickly deploy and test the DBQnA service manually on Intel® Xeon® platform. The basic steps are:</p>
-<ol class="arabic simple">
+<ul class="simple">
+<li><p><a class="reference internal" href="#example-dbqna-deployment-on-intel-xeon-platform"><span class="xref myst">Example DBQnA Deployment on Intel® Xeon® Platform</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#dbqna-quick-start-deployment"><span class="xref myst">DBQnA Quick Start Deployment</span></a></p>
+<ul>
 <li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
 <li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
 <li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
@@ -3025,7 +3029,13 @@
 <li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
 <li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
 <li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
-</ol>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dbqna-docker-compose-files"><span class="xref myst">DBQnA Docker Compose Files</span></a></p></li>
+<li><p><a class="reference internal" href="#dbqna-service-configuration"><span class="xref myst">DBQnA Service Configuration</span></a></p></li>
+</ul>
+</li>
+</ul>
 <section id="access-the-code">
 <h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
 <p>Clone the GenAIExample repository and access the DBQnA Intel® Xeon® platform Docker Compose files and supporting scripts:</p>
@@ -3077,17 +3087,18 @@
 <span class="mi">2728</span><span class="n">db31368b</span>   <span class="n">opea</span><span class="o">/</span><span class="n">text2sql</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>                                                               <span class="s2">&quot;nginx -g &#39;daemon of…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5174</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">dbqna</span><span class="o">-</span><span class="n">xeon</span><span class="o">-</span><span class="n">react</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
 <span class="mi">0</span><span class="n">ab75b92c300</span>   <span class="n">postgres</span><span class="p">:</span><span class="n">latest</span>                                                                             <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5442</span><span class="o">-&gt;</span><span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">5442</span><span class="o">-&gt;</span><span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">postgres</span><span class="o">-</span><span class="n">container</span>
 <span class="mi">2662</span><span class="n">a69b515b</span>   <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">huggingface</span><span class="o">/</span><span class="n">text</span><span class="o">-</span><span class="n">generation</span><span class="o">-</span><span class="n">inference</span><span class="p">:</span><span class="mf">2.4.0</span><span class="o">-</span><span class="n">intel</span><span class="o">-</span><span class="n">cpu</span>                               <span class="s2">&quot;text-generation-lau…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">tgi</span><span class="o">-</span><span class="n">service</span>
-<span class="n">bb44512be80e</span>   <span class="n">opea</span><span class="o">/</span><span class="n">text2sql</span><span class="p">:</span><span class="n">latest</span>                                                                        <span class="s2">&quot;python opea_text2sq…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">text2sql</span><span class="o">-</span><span class="n">service</span>
+<span class="n">bb44512be80e</span>   <span class="n">opea</span><span class="o">/</span><span class="n">text2query</span><span class="o">-</span><span class="n">sql</span><span class="p">:</span><span class="n">latest</span>                                                                  <span class="s2">&quot;python opea_text2sq…&quot;</span>   <span class="mi">9</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">9</span> <span class="n">minutes</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">:::</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">text2sql</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
 </section>
 <section id="test-the-pipeline">
 <h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the DBQnA service are running, test the pipeline using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/text2sql<span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">url</span><span class="o">=</span><span class="s2">&quot;postgresql://</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s2">@</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:5442/</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s2">&quot;</span>
+curl<span class="w"> </span>--connect-timeout<span class="w"> </span><span class="m">5</span><span class="w"> </span>--max-time<span class="w"> </span><span class="m">120000</span><span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9090/v1/text2query<span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;host&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;port&quot;: &quot;5442&quot;, &quot;database&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_DB</span><span class="si">}</span><span class="s1">&#39;&quot;}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;: &quot;Find the total number of Albums.&quot;,&quot;conn_type&quot;: &quot;sql&quot;, &quot;conn_url&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">url</span><span class="si">}</span><span class="s1">&#39;&quot;, &quot;conn_user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_USER</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;conn_password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">POSTGRES_PASSWORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;conn_dialect&quot;: &quot;postgresql&quot; }&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="o">)</span>
 </pre></div>
 </div>
 </section>
@@ -3125,7 +3136,7 @@
 <td><p>postgres:latest</p></td>
 </tr>
 <tr class="row-even"><td><p>text2sql</p></td>
-<td><p>opea/text2sql:latest</p></td>
+<td><p>opea/text2query-sql:latest</p></td>
 </tr>
 <tr class="row-odd"><td><p>dbqna-xeon-react-ui-server</p></td>
 <td><p>opea/text2sql-react-ui:latest</p></td>
@@ -3156,7 +3167,7 @@
 <td><p>Provides the relational database backend for storing and querying data used by the DBQnA pipeline.</p></td>
 </tr>
 <tr class="row-even"><td><p>text2sql</p></td>
-<td><p>opea/text2sql:latest</p></td>
+<td><p>opea/text2query-sql:latest</p></td>
 <td><p>No</p></td>
 <td><p>Handles text-to-SQL conversion tasks.</p></td>
 </tr>
