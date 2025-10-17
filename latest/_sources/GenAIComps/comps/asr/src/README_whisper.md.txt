@@ -2,7 +2,7 @@
 
 This document provides a comprehensive guide to deploying the ASR microservice pipeline on Intel platforms.
 
-This guide covers two deployment methods:
+## Table of contents
 
 - [🚀 1. Quick Start with Docker Compose](#quick-start-with-docker-compose): The recommended method for a fast and easy setup.
 - [🚀 2. Manual Step-by-Step Deployment (Advanced)](#manual-step-by-step-deployment-advanced): For users who want to build and run each container individually.
