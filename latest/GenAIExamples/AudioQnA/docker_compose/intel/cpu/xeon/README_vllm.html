@@ -3062,13 +3062,13 @@
 <section id="navigate-to-repo-directory-and-switching-to-the-desired-version-of-the-code">
 <h3>1.2. Navigate to repo directory and switching to the desired version of the code:<a class="headerlink" href="#navigate-to-repo-directory-and-switching-to-the-desired-version-of-the-code" title="Link to this heading">¶</a></h3>
 <p>If you are using the main branch, then you do not need to make the transition, the main branch is used by default</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/searchqna-test/GenAIExamples/SearchQnA/docker_image_build
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/docker_image_build
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 </pre></div>
 </div>
 <p>If you are using a specific branch or tag, then we perform git checkout to the desired version.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace &quot;v1.3&quot; with the code version you need (branch or tag)</span>
-<span class="nb">cd</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/searchqna-test/GenAIExamples/SearchQnA/docker_image_build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
+<span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/docker_image_build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>v1.3
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIComps.git
 </pre></div>
 </div>
@@ -3113,7 +3113,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </section>
 <section id="setting-variables-in-the-file-set-env-vllm-sh">
 <h3>Setting variables in the file set_env_vllm.sh<a class="headerlink" href="#setting-variables-in-the-file-set-env-vllm-sh" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/searchqna-test/GenAIExamples/SearchQnA/docker_compose/amd/gpu/rocm
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/searchqna-test/GenAIExamples/SearchQnA/docker_compose/amd/gpu/rocm
 <span class="c1">### The example uses the Nano text editor. You can use any convenient text editor</span>
 nano<span class="w"> </span>set_env_vllm.sh
 </pre></div>
@@ -3140,8 +3140,8 @@ The values shown in the file set_env_vllm.sh they are the values used for the de
 <h2>3. Deploy application<a class="headerlink" href="#deploy-application" title="Link to this heading">¶</a></h2>
 <section id="deploying-applications-using-docker-compose">
 <h3>3.1. Deploying applications using Docker Compose<a class="headerlink" href="#deploying-applications-using-docker-compose" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/audioqna-test/GenAIExamples/AudioQnA/docker_compose/amd/gpu/rocm/
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_vllm<span class="w"> </span>up<span class="w"> </span>-d
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/AudioQnA/docker_compose/intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p>After starting the containers, you need to view their status with the command:</p>
@@ -3157,6 +3157,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <li><p>audioqna-ui-server</p></li>
 </ul>
 <p>Containers should not restart.</p>
+<p>(Optional) Enabling monitoring using the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <section id="configuring-gpu-forwarding">
 <h4>3.1.1. Configuring GPU forwarding<a class="headerlink" href="#configuring-gpu-forwarding" title="Link to this heading">¶</a></h4>
 <p>By default, in the Docker Compose file, compose_vllm.yaml is configured to forward all GPUs to the audioqna-vllm-service container.

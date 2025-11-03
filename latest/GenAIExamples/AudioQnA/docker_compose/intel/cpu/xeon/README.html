@@ -3059,14 +3059,30 @@
 <section id="audioqna-quick-start-deployment">
 <h2>AudioQnA Quick Start Deployment<a class="headerlink" href="#audioqna-quick-start-deployment" title="Link to this heading">¶</a></h2>
 <p>This section describes how to quickly deploy and test the AudioQnA service manually on an Intel® Xeon® processor. The basic steps are:</p>
-<ol class="arabic simple">
+<ul class="simple">
+<li><p><a class="reference internal" href="#deploying-audioqna-on-intel-xeon-processors"><span class="xref myst">Deploying AudioQnA on Intel® Xeon® Processors</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#table-of-contents"><span class="xref myst">Table of Contents</span></a></p></li>
+<li><p><a class="reference internal" href="#audioqna-quick-start-deployment"><span class="xref myst">AudioQnA Quick Start Deployment</span></a></p>
+<ul>
 <li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
 <li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
 <li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p></li>
 <li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
 <li><p><a class="reference internal" href="#validate-the-pipeline"><span class="xref myst">Validate the Pipeline</span></a></p></li>
 <li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
-</ol>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#audioqna-docker-compose-files"><span class="xref myst">AudioQnA Docker Compose Files</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-llm-models-with-remote-endpoints"><span class="xref myst">Running LLM models with remote endpoints</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate MicroServices</span></a></p></li>
+<li><p><a class="reference internal" href="#conclusion"><span class="xref myst">Conclusion</span></a></p></li>
+</ul>
+</li>
+</ul>
 <section id="access-the-code">
 <h3>Access the Code<a class="headerlink" href="#access-the-code" title="Link to this heading">¶</a></h3>
 <p>Clone the GenAIExample repository and access the AudioQnA Intel® Xeon® platform Docker Compose files and supporting scripts:</p>
@@ -3097,7 +3113,7 @@
 <h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
 <p>To deploy the AudioQnA services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute the command below. It uses the ‘compose.yaml’ file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/intel/cpu/xeon
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <blockquote>
@@ -3139,6 +3155,11 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </tr>
 </tbody>
 </table>
+<p>(Optional) Enabling monitoring using the command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docker_compose/intel/cpu/xeon
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 </section>
 <section id="check-the-deployment-status">
 <h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
@@ -3179,7 +3200,11 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <section id="cleanup-the-deployment">
 <h3>Cleanup the Deployment<a class="headerlink" href="#cleanup-the-deployment" title="Link to this heading">¶</a></h3>
 <p>To stop the containers associated with the deployment, execute the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+<p>If monitoring is enabled, stop the containers using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>down
 </pre></div>
 </div>
 </section>
@@ -3205,6 +3230,9 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#./compose_remote.yaml"><span class="xref myst">compose_remote.yaml</span></a></p></td>
 <td><p>The LLM used is hosted on a remote server and an endpoint is used to access this model. Additional environment variables need to be set before running. See <a class="reference internal" href="#running-llm-models-with-remote-endpoints"><span class="xref myst">instructions</span></a> below.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#./compose.monitoring.yaml"><span class="xref myst">compose.monitoring.yaml</span></a></p></td>
+<td><p>Helper file for monitoring features. Can be used along with any compose files</p></td>
 </tr>
 </tbody>
 </table>
