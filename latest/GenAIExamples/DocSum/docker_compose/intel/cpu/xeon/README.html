@@ -3056,21 +3056,52 @@
 <section id="docsum-quick-start-deployment">
 <h2>DocSum Quick Start Deployment<a class="headerlink" href="#docsum-quick-start-deployment" title="Link to this heading">¶</a></h2>
 <p>This section describes how to quickly deploy and test the DocSum service manually on an Intel Xeon platform. The basic steps are:</p>
-<ol class="arabic simple">
-<li><p><a class="reference internal" href="#access-the-code"><span class="xref myst">Access the Code</span></a></p></li>
+<ul class="simple">
+<li><p><a class="reference internal" href="#example-docsum-deployments-on-intel-xeon-processor"><span class="xref myst">Example DocSum deployments on Intel Xeon Processor</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#docsum-quick-start-deployment"><span class="xref myst">DocSum Quick Start Deployment</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#access-the-code-and-set-up-environment"><span class="xref myst">Access the Code and Set Up Environment</span></a></p></li>
 <li><p><a class="reference internal" href="#generate-a-huggingface-access-token"><span class="xref myst">Generate a HuggingFace Access Token</span></a></p></li>
-<li><p><a class="reference internal" href="#configure-the-deployment-environment"><span class="xref myst">Configure the Deployment Environment</span></a></p></li>
-<li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p></li>
+<li><p><a class="reference internal" href="#deploy-the-services-using-docker-compose"><span class="xref myst">Deploy the Services Using Docker Compose</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#option-1"><span class="xref myst">Option #1</span></a></p></li>
+<li><p><a class="reference internal" href="#option-2"><span class="xref myst">Option #2</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#check-the-deployment-status"><span class="xref myst">Check the Deployment Status</span></a></p></li>
 <li><p><a class="reference internal" href="#test-the-pipeline"><span class="xref myst">Test the Pipeline</span></a></p></li>
 <li><p><a class="reference internal" href="#cleanup-the-deployment"><span class="xref myst">Cleanup the Deployment</span></a></p></li>
-</ol>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#docsum-docker-compose-files"><span class="xref myst">DocSum Docker Compose Files</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-llm-models-with-remote-endpoints"><span class="xref myst">Running LLM models with remote endpoints</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#docsum-detailed-usage"><span class="xref myst">DocSum Detailed Usage</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#query-with-text"><span class="xref myst">Query with text</span></a></p></li>
+<li><p><a class="reference internal" href="#query-with-audio-and-video"><span class="xref myst">Query with audio and video</span></a></p></li>
+<li><p><a class="reference internal" href="#query-with-long-context"><span class="xref myst">Query with long context</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#launch-the-ui"><span class="xref myst">Launch the UI</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#gradio-ui"><span class="xref myst">Gradio UI</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-svelte-ui"><span class="xref myst">Launch the Svelte UI</span></a></p></li>
+<li><p><a class="reference internal" href="#launch-the-react-ui-optional"><span class="xref myst">Launch the React UI (Optional)</span></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <section id="access-the-code-and-set-up-environment">
 <h3>Access the Code and Set Up Environment<a class="headerlink" href="#access-the-code-and-set-up-environment" title="Link to this heading">¶</a></h3>
 <p>Clone the GenAIExample repository and access the ChatQnA Intel Xeon platform Docker Compose files and supporting scripts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
 <span class="nb">cd</span><span class="w"> </span>GenAIExamples/DocSum/docker_compose
-<span class="nb">source</span><span class="w"> </span>intel/set_env.sh
+<span class="nb">source</span><span class="w"> </span>intel/cpu/xeon/set_env.sh
 </pre></div>
 </div>
 <blockquote>
@@ -3090,9 +3121,22 @@
 </section>
 <section id="deploy-the-services-using-docker-compose">
 <h3>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h3>
+<section id="option-1">
+<h4>Option #1<a class="headerlink" href="#option-1" title="Link to this heading">¶</a></h4>
 <p>To deploy the DocSum services, execute the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span></code> command with the appropriate arguments. For a default deployment, execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>intel/cpu/xeon/
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="option-2">
+<h4>Option #2<a class="headerlink" href="#option-2" title="Link to this heading">¶</a></h4>
+<blockquote>
+<div><p>NOTE : To enable monitoring, <code class="docutils literal notranslate"><span class="pre">compose.monitoring.yaml</span></code> file need to be merged along with default <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
+</div></blockquote>
+<p>To deploy with monitoring:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 <p><strong>Note</strong>: developers should build docker image from source when:</p>
@@ -3127,6 +3171,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </tbody>
 </table>
 </section>
+</section>
 <section id="check-the-deployment-status">
 <h3>Check the Deployment Status<a class="headerlink" href="#check-the-deployment-status" title="Link to this heading">¶</a></h3>
 <p>After running docker compose, check if all the containers launched via docker compose have started:</p>
@@ -3159,6 +3204,11 @@ fds3dd5b9fd8<span class="w">   </span>opea/docsum:latest<span class="w">        
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>down
 </pre></div>
 </div>
+<p>If mornitoring is enabled, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>intel/cpu/xeon/
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>down
+</pre></div>
+</div>
 <p>All the DocSum containers will be stopped and then removed on completion of the “down” command.</p>
 </section>
 </section>
@@ -3180,6 +3230,9 @@ fds3dd5b9fd8<span class="w">   </span>opea/docsum:latest<span class="w">        
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#./compose_remote.yaml"><span class="xref myst">compose_remote.yaml</span></a></p></td>
 <td><p>Uses remote inference endpoints for LLMs. All other configurations are same as default</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#./compose.monitoring.yaml"><span class="xref myst">compose.monitoring.yaml</span></a></p></td>
+<td><p>Helper file for monitoring features. Can be used along with any compose files</p></td>
 </tr>
 </tbody>
 </table>
@@ -3417,7 +3470,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2025 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Nov 03, 2025.</span>
+<span class="lastupdated">Published on Nov 04, 2025.</span>
 
   </div>
 
