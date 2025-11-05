@@ -3096,7 +3096,8 @@ Set required environment variables in your shell:</p>
 <span class="c1"># export https_proxy=&quot;your_https_proxy&quot;</span>
 <span class="c1"># export no_proxy=&quot;localhost,127.0.0.1,${HOST_IP}&quot; # Add other hosts if necessary</span>
 <span class="nb">source</span><span class="w"> </span>intel/set_env.sh
-<span class="nb">cd</span><span class="w"> </span>/intel/cpu/xeon
+<span class="nb">cd</span><span class="w"> </span>intel/cpu/xeon
+bash<span class="w"> </span>grafana/dashboards/download_opea_dashboard.sh
 </pre></div>
 </div>
 <p><em>Note: The compose file might read additional variables from set_env.sh. Ensure all required variables like ports (<code class="docutils literal notranslate"><span class="pre">LLM_SERVICE_PORT</span></code>, <code class="docutils literal notranslate"><span class="pre">MEGA_SERVICE_PORT</span></code>, etc.) are set if not using defaults from the compose file.</em></p>
@@ -3220,7 +3221,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </tbody>
 </table>
 <p>Most of these parameters are in <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code>, you can either modify this file or overwrite the env variables by setting them.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>CodeGen/docker_compose/set_env.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>CodeGen/docker_compose/intel/set_env.sh
 </pre></div>
 </div>
 </section>
@@ -3339,13 +3340,68 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HO
 <li><p><strong>Resource Issues:</strong> CodeGen models can be memory-intensive. Monitor host RAM usage. Increase Docker resources if needed.</p></li>
 </ul>
 </section>
+<section id="monitoring-deployment">
+<h2>Monitoring Deployment<a class="headerlink" href="#monitoring-deployment" title="Link to this heading">¶</a></h2>
+<p>To enable monitoring for the CodeGen application, you can use the monitoring Docker Compose file along with the main deployment.</p>
+<section id="option-1-default-deployment-without-monitoring">
+<h3>Option #1: Default Deployment (without monitoring)<a class="headerlink" href="#option-1-default-deployment-without-monitoring" title="Link to this heading">¶</a></h3>
+<p>To deploy the CodeGen services without monitoring, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="option-2-deployment-with-monitoring">
+<h3>Option #2: Deployment with Monitoring<a class="headerlink" href="#option-2-deployment-with-monitoring" title="Link to this heading">¶</a></h3>
+<blockquote>
+<div><p>NOTE: To enable monitoring, <code class="docutils literal notranslate"><span class="pre">compose.monitoring.yaml</span></code> file need to be merged along with default <code class="docutils literal notranslate"><span class="pre">compose.yaml</span></code> file.</p>
+</div></blockquote>
+<p>To deploy with monitoring:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>grafana/dashboards/download_opea_dashboard.sh
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="accessing-monitoring-services">
+<h3>Accessing Monitoring Services<a class="headerlink" href="#accessing-monitoring-services" title="Link to this heading">¶</a></h3>
+<p>Once deployed with monitoring, you can access:</p>
+<ul class="simple">
+<li><p><strong>Prometheus</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:9090</span></code></p></li>
+<li><p><strong>Grafana</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:3000</span></code> (username: <code class="docutils literal notranslate"><span class="pre">admin</span></code>, password: <code class="docutils literal notranslate"><span class="pre">admin</span></code>)</p></li>
+<li><p><strong>Node Exporter</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:9100</span></code></p></li>
+</ul>
+</section>
+<section id="monitoring-components">
+<h3>Monitoring Components<a class="headerlink" href="#monitoring-components" title="Link to this heading">¶</a></h3>
+<p>The monitoring stack includes:</p>
+<ul class="simple">
+<li><p><strong>Prometheus</strong>: For metrics collection and querying</p></li>
+<li><p><strong>Grafana</strong>: For visualization and dashboards</p></li>
+<li><p><strong>Node Exporter</strong>: For system metrics collection</p></li>
+</ul>
+</section>
+<section id="monitoring-dashboards">
+<h3>Monitoring Dashboards<a class="headerlink" href="#monitoring-dashboards" title="Link to this heading">¶</a></h3>
+<p>The following dashboards are automatically downloaded and configured:</p>
+<ul class="simple">
+<li><p>vLLM Dashboard</p></li>
+<li><p>TGI Dashboard</p></li>
+<li><p>CodeGen MegaService Dashboard</p></li>
+<li><p>Node Exporter Dashboard</p></li>
+</ul>
+</section>
 <section id="stopping-the-application">
-<h2>Stopping the Application<a class="headerlink" href="#stopping-the-application" title="Link to this heading">¶</a></h2>
+<h3>Stopping the Application<a class="headerlink" href="#stopping-the-application" title="Link to this heading">¶</a></h3>
+<p>If monitoring is enabled, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+<p>If monitoring is not enabled, execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w">  </span><span class="c1"># for vLLM (compose.yaml)</span>
 <span class="c1"># or</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_tgi.yaml<span class="w"> </span>down<span class="w">  </span><span class="c1"># for TGI</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>

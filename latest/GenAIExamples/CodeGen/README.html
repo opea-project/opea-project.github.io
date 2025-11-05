@@ -3157,9 +3157,17 @@
 <td class="text-left"><p>Single Node (Docker)</p></td>
 <td class="text-left"><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Docker Compose Guide</span></a></p></td>
 </tr>
-<tr class="row-odd"><td class="text-left"><p>Intel Gaudi HPU</p></td>
+<tr class="row-odd"><td class="text-left"><p>Intel Xeon CPU</p></td>
+<td class="text-left"><p>Single Node (Docker) with Monitoring</p></td>
+<td class="text-left"><p><a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html"><span class="std std-doc">Xeon Docker Compose with Monitoring Guide</span></a></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Intel Gaudi HPU</p></td>
 <td class="text-left"><p>Single Node (Docker)</p></td>
 <td class="text-left"><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Docker Compose Guide</span></a></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Intel Gaudi HPU</p></td>
+<td class="text-left"><p>Single Node (Docker) with Monitoring</p></td>
+<td class="text-left"><p><a class="reference internal" href="docker_compose/intel/hpu/gaudi/README.html"><span class="std std-doc">Gaudi Docker Compose with Monitoring Guide</span></a></p></td>
 </tr>
 <tr class="row-even"><td class="text-left"><p>AMD EPYC CPU</p></td>
 <td class="text-left"><p>Single Node (Docker)</p></td>
@@ -3188,6 +3196,49 @@
 </tbody>
 </table>
 <p><em>Note: Building custom microservice images can be done using the resources in <a class="reference external" href="https://github.com/opea-project/GenAIComps">GenAIComps</a>.</em></p>
+</section>
+<section id="monitoring">
+<h2>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">¶</a></h2>
+<p>The CodeGen example supports monitoring capabilities for Intel Xeon and Intel Gaudi platforms. Monitoring includes:</p>
+<ul class="simple">
+<li><p><strong>Prometheus</strong>: For metrics collection and querying</p></li>
+<li><p><strong>Grafana</strong>: For visualization and dashboards</p></li>
+<li><p><strong>Node Exporter</strong>: For system metrics collection</p></li>
+</ul>
+<section id="monitoring-features">
+<h3>Monitoring Features<a class="headerlink" href="#monitoring-features" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Real-time metrics collection from all CodeGen microservices</p></li>
+<li><p>Pre-configured dashboards for:</p>
+<ul>
+<li><p>vLLM/TGI performance metrics</p></li>
+<li><p>CodeGen MegaService metrics</p></li>
+<li><p>System resource utilization</p></li>
+<li><p>Node-level metrics</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="enabling-monitoring">
+<h3>Enabling Monitoring<a class="headerlink" href="#enabling-monitoring" title="Link to this heading">¶</a></h3>
+<p>Monitoring can be enabled by using the <code class="docutils literal notranslate"><span class="pre">compose.monitoring.yaml</span></code> file along with the main compose file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For Intel Xeon</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
+
+<span class="c1"># For Intel Gaudi</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>-f<span class="w"> </span>compose.monitoring.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="accessing-monitoring-services">
+<h3>Accessing Monitoring Services<a class="headerlink" href="#accessing-monitoring-services" title="Link to this heading">¶</a></h3>
+<p>Once deployed with monitoring, you can access:</p>
+<ul class="simple">
+<li><p><strong>Prometheus</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:9090</span></code></p></li>
+<li><p><strong>Grafana</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:3000</span></code> (username: <code class="docutils literal notranslate"><span class="pre">admin</span></code>, password: <code class="docutils literal notranslate"><span class="pre">admin</span></code>)</p></li>
+<li><p><strong>Node Exporter</strong>: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:9100</span></code></p></li>
+</ul>
+</section>
 </section>
 <section id="benchmarking">
 <h2>Benchmarking<a class="headerlink" href="#benchmarking" title="Link to this heading">¶</a></h2>
