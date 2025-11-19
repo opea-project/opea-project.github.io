@@ -407,7 +407,6 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../examples/examples.html#deepresearchagent-application">DeepResearchAgent Application</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Deep Research Agent Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="benchmark/accuracy/README.html">Deep Research Agent Benchmarks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="research_agents/deepagents/README.html">Deep Research Agent of DeepAgents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../examples/examples.html#docindexretriever-application">DocIndexRetriever Application</a><ul>
@@ -3054,30 +3053,33 @@
 <p>Deep Research Agents are a new class of autonomous AI systems designed to perform complex, multi-step research tasks that typically require human-level reasoning, planning, and synthesis.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>In this application, we leverage the deep research agent implementation of <a class="reference external" href="https://github.com/langchain-ai/deepagents">langchain-ai/deepagents</a>, and deploy it on the Intel platform with opea microserice.</p>
+<p>In this application, we leverage the deep research agent implementation of <a class="reference external" href="https://github.com/langchain-ai/open_deep_research">langchain-ai/open_deep_research</a>, and deploy it on the Intel platform with opea microserice.</p>
+<p><img alt="Architecture Overview" src="../../_images/opea-deep-research-agent.png" /></p>
 </section>
 <section id="setup-deployment-environment">
 <h2>Setup Deployment Environment<a class="headerlink" href="#setup-deployment-environment" title="Link to this heading">¶</a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># get your TAVILY_API_KEY from https://app.tavily.com/</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TAVILY_API_KEY</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configure deep_researcher.yaml with your llm model served by the vllm</span>
 
+<span class="c1"># get your TAVILY_API_KEY from https://app.tavily.com/</span>
+<span class="n">export</span> <span class="n">TAVILY_API_KEY</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 <span class="c1"># get your HuggingFace Access Token from https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="n">export</span> <span class="n">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 
 <span class="c1"># set proxy if needed by your machine</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="n">export</span> <span class="n">no_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 
 <span class="c1"># the shell script will initialize the OPENAI_BASE_URL and OPENAI_API_KEY for the openai compatible vllm service</span>
-<span class="nb">source</span><span class="w"> </span>./set_env.sh
+<span class="n">source</span> <span class="o">./</span><span class="n">set_env</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </section>
 <section id="deploy-the-services-using-docker-compose">
 <h2>Deploy the Services Using Docker Compose<a class="headerlink" href="#deploy-the-services-using-docker-compose" title="Link to this heading">¶</a></h2>
 <p>To deploy the Deep Research Agent services, execute the docker compose up command with the appropriate arguments. For a default deployment, execute:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/hpu/gaudi/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">compose</span> <span class="o">-</span><span class="n">f</span> <span class="n">docker_compose</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">hpu</span><span class="o">/</span><span class="n">gaudi</span><span class="o">/</span><span class="n">compose</span><span class="o">.</span><span class="n">yaml</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+
 </pre></div>
 </div>
 </section>
