@@ -3070,47 +3070,6 @@
              
   <section id="edge-craft-retrieval-augmented-generation-advanced-setup">
 <h1>Edge Craft Retrieval-Augmented Generation Advanced Setup<a class="headerlink" href="#edge-craft-retrieval-augmented-generation-advanced-setup" title="Link to this heading">¶</a></h1>
-<section id="query-search">
-<h2>Query Search<a class="headerlink" href="#query-search" title="Link to this heading">¶</a></h2>
-<p>Query Search features allow EC-RAG to do query pre-process before retrieval and reranking. To enable query search, vllm inference is required. Chinese version is available in <a class="reference internal" href="Query_Search_Zh.html"><span class="std std-doc">Query Search Zh</span></a></p>
-<section id="sub-question-file-s-example">
-<h3>1. Sub-question file(s) example<a class="headerlink" href="#sub-question-file-s-example" title="Link to this heading">¶</a></h3>
-<p>Sub-question files need to end with <code class="docutils literal notranslate"><span class="pre">.json</span></code> and follow json file format: main question as json key, sub-questions as json value. See below example:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Issue1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sub-question1.1? Sub-question1.2?&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Issue2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sub-question2.1? Sub-question2.2? Sub-question2.3?&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<blockquote>
-<div><p>Note: 1. At lease one sub-question file is required. 2. Increasing main question amount would increase query time for EC-RAG.</p>
-</div></blockquote>
-</section>
-<section id="sub-question-file-s-location">
-<h3>2. Sub-question file(s) location<a class="headerlink" href="#sub-question-file-s-location" title="Link to this heading">¶</a></h3>
-<p>All sub-question files need to be placed under <code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs/search_dir</span></code>.</p>
-</section>
-<section id="config-file-example">
-<h3>3. Config file example<a class="headerlink" href="#config-file-example" title="Link to this heading">¶</a></h3>
-<p>Configure file includes variables such as prompts, temperature, etc.</p>
-<p><code class="docutils literal notranslate"><span class="pre">instruction</span></code>, <code class="docutils literal notranslate"><span class="pre">input_template</span></code>, <code class="docutils literal notranslate"><span class="pre">output_template</span></code> would affect final prompt for query search.
-<code class="docutils literal notranslate"><span class="pre">json_key</span></code> and <code class="docutils literal notranslate"><span class="pre">json_levels</span></code> are related to each other. For example, if <code class="docutils literal notranslate"><span class="pre">json_key</span></code> is set to “similarity”, <code class="docutils literal notranslate"><span class="pre">json_levels</span></code> need list options for “similarity”, such as “Low, Medium, High”.</p>
-<p>One example for DeesSeep-R1-Distill-Qwen-32B configs is listed below:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">query_matcher</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">instructions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Decide</span><span class="nv"> </span><span class="s">similarity</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">queries.</span><span class="nv"> </span><span class="s">For</span><span class="nv"> </span><span class="s">exactly</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">same,</span><span class="nv"> </span><span class="s">mark</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">High,</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">totally</span><span class="nv"> </span><span class="s">different,</span><span class="nv"> </span><span class="s">mark</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">Low.\n&quot;</span>
-<span class="w">  </span><span class="nt">input_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;query&gt;</span><span class="nv"> </span><span class="s">{}</span><span class="nv"> </span><span class="s">&lt;/query&gt;\n&lt;query&gt;</span><span class="nv"> </span><span class="s">{}</span><span class="nv"> </span><span class="s">&lt;/query&gt;\n&quot;</span>
-<span class="w">  </span><span class="nt">output_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;output</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">{json_levels}.\n&quot;</span>
-<span class="w">  </span><span class="nt">json_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;similarity&quot;</span>
-<span class="w">  </span><span class="nt">json_levels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;Low&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Medium&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;High&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.7</span>
-</pre></div>
-</div>
-</section>
-<section id="config-file-location">
-<h3>4. Config file location<a class="headerlink" href="#config-file-location" title="Link to this heading">¶</a></h3>
-<p>Config file needs to be placed under <code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs</span></code> and named as <code class="docutils literal notranslate"><span class="pre">search_config.yaml</span></code>, which gives final path as <code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs/search_config.yaml</span></code>.</p>
-</section>
-</section>
 <section id="openvino-local-inference">
 <h2>OpenVINO Local Inference<a class="headerlink" href="#openvino-local-inference" title="Link to this heading">¶</a></h2>
 <p>EC-RAG support using local OpenVINO models to do inference, please follow below steps to run local inference:</p>
@@ -3143,28 +3102,22 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <span class="c1"># Use `ip a` to check your active ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="w"> </span><span class="c1"># Your doc path for uploading a dir of files</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="w"> </span><span class="c1"># Your UI cache path for transferring files</span>
-
 <span class="c1"># Check group id of video and render</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">RENDERGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
 
-<span class="c1"># If you have a proxy configured, uncomment below line</span>
-<span class="c1"># export no_proxy=${no_proxy},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
-<span class="c1"># export NO_PROXY=${NO_PROXY},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
+<span class="c1"># If you have a proxy configured, execute below line</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
+<span class="nb">export</span><span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
 <span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
 <span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
 
-<span class="c1"># By default, the ports of the containers are set, uncomment if you want to change</span>
-<span class="c1"># export MEGA_SERVICE_PORT=16011</span>
-<span class="c1"># export PIPELINE_SERVICE_PORT=16010</span>
-<span class="c1"># export UI_SERVICE_PORT=&quot;8082&quot;</span>
-
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${TMPFILE_PATH}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
+<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
+chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">DOC_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">TMPFILE_PATH</span><span class="si">}</span>
 <span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 -R $HOME/.cache</span>
+chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="nv">$HOME</span>/.cache
 </pre></div>
 </div>
 </section>
@@ -3181,87 +3134,11 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <span class="c1"># EC-RAG support pipeline performance benchmark, use ENABLE_BENCHMARK=true/false to turn on/off benchmark</span>
 <span class="c1"># export ENABLE_BENCHMARK= # change to your preference</span>
 
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">5000</span>
 <span class="c1"># Launch EC-RAG service with compose</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-</section>
-</section>
-<section id="multi-arc-setup">
-<h2>Multi-ARC Setup<a class="headerlink" href="#multi-arc-setup" title="Link to this heading">¶</a></h2>
-<p>EC-RAG support run inference with multi-ARC in multiple isolated containers
-Docker Images preparation is the same as local inference section, please refer to <a class="reference internal" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own"><span class="xref myst">Build Docker Images</span></a>
-Model preparation is the same as vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-models"><span class="std std-ref">Prepare models</span></a>
-After docker images preparation and model preparation, please follow below steps to run multi-ARC Setup(Below steps show 2 vLLM container(2 DP) with multi Intel Arc GPUs):</p>
-<section id="id1">
-<h3>1. Prepare env variables and configurations<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<section id="prepare-env-variables-for-vllm-deployment">
-<h4>Prepare env variables for vLLM deployment<a class="headerlink" href="#prepare-env-variables-for-vllm-deployment" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="c1"># Use `ip a` to check your active ip</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
-
-<span class="c1"># The default LLM_MODEL_PATH is &quot;${MODEL_PATH}/${LLM_MODEL}&quot;, you can change to your model path</span>
-<span class="c1"># export LLM_MODEL_PATH= # change to your model path</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="w"> </span><span class="c1"># Your doc path for uploading a dir of files</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="w"> </span><span class="c1"># Your UI cache path for transferring files</span>
-
-<span class="c1"># Check group id of video and render</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RENDERGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
-
-<span class="c1"># If you have a proxy configured, uncomment below line</span>
-<span class="c1"># export no_proxy=${no_proxy},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
-<span class="c1"># export NO_PROXY=${NO_PROXY},${HOST_IP},edgecraftrag,edgecraftrag-server</span>
-<span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
-<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
-
-<span class="c1"># By default, the ports of the containers are set, uncomment if you want to change</span>
-<span class="c1"># export MEGA_SERVICE_PORT=16011</span>
-<span class="c1"># export PIPELINE_SERVICE_PORT=16010</span>
-<span class="c1"># export UI_SERVICE_PORT=&quot;8082&quot;</span>
-
-<span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 ${MODEL_PATH} ${DOC_PATH} ${TMPFILE_PATH}</span>
-<span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
-<span class="c1"># chown 1000:1000 -R $HOME/.cache</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="m">8086</span><span class="w"> </span><span class="c1"># Set port for nginx</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">vLLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DP_NUM</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="c1"># How many containers you want to start to run inference</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_0</span><span class="o">=</span><span class="m">8100</span><span class="w"> </span><span class="c1"># You can set your own vllm service port</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_1</span><span class="o">=</span><span class="m">8200</span><span class="w"> </span><span class="c1"># You can set your own vllm service port</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="c1"># Your Intel Arc GPU number to do TP inference</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_0</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="c1"># Which GPU to select to run for container 0</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SELECTED_XPU_1</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="c1"># Which GPU to select to run for container 1</span>
-
-<span class="c1"># Below are the extra env you can set for vllm</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_SEQS</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="c1"># MAX_NUM_SEQS value</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="c1"># MAX_NUM_BATCHED_TOKENS value</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">5000</span><span class="w"> </span><span class="c1"># MAX_MODEL_LEN value</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LOAD_IN_LOW_BIT</span><span class="o">=</span>fp8<span class="w"> </span><span class="c1"># the weight type value, expected: sym_int4, asym_int4, sym_int5, asym_int5 or sym_int8</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CCL_DG2_USM</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="c1"># Need to set to 1 on Core to enable USM (Shared Memory GPUDirect). Xeon supports P2P and doesn&#39;t need this.</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="generate-nginx-config-file-and-compose-yaml-file">
-<h3>2. Generate nginx config file and compose yaml file<a class="headerlink" href="#generate-nginx-config-file-and-compose-yaml-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate your nginx config file</span>
-<span class="c1"># nginx-conf-generator.sh requires 2 parameters: DP_NUM and output filepath</span>
-bash<span class="w"> </span>nginx/nginx-conf-generator.sh<span class="w"> </span><span class="nv">$DP_NUM</span><span class="w"> </span>nginx/nginx.conf<span class="w"> </span><span class="c1"># You can change TEMP_FILE_PATH to your reference</span>
-<span class="c1"># set NGINX_CONFIG_PATH</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/nginx/nginx.conf&quot;</span>
-
-<span class="c1"># Generate compose_vllm.yaml file</span>
-<span class="c1"># multi-arc-yaml-generator.sh requires 2 parameters: DP_NUM and output filepath</span>
-bash<span class="w"> </span>docker_compose/intel/gpu/arc/multi-arc-yaml-generator.sh<span class="w"> </span><span class="nv">$DP_NUM</span><span class="w"> </span>docker_compose/intel/gpu/arc/compose_vllm.yaml
-</pre></div>
-</div>
-</section>
-<section id="id2">
-<h3>3. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<p>This section is the same as default vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#deploy-the-service-using-docker-compose"><span class="std std-ref">Start Edge Craft RAG Services with Docker Compose</span></a></p>
 </section>
 </section>
 <section id="ec-rag-with-kbadmin">
@@ -3270,8 +3147,8 @@ bash<span class="w"> </span>docker_compose/intel/gpu/arc/multi-arc-yaml-generato
 Please make sure all the kbadmin services have been launched
 EC-RAG Docker Images preparation is the same as local inference section, please refer to <a class="reference internal" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own"><span class="xref myst">Build Docker Images</span></a>
 Model preparation is the same as vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-models"><span class="std std-ref">Prepare models</span></a></p>
-<section id="id3">
-<h3>1. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h3>1. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <p>This section is the same as default vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-env-variables-and-configurations"><span class="std std-ref">Prepare env variables and configurations</span></a> and <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#deploy-the-service-on-arc-a770-using-docker-compose"><span class="std std-ref">Start Edge Craft RAG Services with Docker Compose</span></a></p>
 </section>
 <section id="access-kbadmin-ui">
