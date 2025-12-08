@@ -2592,7 +2592,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#overview">📖 Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#available-tuners">🧠 Available Tuners</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-use-rag-pilot">🚦 How to use RAG Pilot</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#input-file-qa-list-file-your-queries-csv">🔹Input file: QA List File (<code class="docutils literal notranslate"><span class="pre">your_queries.csv</span></code>)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-rag-pilot-with-ui">▶️ Use RAG Pilot with UI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-rag-pilot-with-restful-api">▶️ Use RAG Pilot with RESTful API</a></li>
 </ul>
@@ -3083,32 +3082,27 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>EmbeddingTuner</strong></p></td>
+<tr class="row-even"><td><p><strong>EmbeddingModelTuner</strong></p></td>
 <td><p>Retrieval</p></td>
 <td><p>Tune embedding model and related parameters</p></td>
 <td><p>Allows selection and configuration of the embedding model used for vectorization, including model name and optional parameters like dimension or backend.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NodeParserTuner</strong></p></td>
 <td><p>Retrieval</p></td>
-<td><p>Tune node parser parameters</p></td>
-<td><p>General tuner for configuring node parsers, possibly extending to custom strategies or pre-processing logic.</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>SimpleNodeParserChunkTuner</strong></p></td>
-<td><p>Retrieval</p></td>
 <td><p>Tune <code class="docutils literal notranslate"><span class="pre">SentenceSplitter</span></code>’s <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> and <code class="docutils literal notranslate"><span class="pre">chunk_overlap</span></code></p></td>
 <td><p>Configures chunking behavior for document parsing by adjusting the size of individual text chunks and their overlap to ensure context retention.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>RetrievalTopkTuner</strong></p></td>
+<tr class="row-even"><td><p><strong>RetrievalTopkTuner</strong></p></td>
 <td><p>Retrieval</p></td>
 <td><p>Tune <code class="docutils literal notranslate"><span class="pre">top_k</span></code> for retriever</p></td>
 <td><p>Adjusts how many documents are retrieved before reranking, balancing recall and performance.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>RerankerTopnTuner</strong></p></td>
+<tr class="row-odd"><td><p><strong>RerankerTopnTuner</strong></p></td>
 <td><p>Postprocessing</p></td>
 <td><p>Tune <code class="docutils literal notranslate"><span class="pre">top_n</span></code> for reranking</p></td>
 <td><p>Adjusts the number of top-ranked documents returned after reranking, optimizing relevance and conciseness.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>PromptTuner</strong></p></td>
+<tr class="row-even"><td><p><strong>PromptTuner</strong></p></td>
 <td><p>Generator</p></td>
 <td><p>Tune <code class="docutils literal notranslate"><span class="pre">prompt</span></code> for generator</p></td>
 <td><p>Generate multiple responses using different prompts for users.</p></td>
@@ -3119,99 +3113,182 @@
 </section>
 <section id="how-to-use-rag-pilot">
 <h2>🚦 How to use RAG Pilot<a class="headerlink" href="#how-to-use-rag-pilot" title="Link to this heading">¶</a></h2>
-<p>To launch RAG Pilot, create the following <em>required files</em> before running the command:</p>
-<section id="input-file-qa-list-file-your-queries-csv">
-<h3>🔹Input file: QA List File (<code class="docutils literal notranslate"><span class="pre">your_queries.csv</span></code>)<a class="headerlink" href="#input-file-qa-list-file-your-queries-csv" title="Link to this heading">¶</a></h3>
-<p>The input CSV file should contain queries and associated ground truth data (optional) used for evaluation or tuning. Each row corresponds to a specific query and context file. The CSV must include the following <strong>columns</strong>:</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Column</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">query_id</span></code></p></td>
-<td><p>✅ Yes</p></td>
-<td><p>Unique identifier for the query. Can be used to group multiple context entries under the same query.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">query</span></code></p></td>
-<td><p>✅ Yes (at least one per <code class="docutils literal notranslate"><span class="pre">query_id</span></code>)</p></td>
-<td><p>The actual query string. If left empty for some rows sharing the same <code class="docutils literal notranslate"><span class="pre">query_id</span></code>, the query from the first row with a non-empty value will be used.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">file_name</span></code></p></td>
-<td><p>✅ Yes</p></td>
-<td><p>The name of the file or document where the context (for retrieval or grounding) is drawn from.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gt_context</span></code></p></td>
-<td><p>✅ Yes</p></td>
-<td><p>The ground truth context string that should be retrieved or matched against.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ground_truth</span></code></p></td>
-<td><p>❌ Optional</p></td>
-<td><p>The ideal answer or response for the query, used for optional answer-level evaluation.</p></td>
-</tr>
-</tbody>
-</table>
-<section id="csv-file-example">
-<h4>📌 CSV File Example<a class="headerlink" href="#csv-file-example" title="Link to this heading">¶</a></h4>
-<div class="highlight-csv notranslate"><div class="highlight"><pre><span></span>query_id,query,file_name,gt_context,ground_truth
-53,故障来源有哪些？,故障处理记录表.txt,故障来源：用户投诉、日志系统、例行维护中发现、其它来源。,故障来源：用户投诉、日志系统、例行维护中发现、其它来源。
-93,uMAC网元VNFC有哪几种备份方式,index.txt,ZUF-76-04-005 VNFC支持1+1主备冗余,uMAC网元VFNC有3中备份方式: 支持1+1主备冗余，支持N+M负荷分担冗余， 支持1+1互备冗余。
-93,,index.txt,ZUF-76-04-006 VNFC支持N+M负荷分担冗余,
-93,,index.txt,ZUF-76-04-008 VNFC支持1+1互备冗余,
-</pre></div>
-</div>
-</section>
-</section>
 <section id="use-rag-pilot-with-ui">
 <h3>▶️ Use RAG Pilot with UI<a class="headerlink" href="#use-rag-pilot-with-ui" title="Link to this heading">¶</a></h3>
 <p>RAG Pilot provides an interactive UI interface to assist with usage, including the following stages：</p>
-<section id="ground-truth-uploading">
-<h4>1. Ground Truth Uploading<a class="headerlink" href="#ground-truth-uploading" title="Link to this heading">¶</a></h4>
-<p>Upload the QA List File mentioned above by click the <code class="docutils literal notranslate"><span class="pre">Upload</span></code> button:</p>
-<p><img alt="Ground truth upload" src="../../../../../_images/upload_ground_truth.png" />
-Or you can also create your own ground truth by click the <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">Ground</span> <span class="pre">Truth</span></code> button, use <code class="docutils literal notranslate"><span class="pre">+</span></code> and <code class="docutils literal notranslate"><span class="pre">-</span></code> button to add or delete ground truth.</p>
-<p><img alt="Create ground truth" src="../../../../../_images/create_ground_truth.png" /></p>
+<section id="set-ec-rag-endpoint">
+<h4>1. Set EC-RAG endpoint<a class="headerlink" href="#set-ec-rag-endpoint" title="Link to this heading">¶</a></h4>
+<p>Click the gear button to set EC-RAG endpoint:
+<img alt="Set ecrag endpoint" src="../../../../../_images/set_ecragendpoint.png" /></p>
+</section>
+<section id="ground-truth-upload">
+<h4>2. Ground truth upload<a class="headerlink" href="#ground-truth-upload" title="Link to this heading">¶</a></h4>
+<p>We provide two ways to upload Ground truth:
+<code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">File</span></code> and <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">New</span></code>
+First time you use Rag Pilot you can start with <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">Now</span></code>.</p>
+<section id="create-now">
+<h5>2.1 Create Now<a class="headerlink" href="#create-now" title="Link to this heading">¶</a></h5>
+<p><img alt="Ground truth upload" src="../../../../../_images/creat_gt1.png" /></p>
+<ul>
+<li><p>Available options and  meanings:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>usage</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Query</strong></p></td>
+<td><p>The query you want to ask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>File name</strong></p></td>
+<td><p>File name which containing the context, select from the drop-down menu.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Context</strong></p></td>
+<td><p>Context ground truth which related to the query.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Section</strong></p></td>
+<td><p>Node with context in the file.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Pages</strong></p></td>
+<td><p>The page number of the context in the file.</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Context</span></code>: Add context of the same query.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Query</span></code> : Add other queries infornation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Save</span></code>: Save single query ground truth information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Batch</span> <span class="pre">Save</span></code>: Save all queries ground truth information.</p></li>
+<li><p>Once the user click <code class="docutils literal notranslate"><span class="pre">Save</span></code> or <code class="docutils literal notranslate"><span class="pre">Batch</span> <span class="pre">Save</span></code> button ,RAG Pilot will search matched nodes based on the ground truth information you entered as ground truth. If no matched node, RAG Pilot will will return the top few nodes with the highest match scores for the user to select:
+<img alt="select ground truth" src="../../../../../_images/gt_select.png" /></p></li>
+<li><p>After create gt, you can click <code class="docutils literal notranslate"><span class="pre">download</span></code> button to download ground truth file for <code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">Files</span></code>.
+<img alt="download gt" src="../../../../../_images/download.png" /></p></li>
+</ul>
+</section>
+<section id="upload-files">
+<h5>2.2 Upload files<a class="headerlink" href="#upload-files" title="Link to this heading">¶</a></h5>
+<p>After create gt, you can use downloaded json file as upload file.</p>
+</section>
 </section>
 <section id="response-rating">
-<h4>2. Response Rating<a class="headerlink" href="#response-rating" title="Link to this heading">¶</a></h4>
-<p>After groud truth loading, RAG Pilot wii generate response bases on EC-RAG current pipeline.
-You can rating each result after the responses generated.
-<img alt="Rating" src="../../../../../_images/rating.png" /></p>
+<h4>3. Response Rating<a class="headerlink" href="#response-rating" title="Link to this heading">¶</a></h4>
+<p>After groud truth loading, RAG Pilot wii generate response bases on EC-RAG current pipeline.</p>
+<ul>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Run</span></code> to get rating results.</p></li>
+<li><p>Click  <code class="docutils literal notranslate"><span class="pre">Skip</span></code> to skip rating.</p>
+<p><img alt="Rating" src="../../../../../_images/rating1.png" /></p>
+</li>
+</ul>
+<p>After clicking <code class="docutils literal notranslate"><span class="pre">Run</span></code>:</p>
+<ul>
+<li><p>You can rating each result after the responses generated.</p></li>
+<li><p>Click numbers on the left to switch between responses of different queries.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Next</span></code> to the next stage.</p>
+<p><img alt="Rating2" src="../../../../../_images/rating2.png" /></p>
+</li>
+</ul>
 </section>
 <section id="retrieve-context-tuning">
-<h4>3. Retrieve Context Tuning<a class="headerlink" href="#retrieve-context-tuning" title="Link to this heading">¶</a></h4>
-<p>During this stage, RAG Pilot will execute four tuners: EmbeddingTuner, NodeParserTuner, SimpleNodeParserChunkTuner, and RerankerTopnTuner.</p>
-<p>These tuners will experiment with various parameter combinations to construct corresponding pipelines, ultimately selecting the most effective pipeline as the operational one.</p>
-<p><img alt="Retrieval" src="../../../../../_images/retrieved_pipelines.png" />
-Once all four tuners have completed their tasks, the page will display the results, including the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">hits</span></code> and the <code class="docutils literal notranslate"><span class="pre">retrieved</span> <span class="pre">chunks</span></code>.</p>
+<h4>4. Retrieve Context Tuning<a class="headerlink" href="#retrieve-context-tuning" title="Link to this heading">¶</a></h4>
+<p>During this stage, RAG Pilot will execute four tuners:<code class="docutils literal notranslate"><span class="pre">ObserberTuner</span></code>, <code class="docutils literal notranslate"><span class="pre">EmbeddingModelTuner</span></code>, <code class="docutils literal notranslate"><span class="pre">NodeParserTuner</span></code> and <code class="docutils literal notranslate"><span class="pre">RetrievalTopKTuner</span></code>.</p>
+<section id="retrieve-context-tuning-configure">
+<h5>4.1 Retrieve Context Tuning Configure<a class="headerlink" href="#retrieve-context-tuning-configure" title="Link to this heading">¶</a></h5>
+<p>You can configure the specific content for each tuners.</p>
+<ul>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">Tuners</span></code> will start retrieval stage tuning.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Cancel</span></code> then click <code class="docutils literal notranslate"><span class="pre">Skip</span></code> to skip the Retrieve Context Tuning stage.</p></li>
+<li><p>Support exporting and importing tuners configure with <code class="docutils literal notranslate"><span class="pre">Export</span></code> and <code class="docutils literal notranslate"><span class="pre">Import</span></code> buttons.</p>
+<p><img alt="retrieval config" src="../../../../../_images/retrieval_config.png" /></p>
+</li>
+</ul>
+</section>
+<section id="retrieve-context-tuning-run-results">
+<h5>4.2 Retrieve Context Tuning Run &amp; Results<a class="headerlink" href="#retrieve-context-tuning-run-results" title="Link to this heading">¶</a></h5>
+<p>After clicking <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">Tuners</span></code>, these tuners will experiment with various parameter combinations to construct corresponding pipelines, ultimately selecting the most effective pipeline as the operational one.</p>
+<ul>
+<li><p>Click numbers on the left to switch between different queries.</p>
+<p><img alt="retrieva lpipelines" src="../../../../../_images/retrieved_pipelines.png" /></p>
+</li>
+<li><p>Once the selected tuners have completed their tasks, the page will display the results, including the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">hits</span></code> and the <code class="docutils literal notranslate"><span class="pre">retrieved</span> <span class="pre">chunks</span></code>.</p></li>
+<li><p>Users can search text via the search box in the upper-right corner to observe which parts of the context match the ground truth context. Text entered into the search box will be highlighted.</p>
 <p><img alt="retrieved chunks" src="../../../../../_images/retrieved_chunks.png" /></p>
+</li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Next</span></code> to the Postprocess Context Tuning stage.</p></li>
+</ul>
+</section>
 </section>
 <section id="postprocess-context-tuning">
-<h4>4. Postprocess Context Tuning<a class="headerlink" href="#postprocess-context-tuning" title="Link to this heading">¶</a></h4>
-<p>This stage adjusts the number of top-ranked documents returned after reranking, optimizing relevance and conciseness.
-After this tuner finished, the page will show recall plots of different <code class="docutils literal notranslate"><span class="pre">topn</span></code></p>
+<h4>5. Postprocess Context Tuning<a class="headerlink" href="#postprocess-context-tuning" title="Link to this heading">¶</a></h4>
+<p>This stage includes one tuner:<code class="docutils literal notranslate"><span class="pre">RerankerTopnTuner</span></code> which adjusts the number of top-ranked documents returned after reranking, optimizing relevance and conciseness.</p>
+<section id="postprocess-context-tuning-configure">
+<h5>5.1 Postprocess Context Tuning Configure<a class="headerlink" href="#postprocess-context-tuning-configure" title="Link to this heading">¶</a></h5>
+<p>Users can configure <code class="docutils literal notranslate"><span class="pre">RerankerTopnTuner</span></code> with UI.</p>
+<ul>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">Tuners</span></code> will start retrieval stage tuning.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Cancel</span></code> then click <code class="docutils literal notranslate"><span class="pre">Skip</span></code> to skip the Postprocess Context Tuning.</p></li>
+<li><p>Support exporting and importing tuners configure with <code class="docutils literal notranslate"><span class="pre">Export</span></code> and <code class="docutils literal notranslate"><span class="pre">Import</span></code> buttons.</p>
+<p><img alt="postprocess config" src="../../../../../_images/postprocessing_config.png" /></p>
+</li>
+</ul>
+</section>
+<section id="postprocess-context-tuning-run-results">
+<h5>5.2 Postprocess Context Tuning Run &amp; Results<a class="headerlink" href="#postprocess-context-tuning-run-results" title="Link to this heading">¶</a></h5>
+<p>After the tuning finished, the page will show recall plots of different <code class="docutils literal notranslate"><span class="pre">topn</span></code>.</p>
 <p><img alt="recall plot" src="../../../../../_images/recall_plot.png" /></p>
-<p>You can select the desired <code class="docutils literal notranslate"><span class="pre">Top</span> <span class="pre">n</span></code> value. The page will display the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">hits</span></code> from both the postprocessing and retrieval stages, as well as the <code class="docutils literal notranslate"><span class="pre">retrieved</span> <span class="pre">chunks</span></code> from the postprocessing stage.</p>
+<ul>
+<li><p>You can select the desired <code class="docutils literal notranslate"><span class="pre">Top</span> <span class="pre">n</span></code> value.</p></li>
+<li><p>The page will display the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">hits</span></code> from both the postprocessing and retrieval stages, as well as the <code class="docutils literal notranslate"><span class="pre">retrieved</span> <span class="pre">chunks</span></code> from the postprocessing stage.</p></li>
+<li><p>Click numbers on the left to switch between different queries.</p></li>
+<li><p>Users can search text via the search box in the upper-right corner to observe which parts of the context match the ground truth context. Text entered into the search box will be highlighted.</p>
 <p><img alt="postprocess chunks" src="../../../../../_images/postprocess_chunks.png" /></p>
+</li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Next</span></code> to the generation tuning stage.</p></li>
+</ul>
+</section>
 </section>
 <section id="generation-tuning">
-<h4>5. Generation tuning<a class="headerlink" href="#generation-tuning" title="Link to this heading">¶</a></h4>
-<p>This page will displays the activated prompts sourced from text files located in the <code class="docutils literal notranslate"><span class="pre">./prompt_templates</span></code> folder, along with detailed prompt contents specified in the <code class="docutils literal notranslate"><span class="pre">prompt_contents</span></code> section of the ecrag.yaml file.</p>
+<h4>6. Generation tuning<a class="headerlink" href="#generation-tuning" title="Link to this heading">¶</a></h4>
+<p>This stage includes one tuner: <code class="docutils literal notranslate"><span class="pre">PromptTuner</span></code>, you can add your own prompts to generate different responses.</p>
+<section id="generation-tuning-configure">
+<h5>6.1 Generation Tuning Configure<a class="headerlink" href="#generation-tuning-configure" title="Link to this heading">¶</a></h5>
+<p>Users can configure <code class="docutils literal notranslate"><span class="pre">PromptTuner</span></code> with UI:</p>
+<ul>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Cancel</span></code> then click <code class="docutils literal notranslate"><span class="pre">Skip</span></code> to skip the Generation Tuning.</p></li>
+<li><p>Support exporting and importing tuners configure with <code class="docutils literal notranslate"><span class="pre">Export</span></code> and <code class="docutils literal notranslate"><span class="pre">Import</span></code> buttons.</p>
+<p><img alt="prompt configs" src="../../../../../_images/prompt_config.png" /></p>
+</li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">tuners</span></code> will display all activated prompts:</p>
 <p><img alt="activated prompts" src="../../../../../_images/activated_prompt.png" /></p>
-<p>After clicking the Next button, RAG Pilot will utilize these prompts to generate answers. You can then evaluate and rate the responses generated from different prompts.</p>
+</li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Next</span></code> to utilize these prompts to generate answers.</p></li>
+</ul>
+</section>
+<section id="generation-tuning-run-results">
+<h5>6.2 Generation Tuning Run &amp; Results<a class="headerlink" href="#generation-tuning-run-results" title="Link to this heading">¶</a></h5>
+<p>Once the response is generated, you can then evaluate and rate the responses generated from different prompts.</p>
+<p>Click numbers on the left to switch between different queries.</p>
 <p><img alt="different promp answers" src="../../../../../_images/answer_wi_diff_prompts.png" /></p>
+<p>Click <code class="docutils literal notranslate"><span class="pre">Next</span></code> to the next stage.</p>
+</section>
 </section>
 <section id="view-results">
-<h4>6. View Results<a class="headerlink" href="#view-results" title="Link to this heading">¶</a></h4>
-<p>After <code class="docutils literal notranslate"><span class="pre">Generation</span> <span class="pre">tuning</span></code> stage, you can see the overall user rating of different prompts. For each pipeline, you can view configuration details, download the specific pipeline configurations, and update them to EC-RAG.</p>
+<h4>7. View Results<a class="headerlink" href="#view-results" title="Link to this heading">¶</a></h4>
+<p>After <code class="docutils literal notranslate"><span class="pre">Generation</span> <span class="pre">tuning</span></code> stage, you can see the overall rating of different prompts. For each pipeline, you can view configuration details and update them to EC-RAG.</p>
 <p><img alt="different prompts results" src="../../../../../_images/diff_prompt_res.png" /></p>
 <p>Note that once you run <code class="docutils literal notranslate"><span class="pre">retrieval</span></code>,<code class="docutils literal notranslate"><span class="pre">postprocessing</span></code> or <code class="docutils literal notranslate"><span class="pre">generation</span></code> stage , the EC-RAG active pipeline will be changed, you have to reset EC-RAG pipeline in EC-RAG server if needed.</p>
 </section>
 </section>
 <section id="use-rag-pilot-with-restful-api">
 <h3>▶️ Use RAG Pilot with RESTful API<a class="headerlink" href="#use-rag-pilot-with-restful-api" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h4>Set EC-RAG endpoint<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:16030/v1/pilot/settings<span class="w">   </span>
+<span class="w">      </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">      </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;target_endpoint&quot;: &quot;10.67.106.189:16010&quot;,&quot;target_type&quot;:&quot;ecrag&quot;}&#39;</span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="upload-ground-truth">
 <h4>Upload ground truth<a class="headerlink" href="#upload-ground-truth" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:16030/v1/pilot/ground_truth/file<span class="w"> </span><span class="se">\</span>
@@ -3274,13 +3351,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span
 </section>
 <section id="reset">
 <h4>Reset<a class="headerlink" href="#reset" title="Link to this heading">¶</a></h4>
-<section id="restore-ec-rag-current-active-pipeline">
-<h5>Restore EC-RAG current active pipeline<a class="headerlink" href="#restore-ec-rag-current-active-pipeline" title="Link to this heading">¶</a></h5>
-<p>Once you change EC-RAG pipeline ,you can restore RAG Pilot active pipeline to the new EC-RAG pipeline by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:16030/v1/pilot/pipeline/restore<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
 <section id="reset-stage">
 <h5>Reset stage<a class="headerlink" href="#reset-stage" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:16030/v1/tuners/stage/<span class="o">{</span>stage<span class="o">}</span>/reset<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
@@ -3295,7 +3365,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span
 <h2>🔧 How to Adjust RAG Pilot to Tune Your RAG Solution<a class="headerlink" href="#how-to-adjust-rag-pilot-to-tune-your-rag-solution" title="Link to this heading">¶</a></h2>
 <section id="what-s-nodes-and-modules">
 <h3>🧩 What’s Nodes and Modules<a class="headerlink" href="#what-s-nodes-and-modules" title="Link to this heading">¶</a></h3>
-<p>RAG Pilot represents each stage of the RAG pipeline as a <strong>node</strong>, such as <code class="docutils literal notranslate"><span class="pre">node_parser</span></code>, <code class="docutils literal notranslate"><span class="pre">indexer</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, etc. Each node can have different <strong>modules</strong> that define its type and configuration. The nodes and modules are specified in a YAML file, allowing users to switch between different implementations easily.</p>
+<p>RAG Pilot represents each stage of the RAG pipeline as a <strong>node</strong>, such as <code class="docutils literal notranslate"><span class="pre">node_parser</span></code>, <code class="docutils literal notranslate"><span class="pre">indexer</span></code>, <code class="docutils literal notranslate"><span class="pre">retriever</span></code>, etc. Each node can have different <strong>modules</strong> that define its type and configuration. The nodes and modules are specified in a YAML file, allowing user to switch between different implementations easily.</p>
 <p>Here is an example of nodes and modules for EdgeCraftRAG.</p>
 <p><img alt="RAG Pilot Architecture" src="../../../../../_images/RAG_Pilot.png" /></p>
 </section>
