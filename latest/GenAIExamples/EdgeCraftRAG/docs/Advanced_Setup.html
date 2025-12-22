@@ -28,7 +28,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Explore Edge Craft RAG" href="Explore_Edge_Craft_RAG.html" />
+    <link rel="next" title="EC-RAG Agent Guide" href="Agentic_RAG_Guide.html" />
     <link rel="prev" title="Edge Craft Retrieval-Augmented Generation API guide" href="API_Guide.html" /> 
 </head>
 
@@ -437,6 +437,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="API_Guide.html">Edge Craft Retrieval-Augmented Generation API guide</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Edge Craft Retrieval-Augmented Generation Advanced Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide.html">EC-RAG Agent Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_Zh.html">EC-RAG智能体指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Query_Search_Zh.html">Query Search</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Quick_Start_Guide_Zh.html">快速启动指南</a></li>
@@ -3173,6 +3175,47 @@ Model preparation is the same as vLLM inference section, please refer to <a clas
 <p>please refer to <a class="reference internal" href="Explore_Edge_Craft_RAG.html#chatqna-with-kbadmin-in-ui"><span class="std std-ref">ChatQnA with Kbadmin in UI</span></a></p>
 </section>
 </section>
+<section id="deploy-ec-rag-on-multi-gpus">
+<h2>Deploy EC-RAG on multi GPUs<a class="headerlink" href="#deploy-ec-rag-on-multi-gpus" title="Link to this heading">¶</a></h2>
+<p>In this sample, we will use Qwen3-30B-A3B deployment on 4 Arc B60 GPUs as an example.
+Before started, please prepare models into MODEL_PATH and prepare docker images</p>
+<section id="id2">
+<h3>Prepare env variables and configurations<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
+<span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="c1"># Use `ip a` to check your active ip</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
+
+<span class="c1"># Check group id of video and render</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RENDERGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
+
+<span class="c1"># If you have a proxy configured, execute below line</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
+<span class="nb">export</span><span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
+<span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
+<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
+
+<span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
+<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
+chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">DOC_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">TMPFILE_PATH</span><span class="si">}</span>
+<span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
+chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="nv">$HOME</span>/.cache
+</pre></div>
+</div>
+</section>
+<section id="deploy-the-service-on-arc-b60-using-docker-compose">
+<h3>Deploy the Service on Arc B60 Using Docker Compose<a class="headerlink" href="#deploy-the-service-on-arc-b60-using-docker-compose" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM envs</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="c1"># for multi GPU, you can change TP value</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ZE_AFFINITY_MASK</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span><span class="c1"># for multi GPU, you can export ZE_AFFINITY_MASK=0,1,2...</span>
+docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>b60<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -3181,7 +3224,7 @@ Model preparation is the same as vLLM inference section, please refer to <a clas
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="API_Guide.html" class="btn btn-neutral float-left" title="Edge Craft Retrieval-Augmented Generation API guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Explore_Edge_Craft_RAG.html" class="btn btn-neutral float-right" title="Explore Edge Craft RAG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Agentic_RAG_Guide.html" class="btn btn-neutral float-right" title="EC-RAG Agent Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
