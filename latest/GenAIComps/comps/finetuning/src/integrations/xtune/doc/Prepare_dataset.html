@@ -28,7 +28,7 @@
     <script src="../../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../../search.html" />
-    <link rel="next" title="Qwen2-VL Training and Hyperparameter Optimization" href="Qwen2-VL_README.html" />
+    <link rel="next" title="Qwen2-VL &amp; Qwen2.5-VL Finetune and Hyperparameter Optimization" href="Qwen-VL_README.html" />
     <link rel="prev" title="XTune - Model finetune tool for Intel GPU" href="../README.html" /> 
 </head>
 
@@ -1010,21 +1010,22 @@
 <li class="toctree-l4"><a class="reference internal" href="#dataset-for-clip">Dataset for CLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dataset-for-adaclip">Dataset for AdaCLIP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dataset-for-qwen2-vl-finetune">Dataset for Qwen2-VL Finetune</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dataset-for-qwen2-vl-qwen2-5-vl-finetune">Dataset for Qwen2-VL &amp; Qwen2.5-VL Finetune</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#update-dataset-info-json">Update dataset_info.json</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="Qwen2-VL_README.html">Qwen2-VL Training and Hyperparameter Optimization</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#features">🚀 Features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#running-modes">📋 Running Modes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#usage">🛠️ Usage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#id1"></a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#configuration-parameters">⚙️ Configuration Parameters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#optuna-features">🔍 Optuna features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#log-control">💡 Log Control</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#output-and-results">📊 Output and Results</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#complete-examples">📝 Complete Examples</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Qwen2-VL_README.html#finetune-qwen2-vl-with-logging-eval-loss">Finetune qwen2-vl with logging eval loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qwen-VL_README.html">Qwen2-VL &amp; Qwen2.5-VL Finetune and Hyperparameter Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#configuration-differences-between-qwen2-vl-and-qwen2-5-vl">Configuration Differences Between Qwen2-VL and Qwen2.5-VL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#usage">Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#configuration-parameters">Configuration Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#optuna-features">Optuna features</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Qwen-VL_README.html#head">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#output-and-results">Output and Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Qwen-VL_README.html#calculation-and-plotting-of-evaluation-metrics-during-fine-tuning">Calculation and Plotting of Evaluation Metrics During Fine-Tuning</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="adaclip_readme.html">AdaCLIP-Finetune</a></li>
@@ -3157,9 +3158,38 @@
 |–– flickr/
 |   |–– flickr30k-images/
 |   |   |-- *.jpg
-|   |-- flickr30k_train.json.json
-|   |-- flickr30k_val.json.json
-|   |-- flickr30k_test.json.json
+|   |-- flickr30k_train.json
+|   |-- flickr30k_val.json
+|   |-- flickr30k_test.json
+</pre></div>
+</div>
+</section>
+<section id="flickrcn">
+<h3>FlickrCN<a class="headerlink" href="#flickrcn" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Create a folder name <code class="docutils literal notranslate"><span class="pre">flickrcn/</span></code> under <code class="docutils literal notranslate"><span class="pre">$DATA</span></code>.</p></li>
+<li><p>Download the dataset form the <a class="reference external" href="https://www.kaggle.com/datasets/eeshawn/flickr30k/data">Kaggle</a></p></li>
+<li><p>download json file from <code class="docutils literal notranslate"><span class="pre">https://huggingface.co/datasets/OFA-Sys/chinese-clip-eval/resolve/main/Flickr30k-CN.zip</span></code> Flickr30k-CN.zip\Flickr30k-CN/*.jsonl to <code class="docutils literal notranslate"><span class="pre">$DATA/flickrcn</span></code></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$DATA/
+|–– flickrcn/
+|   |–– flickr30k-images/
+|   |   |-- *.jpg
+|   |-- train_texts.jsonl
+|   |-- val_texts.jsonl
+|   |-- test_texts.jsonl
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">generate_flickr30k_cn_json.py</span> <span class="pre">--base_dir</span> <span class="pre">$DATA/flickrcn/</span></code> to generate usable json file</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$DATA/
+|–– flickrcn/
+|   |–– flickr30k-images/
+|   |   |-- *.jpg
+|   |-- flickr30k_cn_train.json
+|   |-- flickr30k_cn_val.json
+|   |-- flickr30k_cn_test.json
 </pre></div>
 </div>
 </section>
@@ -3230,14 +3260,17 @@
 </ul>
 </section>
 </section>
-<section id="dataset-for-qwen2-vl-finetune">
-<h2>Dataset for Qwen2-VL Finetune<a class="headerlink" href="#dataset-for-qwen2-vl-finetune" title="Link to this heading">¶</a></h2>
+<section id="dataset-for-qwen2-vl-qwen2-5-vl-finetune">
+<h2>Dataset for Qwen2-VL &amp; Qwen2.5-VL Finetune<a class="headerlink" href="#dataset-for-qwen2-vl-qwen2-5-vl-finetune" title="Link to this heading">¶</a></h2>
 <section id="activitynet-qa">
 <h3>ActivityNet-QA<a class="headerlink" href="#activitynet-qa" title="Link to this heading">¶</a></h3>
-<p>Please follow https://github.com/MILVLG/activitynet-qa/tree/master to download and seperata train/val dataset</p>
-<p>Then use below python generate_llama_json_limit_frames.py file to generate our train and test dataset:
-python generate_llama_json_limit_frames.py -name val_q -type val -n 500 -seconds 20</p>
-<p>generate_llama_json_limit_frames.py</p>
+<ul>
+<li><p>Please follow https://github.com/MILVLG/activitynet-qa/tree/master to download and seperata train/val dataset</p></li>
+<li><p>Then use below python generate_llama_json_limit_frames.py file to generate our train and test dataset:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>generate_llama_json_limit_frames.py<span class="w"> </span>-name<span class="w"> </span>val_q<span class="w"> </span>-type<span class="w"> </span>val<span class="w"> </span>-n<span class="w"> </span><span class="m">500</span><span class="w"> </span>-seconds<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+<p>generate_llama_json_limit_frames.py:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
@@ -3332,10 +3365,13 @@ python generate_llama_json_limit_frames.py -name val_q -type val -n 500 -seconds
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">combined_data</span><span class="p">,</span> <span class="n">combine_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
+</li>
+</ul>
 </section>
 </section>
 <section id="update-dataset-info-json">
 <h2>Update dataset_info.json<a class="headerlink" href="#update-dataset-info-json" title="Link to this heading">¶</a></h2>
+<p>Update dataset_info.json in your data dir:</p>
 <section id="dataset-info-json">
 <h3>dataset_info.json<a class="headerlink" href="#dataset-info-json" title="Link to this heading">¶</a></h3>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -3388,7 +3424,7 @@ python generate_llama_json_limit_frames.py -name val_q -type val -n 500 -seconds
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../README.html" class="btn btn-neutral float-left" title="XTune - Model finetune tool for Intel GPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Qwen2-VL_README.html" class="btn btn-neutral float-right" title="Qwen2-VL Training and Hyperparameter Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Qwen-VL_README.html" class="btn btn-neutral float-right" title="Qwen2-VL &amp; Qwen2.5-VL Finetune and Hyperparameter Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
