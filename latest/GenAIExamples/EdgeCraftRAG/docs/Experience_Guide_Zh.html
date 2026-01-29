@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Query Search &mdash; OPEA™ 1.5 documentation</title>
+  <title>EC-RAG 经验注入指南 &mdash; OPEA™ 1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,8 +28,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="快速启动指南" href="Quick_Start_Guide_Zh.html" />
-    <link rel="prev" title="Explore Edge Craft RAG" href="Explore_Edge_Craft_RAG.html" /> 
+    <link rel="next" title="Explore Edge Craft RAG" href="Explore_Edge_Craft_RAG.html" />
+    <link rel="prev" title="EC-RAG Experience Guide" href="Experience_Guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -446,8 +446,9 @@
 <li class="toctree-l4"><a class="reference internal" href="Advanced_Setup.html">Edge Craft Retrieval-Augmented Generation Advanced Setup</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide.html">EC-RAG Agent Guide</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_Zh.html">EC-RAG智能体指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Experience_Guide.html">EC-RAG Experience Guide</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">EC-RAG 经验注入指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Query Search</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Quick_Start_Guide_Zh.html">快速启动指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG one-click deployment script</a></li>
@@ -3075,10 +3076,10 @@
   
      <li><a href="../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Query Search</li>
+  <li>EC-RAG 经验注入指南</li>
 
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/GenAIExamples/EdgeCraftRAG/docs/Query_Search_Zh.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/GenAIExamples/EdgeCraftRAG/docs/Experience_Guide_Zh.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -3095,45 +3096,52 @@
   
            <div itemprop="articleBody">
              
-  <section id="query-search">
-<h1>Query Search<a class="headerlink" href="#query-search" title="Link to this heading">¶</a></h1>
-<p>Query Search帮助EC-RAG在进入retrival和reranking阶段之前，对用户query进行预处理，为了使用Query Search，您需要vllm作为后端推理引擎。</p>
+  <section id="ec-rag">
+<h1>EC-RAG 经验注入指南<a class="headerlink" href="#ec-rag" title="Link to this heading">¶</a></h1>
+<p>本指南将为您介绍如何在 EdgeCraftRAG (EC-RAG) 中启用、配置和使用经验注入（Experience）功能，涵盖 Experience 的创建和管理，旨在提升您使用EC-RAG时的回答质量。</p>
 <section id="id1">
-<h2>1. 子问题文件样例<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<p>用于保存子问题的文件需要以<code class="docutils literal notranslate"><span class="pre">.json</span></code>结尾，同时需要遵守json文件的格式：主问题作为json键，子问题作为json值，比如：</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;问题1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;子问题1.1？子问题1.2？&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;问题2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;子问题2.1？子问题2.2？子问题2.3？&quot;</span>
-<span class="p">}</span>
+<h2>概述<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>Experience（经验）是指个人或团队在实践过程中积累的知识和技能，通常通过实际操作、试错和反思获得，是解决实际问题的重要依据。EC-RAG 现已支持添加此类Experience，为您的对话提供更多参考。
+使用Experience之前，请确保Mivlus服务已经启动，并且请指定如下的环境变量:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">METADATA_DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:19530&quot;</span>
 </pre></div>
 </div>
-<blockquote>
-<div><p>请您注意：1. Query Search至少需要一个子问题文件。2. 增加问题数量会增加EC-RAG的整体查询时间。</p>
-</div></blockquote>
+</section>
+<section id="experience">
+<h2>创建 Experience<a class="headerlink" href="#experience" title="Link to this heading">¶</a></h2>
+<p>当 EC-RAG 被正确部署后，您可以通过左侧面板的<code class="docutils literal notranslate"><span class="pre">知识库</span></code>（Knowledge Base）选项卡切换到Experience创建页面：
+<img alt="alt text" src="../../../_images/experience_access_zh.png" /></p>
+<p>然后在<code class="docutils literal notranslate"><span class="pre">创建类型选择</span></code>窗口中，选择<code class="docutils literal notranslate"><span class="pre">去创建经验注入</span></code>：
+<img alt="alt text" src="../../../_images/experience_create_1_zh.png" /></p>
+<p>在接下来的窗口中，您可以将 Experience 设置为<code class="docutils literal notranslate"><span class="pre">已启用</span></code>或<code class="docutils literal notranslate"><span class="pre">已停用</span></code>状态。请注意，这也可以在创建 Experience 后进行更改：
+<img alt="alt text" src="../../../_images/experience_create_2_zh.png" /></p>
 </section>
 <section id="id2">
-<h2>2. 子问题文件位置<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<p>所有子问题文件应该放在<code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs/search_dir</span></code>路径下。</p>
-</section>
+<h2>管理 Experience<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>成功创建<code class="docutils literal notranslate"><span class="pre">Experience</span></code>后，左侧面板会出现<code class="docutils literal notranslate"><span class="pre">Experience</span></code>选项卡，同时带有<code class="docutils literal notranslate"><span class="pre">唯一</span></code>标签：
+<img alt="alt text" src="../../../_images/experience_management_1_zh.png" /></p>
 <section id="id3">
-<h2>3. 配置文件样例<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<p>配置文件里定义了Query Search需要的prompts、temperature等参数：</p>
-<p><code class="docutils literal notranslate"><span class="pre">instruction</span></code>, <code class="docutils literal notranslate"><span class="pre">input_template</span></code>, <code class="docutils literal notranslate"><span class="pre">output_template</span></code>会影响最终进行Query Search的提示词；
-<code class="docutils literal notranslate"><span class="pre">json_key</span></code> 和 <code class="docutils literal notranslate"><span class="pre">json_levels</span></code> 两个参数相互关联，比如，如果<code class="docutils literal notranslate"><span class="pre">json_key</span></code>设置为”similarity”，<code class="docutils literal notranslate"><span class="pre">json_levels</span></code>需要列出和其匹配的选项，像”Low, Medium, High”。</p>
-<p>对于DeesSeep-R1-Distill-Qwen-32B模型，一个配置样例如下:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">query_matcher</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">instructions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Decide</span><span class="nv"> </span><span class="s">similarity</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">queries.</span><span class="nv"> </span><span class="s">For</span><span class="nv"> </span><span class="s">exactly</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">same,</span><span class="nv"> </span><span class="s">mark</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">High,</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">totally</span><span class="nv"> </span><span class="s">different,</span><span class="nv"> </span><span class="s">mark</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">Low.\n&quot;</span>
-<span class="w">  </span><span class="nt">input_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;query&gt;</span><span class="nv"> </span><span class="s">{}</span><span class="nv"> </span><span class="s">&lt;/query&gt;\n&lt;query&gt;</span><span class="nv"> </span><span class="s">{}</span><span class="nv"> </span><span class="s">&lt;/query&gt;\n&quot;</span>
-<span class="w">  </span><span class="nt">output_template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;output</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">{json_levels}.\n&quot;</span>
-<span class="w">  </span><span class="nt">json_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;similarity&quot;</span>
-<span class="w">  </span><span class="nt">json_levels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;Low&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Medium&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;High&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.7</span>
-</pre></div>
-</div>
+<h3>添加 Experience<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>当您需要添加新 Experience 时，请从右侧面板选择<code class="docutils literal notranslate"><span class="pre">新建经验</span></code>：
+<img alt="alt text" src="../../../_images/experience_management_2_zh.png" /></p>
+<p>在<code class="docutils literal notranslate"><span class="pre">新建经验</span></code>窗口中，您可以根据需要添加经验及其对应的内容，EC-RAG 支持创建多个经验条目：
+<img alt="alt text" src="../../../_images/experience_management_3_zh.png" /></p>
 </section>
 <section id="id4">
-<h2>4. 配置文件位置<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<p>配置文件应该放在<code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs</span></code>路径下，并且被命名为<code class="docutils literal notranslate"><span class="pre">search_config.yaml</span></code>, 所以完整路径为<code class="docutils literal notranslate"><span class="pre">${TMPFILE_PATH}/configs/search_config.yaml</span></code>。</p>
+<h3>查看与修改<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<p>添加经验后，它们将以列表形式显示在<code class="docutils literal notranslate"><span class="pre">经验</span></code>选项卡下。您可以点击<code class="docutils literal notranslate"><span class="pre">+</span></code>号展开查看 Experience 内容的详细信息。使用左侧面板里<code class="docutils literal notranslate"><span class="pre">Experience</span></code>旁边的三个点可以激活或停用某个 Experience 库：
+<img alt="alt text" src="../../../_images/experience_management_4_zh.png" /></p>
+</section>
+</section>
+<section id="id5">
+<h2>使用示例<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<p>以下是激活和未激活Experience库的对比：</p>
+<p>未激活Experience：
+<img alt="alt text" src="../../../_images/experience_example_3.png" /></p>
+<p>激活Experience：
+<img alt="alt text" src="../../../_images/experience_example_1.png" /></p>
+<p>RAG回答：
+<img alt="alt text" src="../../../_images/experience_example_2.png" /></p>
 </section>
 </section>
 
@@ -3142,8 +3150,8 @@
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Explore_Edge_Craft_RAG.html" class="btn btn-neutral float-left" title="Explore Edge Craft RAG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Quick_Start_Guide_Zh.html" class="btn btn-neutral float-right" title="快速启动指南" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Experience_Guide.html" class="btn btn-neutral float-left" title="EC-RAG Experience Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Explore_Edge_Craft_RAG.html" class="btn btn-neutral float-right" title="Explore Edge Craft RAG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -3151,7 +3159,7 @@
   <div role="contentinfo">
     <p>&#169; Copyright 2024-2026 OPEA™, a Series of LF Projects, LLC.
 
-<span class="lastupdated">Published on Jan 28, 2026.</span>
+<span class="lastupdated">Published on Jan 29, 2026.</span>
 
   </div>
 
