@@ -28,8 +28,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="EC-RAG Agent Guide" href="Agentic_RAG_Guide.html" />
-    <link rel="prev" title="Edge Craft Retrieval-Augmented Generation API guide" href="API_Guide.html" /> 
+    <link rel="next" title="Edge Craft 检索增强生成（EC-RAG）高级部署说明" href="Advanced_Setup_zh.html" />
+    <link rel="prev" title="Edge Craft Retrieval-Augmented Generation API Guide" href="API_Guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -442,16 +442,19 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../README.html">Edge Craft Retrieval-Augmented Generation Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
-<li class="toctree-l4"><a class="reference internal" href="API_Guide.html">Edge Craft Retrieval-Augmented Generation API guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README_zh.html">在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="API_Guide.html">Edge Craft Retrieval-Augmented Generation API Guide</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Edge Craft Retrieval-Augmented Generation Advanced Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Advanced_Setup_zh.html">Edge Craft 检索增强生成（EC-RAG）高级部署说明</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide.html">EC-RAG Agent Guide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_Zh.html">EC-RAG智能体指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_zh.html">EC-RAG智能体指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Experience_Guide.html">EC-RAG Experience Guide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Experience_Guide_Zh.html">EC-RAG 经验注入指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Experience_Guide_zh.html">EC-RAG 经验注入指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Quick_Start_Guide_Zh.html">快速启动指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG_zh.html">探索 Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG one-click deployment script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG tool scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html">EdgeCraftRAG 工具脚本</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -3098,101 +3101,70 @@
              
   <section id="edge-craft-retrieval-augmented-generation-advanced-setup">
 <h1>Edge Craft Retrieval-Augmented Generation Advanced Setup<a class="headerlink" href="#edge-craft-retrieval-augmented-generation-advanced-setup" title="Link to this heading">¶</a></h1>
-<section id="openvino-local-inference">
-<h2>OpenVINO Local Inference<a class="headerlink" href="#openvino-local-inference" title="Link to this heading">¶</a></h2>
-<p>EC-RAG support using local OpenVINO models to do inference, please follow below steps to run local inference:</p>
-<section id="optional-build-docker-images-for-mega-service-server-and-ui-by-your-own">
-<h3>1. (Optional) Build Docker Images for Mega Service, Server and UI by your own<a class="headerlink" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own" title="Link to this heading">¶</a></h3>
-<p><strong>All the docker images can be automatically‌ pulled</strong>, If you want to build the images by your own, please follow the steps:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/opea-project/GenAIExamples.git
-<span class="nb">cd</span><span class="w"> </span>GenAIExamples/EdgeCraftRAG
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>--pull<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>--pull<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag-server:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile.server<span class="w"> </span>.
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>--pull<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$no_proxy</span><span class="s2">&quot;</span><span class="w"> </span>-t<span class="w"> </span>opea/edgecraftrag-ui:latest<span class="w"> </span>-f<span class="w"> </span>ui/docker/Dockerfile.ui<span class="w"> </span>.
+<p><a class="reference internal" href="Advanced_Setup_zh.html"><span class="std std-doc">中文版</span></a></p>
+<section id="build-docker-images-for-mega-service-server-and-ui-by-your-own">
+<h2>Build Docker Images for Mega Service, Server and UI by your own<a class="headerlink" href="#build-docker-images-for-mega-service-server-and-ui-by-your-own" title="Link to this heading">¶</a></h2>
+<p><strong>All the docker images can be automatically‌ pulled</strong>, if you want to build the images by your own, please use helper script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build all images</span>
+./tools/build_images.sh
+
+<span class="c1"># Build a single image</span>
+./tools/build_images.sh<span class="w"> </span>mega
+./tools/build_images.sh<span class="w"> </span>server
+./tools/build_images.sh<span class="w"> </span>ui
+
+<span class="c1"># Build multiple selected images</span>
+./tools/build_images.sh<span class="w"> </span>mega<span class="w"> </span>server
 </pre></div>
 </div>
 </section>
+<section id="manual-deployment-details-for-arc-platform">
+<h2>Manual deployment details for Arc platform<a class="headerlink" href="#manual-deployment-details-for-arc-platform" title="Link to this heading">¶</a></h2>
 <section id="prepare-models">
-<h3>2. Prepare models<a class="headerlink" href="#prepare-models" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare models for embedding, reranking and generation, you can also choose other OpenVINO optimized models</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/ov_models&quot;</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
+<h3>Prepare models<a class="headerlink" href="#prepare-models" title="Link to this heading">¶</a></h3>
+<p>There are 3 models need to be prepared: <strong>Embedding</strong>, <strong>Reranking</strong>, <strong>LLM</strong><br />
+You’ll need to decide the inferencing framework for these models.</p>
+<section id="embedding-and-reranking">
+<h4>Embedding and Reranking<a class="headerlink" href="#embedding-and-reranking" title="Link to this heading">¶</a></h4>
+<p>Embedding and reranking are usually servered by local OpenVINO inferencing, to prepare these 2 models:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare models for embedding, reranking:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
 pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
+</pre></div>
+</div>
+</section>
+<section id="llm">
+<h4>LLM<a class="headerlink" href="#llm" title="Link to this heading">¶</a></h4>
+<section id="openvino">
+<h5>openVINO<a class="headerlink" href="#openvino" title="Link to this heading">¶</a></h5>
+<p>If you have Core Ultra platform only, please prepare openVINO models:<br />
+You can also run openVINO models on discrete GPU.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare LLM model for openVINO</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>--model<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/Qwen/Qwen3-8B/INT4_compressed_weights<span class="w"> </span>--task<span class="w"> </span>text-generation-with-past<span class="w"> </span>--weight-format<span class="w"> </span>int4<span class="w"> </span>--group-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--ratio<span class="w"> </span><span class="m">0</span>.8
 </pre></div>
 </div>
 </section>
+<section id="vllm">
+<h5>vLLM<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h5>
+<p>Alternatively, if you have discrete GPU and want to use vLLM, please prepare models for vLLM:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare LLM model for vLLM</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span><span class="w"> </span><span class="c1"># Your model id</span>
+pip<span class="w"> </span>install<span class="w"> </span>modelscope
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># Optionally, you can also download models with huggingface:</span>
+<span class="c1"># pip install -U huggingface_hub</span>
+<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir &quot;${MODEL_PATH}/${LLM_MODEL}&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
 <section id="prepare-env-variables-and-configurations">
-<h3>3. Prepare env variables and configurations<a class="headerlink" href="#prepare-env-variables-and-configurations" title="Link to this heading">¶</a></h3>
+<h3>Prepare env variables and configurations<a class="headerlink" href="#prepare-env-variables-and-configurations" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="c1"># Use `ip a` to check your active ip</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
-
-<span class="c1"># Check group id of video and render</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEOGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RENDERGROUPID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f3<span class="k">)</span>
-
-<span class="c1"># If you have a proxy configured, execute below line</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
-<span class="nb">export</span><span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
-<span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
-<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
-
-<span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
-<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
-chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">DOC_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">TMPFILE_PATH</span><span class="si">}</span>
-<span class="c1"># In addition, also make sure the .cache folder has 1000:1000 permission, otherwise</span>
-chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="nv">$HOME</span>/.cache
-</pre></div>
-</div>
-</section>
-<section id="start-edge-craft-rag-services-with-docker-compose">
-<h3>4. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#start-edge-craft-rag-services-with-docker-compose" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, by default milvus is disabled, you can choose to set MILVUS_ENABLED=1 to enable it</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MILVUS_ENABLED</span><span class="o">=</span><span class="m">0</span>
-<span class="c1"># If you enable Milvus, the default storage path is PWD, uncomment if you want to change:</span>
-<span class="c1"># export DOCKER_VOLUME_DIRECTORY= # change to your preference</span>
-
-<span class="c1"># EC-RAG support chat history round setting, by default chat history is disabled, you can set CHAT_HISTORY_ROUND to control it</span>
-<span class="c1"># export CHAT_HISTORY_ROUND= # change to your preference</span>
-
-<span class="c1"># EC-RAG support pipeline performance benchmark, use ENABLE_BENCHMARK=true/false to turn on/off benchmark</span>
-<span class="c1"># export ENABLE_BENCHMARK= # change to your preference</span>
-
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">5000</span>
-<span class="c1"># Launch EC-RAG service with compose</span>
-docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
-</div>
-</section>
-</section>
-<section id="ec-rag-with-kbadmin">
-<h2>EC-RAG with Kbadmin<a class="headerlink" href="#ec-rag-with-kbadmin" title="Link to this heading">¶</a></h2>
-<p>EC-RAG support kbadmin as a knowledge base manager<br />
-Please make sure all the kbadmin services have been launched
-EC-RAG Docker Images preparation is the same as local inference section, please refer to <a class="reference internal" href="#optional-build-docker-images-for-mega-service-server-and-ui-by-your-own"><span class="xref myst">Build Docker Images</span></a>
-Model preparation is the same as vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-models"><span class="std std-ref">Prepare models</span></a></p>
-<section id="id1">
-<h3>1. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<p>This section is the same as default vLLM inference section, please refer to <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#prepare-env-variables-and-configurations"><span class="std std-ref">Prepare env variables and configurations</span></a> and <a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html#deploy-the-service-on-arc-a770-using-docker-compose"><span class="std std-ref">Start Edge Craft RAG Services with Docker Compose</span></a></p>
-</section>
-<section id="access-kbadmin-ui">
-<h3>2. Access Kbadmin UI<a class="headerlink" href="#access-kbadmin-ui" title="Link to this heading">¶</a></h3>
-<p>please refer to <a class="reference internal" href="Explore_Edge_Craft_RAG.html#chatqna-with-kbadmin-in-ui"><span class="std std-ref">ChatQnA with Kbadmin in UI</span></a></p>
-</section>
-</section>
-<section id="deploy-ec-rag-on-multi-gpus">
-<h2>Deploy EC-RAG on multi GPUs<a class="headerlink" href="#deploy-ec-rag-on-multi-gpus" title="Link to this heading">¶</a></h2>
-<p>In this sample, we will use Qwen3-30B-A3B deployment on 4 Arc B60 GPUs as an example.
-Before started, please prepare models into MODEL_PATH and prepare docker images</p>
-<section id="id2">
-<h3>Prepare env variables and configurations<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
-<span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="c1"># Use `ip a` to check your active ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
 
@@ -3214,16 +3186,77 @@ chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </
 chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="nv">$HOME</span>/.cache
 </pre></div>
 </div>
+<p>Set Milvus DB and chat history round for inference:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># EC-RAG support Milvus as persistent database, by default milvus is disabled, you can choose to set MILVUS_ENABLED=1 to enable it</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MILVUS_ENABLED</span><span class="o">=</span><span class="m">0</span>
+<span class="c1"># If you enable Milvus, the default storage path is PWD, uncomment if you want to change:</span>
+<span class="c1"># export DOCKER_VOLUME_DIRECTORY= # change to your preference</span>
+
+<span class="c1"># EC-RAG support chat history round setting, by default chat history is disabled, you can set CHAT_HISTORY_ROUND to control it</span>
+<span class="c1"># export CHAT_HISTORY_ROUND= # change to your preference</span>
+</pre></div>
+</div>
 </section>
-<section id="deploy-the-service-on-arc-b60-using-docker-compose">
-<h3>Deploy the Service on Arc B60 Using Docker Compose<a class="headerlink" href="#deploy-the-service-on-arc-b60-using-docker-compose" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># vLLM envs</span>
+<section id="deploy-the-service-on-intel-gpu-using-docker-compose">
+<h3>Deploy the Service on Intel GPU Using Docker Compose<a class="headerlink" href="#deploy-the-service-on-intel-gpu-using-docker-compose" title="Link to this heading">¶</a></h3>
+<section id="option-a-deploy-openvino-llm-based-ec-rag-for-core-ultra-arc-b60-arc-a770">
+<h4>Option a. Deploy openVINO LLM based EC-RAG for Core Ultra, Arc B60, Arc A770<a class="headerlink" href="#option-a-deploy-openvino-llm-based-ec-rag-for-core-ultra-arc-b60-arc-a770" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="option-b-1-deploy-vllm-based-ec-rag-for-arc-b60">
+<h4>Option b.1. Deploy vLLM based EC-RAG for Arc B60<a class="headerlink" href="#option-b-1-deploy-vllm-based-ec-rag-for-arc-b60" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>b60<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="option-b-2-deploy-vllm-based-ec-rag-for-arc-a770">
+<h4>Option b.2. Deploy vLLM based EC-RAG for Arc A770<a class="headerlink" href="#option-b-2-deploy-vllm-based-ec-rag-for-arc-a770" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>a770<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cleanup-the-deployment-manual">
+<h3>6. Cleanup the Deployment (Manual)<a class="headerlink" href="#cleanup-the-deployment-manual" title="Link to this heading">¶</a></h3>
+<p>To stop the containers associated with the deployment, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>down
+</pre></div>
+</div>
+<p>All the EdgeCraftRAG containers will be stopped and then removed on completion of the <code class="docutils literal notranslate"><span class="pre">down</span></code> command.</p>
+</section>
+</section>
+<section id="ec-rag-with-kbadmin">
+<h2>EC-RAG with Kbadmin<a class="headerlink" href="#ec-rag-with-kbadmin" title="Link to this heading">¶</a></h2>
+<p>EC-RAG support kbadmin as a knowledge base manager<br />
+Please make sure all the kbadmin services have been launched
+EC-RAG Docker Images preparation is the same as local inference section, please refer to <a class="reference internal" href="#build-docker-images-for-mega-service-server-and-ui-by-your-own"><span class="xref myst">Build Docker Images</span></a>
+Model preparation is the same as Arc manual deployment section, please refer to <a class="reference internal" href="#prepare-models"><span class="xref myst">Prepare models</span></a></p>
+<section id="start-edge-craft-rag-services-with-docker-compose">
+<h3>1. Start Edge Craft RAG Services with Docker Compose<a class="headerlink" href="#start-edge-craft-rag-services-with-docker-compose" title="Link to this heading">¶</a></h3>
+<p>This section is the same as Arc manual deployment section, please refer to <a class="reference internal" href="#prepare-env-variables-and-configurations"><span class="xref myst">Prepare env variables and configurations</span></a> and <a class="reference internal" href="#deploy-the-service-on-intel-gpu-using-docker-compose"><span class="xref myst">Deploy the Service on Intel GPU Using Docker Compose</span></a></p>
+</section>
+<section id="access-kbadmin-ui">
+<h3>2. Access Kbadmin UI<a class="headerlink" href="#access-kbadmin-ui" title="Link to this heading">¶</a></h3>
+<p>please refer to <a class="reference internal" href="Explore_Edge_Craft_RAG.html#chatqna-with-kbadmin-in-ui"><span class="std std-ref">ChatQnA with Kbadmin in UI</span></a></p>
+</section>
+</section>
+<section id="deploy-ec-rag-on-multi-gpus">
+<h2>Deploy EC-RAG on multi GPUs<a class="headerlink" href="#deploy-ec-rag-on-multi-gpus" title="Link to this heading">¶</a></h2>
+<p>In this sample, we will use Qwen3-30B-A3B deployment on 4 Arc B60 GPUs as an example.
+Before started, please prepare models into MODEL_PATH and prepare docker images</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># Your model path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>modelscope
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># vLLM envs</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="c1"># for multi GPU, you can change TP value</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ZE_AFFINITY_MASK</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span><span class="c1"># for multi GPU, you can export ZE_AFFINITY_MASK=0,1,2...</span>
 docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>b60<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-</section>
 </section>
 </section>
 
@@ -3232,8 +3265,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>--profile<span clas
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="API_Guide.html" class="btn btn-neutral float-left" title="Edge Craft Retrieval-Augmented Generation API guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Agentic_RAG_Guide.html" class="btn btn-neutral float-right" title="EC-RAG Agent Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="API_Guide.html" class="btn btn-neutral float-left" title="Edge Craft Retrieval-Augmented Generation API Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Advanced_Setup_zh.html" class="btn btn-neutral float-right" title="Edge Craft 检索增强生成（EC-RAG）高级部署说明" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

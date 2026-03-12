@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edge Craft Retrieval-Augmented Generation API guide &mdash; OPEA™ 1.5 documentation</title>
+  <title>Edge Craft Retrieval-Augmented Generation API Guide &mdash; OPEA™ 1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Edge Craft Retrieval-Augmented Generation Advanced Setup" href="Advanced_Setup.html" />
-    <link rel="prev" title="Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform" href="../docker_compose/intel/gpu/arc/README.html" /> 
+    <link rel="prev" title="在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例" href="../docker_compose/intel/gpu/arc/README_zh.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -442,16 +442,19 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../README.html">Edge Craft Retrieval-Augmented Generation Application</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Edge Craft Retrieval-Augmented Generation API guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README_zh.html">在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Edge Craft Retrieval-Augmented Generation API Guide</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Advanced_Setup.html">Edge Craft Retrieval-Augmented Generation Advanced Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Advanced_Setup_zh.html">Edge Craft 检索增强生成（EC-RAG）高级部署说明</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide.html">EC-RAG Agent Guide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_Zh.html">EC-RAG智能体指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Agentic_RAG_Guide_zh.html">EC-RAG智能体指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Experience_Guide.html">EC-RAG Experience Guide</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Experience_Guide_Zh.html">EC-RAG 经验注入指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Experience_Guide_zh.html">EC-RAG 经验注入指南</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
-<li class="toctree-l4"><a class="reference internal" href="Quick_Start_Guide_Zh.html">快速启动指南</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG_zh.html">探索 Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG one-click deployment script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG tool scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html">EdgeCraftRAG 工具脚本</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -3076,7 +3079,7 @@
   
      <li><a href="../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>Edge Craft Retrieval-Augmented Generation API guide</li>
+  <li>Edge Craft Retrieval-Augmented Generation API Guide</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/GenAIExamples/EdgeCraftRAG/docs/API_Guide.md.txt" rel="nofollow"> View page source</a>
@@ -3097,51 +3100,80 @@
            <div itemprop="articleBody">
              
   <section id="edge-craft-retrieval-augmented-generation-api-guide">
-<h1>Edge Craft Retrieval-Augmented Generation API guide<a class="headerlink" href="#edge-craft-retrieval-augmented-generation-api-guide" title="Link to this heading">¶</a></h1>
+<h1>Edge Craft Retrieval-Augmented Generation API Guide<a class="headerlink" href="#edge-craft-retrieval-augmented-generation-api-guide" title="Link to this heading">¶</a></h1>
+<blockquote>
+<div><p><strong>Base URLs</strong></p>
+<ul class="simple">
+<li><p>EC-RAG Server: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:16010</span></code></p></li>
+<li><p>EC-RAG Mega Service: <code class="docutils literal notranslate"><span class="pre">http://${HOST_IP}:16011</span></code></p></li>
+</ul>
+</div></blockquote>
+<hr class="docutils" />
 <section id="pipeline-management">
 <h2>Pipeline Management<a class="headerlink" href="#pipeline-management" title="Link to this heading">¶</a></h2>
 <section id="create-a-pipeline">
 <h3>Create a pipeline<a class="headerlink" href="#create-a-pipeline" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="update-a-pipeline">
 <h3>Update a pipeline<a class="headerlink" href="#update-a-pipeline" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>@tests/test_pipeline_local_llm.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="check-all-pipelines">
 <h3>Check all pipelines<a class="headerlink" href="#check-all-pipelines" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-a-specific-pipeline">
+<h3>Check a specific pipeline<a class="headerlink" href="#check-a-specific-pipeline" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="activate-a-pipeline">
 <h3>Activate a pipeline<a class="headerlink" href="#activate-a-pipeline" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;true&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;true&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="remove-a-pipeline">
 <h3>Remove a pipeline<a class="headerlink" href="#remove-a-pipeline" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Firstly, deactivate the pipeline if the pipeline status is active</span>
-curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;false&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;active&quot;: &quot;false&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
 <span class="c1"># Then delete the pipeline</span>
-curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/rag_test_local_llm<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="get-pipeline-json">
-<h3>Get pipeline json<a class="headerlink" href="#get-pipeline-json" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span>/json<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<h3>Get pipeline JSON<a class="headerlink" href="#get-pipeline-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>name<span class="o">}</span>/json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="import-pipeline-from-a-json-file">
-<h3>Import pipeline from a json file<a class="headerlink" href="#import-pipeline-from-a-json-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/import<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_test_pipeline_json_file.txt&quot;</span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<h3>Import pipeline from a JSON file<a class="headerlink" href="#import-pipeline-from-a-json-file" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/import<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_pipeline.json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -3151,173 +3183,455 @@ curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </s
 <h4>⚠️ NOTICE ⚠️<a class="headerlink" href="#notice" title="Link to this heading">¶</a></h4>
 <p>Benchmarking activities may significantly reduce system performance.</p>
 <p><strong>DO NOT</strong> perform benchmarking in a production environment.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ENABLE_BENCHMARK as true before launch services</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set ENABLE_BENCHMARK as true before launching services</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ENABLE_BENCHMARK</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
 
-<span class="c1"># check the benchmark data for pipeline {pipeline_name}</span>
-curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>pipeline_name<span class="o">}</span>/benchmarks<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<span class="c1"># Check the benchmark data for the active pipeline</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipeline/benchmark<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># Check the benchmark data for a specific pipeline</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/pipelines/<span class="o">{</span>pipeline_name<span class="o">}</span>/benchmarks<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
 </section>
+<hr class="docutils" />
 <section id="model-management">
 <h2>Model Management<a class="headerlink" href="#model-management" title="Link to this heading">¶</a></h2>
 <section id="load-a-model">
 <h3>Load a model<a class="headerlink" href="#load-a-model" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;cpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;cpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 <p>It will take some time to load the model.</p>
 </section>
 <section id="check-all-models">
 <h3>Check all models<a class="headerlink" href="#check-all-models" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-a-specific-model">
+<h3>Check a specific model<a class="headerlink" href="#check-a-specific-model" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="update-a-model">
 <h3>Update a model<a class="headerlink" href="#update-a-model" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;gpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-a-certain-model">
-<h3>Check a certain model<a class="headerlink" href="#check-a-certain-model" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model_type&quot;: &quot;reranker&quot;, &quot;model_id&quot;: &quot;BAAI/bge-reranker-large&quot;, &quot;model_path&quot;: &quot;./models/bge_ov_reranker&quot;, &quot;device&quot;: &quot;gpu&quot;, &quot;weight&quot;: &quot;INT4&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="delete-a-model">
 <h3>Delete a model<a class="headerlink" href="#delete-a-model" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/settings/models/BAAI/bge-reranker-large<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-available-model-weights">
+<h3>Get available model weights<a class="headerlink" href="#get-available-model-weights" title="Link to this heading">¶</a></h3>
+<p>Query the available compression weights (INT4 / INT8 / FP16) for a given model path:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/settings/weight/BAAI/bge-reranker-large&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-available-model-ids-by-type">
+<h3>Get available model IDs by type<a class="headerlink" href="#get-available-model-ids-by-type" title="Link to this heading">¶</a></h3>
+<p>Supported <code class="docutils literal notranslate"><span class="pre">model_type</span></code> values: <code class="docutils literal notranslate"><span class="pre">LLM</span></code>, <code class="docutils literal notranslate"><span class="pre">vLLM</span></code>, <code class="docutils literal notranslate"><span class="pre">reranker</span></code>, <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">vLLM_embedding</span></code>, <code class="docutils literal notranslate"><span class="pre">kbadmin_embedding_model</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># List available local LLM models</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/settings/avail-models/LLM&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># List models served by a vLLM server (optional server_address parameter)</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/settings/avail-models/vLLM?server_address=http://localhost:8086&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># List available embedding models</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/settings/avail-models/embedding&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-available-models-from-a-vllm-server">
+<h3>Get available models from a vLLM server<a class="headerlink" href="#get-available-models-from-a-vllm-server" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/available_models?server_address=http://localhost:8086&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
+<hr class="docutils" />
 <section id="knowledge-base-management">
 <h2>Knowledge Base Management<a class="headerlink" href="#knowledge-base-management" title="Link to this heading">¶</a></h2>
 <section id="create-a-knowledge-base">
 <h3>Create a knowledge base<a class="headerlink" href="#create-a-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;default_kb&quot;,&quot;description&quot;: &quot;Your knowledge base Description&quot;,&quot;active&quot;:true}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>@tests/configs/test_kb.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-all-knowledge-bases">
+<h3>Check all knowledge bases<a class="headerlink" href="#check-all-knowledge-bases" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-a-specific-knowledge-base">
+<h3>Check a specific knowledge base<a class="headerlink" href="#check-a-specific-knowledge-base" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-knowledge-base-json">
+<h3>Get knowledge base JSON<a class="headerlink" href="#get-knowledge-base-json" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb/json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-knowledge-base-file-map-paginated">
+<h3>Get knowledge base file map (paginated)<a class="headerlink" href="#get-knowledge-base-file-map-paginated" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/knowledge/default_kb/filemap?page_num=1&amp;page_size=20&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="update-a-knowledge-base">
 <h3>Update a knowledge base<a class="headerlink" href="#update-a-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/patch<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;default_kb&quot;,&quot;active&quot;:&quot;True&quot;,&quot;description&quot;: &quot;Your knowledge base Description&quot;,&quot;active&quot;:&quot;True&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/patch<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;default_kb&quot;, &quot;active&quot;: &quot;True&quot;, &quot;description&quot;: &quot;Your knowledge base description&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="check-all-knowledge-base">
-<h3>Check all knowledge base<a class="headerlink" href="#check-all-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="activate-knowledge-base">
-<h3>Activate knowledge base<a class="headerlink" href="#activate-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/patch<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;default_kb&quot;,&quot;active&quot;:true}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<section id="activate-a-knowledge-base">
+<h3>Activate a knowledge base<a class="headerlink" href="#activate-a-knowledge-base" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/patch<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;default_kb&quot;, &quot;active&quot;: true}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="remove-a-knowledge-base">
 <h3>Remove a knowledge base<a class="headerlink" href="#remove-a-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="add-file-to-knowledge-base">
 <h3>Add file to knowledge base<a class="headerlink" href="#add-file-to-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb/files<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;: &quot;docs/#REPLACE WITH YOUR DIR WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb/files<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;: &quot;/home/user/ui_cache/#REPLACE WITH YOUR FILE OR DIR PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="delete-file-to-knowledge-base">
-<h3>Delete file to knowledge base<a class="headerlink" href="#delete-file-to-knowledge-base" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb/files<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;: &quot;docs/#REPLACE WITH YOUR DIR WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="file-management">
-<h2>File Management<a class="headerlink" href="#file-management" title="Link to this heading">¶</a></h2>
-<section id="add-a-text">
-<h3>Add a text<a class="headerlink" href="#add-a-text" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;#REPLACE WITH YOUR TEXT&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="add-files-from-existed-file-path">
-<h3>Add files from existed file path<a class="headerlink" href="#add-files-from-existed-file-path" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR DIR WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR FILE WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-all-files">
-<h3>Check all files<a class="headerlink" href="#check-all-files" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="check-one-file">
-<h3>Check one file<a class="headerlink" href="#check-one-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test2.docx<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="delete-a-file">
-<h3>Delete a file<a class="headerlink" href="#delete-a-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test2.docx<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="update-a-file">
-<h3>Update a file<a class="headerlink" href="#update-a-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/test.pdf<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;:&quot;docs/#REPLACE WITH YOUR FILE WITHIN MOUNTED DOC PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<section id="delete-file-from-knowledge-base">
+<h3>Delete file from knowledge base<a class="headerlink" href="#delete-file-from-knowledge-base" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/knowledge/default_kb/files<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;: &quot;/home/user/ui_cache/#REPLACE WITH YOUR FILE PATH#&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
+<hr class="docutils" />
+<section id="experience-knowledge-base-management">
+<h2>Experience Knowledge Base Management<a class="headerlink" href="#experience-knowledge-base-management" title="Link to this heading">¶</a></h2>
+<p>Experience knowledge bases store curated Q&amp;A pairs that can be retrieved to augment pipeline responses.</p>
+<section id="get-all-experiences">
+<h3>Get all experiences<a class="headerlink" href="#get-all-experiences" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/experiences<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-experience-by-id-or-question">
+<h3>Get experience by ID or question<a class="headerlink" href="#get-experience-by-id-or-question" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/experience<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;idx&quot;: &quot;your-experience-id&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="update-an-experience">
+<h3>Update an experience<a class="headerlink" href="#update-an-experience" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/experiences<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;idx&quot;: &quot;your-experience-id&quot;, &quot;question&quot;: &quot;Updated question?&quot;, &quot;content&quot;: &quot;Updated answer&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-an-experience">
+<h3>Delete an experience<a class="headerlink" href="#delete-an-experience" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/experiences<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;idx&quot;: &quot;your-experience-id&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="add-experiences-from-a-file">
+<h3>Add experiences from a file<a class="headerlink" href="#add-experiences-from-a-file" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/experiences/files<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;local_path&quot;: &quot;/home/user/ui_cache/experiences.json&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-and-add-multiple-experiences-duplicate-check-first">
+<h3>Check and add multiple experiences (duplicate check first)<a class="headerlink" href="#check-and-add-multiple-experiences-duplicate-check-first" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Check for duplicates; if none, experiences are added automatically</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/multiple_experiences/check<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;[{&quot;question&quot;: &quot;What is EC-RAG?&quot;, &quot;content&quot;: &quot;EdgeCraft RAG is ...&quot;}]&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># Step 2 (only if duplicates detected): Confirm with overwrite flag</span>
+<span class="c1"># flag=true → overwrite duplicates; flag=false → append</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/multiple_experiences/confirm?flag=true&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;[{&quot;question&quot;: &quot;What is EC-RAG?&quot;, &quot;content&quot;: &quot;EdgeCraft RAG is ...&quot;}]&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="agent-management">
+<h2>Agent Management<a class="headerlink" href="#agent-management" title="Link to this heading">¶</a></h2>
+<section id="check-all-agents">
+<h3>Check all agents<a class="headerlink" href="#check-all-agents" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-a-specific-agent">
+<h3>Check a specific agent<a class="headerlink" href="#check-a-specific-agent" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-default-configs-for-an-agent-type">
+<h3>Get default configs for an agent type<a class="headerlink" href="#get-default-configs-for-an-agent-type" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents/configs/<span class="o">{</span>agent_type<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="create-an-agent">
+<h3>Create an agent<a class="headerlink" href="#create-an-agent" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;my_agent&quot;, &quot;type&quot;: &quot;react_llm&quot;, &quot;pipeline_idx&quot;: &quot;your-pipeline-idx&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="update-an-agent">
+<h3>Update an agent<a class="headerlink" href="#update-an-agent" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;my_agent&quot;, &quot;active&quot;: true}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="delete-an-agent">
+<h3>Delete an agent<a class="headerlink" href="#delete-an-agent" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/agents/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
 <section id="system-prompt-management">
 <h2>System Prompt Management<a class="headerlink" href="#system-prompt-management" title="Link to this heading">¶</a></h2>
 <section id="get-system-prompt">
 <h3>Get system prompt<a class="headerlink" href="#get-system-prompt" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-tagged-system-prompt">
+<h3>Get tagged system prompt<a class="headerlink" href="#get-tagged-system-prompt" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/tagged<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-default-system-prompt">
+<h3>Get default system prompt<a class="headerlink" href="#get-default-system-prompt" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/default<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="update-system-prompt">
 <h3>Update system prompt<a class="headerlink" href="#update-system-prompt" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;:&quot;This is a template prompt&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;prompt&quot;: &quot;This is a custom prompt template&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="reset-system-prompt">
-<h3>Reset system prompt<a class="headerlink" href="#reset-system-prompt" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/reset<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<section id="upload-system-prompt-from-file">
+<h3>Upload system prompt from file<a class="headerlink" href="#upload-system-prompt-from-file" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt-file<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="use-custom-system-prompt-file">
-<h3>Use custom system prompt file<a class="headerlink" href="#use-custom-system-prompt-file" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt-file<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@your_prompt_file.txt&quot;</span>
+<section id="reset-system-prompt-to-default">
+<h3>Reset system prompt to default<a class="headerlink" href="#reset-system-prompt-to-default" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/chatqna/prompt/reset<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
+<hr class="docutils" />
+<section id="data-management">
+<h2>Data Management<a class="headerlink" href="#data-management" title="Link to this heading">¶</a></h2>
+<section id="get-all-nodes-chunks-in-the-active-knowledge-base">
+<h3>Get all nodes (chunks) in the active knowledge base<a class="headerlink" href="#get-all-nodes-chunks-in-the-active-knowledge-base" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/nodes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-nodes-by-document-name">
+<h3>Get nodes by document name<a class="headerlink" href="#get-nodes-by-document-name" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/data/{document_name}/nodes&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-all-document-names-in-the-active-knowledge-base">
+<h3>Get all document names in the active knowledge base<a class="headerlink" href="#get-all-document-names-in-the-active-knowledge-base" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/documents<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-all-files">
+<h3>Get all files<a class="headerlink" href="#get-all-files" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-a-specific-file">
+<h3>Get a specific file<a class="headerlink" href="#get-a-specific-file" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/data/files/<span class="o">{</span>name<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="upload-a-file-from-ui">
+<h3>Upload a file (from UI)<a class="headerlink" href="#upload-a-file-from-ui" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:16010/v1/data/file/{file_name}&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;file=@/path/to/your/document.pdf&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="session-management">
+<h2>Session Management<a class="headerlink" href="#session-management" title="Link to this heading">¶</a></h2>
+<section id="get-all-sessions">
+<h3>Get all sessions<a class="headerlink" href="#get-all-sessions" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/sessions<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-a-session-by-id">
+<h3>Get a session by ID<a class="headerlink" href="#get-a-session-by-id" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/session/<span class="o">{</span>session_id<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="system-information">
+<h2>System Information<a class="headerlink" href="#system-information" title="Link to this heading">¶</a></h2>
+<section id="get-system-status">
+<h3>Get system status<a class="headerlink" href="#get-system-status" title="Link to this heading">¶</a></h3>
+<p>Returns CPU usage, memory usage, disk usage, OS info, and current time.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/system/info<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="get-available-inference-devices">
+<h3>Get available inference devices<a class="headerlink" href="#get-available-inference-devices" title="Link to this heading">¶</a></h3>
+<p>Returns OpenVINO-available devices (e.g., CPU, GPU, AUTO).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/system/device<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
 <section id="chatqna">
 <h2>ChatQnA<a class="headerlink" href="#chatqna" title="Link to this heading">¶</a></h2>
 <section id="retrieval-api">
 <h3>Retrieval API<a class="headerlink" href="#retrieval-api" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/retrieval<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;#Please enter the question you need to retrieve here#&quot;, &quot;top_n&quot;:5, &quot;max_tokens&quot;:512}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<p>Retrieve relevant context chunks from the active knowledge base without running LLM generation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/retrieval<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Your question here&quot;, &quot;top_n&quot;: 5, &quot;max_tokens&quot;: 512}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
-<section id="chatqna-api">
-<h3>ChatQnA API<a class="headerlink" href="#chatqna-api" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16011/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;#REPLACE WITH YOUR QUESTION HERE#&quot;, &quot;top_n&quot;:5, &quot;max_tokens&quot;:512}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<section id="chatqna-api-mega-service">
+<h3>ChatQnA API (Mega Service)<a class="headerlink" href="#chatqna-api-mega-service" title="Link to this heading">¶</a></h3>
+<p>Send a question through the full RAG pipeline (retrieval + LLM generation).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16011/v1/chatqna<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Your question here&quot;, &quot;top_n&quot;: 5, &quot;max_tokens&quot;: 512}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="ragqna-api-with-contexts-in-response">
+<h3>RAGQnA API (with contexts in response)<a class="headerlink" href="#ragqna-api-with-contexts-in-response" title="Link to this heading">¶</a></h3>
+<p>Returns the LLM answer together with the retrieved context chunks.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Non-streaming</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/ragqna<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Your question here&quot;, &quot;top_n&quot;: 5, &quot;max_tokens&quot;: 512, &quot;stream&quot;: false}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># Streaming</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/ragqna<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Your question here&quot;, &quot;top_n&quot;: 5, &quot;max_tokens&quot;: 512, &quot;stream&quot;: true}&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="check-vllm-server-connection">
+<h3>Check vLLM server connection<a class="headerlink" href="#check-vllm-server-connection" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:16010/v1/check/vllm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;server_address&quot;: &quot;http://localhost:8086&quot;, &quot;model_name&quot;: &quot;Qwen/Qwen3-8B&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -3329,7 +3643,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../docker_compose/intel/gpu/arc/README.html" class="btn btn-neutral float-left" title="Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../docker_compose/intel/gpu/arc/README_zh.html" class="btn btn-neutral float-left" title="在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="Advanced_Setup.html" class="btn btn-neutral float-right" title="Edge Craft Retrieval-Augmented Generation Advanced Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
