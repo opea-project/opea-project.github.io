@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EdgeCraftRAG 工具脚本 &mdash; OPEA™ 1.5 documentation</title>
+  <title>1.脚本介绍 &mdash; OPEA™ 1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Finance Agent Example" href="../../FinanceAgent/README.html" />
-    <link rel="prev" title="EdgeCraftRAG tool scripts" href="README.html" /> 
+    <link rel="prev" title="1.Script Overview" href="README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -441,6 +441,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../README.html">Edge Craft Retrieval-Augmented Generation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/README.html">EdgeCraft RAG CLI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README_zh.html">在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docs/API_Guide.html">Edge Craft Retrieval-Augmented Generation API Guide</a></li>
@@ -453,8 +454,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../docs/Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docs/Explore_Edge_Craft_RAG_zh.html">探索 Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="README.html">EdgeCraftRAG tool scripts</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">EdgeCraftRAG 工具脚本</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README.html">1.Script Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README.html#quick-deployment-script-new-users">2.Quick Deployment Script (New Users)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README.html#startup-scripts">3.Startup Scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README.html#container-image-build-script">4.Container Image Build Script</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">1.脚本介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">2.快速部署脚本（新用户）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">3.启动脚本</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">4.容器镜像编译脚本</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -3079,7 +3086,7 @@
   
      <li><a href="../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>EdgeCraftRAG 工具脚本</li>
+  <li>1.脚本介绍</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/GenAIExamples/EdgeCraftRAG/tools/README_zh.md.txt" rel="nofollow"> View page source</a>
@@ -3099,50 +3106,98 @@
   
            <div itemprop="articleBody">
              
-  <section id="edgecraftrag">
-<h1>EdgeCraftRAG 工具脚本<a class="headerlink" href="#edgecraftrag" title="Link to this heading">¶</a></h1>
-<p><a class="reference internal" href="README.html"><span class="std std-doc">English</span></a></p>
-<p>本目录包含用于构建镜像和启动 EC-RAG 服务的辅助脚本。</p>
+  <p><a class="reference internal" href="README.html"><span class="std std-doc">English</span></a></p>
+<p>本目录包含 EdgeCraftRAG 的部署、启动和镜像构建脚本。</p>
 <section id="id1">
-<h2>脚本<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h1>1.脚本介绍<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<p>本目录主要脚本如下：</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code>：一键启动 OpenVINO 或 vLLM 部署</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">build_images.sh</span></code>：构建 EC-RAG Docker 镜像</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code>：推荐新用户使用的一键部署脚本，支持自动安装与交互引导</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code>：非交互部署编排器（可独立使用，也可由 quick_start 调用）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_download.sh</span></code>：模型准备脚本（支持 <code class="docutils literal notranslate"><span class="pre">vllm</span></code> / <code class="docutils literal notranslate"><span class="pre">ov</span></code> 模式，支持可选参数 <code class="docutils literal notranslate"><span class="pre">model_id</span></code> 和 <code class="docutils literal notranslate"><span class="pre">model_path</span></code>）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ov_baremetal.sh</span></code>：OpenVINO 裸金属启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ov_container.sh</span></code>：OpenVINO 容器启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_vllm_baremetal.sh</span></code>：vLLM 裸金属启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_vllm_container.sh</span></code>：vLLM 容器启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ovms_baremetal.sh</span></code>：OVMS 裸金属启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ovms_container.sh</span></code>：OVMS 容器启动脚本</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_images.sh</span></code>：容器镜像编译脚本</p></li>
 </ul>
+<p>部署方式说明：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>方式</p></th>
+<th class="head"><p>描述</p></th>
+<th class="head"><p>环境要求</p></th>
+<th class="head"><p>Milvus 支持</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>baremetal（裸金属）</p></td>
+<td><p>以 Python 进程方式启动服务</p></td>
+<td><p>Python 3.10+</p></td>
+<td><p>否（仅内存）</p></td>
+</tr>
+<tr class="row-odd"><td><p>container（容器）</p></td>
+<td><p>以 Docker 容器方式启动服务</p></td>
+<td><p>Docker / Docker Compose</p></td>
+<td><p>是（默认启用）</p></td>
+</tr>
+</tbody>
+</table>
+<p>提示：如需使用 Milvus，请选择容器部署。</p>
 </section>
-<hr class="docutils" />
-<section id="quick-start-sh">
-<h2>quick_start.sh<a class="headerlink" href="#quick-start-sh" title="Link to this heading">¶</a></h2>
-<p>请在 <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG</span></code> 根目录下运行：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
-</pre></div>
-</div>
 <section id="id2">
-<h3>默认行为<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<p>如果未提供环境变量，脚本会使用以下默认值：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace/models
-<span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace
-<span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace
-<span class="nv">LLM_MODEL</span><span class="o">=</span>Qwen/Qwen3-8B
-</pre></div>
-</div>
-<p>脚本还会自动执行以下操作：</p>
-<ul class="simple">
-<li><p>自动创建并激活 Python 虚拟环境</p></li>
-<li><p>在需要时安装 <code class="docutils literal notranslate"><span class="pre">python3-venv</span></code></p></li>
-<li><p>检查 <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code> 下必需模型是否存在</p></li>
-<li><p>自动下载缺失的 embedding、reranker 和 LLM 模型</p></li>
-<li><p>在启动完成后输出 UI 访问地址</p></li>
-</ul>
-</section>
+<h1>2.快速部署脚本（新用户）<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h1>
 <section id="id3">
-<h3>非交互模式<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
-<p>默认情况下，非交互模式启动本地 OpenVINO 服务。</p>
+<h2>2.1 一键快速部署<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>推荐在 <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG</span></code> 根目录执行：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
 </pre></div>
 </div>
-<p>你也可以通过环境变量覆盖默认值：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span>
+<p>脚本会按以下默认行为执行：</p>
+<ul class="simple">
+<li><p>进入非交互模式（non-interactive）</p></li>
+<li><p>推理后端默认选择 OpenVINO（<code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code> 未设置时，脚本会自动解析为 <code class="docutils literal notranslate"><span class="pre">openvino</span></code>）</p></li>
+<li><p>部署方式默认是 baremetal（<code class="docutils literal notranslate"><span class="pre">DEPLOYMENT_METHOD</span></code> 默认 <code class="docutils literal notranslate"><span class="pre">baremetal</span></code>）</p></li>
+</ul>
+<p>在 baremetal 默认模式下，会自动执行：</p>
+<ul class="simple">
+<li><p>创建并激活 <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG/ecrag_venv</span></code> 虚拟环境（若不存在）</p></li>
+<li><p>校验 Python 版本（要求 3.10+，推荐 3.10/3.11）</p></li>
+<li><p>检查并安装关键 Python 依赖</p></li>
+<li><p>在裸金属 UI 启动需要时检查并安装 <code class="docutils literal notranslate"><span class="pre">npm</span></code></p></li>
+<li><p>校验 Intel GPU 驱动/运行时，若缺失则在 apt 系统上自动安装</p></li>
+<li><p>检查并自动下载缺失模型（embedding、reranker、OpenVINO LLM）</p></li>
+<li><p>在调用 <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> 前将本次部署环境快照写入 <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code></p></li>
+<li><p>调用 <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> 启动服务</p></li>
+</ul>
+<p>对于 vLLM 部署或 container 部署方式，脚本会在部署前校验 Docker 与 Docker Compose。
+在 Ubuntu 24.04 上，如果 Docker 或 Docker Compose 缺失，脚本会尝试自动安装并启动/启用 Docker 服务。</p>
+<p>如需跳过 Intel GPU 驱动/运行时校验，可使用：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>--skip-gpu-driver-check
+</pre></div>
+</div>
+<p>等价环境变量：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SKIP_INTEL_GPU_DRIVER_CHECK</span><span class="o">=</span><span class="m">1</span>
+<span class="c1"># 或保留校验但禁用自动安装：</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AUTO_INSTALL_INTEL_GPU_DRIVER</span><span class="o">=</span><span class="m">0</span>
+./tools/quick_start.sh
+</pre></div>
+</div>
+<p>如需禁用 baremetal 准备阶段的 npm 自动安装，可使用：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">AUTO_INSTALL_NPM</span><span class="o">=</span><span class="m">0</span>
+./tools/quick_start.sh
+</pre></div>
+</div>
+<p>启动成功后，终端会输出 UI 访问地址，例如：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UI access URL: http://${HOST_IP}:8082
+</pre></div>
+</div>
+<p>补充：如果你事先设置了 <code class="docutils literal notranslate"><span class="pre">DEPLOYMENT_METHOD=container</span></code>，脚本会跳过 venv/pip 检查，并按容器方式继续部署。</p>
+<p>可通过环境变量覆盖：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>openvino
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span>
@@ -3151,121 +3206,215 @@
 ./tools/quick_start.sh
 </pre></div>
 </div>
-</section>
-<section id="compose-profiles">
-<h3>使用 <code class="docutils literal notranslate"><span class="pre">COMPOSE_PROFILES</span></code> 选择部署模式<a class="headerlink" href="#compose-profiles" title="Link to this heading">¶</a></h3>
-<section id="core-ultrab60-a770-openvino">
-<h4>Core Ultra、B60 或 A770 上的 OpenVINO<a class="headerlink" href="#core-ultrab60-a770-openvino" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
-</pre></div>
-</div>
-</section>
-<section id="intel-arc-a770-vllm">
-<h4>Intel Arc A770 上的 vLLM<a class="headerlink" href="#intel-arc-a770-vllm" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMPOSE_PROFILES</span><span class="o">=</span>vLLM_A770
+<p>按硬件选择 <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code>：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># OpenVINO（默认）</span>
+./tools/quick_start.sh
+
+<span class="c1"># vLLM_A770</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>vllm_a770
+./tools/quick_start.sh
+
+<span class="c1"># vLLM_B60</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>vllm_b60
+./tools/quick_start.sh
+
+<span class="c1"># OVMS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>ovms
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_SOURCE_MODEL</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_MODEL_NAME</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_TARGET_DEVICE</span><span class="o">=</span>GPU.0
 ./tools/quick_start.sh
 </pre></div>
 </div>
-</section>
-<section id="intel-arc-b60-vllm">
-<h4>Intel Arc B60 上的 vLLM<a class="headerlink" href="#intel-arc-b60-vllm" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMPOSE_PROFILES</span><span class="o">=</span>vLLM_B60
-./tools/quick_start.sh
-</pre></div>
-</div>
-<p>可选的 B60/vLLM 环境变量：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_B60</span><span class="o">=</span><span class="m">8086</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DTYPE</span><span class="o">=</span>float16
-<span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DP</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ZE_AFFINITY_MASK</span><span class="o">=</span><span class="m">0</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ENFORCE_EAGER</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TRUST_REMOTE_CODE</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DISABLE_SLIDING_WINDOW</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GPU_MEMORY_UTIL</span><span class="o">=</span><span class="m">0</span>.8
-<span class="nb">export</span><span class="w"> </span><span class="nv">NO_ENABLE_PREFIX_CACHING</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span><span class="m">8192</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DISABLE_LOG_REQUESTS</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">49152</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BLOCK_SIZE</span><span class="o">=</span><span class="m">64</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">QUANTIZATION</span><span class="o">=</span>fp8
-</pre></div>
-</div>
-</section>
-</section>
-<section id="id4">
-<h3>交互模式<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>-i<span class="w"> </span>./tools/quick_start.sh
-</pre></div>
-</div>
-<p>在交互模式下，脚本会提示你输入：</p>
+<p>对于 OVMS 部署，工具脚本会直接导出 compose 所需的 <code class="docutils literal notranslate"><span class="pre">OVMS_*</span></code> 环境变量。常见可覆盖项包括：<code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_MODEL_NAME</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_TARGET_DEVICE</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_TOOL_PARSER</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_MAX_NUM_BATCHED_TOKENS</span></code>。</p>
+<p>OVMS 相关行为说明：</p>
 <ul class="simple">
-<li><p>部署模式：<code class="docutils literal notranslate"><span class="pre">vLLM_A770</span></code>、<code class="docutils literal notranslate"><span class="pre">vLLM_B60</span></code> 或 <code class="docutils literal notranslate"><span class="pre">ov</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DOC_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TMPFILE_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code></p></li>
-<li><p>可选的 vLLM 运行参数</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code> 会保持你提供的原始模型 ID（例如 <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen3-8B</span></code>），不会自动截断。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code> 与 <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> 都会将 OVMS 变量写入 <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code> 以便复用。</p></li>
+<li><p>可通过 <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">workspace/bootstrap.env</span> <span class="pre">&amp;&amp;</span> <span class="pre">./tools/bootstrap.sh</span></code> 复用同一套 OVMS 配置。</p></li>
+</ul>
+<p>兼容说明：历史环境变量 <code class="docutils literal notranslate"><span class="pre">COMPOSE_PROFILES</span></code> 仍可使用，但新配置建议统一使用 <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code> 支持以下取值：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">openvino</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm_a770</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm_b60</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ovms</span></code></p></li>
 </ul>
 </section>
+<section id="id4">
+<h2>2.2 交互模式<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>-i
+</pre></div>
+</div>
+<p>交互模式适合首次部署或不确定参数时使用。执行 <code class="docutils literal notranslate"><span class="pre">./tools/quick_start.sh</span> <span class="pre">-i</span></code> 后，脚本会逐步提问并自动生成本次部署配置。</p>
+<p>交互流程通常包括：</p>
+<ul class="simple">
+<li><p>选择推理后端：OpenVINO / vLLM_A770 / vLLM_B60 / OVMS</p></li>
+<li><p>选择部署方式：baremetal / container</p></li>
+<li><p>配置关键参数：<code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code>、<code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code>、<code class="docutils literal notranslate"><span class="pre">DOC_PATH</span></code>、<code class="docutils literal notranslate"><span class="pre">TMPFILE_PATH</span></code>、<code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code></p></li>
+<li><p>确认配置后开始部署，并在结束后输出访问地址</p></li>
+</ul>
+<p>建议在以下场景使用交互模式：</p>
+<ul class="simple">
+<li><p>首次安装，不熟悉环境变量名称和默认值</p></li>
+<li><p>需要快速切换不同硬件或推理后端</p></li>
+<li><p>希望先确认参数再执行，降低配置出错概率</p></li>
+</ul>
+<p>示例：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>EdgeCraftRAG
+./tools/quick_start.sh<span class="w"> </span>-i
+</pre></div>
+</div>
+</section>
 <section id="id5">
-<h3>模型检查与自动下载<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
-<p>脚本会自动检查以下模型路径：</p>
-<section id="id6">
-<h4>公共模型<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/BAAI/bge-small-en-v1.5
-${MODEL_PATH}/BAAI/bge-reranker-large
+<h2>2.3 交互模式常见输入示例<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<p>以下示例用于说明交互过程中常见的输入内容，实际选项名称以终端提示为准。</p>
+<section id="a-openvino-baremetal">
+<h3>示例 A：OpenVINO + baremetal（单机快速体验）<a class="headerlink" href="#a-openvino-baremetal" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>部署后端: OpenVINO
+部署方式: baremetal
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+确认部署: y
 </pre></div>
 </div>
 </section>
-<section id="vllm">
-<h4>vLLM 模式<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/${LLM_MODEL}
+<section id="b-vllm-b60-container-milvus">
+<h3>示例 B：vLLM_B60 + container（需要 Milvus）<a class="headerlink" href="#b-vllm-b60-container-milvus" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>部署后端: vLLM_B60
+部署方式: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+确认部署: y
 </pre></div>
 </div>
 </section>
-<section id="openvino">
-<h4>OpenVINO 模式<a class="headerlink" href="#openvino" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/${LLM_MODEL}/INT4_compressed_weights
-</pre></div>
-</div>
-<p>如果缺少必需模型，脚本会自动下载并输出提示信息。</p>
-</section>
-</section>
-<section id="ui">
-<h3>UI 访问输出<a class="headerlink" href="#ui" title="Link to this heading">¶</a></h3>
-<p>启动完成后，脚本会输出：</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Service launched successfully.
-UI access URL: http://${HOST_IP}:8082
-If you are accessing from another machine, replace ${HOST_IP} with your server&#39;s reachable IP or hostname.
+<section id="c-vllm-a770-container-a770">
+<h3>示例 C：vLLM_A770 + container（A770 推荐）<a class="headerlink" href="#c-vllm-a770-container-a770" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>部署后端: vLLM_A770
+部署方式: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+确认部署: y
 </pre></div>
 </div>
 </section>
-<section id="id7">
-<h3>清理<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
-<p>停止并移除已部署容器：</p>
+<section id="d-ovms-container">
+<h3>示例 D：OVMS + container<a class="headerlink" href="#d-ovms-container" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>部署后端: OVMS
+部署方式: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+确认部署: y
+</pre></div>
+</div>
+<p>提示：</p>
+<ul class="simple">
+<li><p>如果是远程服务器，请将 <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> 设置为客户端可访问的地址。</p></li>
+<li><p>如需持久化向量检索数据，请使用 container 部署方式。</p></li>
+<li><p>若设备为 Intel Arc A770，优先选择 vLLM_A770 对应配置。</p></li>
+</ul>
+<p>清理部署：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>cleanup
 </pre></div>
 </div>
 </section>
 </section>
-<hr class="docutils" />
-<section id="build-images-sh">
-<h2>build_images.sh<a class="headerlink" href="#build-images-sh" title="Link to this heading">¶</a></h2>
-<p>构建全部镜像：</p>
+</section>
+<section id="id6">
+<h1>3.启动脚本<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h1>
+<section id="bootstrap-sh">
+<h2>3.1 bootstrap.sh（非交互编排）<a class="headerlink" href="#bootstrap-sh" title="Link to this heading">¶</a></h2>
+<p>通过环境变量定义部署参数后执行：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>openvino
+<span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_METHOD</span><span class="o">=</span>baremetal
+./tools/bootstrap.sh
+</pre></div>
+</div>
+<p>使用默认值（openvino + baremetal）：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/bootstrap.sh
+</pre></div>
+</div>
+<p>配置复用：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code> 在真正部署前会写入 <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code>。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> 也会保存配置，便于下次直接复用。</p></li>
+<li><p>对于 OVMS，上述文件会包含 <code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_MODEL_NAME</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_TARGET_DEVICE</span></code>、<code class="docutils literal notranslate"><span class="pre">OVMS_TOOL_PARSER</span></code> 等 <code class="docutils literal notranslate"><span class="pre">OVMS_*</span></code> 运行参数。</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>workspace/bootstrap.env
+./tools/bootstrap.sh
+</pre></div>
+</div>
+</section>
+<section id="model-download-sh">
+<h2>3.3 model_download.sh（模型准备）<a class="headerlink" href="#model-download-sh" title="Link to this heading">¶</a></h2>
+<p>基础用法：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/model_download.sh<span class="w"> </span>&lt;mode&gt;<span class="w"> </span><span class="o">[</span>model_id<span class="o">]</span><span class="w"> </span><span class="o">[</span>model_path<span class="o">]</span>
+</pre></div>
+</div>
+<p>模式说明：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm</span></code>：准备 embedding/reranker 的 OpenVINO 模型 + vLLM LLM 模型</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ov</span></code>：准备 embedding/reranker 的 OpenVINO 模型 + OpenVINO INT4 LLM 模型</p></li>
+</ul>
+<p>可选参数：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model_id</span></code>：仅对本次执行覆盖 <code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_path</span></code>：仅对本次执行覆盖 <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code></p></li>
+</ul>
+<p>示例：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/model_download.sh<span class="w"> </span>vllm
+./tools/model_download.sh<span class="w"> </span>ov<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span>/data/models
+</pre></div>
+</div>
+<p>环境行为说明：</p>
+<ul class="simple">
+<li><p>若当前已激活虚拟环境，会优先复用</p></li>
+<li><p>若未激活虚拟环境，脚本会自动创建并激活 <code class="docutils literal notranslate"><span class="pre">ecrag_venv</span></code>（与 <code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code> 一致）</p></li>
+<li><p>若缺失 <code class="docutils literal notranslate"><span class="pre">python3-venv</span></code> 或 <code class="docutils literal notranslate"><span class="pre">pip</span></code>，脚本会在支持的包管理器上自动安装所需前置依赖</p></li>
+</ul>
+</section>
+<section id="id7">
+<h2>3.2 直接启动脚本<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<p>按推理后端与部署方式可直接调用以下脚本：</p>
+<ul class="simple">
+<li><p>OpenVINO 裸金属：<code class="docutils literal notranslate"><span class="pre">./tools/run_ov_baremetal.sh</span></code></p></li>
+<li><p>OpenVINO 容器：<code class="docutils literal notranslate"><span class="pre">./tools/run_ov_container.sh</span></code></p></li>
+<li><p>vLLM 裸金属：<code class="docutils literal notranslate"><span class="pre">./tools/run_vllm_baremetal.sh</span></code></p></li>
+<li><p>vLLM 容器：<code class="docutils literal notranslate"><span class="pre">./tools/run_vllm_container.sh</span></code></p></li>
+<li><p>OVMS 裸金属：<code class="docutils literal notranslate"><span class="pre">./tools/run_ovms_baremetal.sh</span></code></p></li>
+<li><p>OVMS 容器：<code class="docutils literal notranslate"><span class="pre">./tools/run_ovms_container.sh</span></code></p></li>
+</ul>
+<p>适用于你已明确参数、希望跳过一键引导流程的场景。</p>
+</section>
+</section>
+<section id="id8">
+<h1>4.容器镜像编译脚本<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h1>
+<p>编译全部镜像：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/build_images.sh
 </pre></div>
 </div>
-<p>只构建指定镜像：</p>
+<p>按组件编译：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/build_images.sh<span class="w"> </span>mega
 ./tools/build_images.sh<span class="w"> </span>server
 ./tools/build_images.sh<span class="w"> </span>ui
 ./tools/build_images.sh<span class="w"> </span>all
 </pre></div>
 </div>
-<p>完整部署说明请参考 <a class="reference internal" href="../docs/Advanced_Setup_zh.html"><span class="std std-doc">../docs/Advanced_Setup_zh.md</span></a>.</p>
-</section>
+<p>完整部署说明请参考 <a class="reference internal" href="../docs/Advanced_Setup_zh.html"><span class="std std-doc">../docs/Advanced_Setup_zh.md</span></a>。</p>
 </section>
 
 
@@ -3273,7 +3422,7 @@ If you are accessing from another machine, replace ${HOST_IP} with your server&#
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="README.html" class="btn btn-neutral float-left" title="EdgeCraftRAG tool scripts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="README.html" class="btn btn-neutral float-left" title="1.Script Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../FinanceAgent/README.html" class="btn btn-neutral float-right" title="Finance Agent Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

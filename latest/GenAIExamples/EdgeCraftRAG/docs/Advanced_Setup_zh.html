@@ -441,6 +441,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../README.html">Edge Craft Retrieval-Augmented Generation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/README.html">EdgeCraft RAG CLI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README_zh.html">在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例</a></li>
 <li class="toctree-l4"><a class="reference internal" href="API_Guide.html">Edge Craft Retrieval-Augmented Generation API Guide</a></li>
@@ -453,8 +454,14 @@
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Explore_Edge_Craft_RAG_zh.html">探索 Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">EdgeCraftRAG tool scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html">EdgeCraftRAG 工具脚本</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html">1.Script Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html#quick-deployment-script-new-users">2.Quick Deployment Script (New Users)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html#startup-scripts">3.Startup Scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README.html#container-image-build-script">4.Container Image Build Script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html">1.脚本介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html#id2">2.快速部署脚本（新用户）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html#id6">3.启动脚本</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/README_zh.html#id8">4.容器镜像编译脚本</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -3128,7 +3135,7 @@
 <h4>Embedding 与 Reranking<a class="headerlink" href="#embedding-reranking" title="Link to this heading">¶</a></h4>
 <p>Embedding 与 Reranking 通常由本地 OpenVINO 推理提供，可按如下方式准备：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 准备 embedding、reranking 模型：</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># embedding、reranking、LLM 模型目录</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># embedding、reranking、LLM 模型目录</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
 pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
@@ -3143,7 +3150,7 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <p>如果仅使用 Core Ultra 平台，请准备 openVINO 模型：<br />
 你也可以在独立 GPU 上运行 openVINO 模型。</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 准备 openVINO 的 LLM 模型</span>
-optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>--model<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/Qwen/Qwen3-8B/INT4_compressed_weights<span class="w"> </span>--task<span class="w"> </span>text-generation-with-past<span class="w"> </span>--weight-format<span class="w"> </span>int4<span class="w"> </span>--group-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--ratio<span class="w"> </span><span class="m">0</span>.8
+optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>--model<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/OpenVINO/Qwen3-8B-int4-ov<span class="w"> </span>--task<span class="w"> </span>text-generation-with-past<span class="w"> </span>--weight-format<span class="w"> </span>int4<span class="w"> </span>--group-size<span class="w"> </span><span class="m">128</span><span class="w"> </span>--ratio<span class="w"> </span><span class="m">0</span>.8
 </pre></div>
 </div>
 </section>
@@ -3179,11 +3186,16 @@ modelscope<span class="w"> </span>download<span class="w"> </span>--model<span c
 <span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # 你的 HF 镜像地址</span>
 
 <span class="c1"># 确保以下 3 个目录权限为 1000:1000</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
-<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/tests
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/workspace
+<span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/workspace
 chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">DOC_PATH</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">TMPFILE_PATH</span><span class="si">}</span>
 <span class="c1"># 同时确保 .cache 目录权限为 1000:1000</span>
 chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span>-R<span class="w"> </span><span class="nv">$HOME</span>/.cache
+
+<span class="c1"># 判断当前系统是否支持NPU</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>/dev/accel<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">ACCEL_DEV</span><span class="o">=</span><span class="s2">&quot;/dev/accel:/dev/accel&quot;</span>
+<span class="k">fi</span>
 </pre></div>
 </div>
 <p>设置 Milvus 和聊天历史轮数：</p>
@@ -3217,6 +3229,17 @@ chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </
 </pre></div>
 </div>
 </section>
+<section id="c-ovms-ec-rag">
+<h4>选项 c：部署基于 OVMS 的 EC-RAG<a class="headerlink" href="#c-ovms-ec-rag" title="Link to this heading">¶</a></h4>
+<p>OVMS 使用前文准备好的 OpenVINO LLM 模型，例如 <code class="docutils literal notranslate"><span class="pre">${MODEL_PATH}/OpenVINO/Qwen3-8B-int4-ov</span></code>。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_SERVICE_PORT</span><span class="o">=</span><span class="m">8000</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_SOURCE_MODEL</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_MODEL_NAME</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+
+docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>ovms<span class="w"> </span>-f<span class="w"> </span>docker_compose/intel/gpu/arc/compose.yaml<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
 </section>
 <section id="id3">
 <h3>6. 清理部署（手动）<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
@@ -3246,7 +3269,7 @@ EC-RAG 镜像准备与本地推理章节一致，请参考 <a class="reference i
 <h2>在多 GPU 上部署 EC-RAG<a class="headerlink" href="#gpu-ec-rag" title="Link to this heading">¶</a></h2>
 <p>本示例以 4 张 Arc B60 部署 Qwen3-30B-A3B 为例。<br />
 开始前请先准备模型到 <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code> 并准备好 Docker 镜像。</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/models&quot;</span><span class="w"> </span><span class="c1"># 模型路径</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># 与 quick_start.sh 一致的默认模型路径</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
 pip<span class="w"> </span>install<span class="w"> </span>modelscope
 modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EdgeCraftRAG tool scripts &mdash; OPEA™ 1.5 documentation</title>
+  <title>1.Script Overview &mdash; OPEA™ 1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -28,7 +28,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="EdgeCraftRAG 工具脚本" href="README_zh.html" />
+    <link rel="next" title="1.脚本介绍" href="README_zh.html" />
     <link rel="prev" title="EdgeCraftRAG E2E test scripts" href="../tests/README.html" /> 
 </head>
 
@@ -441,6 +441,7 @@
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../examples/examples.html#edgecraftrag-application">EdgeCraftRAG Application</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../README.html">Edge Craft Retrieval-Augmented Generation Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/README.html">EdgeCraft RAG CLI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README.html">Example Edge Craft Retrieval-Augmented Generation Deployment on Intel® Arc® Platform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docker_compose/intel/gpu/arc/README_zh.html">在 Intel® Arc® 平台上部署 Edge Craft 检索增强生成（EC-RAG）示例</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docs/API_Guide.html">Edge Craft Retrieval-Augmented Generation API Guide</a></li>
@@ -453,8 +454,14 @@
 <li class="toctree-l4"><a class="reference internal" href="../docs/Explore_Edge_Craft_RAG.html">Explore Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docs/Explore_Edge_Craft_RAG_zh.html">探索 Edge Craft RAG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/README.html">EdgeCraftRAG E2E test scripts</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">EdgeCraftRAG tool scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="README_zh.html">EdgeCraftRAG 工具脚本</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">1.Script Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quick-deployment-script-new-users">2.Quick Deployment Script (New Users)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#startup-scripts">3.Startup Scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#container-image-build-script">4.Container Image Build Script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_zh.html">1.脚本介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_zh.html#id2">2.快速部署脚本（新用户）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_zh.html#id6">3.启动脚本</a></li>
+<li class="toctree-l4"><a class="reference internal" href="README_zh.html#id8">4.容器镜像编译脚本</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../examples/examples.html#financeagent-application">FinanceAgent Application</a><ul>
@@ -3079,7 +3086,7 @@
   
      <li><a href="../../../examples/examples.html">Examples</a> &raquo;</li>
   
-  <li>EdgeCraftRAG tool scripts</li>
+  <li>1.Script Overview</li>
 
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/GenAIExamples/EdgeCraftRAG/tools/README.md.txt" rel="nofollow"> View page source</a>
@@ -3099,50 +3106,108 @@
   
            <div itemprop="articleBody">
              
-  <section id="edgecraftrag-tool-scripts">
-<h1>EdgeCraftRAG tool scripts<a class="headerlink" href="#edgecraftrag-tool-scripts" title="Link to this heading">¶</a></h1>
-<p><a class="reference internal" href="README_zh.html"><span class="std std-doc">中文版</span></a></p>
-<p>This directory contains helper scripts for building images and starting EC-RAG services.</p>
-<section id="scripts">
-<h2>Scripts<a class="headerlink" href="#scripts" title="Link to this heading">¶</a></h2>
+  <p><a class="reference internal" href="README_zh.html"><span class="std std-doc">中文版</span></a></p>
+<p>This directory contains the deployment, startup, and image build scripts for EdgeCraftRAG.</p>
+<section id="script-overview">
+<h1>1.Script Overview<a class="headerlink" href="#script-overview" title="Link to this heading">¶</a></h1>
+<p>The main scripts in this directory are:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code>: one-click startup for OpenVINO or vLLM deployment</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">build_images.sh</span></code>: build EC-RAG Docker images</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code>: recommended one-click deployment script for new users, with automatic setup and interactive guidance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code>: non-interactive deployment orchestrator that can be used directly or invoked by <code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_download.sh</span></code>: model preparation helper (supports <code class="docutils literal notranslate"><span class="pre">vllm</span></code> / <code class="docutils literal notranslate"><span class="pre">ov</span></code>, optional <code class="docutils literal notranslate"><span class="pre">model_id</span></code> and <code class="docutils literal notranslate"><span class="pre">model_path</span></code> arguments)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ov_baremetal.sh</span></code>: OpenVINO bare-metal startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ov_container.sh</span></code>: OpenVINO container startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_vllm_baremetal.sh</span></code>: vLLM bare-metal startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_vllm_container.sh</span></code>: vLLM container startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ovms_baremetal.sh</span></code>: OVMS bare-metal startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_ovms_container.sh</span></code>: OVMS container startup script</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_images.sh</span></code>: container image build script</p></li>
 </ul>
+<p>Deployment methods:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Requirements</p></th>
+<th class="head"><p>Milvus Support</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>baremetal</p></td>
+<td><p>Start services as Python processes</p></td>
+<td><p>Python 3.10+</p></td>
+<td><p>No (in-memory only)</p></td>
+</tr>
+<tr class="row-odd"><td><p>container</p></td>
+<td><p>Start services in Docker containers</p></td>
+<td><p>Docker / Docker Compose</p></td>
+<td><p>Yes (enabled by default)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note: If you need Milvus, use the container deployment method.</p>
 </section>
-<hr class="docutils" />
-<section id="quick-start-sh">
-<h2>quick_start.sh<a class="headerlink" href="#quick-start-sh" title="Link to this heading">¶</a></h2>
-<p>Run from the <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG</span></code> root directory:</p>
+<section id="quick-deployment-script-new-users">
+<h1>2.Quick Deployment Script (New Users)<a class="headerlink" href="#quick-deployment-script-new-users" title="Link to this heading">¶</a></h1>
+<section id="one-command-quick-deployment">
+<h2>2.1 One-Command Quick Deployment<a class="headerlink" href="#one-command-quick-deployment" title="Link to this heading">¶</a></h2>
+<p>Run this from the <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG</span></code> root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
 </pre></div>
 </div>
-<section id="default-behavior">
-<h3>Default behavior<a class="headerlink" href="#default-behavior" title="Link to this heading">¶</a></h3>
-<p>If no environment variables are provided, the script uses these defaults:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace/models
-<span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace
-<span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">WORKSPACE</span><span class="si">}</span>/workspace
-<span class="nv">LLM_MODEL</span><span class="o">=</span>Qwen/Qwen3-8B
-</pre></div>
-</div>
-<p>The script will also:</p>
+<p>The script behaves as follows by default:</p>
 <ul class="simple">
-<li><p>create and activate a Python virtual environment automatically</p></li>
-<li><p>install <code class="docutils literal notranslate"><span class="pre">python3-venv</span></code> if needed</p></li>
-<li><p>check whether required models exist under <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code></p></li>
-<li><p>automatically download missing embedding, reranker, and LLM models</p></li>
-<li><p>print the UI access URL after startup completes</p></li>
+<li><p>runs in non-interactive mode</p></li>
+<li><p>uses OpenVINO as the default inference backend</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code> is not set, the script resolves it to <code class="docutils literal notranslate"><span class="pre">openvino</span></code></p></li>
+<li><p>uses <code class="docutils literal notranslate"><span class="pre">baremetal</span></code> as the default deployment method when <code class="docutils literal notranslate"><span class="pre">DEPLOYMENT_METHOD</span></code> is not set</p></li>
 </ul>
-</section>
-<section id="non-interactive-mode">
-<h3>Non-interactive mode<a class="headerlink" href="#non-interactive-mode" title="Link to this heading">¶</a></h3>
-<p>By default, non-interactive mode starts local OpenVINO services.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
+<p>In the default bare-metal flow, the script automatically:</p>
+<ul class="simple">
+<li><p>creates and activates <code class="docutils literal notranslate"><span class="pre">EdgeCraftRAG/ecrag_venv</span></code> if it does not exist</p></li>
+<li><p>validates the Python version (3.10+ required, 3.10/3.11 recommended)</p></li>
+<li><p>checks and installs required Python packages</p></li>
+<li><p>checks and installs <code class="docutils literal notranslate"><span class="pre">npm</span></code> for baremetal UI startup when needed</p></li>
+<li><p>validates Intel GPU driver/runtime and auto-installs missing packages on apt-based Linux</p></li>
+<li><p>checks and auto-downloads missing models (embedding, reranker, OpenVINO LLM)</p></li>
+<li><p>writes a deployment environment snapshot to <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code> before invoking <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code></p></li>
+<li><p>calls <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> to start services</p></li>
+</ul>
+<p>For vLLM deployments and container deployment method, the script also validates Docker and Docker Compose before deployment.
+On Ubuntu 24.04, if Docker or Docker Compose is missing, the script attempts automatic installation and starts/enables Docker service.</p>
+<p>To skip model verification/download when models are already prepared locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>--skip-model-check
 </pre></div>
 </div>
+<p>Equivalent environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SKIP_MODEL_CHECK</span><span class="o">=</span><span class="m">1</span>
+./tools/quick_start.sh
+</pre></div>
+</div>
+<p>Intel GPU driver/runtime validation can be skipped when needed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>--skip-gpu-driver-check
+</pre></div>
+</div>
+<p>Equivalent environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SKIP_INTEL_GPU_DRIVER_CHECK</span><span class="o">=</span><span class="m">1</span>
+<span class="c1"># Or keep validation but disable auto-install:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">AUTO_INSTALL_INTEL_GPU_DRIVER</span><span class="o">=</span><span class="m">0</span>
+./tools/quick_start.sh
+</pre></div>
+</div>
+<p>To disable automatic npm installation during baremetal preparation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">AUTO_INSTALL_NPM</span><span class="o">=</span><span class="m">0</span>
+./tools/quick_start.sh
+</pre></div>
+</div>
+<p>After startup succeeds, the terminal prints a UI access URL such as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UI access URL: http://${HOST_IP}:8082
+</pre></div>
+</div>
+<p>Note: If you set <code class="docutils literal notranslate"><span class="pre">DEPLOYMENT_METHOD=container</span></code> in advance, the script skips venv and pip checks and continues with container deployment.</p>
 <p>You can override defaults with environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>openvino
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TMPFILE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace&quot;</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span>
@@ -3151,121 +3216,215 @@
 ./tools/quick_start.sh
 </pre></div>
 </div>
-</section>
-<section id="select-deployment-mode-with-compose-profiles">
-<h3>Select deployment mode with <code class="docutils literal notranslate"><span class="pre">COMPOSE_PROFILES</span></code><a class="headerlink" href="#select-deployment-mode-with-compose-profiles" title="Link to this heading">¶</a></h3>
-<section id="openvino-on-core-ultra-b60-or-a770">
-<h4>OpenVINO on Core Ultra, B60 or A770<a class="headerlink" href="#openvino-on-core-ultra-b60-or-a770" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh
-</pre></div>
-</div>
-</section>
-<section id="vllm-on-intel-arc-a770">
-<h4>vLLM on Intel Arc A770<a class="headerlink" href="#vllm-on-intel-arc-a770" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMPOSE_PROFILES</span><span class="o">=</span>vLLM_A770
+<p>Select the backend with <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># OpenVINO (default)</span>
+./tools/quick_start.sh
+
+<span class="c1"># vLLM_A770</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>vllm_a770
+./tools/quick_start.sh
+
+<span class="c1"># vLLM_B60</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>vllm_b60
+./tools/quick_start.sh
+
+<span class="c1"># OVMS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>ovms
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_SOURCE_MODEL</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_MODEL_NAME</span><span class="o">=</span>OpenVINO/Qwen3-8B-int4-ov
+<span class="nb">export</span><span class="w"> </span><span class="nv">OVMS_TARGET_DEVICE</span><span class="o">=</span>GPU.0
 ./tools/quick_start.sh
 </pre></div>
 </div>
-</section>
-<section id="vllm-on-intel-arc-b60">
-<h4>vLLM on Intel Arc B60<a class="headerlink" href="#vllm-on-intel-arc-b60" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COMPOSE_PROFILES</span><span class="o">=</span>vLLM_B60
-./tools/quick_start.sh
-</pre></div>
-</div>
-<p>Optional B60/vLLM variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_SERVICE_PORT_B60</span><span class="o">=</span><span class="m">8086</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DTYPE</span><span class="o">=</span>float16
-<span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DP</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ZE_AFFINITY_MASK</span><span class="o">=</span><span class="m">0</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ENFORCE_EAGER</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">TRUST_REMOTE_CODE</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DISABLE_SLIDING_WINDOW</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">GPU_MEMORY_UTIL</span><span class="o">=</span><span class="m">0</span>.8
-<span class="nb">export</span><span class="w"> </span><span class="nv">NO_ENABLE_PREFIX_CACHING</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_NUM_BATCHED_TOKENS</span><span class="o">=</span><span class="m">8192</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DISABLE_LOG_REQUESTS</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MAX_MODEL_LEN</span><span class="o">=</span><span class="m">49152</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">BLOCK_SIZE</span><span class="o">=</span><span class="m">64</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">QUANTIZATION</span><span class="o">=</span>fp8
-</pre></div>
-</div>
-</section>
-</section>
-<section id="interactive-mode">
-<h3>Interactive mode<a class="headerlink" href="#interactive-mode" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash<span class="w"> </span>-i<span class="w"> </span>./tools/quick_start.sh
-</pre></div>
-</div>
-<p>In interactive mode, the script prompts for:</p>
+<p>For OVMS deployments, the tooling now exports the compose-facing variables directly. The most commonly overridden ones are <code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_MODEL_NAME</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_TARGET_DEVICE</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_TOOL_PARSER</span></code>, and <code class="docutils literal notranslate"><span class="pre">OVMS_MAX_NUM_BATCHED_TOKENS</span></code>.</p>
+<p>Important OVMS behavior:</p>
 <ul class="simple">
-<li><p>deployment mode: <code class="docutils literal notranslate"><span class="pre">vLLM_A770</span></code>, <code class="docutils literal notranslate"><span class="pre">vLLM_B60</span></code>, or <code class="docutils literal notranslate"><span class="pre">ov</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DOC_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TMPFILE_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code></p></li>
-<li><p>optional vLLM runtime settings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code> keeps your original model ID as-is (for example <code class="docutils literal notranslate"><span class="pre">Qwen/Qwen3-8B</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code> and <code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> both persist OVMS variables into <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code> for reuse.</p></li>
+<li><p>You can replay the exact OVMS configuration with <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">workspace/bootstrap.env</span> <span class="pre">&amp;&amp;</span> <span class="pre">./tools/bootstrap.sh</span></code>.</p></li>
+</ul>
+<p>Compatibility note: the legacy environment variable <code class="docutils literal notranslate"><span class="pre">COMPOSE_PROFILES</span></code> is still accepted, but new configurations should use <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code>.</p>
+<p>Supported <code class="docutils literal notranslate"><span class="pre">INFERENCE_BACKEND</span></code> values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">openvino</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm_a770</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm_b60</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ovms</span></code></p></li>
 </ul>
 </section>
-<section id="model-check-and-auto-download">
-<h3>Model check and auto-download<a class="headerlink" href="#model-check-and-auto-download" title="Link to this heading">¶</a></h3>
-<p>The script checks these model locations automatically:</p>
-<section id="shared-models">
-<h4>Shared models<a class="headerlink" href="#shared-models" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/BAAI/bge-small-en-v1.5
-${MODEL_PATH}/BAAI/bge-reranker-large
+<section id="interactive-mode">
+<h2>2.2 Interactive Mode<a class="headerlink" href="#interactive-mode" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>-i
+</pre></div>
+</div>
+<p>Interactive mode is suitable for first-time deployment or when you are not sure about the parameters. After you run <code class="docutils literal notranslate"><span class="pre">./tools/quick_start.sh</span> <span class="pre">-i</span></code>, the script prompts step by step and generates the deployment configuration for the current run.</p>
+<p>The interactive flow typically includes:</p>
+<ul class="simple">
+<li><p>choosing the inference backend: OpenVINO / vLLM_A770 / vLLM_B60 / OVMS</p></li>
+<li><p>choosing the deployment method: baremetal / container</p></li>
+<li><p>configuring key parameters: <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code>, <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">DOC_PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">TMPFILE_PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code></p></li>
+<li><p>confirming the configuration and starting deployment, then printing the access URL at the end</p></li>
+</ul>
+<p>Interactive mode is recommended when:</p>
+<ul class="simple">
+<li><p>this is your first installation and you are not familiar with the environment variables or defaults</p></li>
+<li><p>you need to switch quickly between different hardware targets or inference backends</p></li>
+<li><p>you want to review parameters before deployment to reduce configuration mistakes</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>EdgeCraftRAG
+./tools/quick_start.sh<span class="w"> </span>-i
 </pre></div>
 </div>
 </section>
-<section id="vllm-mode">
-<h4>vLLM mode<a class="headerlink" href="#vllm-mode" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/${LLM_MODEL}
+<section id="common-interactive-input-examples">
+<h2>2.3 Common Interactive Input Examples<a class="headerlink" href="#common-interactive-input-examples" title="Link to this heading">¶</a></h2>
+<p>The following examples show common inputs during the interactive flow. Actual prompt text may vary slightly based on the script.</p>
+<section id="example-a-openvino-baremetal-single-machine-quick-experience">
+<h3>Example A: OpenVINO + baremetal (single-machine quick experience)<a class="headerlink" href="#example-a-openvino-baremetal-single-machine-quick-experience" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Inference backend: OpenVINO
+Deployment method: baremetal
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+Confirm deployment: y
 </pre></div>
 </div>
 </section>
-<section id="openvino-mode">
-<h4>OpenVINO mode<a class="headerlink" href="#openvino-mode" title="Link to this heading">¶</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>${MODEL_PATH}/${LLM_MODEL}/INT4_compressed_weights
-</pre></div>
-</div>
-<p>If a required model is missing, the script downloads it automatically and prints a message.</p>
-</section>
-</section>
-<section id="ui-access-output">
-<h3>UI access output<a class="headerlink" href="#ui-access-output" title="Link to this heading">¶</a></h3>
-<p>After startup completes, the script prints:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Service launched successfully.
-UI access URL: http://${HOST_IP}:8082
-If you are accessing from another machine, replace ${HOST_IP} with the server&#39;s reachable IP or hostname.
+<section id="example-b-vllm-b60-container-milvus-required">
+<h3>Example B: vLLM_B60 + container (Milvus required)<a class="headerlink" href="#example-b-vllm-b60-container-milvus-required" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Inference backend: vLLM_B60
+Deployment method: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+Confirm deployment: y
 </pre></div>
 </div>
 </section>
-<section id="cleanup">
-<h3>Cleanup<a class="headerlink" href="#cleanup" title="Link to this heading">¶</a></h3>
-<p>To stop and remove the deployed containers:</p>
+<section id="example-c-vllm-a770-container-recommended-for-a770">
+<h3>Example C: vLLM_A770 + container (recommended for A770)<a class="headerlink" href="#example-c-vllm-a770-container-recommended-for-a770" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Inference backend: vLLM_A770
+Deployment method: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+Confirm deployment: y
+</pre></div>
+</div>
+</section>
+<section id="example-d-ovms-container">
+<h3>Example D: OVMS + container<a class="headerlink" href="#example-d-ovms-container" title="Link to this heading">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Inference backend: OVMS
+Deployment method: container
+HOST_IP: 192.168.1.20
+MODEL_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace/models
+DOC_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+TMPFILE_PATH: /home/scale/edgeai/applications.edge.ai.rag/EdgeCraftRAG/workspace
+LLM_MODEL: Qwen/Qwen3-8B
+Confirm deployment: y
+</pre></div>
+</div>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>for a remote server, set <code class="docutils literal notranslate"><span class="pre">HOST_IP</span></code> to an address reachable by the client machine</p></li>
+<li><p>if you need persistent vector retrieval data, use the container deployment method</p></li>
+<li><p>if the device is Intel Arc A770, prefer the <code class="docutils literal notranslate"><span class="pre">vllm_a770</span></code> configuration</p></li>
+</ul>
+<p>Cleanup:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/quick_start.sh<span class="w"> </span>cleanup
 </pre></div>
 </div>
 </section>
 </section>
-<hr class="docutils" />
-<section id="build-images-sh">
-<h2>build_images.sh<a class="headerlink" href="#build-images-sh" title="Link to this heading">¶</a></h2>
+</section>
+<section id="startup-scripts">
+<h1>3.Startup Scripts<a class="headerlink" href="#startup-scripts" title="Link to this heading">¶</a></h1>
+<section id="bootstrap-sh-non-interactive-orchestration">
+<h2>3.1 bootstrap.sh (Non-Interactive Orchestration)<a class="headerlink" href="#bootstrap-sh-non-interactive-orchestration" title="Link to this heading">¶</a></h2>
+<p>Run with environment variables defined in advance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INFERENCE_BACKEND</span><span class="o">=</span>openvino
+<span class="nb">export</span><span class="w"> </span><span class="nv">DEPLOYMENT_METHOD</span><span class="o">=</span>baremetal
+./tools/bootstrap.sh
+</pre></div>
+</div>
+<p>Use defaults (<code class="docutils literal notranslate"><span class="pre">openvino</span></code> + <code class="docutils literal notranslate"><span class="pre">baremetal</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/bootstrap.sh
+</pre></div>
+</div>
+<p>Configuration reuse:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code> writes <code class="docutils literal notranslate"><span class="pre">workspace/bootstrap.env</span></code> before real deployment starts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap.sh</span></code> also persists configuration for reuse.</p></li>
+<li><p>For OVMS, this includes <code class="docutils literal notranslate"><span class="pre">OVMS_SOURCE_MODEL</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_MODEL_NAME</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_TARGET_DEVICE</span></code>, <code class="docutils literal notranslate"><span class="pre">OVMS_TOOL_PARSER</span></code>, and related <code class="docutils literal notranslate"><span class="pre">OVMS_*</span></code> runtime variables.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>workspace/bootstrap.env
+./tools/bootstrap.sh
+</pre></div>
+</div>
+</section>
+<section id="model-download-sh-model-preparation">
+<h2>3.3 model_download.sh (Model Preparation)<a class="headerlink" href="#model-download-sh-model-preparation" title="Link to this heading">¶</a></h2>
+<p>Basic usage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/model_download.sh<span class="w"> </span>&lt;mode&gt;<span class="w"> </span><span class="o">[</span>model_id<span class="o">]</span><span class="w"> </span><span class="o">[</span>model_path<span class="o">]</span>
+</pre></div>
+</div>
+<p>Modes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vllm</span></code>: prepare embedding/reranker OpenVINO models + vLLM LLM model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ov</span></code>: prepare embedding/reranker OpenVINO models + OpenVINO INT4 LLM model</p></li>
+</ul>
+<p>Optional arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model_id</span></code>: overrides <code class="docutils literal notranslate"><span class="pre">LLM_MODEL</span></code> for current run</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model_path</span></code>: overrides <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code> for current run</p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/model_download.sh<span class="w"> </span>vllm
+./tools/model_download.sh<span class="w"> </span>ov<span class="w"> </span>Qwen/Qwen3-8B<span class="w"> </span>/data/models
+</pre></div>
+</div>
+<p>Environment behavior:</p>
+<ul class="simple">
+<li><p>if a virtual environment is already active, it is reused</p></li>
+<li><p>otherwise, the script creates/activates <code class="docutils literal notranslate"><span class="pre">ecrag_venv</span></code> automatically (same style as <code class="docutils literal notranslate"><span class="pre">quick_start.sh</span></code>)</p></li>
+<li><p>missing <code class="docutils literal notranslate"><span class="pre">python3-venv</span></code> / <code class="docutils literal notranslate"><span class="pre">pip</span></code> prerequisites are installed automatically when supported by the system package manager</p></li>
+</ul>
+</section>
+<section id="direct-startup-scripts">
+<h2>3.2 Direct Startup Scripts<a class="headerlink" href="#direct-startup-scripts" title="Link to this heading">¶</a></h2>
+<p>You can also call the following scripts directly based on inference backend and deployment method:</p>
+<ul class="simple">
+<li><p>OpenVINO baremetal: <code class="docutils literal notranslate"><span class="pre">./tools/run_ov_baremetal.sh</span></code></p></li>
+<li><p>OpenVINO container: <code class="docutils literal notranslate"><span class="pre">./tools/run_ov_container.sh</span></code></p></li>
+<li><p>vLLM baremetal: <code class="docutils literal notranslate"><span class="pre">./tools/run_vllm_baremetal.sh</span></code></p></li>
+<li><p>vLLM container: <code class="docutils literal notranslate"><span class="pre">./tools/run_vllm_container.sh</span></code></p></li>
+<li><p>OVMS baremetal: <code class="docutils literal notranslate"><span class="pre">./tools/run_ovms_baremetal.sh</span></code></p></li>
+<li><p>OVMS container: <code class="docutils literal notranslate"><span class="pre">./tools/run_ovms_container.sh</span></code></p></li>
+</ul>
+<p>This is useful when you already know your parameters and want to skip the one-click onboarding flow.</p>
+</section>
+</section>
+<section id="container-image-build-script">
+<h1>4.Container Image Build Script<a class="headerlink" href="#container-image-build-script" title="Link to this heading">¶</a></h1>
 <p>Build all images:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/build_images.sh
 </pre></div>
 </div>
-<p>Build selected images only:</p>
+<p>Build by component:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tools/build_images.sh<span class="w"> </span>mega
 ./tools/build_images.sh<span class="w"> </span>server
 ./tools/build_images.sh<span class="w"> </span>ui
 ./tools/build_images.sh<span class="w"> </span>all
 </pre></div>
 </div>
-<p>For full deployment details, refer to <a class="reference internal" href="../docs/Advanced_Setup.html"><span class="std std-doc">../docs/Advanced_Setup.md</span></a>.</p>
-</section>
+<p>For complete deployment guidance, see <a class="reference internal" href="../docs/Advanced_Setup.html"><span class="std std-doc">../docs/Advanced_Setup.md</span></a>.</p>
 </section>
 
 
@@ -3274,7 +3433,7 @@ If you are accessing from another machine, replace ${HOST_IP} with the server&#3
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tests/README.html" class="btn btn-neutral float-left" title="EdgeCraftRAG E2E test scripts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="README_zh.html" class="btn btn-neutral float-right" title="EdgeCraftRAG 工具脚本" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README_zh.html" class="btn btn-neutral float-right" title="1.脚本介绍" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
