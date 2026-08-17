@@ -3158,8 +3158,8 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <ol class="arabic">
 <li><p><strong>Set Environment Variables:</strong>
 Replace <code class="docutils literal notranslate"><span class="pre">{your_ip}</span></code> with the IP address of your deployed CodeGen service and <code class="docutils literal notranslate"><span class="pre">{your_model_identifier}</span></code> with the identifier of the model being tested (e.g., <code class="docutils literal notranslate"><span class="pre">Qwen/CodeQwen1.5-7B-Chat</span></code>).</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CODEGEN_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://{your_ip}:7778/v1/codegen&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CODEGEN_MODEL</span><span class="o">=</span><span class="s2">&quot;{your_model_identifier}&quot;</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CODEGEN_ENDPOINT</span><span class="o">=</span><span class="s2">"http://{your_ip}:7778/v1/codegen"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CODEGEN_MODEL</span><span class="o">=</span><span class="s2">"{your_model_identifier}"</span>
 </pre></div>
 </div>
 <p><em>Note: Port <code class="docutils literal notranslate"><span class="pre">7778</span></code> is the default for the CodeGen gateway; adjust if you customized it.</em></p>
@@ -3178,37 +3178,37 @@ The script will run the evaluation tasks (e.g., HumanEval by default) against th
 <p>The results will be printed to the console and saved in <code class="docutils literal notranslate"><span class="pre">evaluation_results.json</span></code>. A key metric is <code class="docutils literal notranslate"><span class="pre">pass&#64;k</span></code>, which represents the percentage of problems solved correctly within <code class="docutils literal notranslate"><span class="pre">k</span></code> generated attempts (e.g., <code class="docutils literal notranslate"><span class="pre">pass&#64;1</span></code> means solved on the first try).</p>
 <p>Example output snippet:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;humaneval&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;pass@1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.7195121951219512</span>
+<span class="w">  </span><span class="nt">"humaneval"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"pass@1"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.7195121951219512</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwen/CodeQwen1.5-7B-Chat&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;humaneval&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;instruction_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;max_length_generation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;precision&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fp32&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;load_in_8bit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;load_in_4bit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;left_padding&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;limit_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;save_every_k_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;postprocess&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;allow_code_execution&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;generation_only&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;load_generations_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;load_data_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;metric_output_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;evaluation_results.json&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;save_generations&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;load_generations_intermediate_paths&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;save_generations_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;generations.json&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;save_references&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;save_references_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;references.json&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;prompt&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prompt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;max_memory_per_gpu&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;check_references&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;codegen_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.123.104:7778/v1/codegen&quot;</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwen/CodeQwen1.5-7B-Chat"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"tasks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"humaneval"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"instruction_tokens"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"batch_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"max_length_generation"</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"precision"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fp32"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"load_in_8bit"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"load_in_4bit"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"left_padding"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"limit"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"limit_start"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"save_every_k_tasks"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"postprocess"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"allow_code_execution"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"generation_only"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"load_generations_path"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"load_data_path"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"metric_output_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"evaluation_results.json"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"save_generations"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"load_generations_intermediate_paths"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"save_generations_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"generations.json"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"save_references"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"save_references_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"references.json"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"prompt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prompt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"max_memory_per_gpu"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"check_references"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"codegen_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.123.104:7778/v1/codegen"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

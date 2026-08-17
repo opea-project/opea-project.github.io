@@ -3114,8 +3114,8 @@
 <p>Note that you cannot use vllm as the service release name due to <a class="reference external" href="https://docs.vllm.ai/en/stable/serving/env_vars.html#environment-variables">environment variables conflict</a>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common/vllm</span>
 <span class="go">export MODELDIR=/mnt/opea-models</span>
-<span class="go">export MODELNAME=&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
+<span class="go">export MODELNAME="meta-llama/Meta-Llama-3-8B-Instruct"</span>
+<span class="go">export HFTOKEN="insert-your-huggingface-token-here"</span>
 <span class="go">helm install myvllm . --set global.modelUseHostPath=${MODELDIR} --set LLM_MODEL_ID=${MODELNAME} --set global.HF_TOKEN=${HFTOKEN}</span>
 <span class="gp"># </span>To<span class="w"> </span>deploy<span class="w"> </span>on<span class="w"> </span>Gaudi<span class="w"> </span>enabled<span class="w"> </span>kubernetes<span class="w"> </span>cluster
 <span class="gp"># </span>helm<span class="w"> </span>install<span class="w"> </span>myvllm<span class="w"> </span>.<span class="w"> </span>--set<span class="w"> </span>global.modelUseHostPath<span class="o">=</span><span class="si">${</span><span class="nv">MODELDIR</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MODELNAME</span><span class="si">}</span><span class="w"> </span>--set<span class="w"> </span>global.HF_TOKEN<span class="o">=</span><span class="si">${</span><span class="nv">HFTOKEN</span><span class="si">}</span><span class="w"> </span>--values<span class="w"> </span>gaudi-values.yaml
@@ -3134,8 +3134,8 @@
 <p>Then run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/myvllm</span> <span class="pre">2080:80</span></code> to expose the vllm service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:2080/v1/completions \</span>
-<span class="go">  -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">  -d &#39;{&quot;model&quot;: &quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;, &quot;prompt&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;: 32, &quot;temperature&quot;: 0}&#39;</span>
+<span class="go">  -H "Content-Type: application/json" \</span>
+<span class="go">  -d '{"model": "meta-llama/Meta-Llama-3-8B-Instruct", "prompt": "What is Deep Learning?", "max_tokens": 32, "temperature": 0}'</span>
 </pre></div>
 </div>
 </section>

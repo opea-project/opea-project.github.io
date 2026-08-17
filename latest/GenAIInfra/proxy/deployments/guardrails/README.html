@@ -3141,11 +3141,11 @@ convert_tokenizer<span class="w"> </span>Titeiiko/OTIS-Official-Spam-Model<span 
 <span class="kn">from</span><span class="w"> </span><span class="nn">openvino_tokenizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">connect_models</span>
 
 <span class="n">core</span> <span class="o">=</span> <span class="n">Core</span><span class="p">()</span>
-<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">read_model</span><span class="p">(</span><span class="s2">&quot;OTIS-Official-Spam-Model/openvino_tokenizer.xml&quot;</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">read_model</span><span class="p">(</span><span class="s2">&quot;OTIS-Official-Spam-Model/openvino_model.xml&quot;</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">read_model</span><span class="p">(</span><span class="s2">"OTIS-Official-Spam-Model/openvino_tokenizer.xml"</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">read_model</span><span class="p">(</span><span class="s2">"OTIS-Official-Spam-Model/openvino_model.xml"</span><span class="p">)</span>
 <span class="c1"># Merge the model and its tokenizer.</span>
 <span class="n">combined_model</span> <span class="o">=</span> <span class="n">connect_models</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="n">save_model</span><span class="p">(</span><span class="n">combined_model</span><span class="p">,</span> <span class="s2">&quot;OTIS-Official-Spam-Model/combined.xml&quot;</span><span class="p">)</span>
+<span class="n">save_model</span><span class="p">(</span><span class="n">combined_model</span><span class="p">,</span> <span class="s2">"OTIS-Official-Spam-Model/combined.xml"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -3190,7 +3190,7 @@ convert_tokenizer<span class="w"> </span>Titeiiko/OTIS-Official-Spam-Model<span 
 <span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
 <span class="w">  </span><span class="nt">values</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">defaultRevision</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">defaultRevision</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">    </span><span class="nt">global</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">istioNamespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">istio-system</span>
 <span class="w">      </span><span class="nt">configValidation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -3245,12 +3245,12 @@ convert_tokenizer<span class="w"> </span>Titeiiko/OTIS-Official-Spam-Model<span 
 </pre></div>
 </div>
 <p>The service is ready. We can then determine the ingress IP and port for validation. If you are evaluating OPEA Pipeline Proxy in a local environment without any load balancer, you can change the service type of the service <code class="docutils literal notranslate"><span class="pre">istio-ingressgateway</span></code> from <code class="docutils literal notranslate"><span class="pre">LoadBalancer</span></code> to <code class="docutils literal notranslate"><span class="pre">NodePort</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INGRESS_HOST</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>istio-ingressgateway<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].ip}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">INGRESS_PORT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>istio-ingressgateway<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.ports[?(@.name==&quot;http2&quot;)].port}&#39;</span><span class="k">)</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">INGRESS_HOST</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>istio-ingressgateway<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].ip}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">INGRESS_PORT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>istio-system<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>istio-ingressgateway<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.ports[?(@.name=="http2")].port}'</span><span class="k">)</span>
 </pre></div>
 </div>
 <p>We can then validating the Guardrails with the following <code class="docutils literal notranslate"><span class="pre">curl</span></code> command.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Host:chatqna-service.com&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;: \&quot;Free money\&quot;}&quot;</span><span class="w"> </span><span class="s2">&quot;http://</span><span class="nv">$INGRESS_HOST</span><span class="s2">:</span><span class="nv">$INGRESS_PORT</span><span class="s2">/&quot;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Host:chatqna-service.com"</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"{\"text\": \"Free money\"}"</span><span class="w"> </span><span class="s2">"http://</span><span class="nv">$INGRESS_HOST</span><span class="s2">:</span><span class="nv">$INGRESS_PORT</span><span class="s2">/"</span>
 <span class="c1"># Omitted</span>
 </pre></div>
 </div>
@@ -3283,7 +3283,7 @@ convert_tokenizer<span class="w"> </span>Titeiiko/OTIS-Official-Spam-Model<span 
 <span class="w">        </span><span class="nt">value</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.guardrails</span>
 <span class="w">          </span><span class="nt">typed_config</span><span class="p">:</span>
-<span class="w">            </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.guardrails.v3.Guardrails</span>
+<span class="w">            </span><span class="s">"@type"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.guardrails.v3.Guardrails</span>
 <span class="w">            </span><span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/model/combined.xml</span>
 <span class="w">            </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REQUEST</span>
 <span class="w">            </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALLOW</span>
@@ -3293,7 +3293,7 @@ convert_tokenizer<span class="w"> </span>Titeiiko/OTIS-Official-Spam-Model<span 
 <section id="validating-the-result">
 <h3>Validating the result<a class="headerlink" href="#validating-the-result" title="Link to this heading">¶</a></h3>
 <p>After integrating Guardrails, we can validate the result using <code class="docutils literal notranslate"><span class="pre">curl</span></code> again.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Host:chatqna-service.com&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;: \&quot;Free money\&quot;}&quot;</span><span class="w"> </span><span class="s2">&quot;http://</span><span class="nv">$INGRESS_HOST</span><span class="s2">:</span><span class="nv">$INGRESS_PORT</span><span class="s2">/&quot;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Host:chatqna-service.com"</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"{\"text\": \"Free money\"}"</span><span class="w"> </span><span class="s2">"http://</span><span class="nv">$INGRESS_HOST</span><span class="s2">:</span><span class="nv">$INGRESS_PORT</span><span class="s2">/"</span>
 <span class="c1"># Access denied</span>
 </pre></div>
 </div>

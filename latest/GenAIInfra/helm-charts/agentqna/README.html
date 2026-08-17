@@ -3142,7 +3142,7 @@
 <h3>Deploy with Helm chart<a class="headerlink" href="#deploy-with-helm-chart" title="Link to this heading">¶</a></h3>
 <p>Deploy everything on Gaudi enabled Kubernetes cluster:</p>
 <p>If you want to try with latest version, use <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">pull</span> <span class="pre">oci://ghcr.io/opea-project/charts/agentqna</span> <span class="pre">--version</span> <span class="pre">0-latest</span> <span class="pre">--untar</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HF_TOKEN=&quot;YourOwnToken&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HF_TOKEN="YourOwnToken"
 helm pull oci://ghcr.io/opea-project/charts/agentqna --untar
 helm install agentqna agentqna -f agentqna/gaudi-values.yaml --set global.HF_TOKEN=${HF_TOKEN}
 
@@ -3150,8 +3150,8 @@ helm install agentqna agentqna -f agentqna/gaudi-values.yaml --set global.HF_TOK
 cd GenAIInfra/helm-charts/
 ./update_dependency.sh
 helm dependency update agentqna
-export HFTOKEN=&quot;your_huggingface_token&quot;
-export MODELDIR=&quot;/mnt/opea-models&quot;
+export HFTOKEN="your_huggingface_token"
+export MODELDIR="/mnt/opea-models"
 # with vLLM
 helm upgrade --install agentqna agentqna -f agentqna/rocm-values.yaml --set global.HF_TOKEN=${HF_TOKEN}
 
@@ -3169,7 +3169,7 @@ helm upgrade --install agentqna agentqna -f agentqna/rocm-tgi-values.yaml --set 
 <p>Ingest data used by RAG.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/AgentQnA/retrieval_tool/index_data.py -O /mnt/tools/index_data.py
 wget https://raw.githubusercontent.com/opea-project/GenAIExamples/refs/heads/main/AgentQnA/example_data/test_docs_music.jsonl -O /mnt/tools/test_docs_music.jsonl
-host_ip=$(kubectl get svc -o jsonpath=&quot;{.items[].spec.clusterIP}&quot; --selector app.kubernetes.io/name=data-prep)
+host_ip=$(kubectl get svc -o jsonpath="{.items[].spec.clusterIP}" --selector app.kubernetes.io/name=data-prep)
 python3 index_data.py --filedir /mnt/tools --filename test_docs_music.jsonl --host_ip $host_ip
 </pre></div>
 </div>
@@ -3180,8 +3180,8 @@ python3 index_data.py --filedir /mnt/tools --filename test_docs_music.jsonl --ho
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9090/v1/chat/completions \</span>
 <span class="go">    -X POST \</span>
-<span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;model&quot;: &quot;meta-llama/Llama-3.3-70B-Instruct&quot;,&quot;messages&quot;: &quot;How many albums does Iron Maiden have?&quot;}&#39;</span>
+<span class="go">    -H "Content-Type: application/json" \</span>
+<span class="go">    -d '{"model": "meta-llama/Llama-3.3-70B-Instruct","messages": "How many albums does Iron Maiden have?"}'</span>
 </pre></div>
 </div>
 </section>

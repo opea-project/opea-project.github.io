@@ -3146,9 +3146,9 @@
 </div>
 <p><strong><code class="docutils literal notranslate"><span class="pre">.env</span></code> file content:</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">wf_api_port</span><span class="o">=</span><span class="m">5000</span><span class="w">     </span><span class="c1"># workflow serving API port to use</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SDK_BASE_URL</span><span class="o">=</span>http://<span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>:<span class="si">${</span><span class="nv">wf_api_port</span><span class="si">}</span>/<span class="w">      </span><span class="c1"># The workflow server will use this example workflow API url</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SDK_BASE_URL</span><span class="o">=</span>http://<span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>:<span class="si">${</span><span class="nv">wf_api_port</span><span class="si">}</span>/<span class="w">      </span><span class="c1"># The workflow server will use this example workflow API url</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">SERVING_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">SERVING_TOKEN</span><span class="si">}</span><span class="w">           </span><span class="c1"># Authentication token. For example_workflow test, can be empty as no authentication required.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">llm_engine</span><span class="o">=</span><span class="si">${</span><span class="nv">llm_engine</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">llm_endpoint_url</span><span class="o">=</span><span class="si">${</span><span class="nv">llm_endpoint_url</span><span class="si">}</span>
@@ -3158,7 +3158,7 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span>
 
 <span class="c1"># LLM variables</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"mistralai/Mistral-7B-Instruct-v0.3"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">recursion_limit</span><span class="o">=</span><span class="si">${</span><span class="nv">recursion_limit</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">temperature</span><span class="o">=</span><span class="m">0</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">max_new_tokens</span><span class="o">=</span><span class="m">1000</span>
@@ -3210,7 +3210,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </div>
 <p>The following container should have started:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                              <span class="n">COMMAND</span>                  <span class="n">CREATED</span>          <span class="n">STATUS</span>          <span class="n">PORTS</span>                                     <span class="n">NAMES</span>
-<span class="n">b3e1388fa2ca</span>   <span class="n">opea</span><span class="o">/</span><span class="n">gent</span><span class="p">:</span><span class="n">latest</span>     <span class="s2">&quot;/bin/bash /start.sh&quot;</span>    <span class="mi">1</span> <span class="n">minute</span> <span class="n">ago</span>     <span class="n">Up</span> <span class="mi">1</span> <span class="n">minute</span>     <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">9090</span><span class="o">/</span><span class="n">tcp</span>                    <span class="n">workflowexec</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
+<span class="n">b3e1388fa2ca</span>   <span class="n">opea</span><span class="o">/</span><span class="n">gent</span><span class="p">:</span><span class="n">latest</span>     <span class="s2">"/bin/bash /start.sh"</span>    <span class="mi">1</span> <span class="n">minute</span> <span class="n">ago</span>     <span class="n">Up</span> <span class="mi">1</span> <span class="n">minute</span>     <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9090</span><span class="o">-&gt;</span><span class="mi">9090</span><span class="o">/</span><span class="n">tcp</span>                    <span class="n">workflowexec</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">endpoint</span>
 </pre></div>
 </div>
 <p>Also, ensure the manually launched <code class="docutils literal notranslate"><span class="pre">uvicorn</span></code> workflow server and your external LLM service are running. If any issues are encountered, check the service logs.</p>
@@ -3223,13 +3223,13 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </pre></div>
 </div>
 <p>Send a request to the agent:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set your workflow_id, which for the example is &#39;12345&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set your workflow_id, which for the example is '12345'</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">workflow_id</span><span class="o">=</span><span class="m">12345</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">     &quot;query&quot;: &quot;I have a data with gender Female, tenure 55, MonthlyAvgCharges 103.7. Predict if this entry will churn. My workflow id is &#39;</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="s1">&#39;.&quot;</span>
-<span class="s1">    }&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9090/v1/chat/completions<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">     "query": "I have a data with gender Female, tenure 55, MonthlyAvgCharges 103.7. Predict if this entry will churn. My workflow id is '</span><span class="si">${</span><span class="nv">workflow_id</span><span class="si">}</span><span class="s1">'."</span>
+<span class="s1">    }'</span>
 </pre></div>
 </div>
 <p>Update the <code class="docutils literal notranslate"><span class="pre">query</span></code> with the workflow parameters and workflow ID based on your workflow’s context.</p>

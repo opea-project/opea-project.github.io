@@ -3191,7 +3191,7 @@ Examples of deploy a workload:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export myrelease=mytgi
 export chartname=common/tgi
 helm dependency update $chartname
-helm install $myrelease $chartname --set global.HF_TOKEN=&quot;insert-your-huggingface-token-here&quot;
+helm install $myrelease $chartname --set global.HF_TOKEN="insert-your-huggingface-token-here"
 </pre></div>
 </div>
 <p>Depending on your environment, you may want to customize some of the options, see <a class="reference internal" href="#helm-charts-options"><span class="xref myst">Helm Charts Options</span></a> for further information.</p>
@@ -3262,7 +3262,7 @@ helm install myrelease oci://ghcr.io/opea-project/charts/${chartname}
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">nfs</span><span class="o">-</span><span class="n">kernel</span><span class="o">-</span><span class="n">server</span>
 <span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">nfspv</span> <span class="o">&amp;&amp;</span> <span class="n">sudo</span> <span class="n">chown</span> <span class="n">nobody</span><span class="p">:</span><span class="n">nogroup</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">nfspv</span> <span class="o">&amp;&amp;</span> <span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">777</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">nfspv</span>
-<span class="n">echo</span> <span class="s2">&quot;/data/nfspv 192.168.0.0/24(rw,sync,no_subtree_check)&quot;</span> <span class="o">|</span><span class="n">sudo</span> <span class="n">tee</span> <span class="o">-</span><span class="n">a</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">exports</span>
+<span class="n">echo</span> <span class="s2">"/data/nfspv 192.168.0.0/24(rw,sync,no_subtree_check)"</span> <span class="o">|</span><span class="n">sudo</span> <span class="n">tee</span> <span class="o">-</span><span class="n">a</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">exports</span>
 <span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">nfs</span><span class="o">-</span><span class="n">server</span>
 
 </pre></div>
@@ -3284,8 +3284,8 @@ helm install myrelease oci://ghcr.io/opea-project/charts/${chartname}
   <span class="n">persistentVolumeReclaimPolicy</span><span class="p">:</span> <span class="n">Retain</span>
   <span class="n">storageClassName</span><span class="p">:</span> <span class="n">nfs</span>
   <span class="n">nfs</span><span class="p">:</span>
-    <span class="n">path</span><span class="p">:</span> <span class="s2">&quot;/data/nfspv&quot;</span>
-    <span class="n">server</span><span class="p">:</span> <span class="s2">&quot;192.168.0.184&quot;</span>
+    <span class="n">path</span><span class="p">:</span> <span class="s2">"/data/nfspv"</span>
+    <span class="n">server</span><span class="p">:</span> <span class="s2">"192.168.0.184"</span>
     <span class="n">readOnly</span><span class="p">:</span> <span class="n">false</span>
 <span class="n">EOF</span>
 <span class="n">kubectl</span> <span class="n">apply</span> <span class="o">-</span><span class="n">f</span> <span class="n">nfspv</span><span class="o">.</span><span class="n">yaml</span>
@@ -3302,7 +3302,7 @@ helm install myrelease oci://ghcr.io/opea-project/charts/${chartname}
 <span class="n">spec</span><span class="p">:</span>
   <span class="n">accessModes</span><span class="p">:</span>
     <span class="o">-</span> <span class="n">ReadWriteMany</span>
-  <span class="n">storageClassName</span><span class="p">:</span> <span class="s2">&quot;nfs&quot;</span>
+  <span class="n">storageClassName</span><span class="p">:</span> <span class="s2">"nfs"</span>
   <span class="n">resources</span><span class="p">:</span>
     <span class="n">requests</span><span class="p">:</span>
       <span class="n">storage</span><span class="p">:</span> <span class="mi">100</span><span class="n">Gi</span>
@@ -3322,7 +3322,7 @@ helm install myrelease oci://ghcr.io/opea-project/charts/${chartname}
 If you have private hub, see the following examples.</p>
 <p>To use local Docker registry:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OPEA_IMAGE_REPO</span><span class="o">=</span><span class="mf">192.168.0.100</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span>
-<span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">name</span> <span class="s1">&#39;*values.yaml&#39;</span> <span class="o">-</span><span class="nb">type</span> <span class="n">f</span> <span class="o">-</span><span class="n">exec</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s#repository: opea/*#repository: $</span><span class="si">{OPEA_IMAGE_REPO}</span><span class="s2">opea/#g&quot;</span> <span class="p">{}</span> \<span class="p">;</span>
+<span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">name</span> <span class="s1">'*values.yaml'</span> <span class="o">-</span><span class="nb">type</span> <span class="n">f</span> <span class="o">-</span><span class="n">exec</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">"s#repository: opea/*#repository: $</span><span class="si">{OPEA_IMAGE_REPO}</span><span class="s2">opea/#g"</span> <span class="p">{}</span> \<span class="p">;</span>
 </pre></div>
 </div>
 </section>

@@ -3148,7 +3148,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-via-cli">
 <h3>Run via CLI<a class="headerlink" href="#run-via-cli" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;dataprep-arango-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">6007</span>:5000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ARANGODB_URL</span><span class="o">=</span><span class="s2">&quot;http://localhost:8529&quot;</span><span class="w"> </span>-e<span class="w"> </span>...<span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_DATAPREP_ARANGODB&quot;</span><span class="w"> </span>opea/dataprep:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"dataprep-arango-service"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">6007</span>:5000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ARANGODB_URL</span><span class="o">=</span><span class="s2">"http://localhost:8529"</span><span class="w"> </span>-e<span class="w"> </span>...<span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_DATAPREP_ARANGODB"</span><span class="w"> </span>opea/dataprep:latest
 </pre></div>
 </div>
 </section>
@@ -3165,23 +3165,23 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <h2>🚀Consume Dataprep Service<a class="headerlink" href="#consume-dataprep-service" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:6007/v1/health_check<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>An ArangoDB Graph is created from the documents provided to the microservice. The microservice will extract entities from the documents and create nodes and relationships in the graph based on the entities extracted. The microservice will also create embeddings for the documents if embedding environment variables are specified.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./file1.txt"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
 <p>By default, the microservice will create embeddings for the documents if embedding environment variables are specified.</p>
 <p>You can also specify the <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> and <code class="docutils literal notranslate"><span class="pre">chunk_overlap</span></code> with the following parameters:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_size=1500&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_overlap=100&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./file1.txt"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"chunk_size=1500"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"chunk_overlap=100"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
@@ -3192,10 +3192,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </ul>
 <p>Note: If you specify <code class="docutils literal notranslate"><span class="pre">&quot;table_strategy=llm&quot;</span></code>, you should first start the <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/third_parties/vllm">vLLM Service</a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./your_file.pdf&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;process_table=true&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;table_strategy=hq&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./your_file.pdf"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"process_table=true"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"table_strategy=hq"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
@@ -3267,7 +3267,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
         <span class="n">chunk_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="mi">1500</span><span class="p">),</span>
         <span class="n">chunk_overlap</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
         <span class="n">process_table</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">table_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="s2">&quot;fast&quot;</span><span class="p">),</span>
+        <span class="n">table_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="s2">"fast"</span><span class="p">),</span>
         <span class="n">graph_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
         <span class="n">insert_async</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
         <span class="n">insert_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>

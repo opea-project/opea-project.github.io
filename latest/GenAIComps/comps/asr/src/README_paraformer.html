@@ -3130,7 +3130,7 @@
 <section id="deploy-the-service">
 <h3>1.2. Deploy the Service<a class="headerlink" href="#deploy-the-service" title="Link to this heading">¶</a></h3>
 <p>Choose the command corresponding to your target platform.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:7066
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,<span class="nv">$no_proxy</span>
 </pre></div>
@@ -3150,9 +3150,9 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav
 curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">&quot;@./sample.wav&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;paraformer-zh&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">"@./sample.wav"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"paraformer-zh"</span>
 </pre></div>
 </div>
 </section>
@@ -3208,7 +3208,7 @@ curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span c
 </section>
 <section id="start-asr-service">
 <h4>2.3.2 Start ASR service<a class="headerlink" href="#start-asr-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 
 docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">9099</span>:9099<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:7066<span class="w"> </span>opea/asr:latest
 </pre></div>
@@ -3223,9 +3223,9 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="c1"># curl</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav
 curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">&quot;@./sample.wav&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;paraformer-zh&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">"@./sample.wav"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"paraformer-zh"</span>
 
 <span class="c1"># python</span>
 python<span class="w"> </span>check_asr_server.py

@@ -3161,11 +3161,11 @@ then you should also use the corresponding tag for GenAIComps. (v1.3 replace wit
 <li><h4 class="rubric" id="setting-the-list-of-images-for-the-build-from-the-build-file-yaml">Setting the list of images for the build (from the build file.yaml)</h4>
 <p>If you want to deploy a vLLM-based or TGI-based application, then the set of services is installed as follows:</p>
 <h4 class="rubric" id="vllm-based-application">vLLM-based application</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;visualqna visualqna-ui nginx lvm vllm-rocm&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">"visualqna visualqna-ui nginx lvm vllm-rocm"</span>
 </pre></div>
 </div>
 <h4 class="rubric" id="tgi-based-application">TGI-based application</h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">&quot;visualqna visualqna-ui nginx lvm&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">service_list</span><span class="o">=</span><span class="s2">"visualqna visualqna-ui nginx lvm"</span>
 </pre></div>
 </div>
 </li>
@@ -3254,8 +3254,8 @@ Use AMD GPU driver utilities to determine the correct <code class="docutils lite
 <h4>Setting variables in the operating system environment:<a class="headerlink" href="#setting-variables-in-the-operating-system-environment" title="Link to this heading">¶</a></h4>
 <section id="set-variable-hf-token">
 <h5>Set variable HF_TOKEN:<a class="headerlink" href="#set-variable-hf-token" title="Link to this heading">¶</a></h5>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string &#39;your_huggingfacehub_token&#39; with your HuggingFacehub repository access token.</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s1">&#39;your_huggingfacehub_token&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">### Replace the string 'your_huggingfacehub_token' with your HuggingFacehub repository access token.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s1">'your_huggingfacehub_token'</span>
 </pre></div>
 </div>
 </section>
@@ -3280,8 +3280,8 @@ Use AMD GPU driver utilities to determine the correct <code class="docutils lite
 </pre></div>
 </div>
 <p>If you are in a proxy environment, also set the proxy-related environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">"Your_HTTP_Proxy"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">"Your_HTTPs_Proxy"</span>
 </pre></div>
 </div>
 <p>Set the values of the variables:</p>
@@ -3377,36 +3377,36 @@ The values shown in the file set_env.sh or set_env_vllm they are the values used
 <h3>1. Validate the vLLM/TGI Service<a class="headerlink" href="#validate-the-vllm-tgi-service" title="Link to this heading">¶</a></h3>
 <section id="id10">
 <h4>If you use vLLM:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;model&quot;: &quot;Xkev/Llama-3.2V-11B-cot&quot;, &#39;</span><span class="se">\</span>
-<span class="s1">&#39;&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;: 256}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">'{"model": "Xkev/Llama-3.2V-11B-cot", '</span><span class="se">\</span>
+<span class="s1">'"messages": [{"role": "user", "content": "What is Deep Learning?"}], "max_tokens": 256}'</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VISUALQNA_VLLM_SERVICE_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$DATA</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>Checking the response from the service. The response should be similar to JSON:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chatcmpl-a3761920c4034131b3cab073b8e8b841&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;object&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;chat.completion&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1742959065</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chatcmpl-a3761920c4034131b3cab073b8e8b841"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"object"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chat.completion"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="mi">1742959065</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Intel/neural-chat-7b-v3-3"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"choices"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Deep Learning refers to a modern approach of Artificial Intelligence that aims to replicate the way human brains process information by teaching computers to learn from data without extensive programming&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="nt">"index"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"assistant"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">" Deep Learning refers to a modern approach of Artificial Intelligence that aims to replicate the way human brains process information by teaching computers to learn from data without extensive programming"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"tool_calls"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;finish_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;length&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;stop_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">      </span><span class="nt">"logprobs"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"finish_reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"length"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"stop_reason"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;prompt_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;completion_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;prompt_tokens_details&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;prompt_logprobs&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nt">"usage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"prompt_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="nt">"total_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="nt">"completion_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="nt">"prompt_tokens_details"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"prompt_logprobs"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3415,18 +3415,18 @@ then we consider the vLLM service to be successfully launched</p>
 </section>
 <section id="id11">
 <h4>If you use TGI:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&#39;</span><span class="se">\</span>
-<span class="s1">&#39;&quot;parameters&quot;:{&quot;max_new_tokens&quot;:256,&quot;do_sample&quot;: true}}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">'{"inputs":"What is Deep Learning?",'</span><span class="se">\</span>
+<span class="s1">'"parameters":{"max_new_tokens":256,"do_sample": true}}'</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VISUALQNA_TGI_SERVICE_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$DATA</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>Checking the response from the service. The response should be similar to JSON:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;generated_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\n\nDeep Learning is a subset of machine learning, which focuses on developing methods inspired by the functioning of the human brain; more specifically, the way it processes and acquires various types of knowledge and information. To enable deep learning, the networks are composed of multiple processing layers that form a hierarchy, with each layer learning more complex and abstraction levels of data representation.\n\nThe principle of Deep Learning is to emulate the structure of neurons in the human brain to construct artificial neural networks capable to accomplish complicated pattern recognition tasks more effectively and accurately. Therefore, these neural networks contain a series of hierarchical components, where units in earlier layers receive simple inputs and are activated by these inputs. The activation of the units in later layers are the results of multiple nonlinear transformations generated from reconstructing and integrating the information in previous layers. In other words, by combining various pieces of information at each layer, a Deep Learning network can extract the input features that best represent the structure of data, providing their outputs at the last layer or final level of abstraction.\n\nThe main idea of using these &#39;deep&#39; networks in contrast to regular algorithms is that they are capable of representing hierarchical relationships that exist within the data and learn these representations by&quot;</span>
+<span class="w">  </span><span class="nt">"generated_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"\n\nDeep Learning is a subset of machine learning, which focuses on developing methods inspired by the functioning of the human brain; more specifically, the way it processes and acquires various types of knowledge and information. To enable deep learning, the networks are composed of multiple processing layers that form a hierarchy, with each layer learning more complex and abstraction levels of data representation.\n\nThe principle of Deep Learning is to emulate the structure of neurons in the human brain to construct artificial neural networks capable to accomplish complicated pattern recognition tasks more effectively and accurately. Therefore, these neural networks contain a series of hierarchical components, where units in earlier layers receive simple inputs and are activated by these inputs. The activation of the units in later layers are the results of multiple nonlinear transformations generated from reconstructing and integrating the information in previous layers. In other words, by combining various pieces of information at each layer, a Deep Learning network can extract the input features that best represent the structure of data, providing their outputs at the last layer or final level of abstraction.\n\nThe main idea of using these 'deep' networks in contrast to regular algorithms is that they are capable of representing hierarchical relationships that exist within the data and learn these representations by"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3438,12 +3438,12 @@ then we consider the TGI service to be successfully launched</p>
 <h3>2. Validate the LVM Service<a class="headerlink" href="#validate-the-lvm-service" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VISUALQNA_LVM_PORT</span><span class="si">}</span>/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"image": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC", "prompt":"What is this?"}'</span>
 </pre></div>
 </div>
 <p>Checking the response from the service. The response should be similar to JSON:</p>
-<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;downstream_black_list&quot;:[],&quot;id&quot;:&quot;53fae0310461ce3e7cde5b0930bd3b92&quot;,&quot;text&quot;:&quot;&lt;SUMMARY&gt; I will analyze the image to determine its color and then provide a structured response using the specified format. &lt;/SUMMARY&gt;\n\n&lt;CAPTION&gt; The image is a solid block of color. It appears to be a bright, vibrant hue. &lt;/CAPTION&gt;\n\n&lt;REASONING&gt; To determine the color, I will observe the image&#39;s hue and saturation. The image is a uniform yellow color, which is a bright and noticeable shade. &lt;/REASONING&gt;\n\n&lt;CONCLUSION&gt; The image is a bright yellow color. &lt;/CONCLUSION&gt;&quot;}
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{"downstream_black_list":[],"id":"53fae0310461ce3e7cde5b0930bd3b92","text":"&lt;SUMMARY&gt; I will analyze the image to determine its color and then provide a structured response using the specified format. &lt;/SUMMARY&gt;\n\n&lt;CAPTION&gt; The image is a solid block of color. It appears to be a bright, vibrant hue. &lt;/CAPTION&gt;\n\n&lt;REASONING&gt; To determine the color, I will observe the image's hue and saturation. The image is a uniform yellow color, which is a bright and noticeable shade. &lt;/REASONING&gt;\n\n&lt;CONCLUSION&gt; The image is a bright yellow color. &lt;/CONCLUSION&gt;"}
 </pre></div>
 </div>
 <p>If the service response has a meaningful response in the value of the “choices.text” key,
@@ -3451,34 +3451,34 @@ then we consider the vLLM service to be successfully launched</p>
 </section>
 <section id="validate-the-megaservice">
 <h3>3. Validate the MegaService<a class="headerlink" href="#validate-the-megaservice" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;messages&quot;: [</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">'{</span>
+<span class="s1">    "messages": [</span>
 <span class="s1">      {</span>
-<span class="s1">        &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">        &quot;content&quot;: [</span>
+<span class="s1">        "role": "user",</span>
+<span class="s1">        "content": [</span>
 <span class="s1">          {</span>
-<span class="s1">            &quot;type&quot;: &quot;text&quot;,</span>
-<span class="s1">            &quot;text&quot;: &quot;What&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;s in this image?&quot;</span>
+<span class="s1">            "type": "text",</span>
+<span class="s1">            "text": "What'</span><span class="se">\'</span><span class="s1">'s in this image?"</span>
 <span class="s1">          },</span>
 <span class="s1">          {</span>
-<span class="s1">            &quot;type&quot;: &quot;image_url&quot;,</span>
-<span class="s1">            &quot;image_url&quot;: {</span>
-<span class="s1">              &quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;</span>
+<span class="s1">            "type": "image_url",</span>
+<span class="s1">            "image_url": {</span>
+<span class="s1">              "url": "https://www.ilankelman.org/stopsigns/australia.jpg"</span>
 <span class="s1">            }</span>
 <span class="s1">          }</span>
 <span class="s1">        ]</span>
 <span class="s1">      }</span>
 <span class="s1">    ],</span>
-<span class="s1">    &quot;max_tokens&quot;: 300</span>
-<span class="s1">    }&#39;</span>
+<span class="s1">    "max_tokens": 300</span>
+<span class="s1">    }'</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">VISUALQNA_BACKEND_SERVICE_PORT</span><span class="si">}</span>/v1/visualqna<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$DATA</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p>Checking the response from the service. The response should be similar to text:</p>
-<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;:&quot;chatcmpl-ML6oimVzQFmk5dgsAFDSKo&quot;,&quot;object&quot;:&quot;chat.completion&quot;,&quot;created&quot;:1743668853,&quot;model&quot;:&quot;visualqna&quot;,&quot;choices&quot;:[{&quot;index&quot;:0,&quot;message&quot;:{&quot;role&quot;:&quot;assistant&quot;,&quot;content&quot;:&quot;&lt;SUMMARY&gt; I will analyze the image to identify key elements and provide a structured response. The focus will be on identifying the main subject of the image. &lt;/SUMMARY&gt;\n\n&lt;CAPTION&gt; The image shows a street scene with a prominent red and white \&quot;STOP\&quot; sign in the foreground. In the background, there is a Chinese-style archway with red pillars and decorative elements. The archway is labeled with Chinese characters. &lt;/CAPTION&gt;\n\n&lt;REASONING&gt; To determine the main subject of the image, I will focus on the most visually striking and central elements. The \&quot;STOP\&quot; sign is clearly visible and stands out due to its color and position. The archway, while significant, is in the background and does not dominate the image as much as the \&quot;STOP\&quot; sign does. &lt;/REASONING&gt;\n\n&lt;CONCLUSION&gt; Stop sign. &lt;/CONCLUSION&gt;&quot;},&quot;finish_reason&quot;:&quot;stop&quot;,&quot;metadata&quot;:null}],&quot;usage&quot;:{&quot;prompt_tokens&quot;:0,&quot;total_tokens&quot;:0,&quot;completion_tokens&quot;:0}}
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>{"id":"chatcmpl-ML6oimVzQFmk5dgsAFDSKo","object":"chat.completion","created":1743668853,"model":"visualqna","choices":[{"index":0,"message":{"role":"assistant","content":"&lt;SUMMARY&gt; I will analyze the image to identify key elements and provide a structured response. The focus will be on identifying the main subject of the image. &lt;/SUMMARY&gt;\n\n&lt;CAPTION&gt; The image shows a street scene with a prominent red and white \"STOP\" sign in the foreground. In the background, there is a Chinese-style archway with red pillars and decorative elements. The archway is labeled with Chinese characters. &lt;/CAPTION&gt;\n\n&lt;REASONING&gt; To determine the main subject of the image, I will focus on the most visually striking and central elements. The \"STOP\" sign is clearly visible and stands out due to its color and position. The archway, while significant, is in the background and does not dominate the image as much as the \"STOP\" sign does. &lt;/REASONING&gt;\n\n&lt;CONCLUSION&gt; Stop sign. &lt;/CONCLUSION&gt;"},"finish_reason":"stop","metadata":null}],"usage":{"prompt_tokens":0,"total_tokens":0,"completion_tokens":0}}
 </pre></div>
 </div>
 <p>If the output lines in the “choices.text” keys contain words (tokens) containing meaning, then the service is considered launched successfully.</p>

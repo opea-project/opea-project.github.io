@@ -3120,7 +3120,7 @@ It enables us to host our own reranker endpoint seamlessly.</p>
 <ul>
 <li><p>For Gaudi HPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">"BAAI/bge-reranker-base"</span>
 <span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">volume</span><span class="o">=</span><span class="nv">$PWD</span>/data
 
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">12005</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$volume</span>:/data<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>-e<span class="w"> </span><span class="nv">MAX_WARMUP_SEQUENCE_LENGTH</span><span class="o">=</span><span class="m">512</span><span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>ghcr.io/huggingface/tei-gaudi:latest<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$RERANK_MODEL_ID</span><span class="w"> </span>--hf-api-token<span class="w"> </span><span class="nv">$HF_TOKEN</span><span class="w"> </span>--auto-truncate
@@ -3129,7 +3129,7 @@ It enables us to host our own reranker endpoint seamlessly.</p>
 </li>
 <li><p>For Xeon CPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">"BAAI/bge-reranker-base"</span>
 <span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">volume</span><span class="o">=</span><span class="nv">$PWD</span>/data
 
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">12005</span>:80<span class="w"> </span>-v<span class="w"> </span><span class="nv">$volume</span>:/data<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--pull<span class="w"> </span>always<span class="w"> </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$RERANK_MODEL_ID</span><span class="w"> </span>--hf-api-token<span class="w"> </span><span class="nv">$HF_TOKEN</span><span class="w"> </span>--auto-truncate
@@ -3140,11 +3140,11 @@ It enables us to host our own reranker endpoint seamlessly.</p>
 <ol class="arabic" start="2">
 <li><p><strong>Verify the TEI Service</strong>:</p>
 <p>Run the following command to check if the service is up and running.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="w">  </span>curl<span class="w"> </span><span class="nv">$host_ip</span>:12005/rerank<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">      </span>-d<span class="w"> </span><span class="s1">'{"query":"What is Deep Learning?", "texts": ["Deep Learning is not...", "Deep learning is..."]}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
@@ -3166,10 +3166,10 @@ It enables us to host our own reranker endpoint seamlessly.</p>
 <li><p>Run the reranking microservice and connect it to the TEI service:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_PORT</span><span class="o">=</span><span class="m">12005</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">"</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;reranking-tei-server&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True<span class="w">  </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_RERANKING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w">  </span>-e<span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_TEI_RERANKING&quot;</span><span class="w">  </span>opea/reranking:comps
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"reranking-tei-server"</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LOGFLAG</span><span class="o">=</span>True<span class="w">  </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="nv">$TEI_RERANKING_ENDPOINT</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w">  </span>-e<span class="w"> </span><span class="nv">RERANK_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_TEI_RERANKING"</span><span class="w">  </span>opea/reranking:comps
 </pre></div>
 </div>
 </li>
@@ -3182,11 +3182,11 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <p>🔹 Steps:</p>
 <ol class="arabic">
 <li><p>Set environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-reranker-base&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_MODEL_ID</span><span class="o">=</span><span class="s2">"BAAI/bge-reranker-base"</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_PORT</span><span class="o">=</span><span class="m">12005</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">RERANK_PORT</span><span class="o">=</span><span class="m">8000</span>
-<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TEI_RERANKING_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TEI_RERANKING_PORT</span><span class="si">}</span><span class="s2">"</span>
 <span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span>comps
 </pre></div>
 </div>
@@ -3219,7 +3219,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <li><p>Verify the reranking service is running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>curl<span class="w"> </span>http://localhost:8000/v1/health_check<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
@@ -3231,8 +3231,8 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <li><p>Execute reranking process by providing query and documents</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8000/v1/reranking<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"initial_query":"What is Deep Learning?", "retrieved_docs": [{"text":"Deep Learning is not..."}, {"text":"Deep learning is..."}]}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -3240,8 +3240,8 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:8000/v1/reranking<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;initial_query&quot;:&quot;What is Deep Learning?&quot;, &quot;retrieved_docs&quot;: [{&quot;text&quot;:&quot;Deep Learning is not...&quot;}, {&quot;text&quot;:&quot;Deep learning is...&quot;}], &quot;top_n&quot;:2}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"initial_query":"What is Deep Learning?", "retrieved_docs": [{"text":"Deep Learning is not..."}, {"text":"Deep learning is..."}], "top_n":2}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>

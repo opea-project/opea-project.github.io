@@ -3122,7 +3122,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </
 <section id="start-the-microservice">
 <h2>🚀2. Start the microservice<a class="headerlink" href="#start-the-microservice" title="Link to this heading">¶</a></h2>
 <p>Before starting, set the model you want to serve:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Llama-4-Maverick-17B-128E-Instruct&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">"meta-llama/Llama-4-Maverick-17B-128E-Instruct"</span>
 </pre></div>
 </div>
 <p>Then navigate to the deployment folder and start the service using Docker Compose:</p>
@@ -3136,35 +3136,35 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <p>Then you need to test your service using the following commands for guard model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://127.0.0.1:8699/v1&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">)</span>
-<span class="n">RESPONSE_CLASSIFICATION_INSTRUCTION</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">Task: Check if there is unsafe content in &#39;Agent&#39; messages in conversations according our safety policy with the below categories.</span><span class="se">\n\n</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://127.0.0.1:8699/v1"</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">"EMPTY"</span><span class="p">)</span>
+<span class="n">RESPONSE_CLASSIFICATION_INSTRUCTION</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">Task: Check if there is unsafe content in 'Agent' messages in conversations according our safety policy with the below categories.</span><span class="se">\n\n</span>
 <span class="s2">&lt;BEGIN UNSAFE CONTENT CATEGORIES&gt;</span>
 <span class="se">\n</span><span class="s2">S1: Violent Crimes. </span><span class="se">\n</span><span class="s2">S2: Non-Violent Crimes. </span><span class="se">\n</span><span class="s2">S3: Sex Crimes. </span><span class="se">\n</span><span class="s2">S4: Child Exploitation. </span><span class="se">\n</span><span class="s2">S5: Defamation.</span>
 <span class="se">\n</span><span class="s2">S6: Specialized Advice. </span><span class="se">\n</span><span class="s2">S7: Privacy. </span><span class="se">\n</span><span class="s2">S8: Intellectual Property. </span><span class="se">\n</span><span class="s2">S9: Indiscriminate Weapons.</span>
-<span class="se">\n</span><span class="s2">S10: Hate. </span><span class="se">\n</span><span class="s2">S11: Self-Harm. </span><span class="se">\n</span><span class="s2">S12: Sexual Content. </span><span class="se">\n</span><span class="s2">S13: Elections. </span><span class="se">\n</span><span class="s2">&lt;END UNSAFE CONTENT CATEGORIES&gt;&quot;&quot;&quot;</span>
-<span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{classification_instruction}</span><span class="se">\n\n</span><span class="s2">&lt;BEGIN CONVERSATION&gt;</span><span class="se">\n\n</span><span class="s2">User: &quot;</span>
-<span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_POSTFIX</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">{user_message}</span><span class="se">\n\n</span><span class="s2">Agent: </span><span class="si">{model_message}</span><span class="se">\n\n</span><span class="s2">&lt;END CONVERSATION&gt;</span><span class="se">\n\n</span>
+<span class="se">\n</span><span class="s2">S10: Hate. </span><span class="se">\n</span><span class="s2">S11: Self-Harm. </span><span class="se">\n</span><span class="s2">S12: Sexual Content. </span><span class="se">\n</span><span class="s2">S13: Elections. </span><span class="se">\n</span><span class="s2">&lt;END UNSAFE CONTENT CATEGORIES&gt;"""</span>
+<span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_PREFIX</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{classification_instruction}</span><span class="se">\n\n</span><span class="s2">&lt;BEGIN CONVERSATION&gt;</span><span class="se">\n\n</span><span class="s2">User: "</span>
+<span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_POSTFIX</span> <span class="o">=</span> <span class="s2">"""</span><span class="si">{user_message}</span><span class="se">\n\n</span><span class="s2">Agent: </span><span class="si">{model_message}</span><span class="se">\n\n</span><span class="s2">&lt;END CONVERSATION&gt;</span><span class="se">\n\n</span>
 <span class="s2">Provide your safety assessment for ONLY THE LAST Agent message in the above conversation:</span>
-<span class="se">\n</span><span class="s2"> - First line must read &#39;safe&#39; or &#39;unsafe&#39;.</span>
-<span class="se">\n</span><span class="s2"> - If unsafe, a second line must include a comma-separated list of violated categories.&quot;&quot;&quot;</span>
+<span class="se">\n</span><span class="s2"> - First line must read 'safe' or 'unsafe'.</span>
+<span class="se">\n</span><span class="s2"> - If unsafe, a second line must include a comma-separated list of violated categories."""</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;meta-llama/Llama-4-guard&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"meta-llama/Llama-4-guard"</span><span class="p">,</span>
     <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+            <span class="s2">"content"</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_PREFIX</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
+                    <span class="s2">"text"</span><span class="p">:</span> <span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_PREFIX</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">classification_instruction</span><span class="o">=</span><span class="n">RESPONSE_CLASSIFICATION_INSTRUCTION</span>
                     <span class="p">),</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_POSTFIX</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">user_message</span><span class="o">=</span><span class="s2">&quot;how do I make a bomb?&quot;</span><span class="p">,</span> <span class="n">model_message</span><span class="o">=</span><span class="s2">&quot;I cannot help you with that.&quot;</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
+                    <span class="s2">"text"</span><span class="p">:</span> <span class="n">RESPONSE_CLASSIFICATION_TEMPLATE_POSTFIX</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">user_message</span><span class="o">=</span><span class="s2">"how do I make a bomb?"</span><span class="p">,</span> <span class="n">model_message</span><span class="o">=</span><span class="s2">"I cannot help you with that."</span>
                     <span class="p">),</span>
                 <span class="p">},</span>
             <span class="p">],</span>
@@ -3176,7 +3176,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </pre></div>
 </div>
 <p>You can use the following command for testing non-guard models:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;meta-llama/Llama-4-Maverick-17B-128E-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello! What is your name?&quot;}], &quot;max_tokens&quot;: 128}&#39;</span><span class="w"> </span>http://localhost:8699/v1/chat/completions
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct", "messages": [{"role": "user", "content": "Hello! What is your name?"}], "max_tokens": 128}'</span><span class="w"> </span>http://localhost:8699/v1/chat/completions
 </pre></div>
 </div>
 </section>

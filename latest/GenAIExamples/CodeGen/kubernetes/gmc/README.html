@@ -3161,11 +3161,11 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the desired namespace</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">APP_NAMESPACE</span><span class="o">=</span>codegen-app
 
-<span class="c1"># Create the namespace if it doesn&#39;t exist</span>
+<span class="c1"># Create the namespace if it doesn't exist</span>
 kubectl<span class="w"> </span>create<span class="w"> </span>ns<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 
-<span class="c1"># (Optional) Update the namespace within the chosen YAML file if it&#39;s not parameterized</span>
-<span class="c1"># sed -i &quot;s|namespace: codegen|namespace: $APP_NAMESPACE|g&quot; ./codegen_xeon.yaml</span>
+<span class="c1"># (Optional) Update the namespace within the chosen YAML file if it's not parameterized</span>
+<span class="c1"># sed -i "s|namespace: codegen|namespace: $APP_NAMESPACE|g" ./codegen_xeon.yaml</span>
 
 <span class="c1"># Apply the GMC configuration file to the chosen namespace</span>
 kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>./codegen_xeon.yaml<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span>
@@ -3199,14 +3199,14 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <h3>2. Get Service URL<a class="headerlink" href="#get-service-url" title="Link to this heading">¶</a></h3>
 <p>Retrieve the access URL exposed by the GMC for the CodeGen application.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the client pod name</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_POD</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>client-test<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[0].metadata.name}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_POD</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>client-test<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.items[0].metadata.name}'</span><span class="k">)</span>
 
-<span class="c1"># Get the access URL provided by the &#39;codegen&#39; GMC resource</span>
-<span class="c1"># Adjust &#39;codegen&#39; if the metadata.name in your YAML is different</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ACCESS_URL</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>gmc<span class="w"> </span>codegen<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.accessUrl}&#39;</span><span class="k">)</span>
+<span class="c1"># Get the access URL provided by the 'codegen' GMC resource</span>
+<span class="c1"># Adjust 'codegen' if the metadata.name in your YAML is different</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ACCESS_URL</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>gmc<span class="w"> </span>codegen<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.accessUrl}'</span><span class="k">)</span>
 
 <span class="c1"># Display the URL (optional)</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access URL: </span><span class="nv">$ACCESS_URL</span><span class="s2">&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Access URL: </span><span class="nv">$ACCESS_URL</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p><em>Note: The <code class="docutils literal notranslate"><span class="pre">accessUrl</span></code> typically points to the internal Kubernetes service endpoint for the gateway service defined in the GMC configuration.</em></p>
@@ -3215,13 +3215,13 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <h3>3. Send Test Request<a class="headerlink" href="#send-test-request" title="Link to this heading">¶</a></h3>
 <p>Use the test client pod to send a <code class="docutils literal notranslate"><span class="pre">curl</span></code> request to the CodeGen service endpoint.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the payload</span>
-<span class="nv">PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;messages&quot;: &quot;def print_hello_world():&quot;}&#39;</span>
+<span class="nv">PAYLOAD</span><span class="o">=</span><span class="s1">'{"messages": "def print_hello_world():"}'</span>
 
 <span class="c1"># Execute curl from the client pod</span>
-kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CLIENT_POD</span><span class="s2">&quot;</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>--no-buffer<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ACCESS_URL</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CLIENT_POD</span><span class="s2">"</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>--no-buffer<span class="w"> </span><span class="s2">"</span><span class="nv">$ACCESS_URL</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$PAYLOAD</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p><strong>Expected Output:</strong> A stream of JSON data containing the generated code, similar to the Docker Compose validation, ending with a <code class="docutils literal notranslate"><span class="pre">[DONE]</span></code> marker if streaming is enabled.</p>

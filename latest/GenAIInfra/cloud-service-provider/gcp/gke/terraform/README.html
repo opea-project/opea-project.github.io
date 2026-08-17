@@ -3146,8 +3146,8 @@
 <h2>Update your opea-chatqna.tfvars file<a class="headerlink" href="#update-your-opea-chatqna-tfvars-file" title="Link to this heading">¶</a></h2>
 <p>Replace the values in your opea-chatqna.tfvars file with your project_id, cluster_name and region. Terraform will use these values to target your project when provisioning your resources. Your opea-chatqna.tfvars file should look like the following.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="c1"># opea-chatqna.tfvars</span>
-<span class="w">  </span><span class="nv">project_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;REPLACE_ME&quot;</span>
-<span class="w">  </span><span class="nv">region</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;us-central1&quot;</span>
+<span class="w">  </span><span class="nv">project_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPLACE_ME"</span>
+<span class="w">  </span><span class="nv">region</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">"us-central1"</span>
 </pre></div>
 </div>
 <p>You can find the project your gcloud is configured to with this command.</p>
@@ -3174,11 +3174,11 @@
 <h3>ChatQnA<a class="headerlink" href="#chatqna" title="Link to this heading">¶</a></h3>
 <p>Use the commands below to create GKE cluster.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>terraform<span class="w"> </span>plan<span class="w"> </span>--var-file<span class="w"> </span>opea-chatqna.tfvars<span class="w"> </span>-out<span class="w"> </span>opea-chatqna.plan
-terraform<span class="w"> </span>apply<span class="w"> </span><span class="s2">&quot;opea-chatqna.plan&quot;</span>
+terraform<span class="w"> </span>apply<span class="w"> </span><span class="s2">"opea-chatqna.plan"</span>
 </pre></div>
 </div>
 <p>Once the cluster is ready, update kubectl config</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcloud<span class="w"> </span>container<span class="w"> </span>clusters<span class="w"> </span>get-credentials<span class="w"> </span><span class="s2">&quot;cluster_name&quot;</span>-gke<span class="w"> </span>--region<span class="w"> </span>us-central1<span class="w"> </span>--project<span class="w"> </span><span class="s2">&quot;project_id&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcloud<span class="w"> </span>container<span class="w"> </span>clusters<span class="w"> </span>get-credentials<span class="w"> </span><span class="s2">"cluster_name"</span>-gke<span class="w"> </span>--region<span class="w"> </span>us-central1<span class="w"> </span>--project<span class="w"> </span><span class="s2">"project_id"</span>
 </pre></div>
 </div>
 <p>Now you should have access to the cluster via the <code class="docutils literal notranslate"><span class="pre">kubectl</span></code> command.</p>
@@ -3195,10 +3195,10 @@ terraform<span class="w"> </span>apply<span class="w"> </span><span class="s2">&
 </pre></div>
 </div>
 <p>You can now start using the OPEA application.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">OPEA_SERVICE</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>chatqna<span class="w"> </span>chatqna<span class="w"> </span>-ojsonpath<span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].hostname}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">OPEA_SERVICE</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>chatqna<span class="w"> </span>chatqna<span class="w"> </span>-ojsonpath<span class="o">=</span><span class="s1">'{.status.loadBalancer.ingress[0].hostname}'</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">OPEA_SERVICE</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"messages": "What is the revenue of Nike in 2023?"}'</span>
 </pre></div>
 </div>
 <p>Cleanup</p>

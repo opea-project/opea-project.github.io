@@ -3179,25 +3179,25 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="test-the-pipeline">
 <h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the Translation service are running, test the pipeline using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Chinese&quot;,&quot;language_to&quot;: &quot;English&quot;,&quot;source_language&quot;: &quot;我爱机器翻译。&quot;}&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA</span><span class="o">=</span><span class="s1">'{"language_from": "Chinese","language_to": "English","source_language": "我爱机器翻译。"}'</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRANSLATION_LLM_SERVICE_PORT</span><span class="si">}</span>/v1/translation<span class="w">  </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$DATA</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>Checking the response from the service. The response should be similar to JSON:</p>
-<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; I&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+<div class="highlight-textmate notranslate"><div class="highlight"><pre><span></span>data: {"id":"","choices":[{"finish_reason":"","index":0,"logprobs":null,"text":" I"}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":null}
 
-data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; love&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+data: {"id":"","choices":[{"finish_reason":"","index":0,"logprobs":null,"text":" love"}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":null}
 
-data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; machine&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+data: {"id":"","choices":[{"finish_reason":"","index":0,"logprobs":null,"text":" machine"}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":null}
 
-data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot; translation&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+data: {"id":"","choices":[{"finish_reason":"","index":0,"logprobs":null,"text":" translation"}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":null}
 
-data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;.&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:null}
+data: {"id":"","choices":[{"finish_reason":"","index":0,"logprobs":null,"text":"."}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":null}
 
-data: {&quot;id&quot;:&quot;&quot;,&quot;choices&quot;:[{&quot;finish_reason&quot;:&quot;eos_token&quot;,&quot;index&quot;:0,&quot;logprobs&quot;:null,&quot;text&quot;:&quot;&lt;/s&gt;&quot;}],&quot;created&quot;:1743062099,&quot;model&quot;:&quot;haoranxu/ALMA-13B&quot;,&quot;object&quot;:&quot;text_completion&quot;,&quot;system_fingerprint&quot;:&quot;2.3.1-sha-a094729-rocm&quot;,&quot;usage&quot;:{&quot;completion_tokens&quot;:6,&quot;prompt_tokens&quot;:3071,&quot;total_tokens&quot;:3077,&quot;completion_tokens_details&quot;:null,&quot;prompt_tokens_details&quot;:null}}
+data: {"id":"","choices":[{"finish_reason":"eos_token","index":0,"logprobs":null,"text":"&lt;/s&gt;"}],"created":1743062099,"model":"haoranxu/ALMA-13B","object":"text_completion","system_fingerprint":"2.3.1-sha-a094729-rocm","usage":{"completion_tokens":6,"prompt_tokens":3071,"total_tokens":3077,"completion_tokens_details":null,"prompt_tokens_details":null}}
 
 data: [DONE]
 </pre></div>

@@ -3139,25 +3139,25 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </li>
 <li><p>Send request to application</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_POD</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>client-test<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">={</span>.items..metadata.name<span class="o">}</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">accessUrl</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>gmc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.items[?(@.metadata.name==&#39;visualqna&#39;)].status.accessUrl}&quot;</span><span class="k">)</span>
-kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CLIENT_POD</span><span class="s2">&quot;</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: [</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">accessUrl</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>gmc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">"{.items[?(@.metadata.name=='visualqna')].status.accessUrl}"</span><span class="k">)</span>
+kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">"</span><span class="nv">$CLIENT_POD</span><span class="s2">"</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$APP_NAMESPACE</span><span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span><span class="nv">$accessUrl</span><span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"messages": [</span>
 <span class="s1">   {</span>
-<span class="s1">     &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">     &quot;content&quot;: [</span>
+<span class="s1">     "role": "user",</span>
+<span class="s1">     "content": [</span>
 <span class="s1">       {</span>
-<span class="s1">         &quot;type&quot;: &quot;text&quot;,</span>
-<span class="s1">         &quot;text&quot;: &quot;What&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;s in this image?&quot;</span>
+<span class="s1">         "type": "text",</span>
+<span class="s1">         "text": "What'</span><span class="se">\'</span><span class="s1">'s in this image?"</span>
 <span class="s1">       },</span>
 <span class="s1">       {</span>
-<span class="s1">         &quot;type&quot;: &quot;image_url&quot;,</span>
-<span class="s1">         &quot;image_url&quot;: {</span>
-<span class="s1">           &quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;</span>
+<span class="s1">         "type": "image_url",</span>
+<span class="s1">         "image_url": {</span>
+<span class="s1">           "url": "https://www.ilankelman.org/stopsigns/australia.jpg"</span>
 <span class="s1">         }</span>
 <span class="s1">       }</span>
 <span class="s1">     ]</span>
 <span class="s1">   }</span>
 <span class="s1"> ],</span>
-<span class="s1"> &quot;max_tokens&quot;: 128}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$LOG_PATH</span>/gmc_visualqna.log
+<span class="s1"> "max_tokens": 128}'</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$LOG_PATH</span>/gmc_visualqna.log
 </pre></div>
 </div>
 </li>

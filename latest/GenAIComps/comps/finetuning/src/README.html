@@ -3132,7 +3132,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 <section id="start-ray-cluster">
 <h4>1.2.1 Start Ray Cluster<a class="headerlink" href="#start-ray-cluster" title="Link to this heading">¶</a></h4>
 <p>OneCCL and Intel MPI libraries should be dynamically linked in every node before Ray starts:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import oneccl_bindings_for_pytorch as torch_ccl; print(torch_ccl.cwd)&quot;</span><span class="k">)</span>/env/setvars.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import oneccl_bindings_for_pytorch as torch_ccl; print(torch_ccl.cwd)"</span><span class="k">)</span>/env/setvars.sh
 </pre></div>
 </div>
 <p>Start Ray locally using the following command.</p>
@@ -3140,15 +3140,15 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 </pre></div>
 </div>
 <p>For a multi-node cluster, start additional Ray worker nodes with below command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">&#39;${head_node_ip}:6379&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">'${head_node_ip}:6379'</span>
 </pre></div>
 </div>
 </section>
 <section id="start-finetuning-service">
 <h4>1.2.2 Start Finetuning Service<a class="headerlink" href="#start-finetuning-service" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_huggingface_token</span><span class="si">}</span>
-<span class="c1"># export FINETUNING_COMPONENT_NAME=&quot;which component you want to run&quot;</span>
-<span class="c1"># export FINETUNING_COMPONENT_NAME=&quot;OPEA_FINETUNING&quot; or export FINETUNING_COMPONENT_NAME=&quot;XTUNE_FINETUNING&quot;</span>
+<span class="c1"># export FINETUNING_COMPONENT_NAME="which component you want to run"</span>
+<span class="c1"># export FINETUNING_COMPONENT_NAME="OPEA_FINETUNING" or export FINETUNING_COMPONENT_NAME="XTUNE_FINETUNING"</span>
 python<span class="w"> </span>opea_finetuning_microservice.py
 </pre></div>
 </div>
@@ -3171,7 +3171,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <section id="run-docker-with-cli">
 <h4>2.1.2 Run Docker with CLI<a class="headerlink" href="#run-docker-with-cli" title="Link to this heading">¶</a></h4>
 <p>Start docker container with below command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;finetuning-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">8015</span>:8015<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/finetuning:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"finetuning-server"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">8015</span>:8015<span class="w"> </span>--runtime<span class="o">=</span>runc<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/finetuning:latest
 </pre></div>
 </div>
 <p>Or use docker compose with below command:</p>
@@ -3217,7 +3217,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>3.1 Upload a training file<a class="headerlink" href="#upload-a-training-file" title="Link to this heading">¶</a></h3>
 <p>Download a training file, such as <code class="docutils literal notranslate"><span class="pre">alpaca_data.json</span></code> for instruction tuning and upload it to the server with below command, this file can be downloaded in <a class="reference external" href="https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json">here</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># upload a training file</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@./alpaca_data.json&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@./alpaca_data.json"</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">"fine-tune"</span>
 </pre></div>
 </div>
 <p>For reranking and embedding models finetuning, the training file <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/blob/1.1/examples/finetune/toy_finetune_data.jsonl">toy_finetune_data.jsonl</a> is an toy example.</p>
@@ -3230,11 +3230,11 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;alpaca_data.json&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;meta-llama/Llama-2-7b-chat-hf&quot;</span>
-<span class="s1">  }&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "alpaca_data.json",</span>
+<span class="s1">    "model": "meta-llama/Llama-2-7b-chat-hf"</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>
@@ -3244,15 +3244,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;toy_finetune_data.jsonl&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;BAAI/bge-reranker-large&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;rerank&quot;,</span>
-<span class="s1">      &quot;lora_config&quot;:null</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "toy_finetune_data.jsonl",</span>
+<span class="s1">    "model": "BAAI/bge-reranker-large",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"rerank",</span>
+<span class="s1">      "lora_config":null</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>
@@ -3262,34 +3262,34 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;toy_finetune_data.jsonl&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;BAAI/bge-base-en-v1.5&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;embedding&quot;,</span>
-<span class="s1">      &quot;lora_config&quot;:null</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "toy_finetune_data.jsonl",</span>
+<span class="s1">    "model": "BAAI/bge-base-en-v1.5",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"embedding",</span>
+<span class="s1">      "lora_config":null</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 
 
-<span class="c1"># If training on Gaudi2, we need to set --padding &quot;max_length&quot; and the value of --query_max_len is same with --passage_max_len for static shape during training. For example:</span>
+<span class="c1"># If training on Gaudi2, we need to set --padding "max_length" and the value of --query_max_len is same with --passage_max_len for static shape during training. For example:</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;toy_finetune_data.jsonl&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;BAAI/bge-base-en-v1.5&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;embedding&quot;,</span>
-<span class="s1">      &quot;lora_config&quot;:null</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "toy_finetune_data.jsonl",</span>
+<span class="s1">    "model": "BAAI/bge-base-en-v1.5",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"embedding",</span>
+<span class="s1">      "lora_config":null</span>
 <span class="s1">    },</span>
-<span class="s1">    &quot;Dataset&quot;:{</span>
-<span class="s1">      &quot;query_max_len&quot;:128,</span>
-<span class="s1">      &quot;passage_max_len&quot;:128,</span>
-<span class="s1">      &quot;padding&quot;:&quot;max_length&quot;</span>
+<span class="s1">    "Dataset":{</span>
+<span class="s1">      "query_max_len":128,</span>
+<span class="s1">      "passage_max_len":128,</span>
+<span class="s1">      "padding":"max_length"</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>
@@ -3299,20 +3299,20 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;test_data.json&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;meta-llama/Llama-2-7b-hf&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;pretraining&quot;,</span>
-<span class="s1">      &quot;lora_config&quot;:null</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "test_data.json",</span>
+<span class="s1">    "model": "meta-llama/Llama-2-7b-hf",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"pretraining",</span>
+<span class="s1">      "lora_config":null</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 <p>Below is an example for the format of the pretraining dataset:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A girl with a blue tank top sitting watching three dogs.&quot;</span><span class="p">}</span>
-<span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A boy with a blue tank top sitting watching three dogs.&quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A girl with a blue tank top sitting watching three dogs."</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A boy with a blue tank top sitting watching three dogs."</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -3322,19 +3322,19 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;test_data.jsonl&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;meta-llama/Llama-2-7b-hf&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;dpo&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "test_data.jsonl",</span>
+<span class="s1">    "model": "meta-llama/Llama-2-7b-hf",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"dpo"</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 <p>Below is an example for the format of the DPO dataset:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You will be given a definition of a task first, then some input of the task.\nThis task is about using the specified sentence and converting the sentence to Resource Description Framework (RDF) triplets of the form (subject, predicate object). The RDF triplets generated must be such that the triplets accurately capture the structure and semantics of the input sentence. The input is a sentence and the output is a list of triplets of the form [subject, predicate, object] that capture the relationships present in the sentence. When a sentence has more than 1 RDF triplet possible, the output must contain all of them.\n\nAFC Ajax (amateurs)&#39;s ground is Sportpark De Toekomst where Ajax Youth Academy also play.\nOutput:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\n  [\&quot;AFC Ajax (amateurs)\&quot;, \&quot;has ground\&quot;, \&quot;Sportpark De Toekomst\&quot;],\n  [\&quot;Ajax Youth Academy\&quot;, \&quot;plays at\&quot;, \&quot;Sportpark De Toekomst\&quot;]\n]&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Sure, I&#39;d be happy to help! Here are the RDF triplets for the input sentence:\n\n[AFC Ajax (amateurs), hasGround, Sportpark De Toekomst]\n[Ajax Youth Academy, playsAt, Sportpark De Toekomst]\n\nExplanation:\n\n* AFC Ajax (amateurs) is the subject of the first triplet, and hasGround is the predicate that describes the relationship between AFC Ajax (amateurs) and Sportpark De Toekomst.\n* Ajax Youth Academy is the subject of the second triplet, and playsAt is the predicate that describes the relationship between Ajax Youth Academy and Sportpark De Toekomst.\n\nNote that there may be other possible RDF triplets that could be derived from the input sentence, but the above triplets capture the main relationships present in the sentence.&quot;</span><span class="p">}</span>
-<span class="p">{</span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You are an AI assistant. You will be given a task. You must generate a detailed and long answer.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Generate an approximately fifteen-word sentence that describes all this data: Midsummer House eatType restaurant; Midsummer House food Chinese; Midsummer House priceRange moderate; Midsummer House customer rating 3 out of 5; Midsummer House near All Bar One&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Midsummer House is a moderately priced Chinese restaurant with a 3/5 customer rating, located near All Bar One.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot; Sure! Here&#39;s a sentence that describes all the data you provided:\n\n\&quot;Midsummer House is a moderately priced Chinese restaurant with a customer rating of 3 out of 5, located near All Bar One, offering a variety of delicious dishes.\&quot;&quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You will be given a definition of a task first, then some input of the task.\nThis task is about using the specified sentence and converting the sentence to Resource Description Framework (RDF) triplets of the form (subject, predicate object). The RDF triplets generated must be such that the triplets accurately capture the structure and semantics of the input sentence. The input is a sentence and the output is a list of triplets of the form [subject, predicate, object] that capture the relationships present in the sentence. When a sentence has more than 1 RDF triplet possible, the output must contain all of them.\n\nAFC Ajax (amateurs)'s ground is Sportpark De Toekomst where Ajax Youth Academy also play.\nOutput:"</span><span class="p">,</span><span class="w"> </span><span class="nt">"chosen"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[\n  [\"AFC Ajax (amateurs)\", \"has ground\", \"Sportpark De Toekomst\"],\n  [\"Ajax Youth Academy\", \"plays at\", \"Sportpark De Toekomst\"]\n]"</span><span class="p">,</span><span class="w"> </span><span class="nt">"rejected"</span><span class="p">:</span><span class="w"> </span><span class="s2">" Sure, I'd be happy to help! Here are the RDF triplets for the input sentence:\n\n[AFC Ajax (amateurs), hasGround, Sportpark De Toekomst]\n[Ajax Youth Academy, playsAt, Sportpark De Toekomst]\n\nExplanation:\n\n* AFC Ajax (amateurs) is the subject of the first triplet, and hasGround is the predicate that describes the relationship between AFC Ajax (amateurs) and Sportpark De Toekomst.\n* Ajax Youth Academy is the subject of the second triplet, and playsAt is the predicate that describes the relationship between Ajax Youth Academy and Sportpark De Toekomst.\n\nNote that there may be other possible RDF triplets that could be derived from the input sentence, but the above triplets capture the main relationships present in the sentence."</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are an AI assistant. You will be given a task. You must generate a detailed and long answer."</span><span class="p">,</span><span class="w"> </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Generate an approximately fifteen-word sentence that describes all this data: Midsummer House eatType restaurant; Midsummer House food Chinese; Midsummer House priceRange moderate; Midsummer House customer rating 3 out of 5; Midsummer House near All Bar One"</span><span class="p">,</span><span class="w"> </span><span class="nt">"chosen"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Midsummer House is a moderately priced Chinese restaurant with a 3/5 customer rating, located near All Bar One."</span><span class="p">,</span><span class="w"> </span><span class="nt">"rejected"</span><span class="p">:</span><span class="w"> </span><span class="s2">" Sure! Here's a sentence that describes all the data you provided:\n\n\"Midsummer House is a moderately priced Chinese restaurant with a customer rating of 3 out of 5, located near All Bar One, offering a variety of delicious dishes.\""</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -3344,29 +3344,29 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;medical_o1_sft.json&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;Qwen/Qwen2.5-3B&quot;,</span>
-<span class="s1">    &quot;Dataset&quot;: {</span>
-<span class="s1">      &quot;max_length&quot;:2048</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "medical_o1_sft.json",</span>
+<span class="s1">    "model": "Qwen/Qwen2.5-3B",</span>
+<span class="s1">    "Dataset": {</span>
+<span class="s1">      "max_length":2048</span>
 <span class="s1">    },</span>
-<span class="s1">    &quot;Training&quot;:{</span>
-<span class="s1">      &quot;epochs&quot;:1,</span>
-<span class="s1">      &quot;batch_size&quot;:1,</span>
-<span class="s1">      &quot;gradient_accumulation_steps&quot;:8</span>
+<span class="s1">    "Training":{</span>
+<span class="s1">      "epochs":1,</span>
+<span class="s1">      "batch_size":1,</span>
+<span class="s1">      "gradient_accumulation_steps":8</span>
 <span class="s1">    },</span>
-<span class="s1">    &quot;General&quot;: {</span>
-<span class="s1">      &quot;task&quot;:&quot;reasoning&quot;</span>
+<span class="s1">    "General": {</span>
+<span class="s1">      "task":"reasoning"</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 <p>Below is an example for the format of the reasoning dataset <a class="reference external" href="https://huggingface.co/datasets/FreedomIntelligence/medical-o1-reasoning-SFT">FreedomIntelligence/medical-o1-reasoning-SFT</a>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Given the symptoms of sudden weakness in the left arm and leg, recent long-distance travel, and the presence of swollen and tender right lower leg, what specific cardiac abnormality is most likely to be found upon further evaluation that could explain these findings?&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Complex_CoT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Okay, let&#39;s see what&#39;s going on here. We&#39;ve got sudden weakness in the person&#39;s left arm and leg - and that screams something neuro-related, maybe a stroke?\n\nBut wait, there&#39;s more. The right lower leg is swollen and tender, which is like waving a big flag for deep vein thrombosis, especially after a long flight or sitting around a lot.\n\nSo, now I&#39;m thinking, how could a clot in the leg end up causing issues like weakness or stroke symptoms?\n\nOh, right! There&#39;s this thing called a paradoxical embolism. It can happen if there&#39;s some kind of short circuit in the heart - like a hole that shouldn&#39;t be there.\n\nLet&#39;s put this together: if a blood clot from the leg somehow travels to the left side of the heart, it could shoot off to the brain and cause that sudden weakness by blocking blood flow there.\n\nHmm, but how would the clot get from the right side of the heart to the left without going through the lungs and getting filtered out?\n\nHere&#39;s where our cardiac anomaly comes in: a patent foramen ovale or PFO. That&#39;s like a sneaky little shortcut in the heart between the right and left atria.\n\nAnd it&#39;s actually pretty common, found in about a quarter of adults, which definitely makes it the top suspect here.\n\nSo with all these pieces - long travel, leg clot, sudden weakness - a PFO fits the bill perfectly, letting a clot cross over and cause all this.\n\nEverything fits together pretty neatly, so I&#39;d bet PFO is the heart issue waiting to be discovered. Yeah, that really clicks into place!&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Response&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specific cardiac abnormality most likely to be found in this scenario is a patent foramen ovale (PFO). This condition could allow a blood clot from the venous system, such as one from a deep vein thrombosis in the leg, to bypass the lungs and pass directly into the arterial circulation. This can occur when the clot moves from the right atrium to the left atrium through the PFO. Once in the arterial system, the clot can travel to the brain, potentially causing an embolic stroke, which would explain the sudden weakness in the left arm and leg. The connection between the recent travel, which increases the risk of deep vein thrombosis, and the neurological symptoms suggests the presence of a PFO facilitating a paradoxical embolism.&quot;</span>
+<span class="w">  </span><span class="nt">"Question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Given the symptoms of sudden weakness in the left arm and leg, recent long-distance travel, and the presence of swollen and tender right lower leg, what specific cardiac abnormality is most likely to be found upon further evaluation that could explain these findings?"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Complex_CoT"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Okay, let's see what's going on here. We've got sudden weakness in the person's left arm and leg - and that screams something neuro-related, maybe a stroke?\n\nBut wait, there's more. The right lower leg is swollen and tender, which is like waving a big flag for deep vein thrombosis, especially after a long flight or sitting around a lot.\n\nSo, now I'm thinking, how could a clot in the leg end up causing issues like weakness or stroke symptoms?\n\nOh, right! There's this thing called a paradoxical embolism. It can happen if there's some kind of short circuit in the heart - like a hole that shouldn't be there.\n\nLet's put this together: if a blood clot from the leg somehow travels to the left side of the heart, it could shoot off to the brain and cause that sudden weakness by blocking blood flow there.\n\nHmm, but how would the clot get from the right side of the heart to the left without going through the lungs and getting filtered out?\n\nHere's where our cardiac anomaly comes in: a patent foramen ovale or PFO. That's like a sneaky little shortcut in the heart between the right and left atria.\n\nAnd it's actually pretty common, found in about a quarter of adults, which definitely makes it the top suspect here.\n\nSo with all these pieces - long travel, leg clot, sudden weakness - a PFO fits the bill perfectly, letting a clot cross over and cause all this.\n\nEverything fits together pretty neatly, so I'd bet PFO is the heart issue waiting to be discovered. Yeah, that really clicks into place!"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Response"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The specific cardiac abnormality most likely to be found in this scenario is a patent foramen ovale (PFO). This condition could allow a blood clot from the venous system, such as one from a deep vein thrombosis in the leg, to bypass the lungs and pass directly into the arterial circulation. This can occur when the clot moves from the right atrium to the left atrium through the PFO. Once in the arterial system, the clot can travel to the brain, potentially causing an embolic stroke, which would explain the sudden weakness in the left arm and leg. The connection between the recent travel, which increases the risk of deep vein thrombosis, and the neurological symptoms suggests the presence of a PFO facilitating a paradoxical embolism."</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3379,13 +3379,13 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span>-X<span class="w"> </span>GET
 
 <span class="c1"># retrieve one finetuning job</span>
-curl<span class="w"> </span>http://localhost:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://localhost:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># cancel one finetuning job</span>
-curl<span class="w"> </span>http://localhost:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://localhost:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># list checkpoints of a finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 </pre></div>
 </div>
 </section>

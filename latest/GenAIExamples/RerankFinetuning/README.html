@@ -3136,9 +3136,9 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># upload a training file</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;file=@./toy_finetune_data.jsonl&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"file=@./toy_finetune_data.jsonl"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">"fine-tune"</span>
 </pre></div>
 </div>
 </section>
@@ -3148,15 +3148,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;toy_finetune_data.jsonl&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;BAAI/bge-reranker-large&quot;,</span>
-<span class="s1">    &quot;General&quot;:{</span>
-<span class="s1">      &quot;task&quot;:&quot;rerank&quot;,</span>
-<span class="s1">      &quot;lora_config&quot;:null</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "toy_finetune_data.jsonl",</span>
+<span class="s1">    "model": "BAAI/bge-reranker-large",</span>
+<span class="s1">    "General":{</span>
+<span class="s1">      "task":"rerank",</span>
+<span class="s1">      "lora_config":null</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>
@@ -3170,20 +3170,20 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <span class="c1"># retrieve one finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># cancel one finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># list checkpoints of a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 </pre></div>
 </div>
 </section>

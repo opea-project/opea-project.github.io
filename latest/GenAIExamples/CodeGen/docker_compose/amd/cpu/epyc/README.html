@@ -3170,14 +3170,14 @@ Run the following command in your terminal to list network interfaces:</p>
 </pre></div>
 </div>
 <p>In this example, the (<code class="docutils literal notranslate"><span class="pre">host_ip</span></code>) would be (<code class="docutils literal notranslate"><span class="pre">10.101.16.119</span></code>).</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your host&#39;s external IP address
-export host_ip=&quot;your_external_ip_address&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your host's external IP address
+export host_ip="your_external_ip_address"
 </pre></div>
 </div>
 <p><strong><em>ii) Generate a HuggingFace Access Token:</em></strong><br />
 Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your Hugging Face Hub API token
-export HF_TOKEN=&quot;your_huggingface_token&quot;
+export HF_TOKEN="your_huggingface_token"
 </pre></div>
 </div>
 <p><strong><em>iii) Set environment variables:</em></strong><br />
@@ -3187,9 +3187,9 @@ export model_cache=/home/documentation/data_codegen/data # Path to save cache mo
 </pre></div>
 </div>
 <p>Optional: Configure proxy settings if needed:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># export http_proxy=&quot;your_http_proxy&quot;
-# export https_proxy=&quot;your_https_proxy&quot;
-# export no_proxy=&quot;localhost,127.0.0.1,${host_ip}&quot; # Add other hosts if necessary
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># export http_proxy="your_http_proxy"
+# export https_proxy="your_https_proxy"
+# export no_proxy="localhost,127.0.0.1,${host_ip}" # Add other hosts if necessary
 </pre></div>
 </div>
 <p>To set other environment variables:</p>
@@ -3198,11 +3198,11 @@ source ./set_env.sh
 </pre></div>
 </div>
 <p>For instance, edit the set_env.sh to change the LLM model</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID=&quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID="Qwen/Qwen2.5-Coder-7B-Instruct"
 </pre></div>
 </div>
 <p>can be changed to other model if needed</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID=&quot;Qwen/Qwen2.5-Coder-32B-Instruct&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LLM_MODEL_ID="Qwen/Qwen2.5-Coder-32B-Instruct"
 </pre></div>
 </div>
 </li>
@@ -3281,8 +3281,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>--profile<span clas
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This command structure targets the OpenAI-compatible vLLM endpoint</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Implement a basic Python class&quot;}], &quot;max_tokens&quot;:32}&#39;</span>
+<span class="w">   </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct", "messages": [{"role": "user", "content": "Implement a basic Python class"}], "max_tokens":32}'</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -3291,8 +3291,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </li>
 <li><p><strong>Validate CodeGen Gateway (MegaService on default port 7778):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7778/v1/codegen<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;Write a Python function that adds two numbers.&quot;}&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages": "Write a Python function that adds two numbers."}'</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -3382,15 +3382,15 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <h5>Start vLLM profiling<a class="headerlink" href="#start-vllm-profiling" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8028/start_profile<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct"}'</span>
 </pre></div>
 </div>
 <p>After vLLM profiling is started, users could start asking questions and get responses from vLLM MicroService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8028/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Write a C Program to add two numbers&quot;}], &quot;max_tokens&quot;:32}&#39;</span>
+<span class="w">       </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct", "messages": [{"role": "user", "content": "Write a C Program to add two numbers"}], "max_tokens":32}'</span>
 </pre></div>
 </div>
 </section>
@@ -3399,8 +3399,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>By following command, users could stop vLLM profiling and generate a *.pt.trace.json.gz file as profiling result under /mnt folder in vllm-server docker instance.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8028/stop_profile<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct"}'</span>
 </pre></div>
 </div>
 <p>After vllm profiling is stopped, users could use below command to get the *.pt.trace.json.gz file under /mnt folder.</p>

@@ -3153,9 +3153,9 @@
 <h3>Deploy with Helm chart<a class="headerlink" href="#deploy-with-helm-chart" title="Link to this heading">¶</a></h3>
 <p>Deploy everything on Gaudi enabled Kubernetes cluster:</p>
 <p>If you want to try with latest version, use <code class="docutils literal notranslate"><span class="pre">helm</span> <span class="pre">pull</span> <span class="pre">oci://ghcr.io/opea-project/charts/financeagent</span> <span class="pre">--version</span> <span class="pre">0-latest</span> <span class="pre">--untar</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HF_TOKEN=&quot;YourOwnToken&quot;
-export FINNHUB_API_KEY=&quot;YourOwnToken&quot;
-export FINANCIAL_DATASETS_API_KEY=&quot;YourOwnToken&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HF_TOKEN="YourOwnToken"
+export FINNHUB_API_KEY="YourOwnToken"
+export FINANCIAL_DATASETS_API_KEY="YourOwnToken"
 helm pull oci://ghcr.io/opea-project/charts/financeagent --untar
 helm install financeagent financeagent -f financeagent/gaudi-values.yaml \
 --set global.HF_TOKEN=${HF_TOKEN} \
@@ -3171,9 +3171,9 @@ helm install financeagent financeagent -f financeagent/gaudi-values.yaml \
 <section id="ingest-data-for-rag">
 <h3>Ingest data for RAG<a class="headerlink" href="#ingest-data-for-rag" title="Link to this heading">¶</a></h3>
 <p>Ingest data used by RAG.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ip_address=$(kubectl get svc financeagent-data-prep -o jsonpath=&#39;{.spec.clusterIP})
-curl &quot;http://${ip_address}:6007/v1/dataprep/ingest&quot; -X POST  -H &quot;Content-Type: application/x-www-form-urlencoded&quot; \
-  -d &#39;link_list=%5B%22https%3A%2F%2Fwww.fool.com%2Fearnings%2Fcall-transcripts%2F2025%2F03%2F06%2Fcostco-wholesale-cost-q2-2025-earnings-call-transc%2F%22%2C%22https%3A%2F%2Fwww.fool.com%2Fearnings%2Fcall-transcripts%2F2025%2F03%2F07%2Fgap-gap-q4-2024-earnings-call-transcript%2F%22%5D&#39;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ip_address=$(kubectl get svc financeagent-data-prep -o jsonpath='{.spec.clusterIP})
+curl "http://${ip_address}:6007/v1/dataprep/ingest" -X POST  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d 'link_list=%5B%22https%3A%2F%2Fwww.fool.com%2Fearnings%2Fcall-transcripts%2F2025%2F03%2F06%2Fcostco-wholesale-cost-q2-2025-earnings-call-transc%2F%22%2C%22https%3A%2F%2Fwww.fool.com%2Fearnings%2Fcall-transcripts%2F2025%2F03%2F07%2Fgap-gap-q4-2024-earnings-call-transcript%2F%22%5D'
 </pre></div>
 </div>
 </section>
@@ -3183,8 +3183,8 @@ curl &quot;http://${ip_address}:6007/v1/dataprep/ingest&quot; -X POST  -H &quot;
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9090/v1/chat/completions \</span>
 <span class="go">    -X POST \</span>
-<span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;role&quot;: &quot;user&quot;, &quot;messages&quot;: &quot;Can you summarize Costco 2025 Q2 earnings call?&quot;}&#39;</span>
+<span class="go">    -H "Content-Type: application/json" \</span>
+<span class="go">    -d '{"role": "user", "messages": "Can you summarize Costco 2025 Q2 earnings call?"}'</span>
 </pre></div>
 </div>
 </section>

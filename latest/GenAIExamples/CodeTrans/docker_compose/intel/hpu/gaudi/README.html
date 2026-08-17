@@ -3144,10 +3144,10 @@
 <section id="configure-the-deployment-environment">
 <h3>Configure the Deployment Environment<a class="headerlink" href="#configure-the-deployment-environment" title="Link to this heading">¶</a></h3>
 <p>To set up environment variables for deploying CodeTrans services, set up some parameters specific to the deployment environment and source the <code class="docutils literal notranslate"><span class="pre">set_env.sh</span></code> script in this directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w">           </span><span class="c1"># ip address of the node</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_HuggingFace_API_Token&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTP_Proxy&quot;</span><span class="w">           </span><span class="c1"># http proxy if any</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">&quot;Your_HTTPs_Proxy&quot;</span><span class="w">         </span><span class="c1"># https proxy if any</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">"External_Public_IP"</span><span class="w">           </span><span class="c1"># ip address of the node</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">"Your_HuggingFace_API_Token"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">"Your_HTTP_Proxy"</span><span class="w">           </span><span class="c1"># http proxy if any</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="s2">"Your_HTTPs_Proxy"</span><span class="w">         </span><span class="c1"># https proxy if any</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,127.0.0.1,<span class="nv">$host_ip</span><span class="w">  </span><span class="c1"># additional no proxies if needed</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NGINX_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">your_nginx_port</span><span class="si">}</span><span class="w">          </span><span class="c1"># your usable port for nginx, 80 for example</span>
 <span class="nb">cd</span><span class="w"> </span>docker_compose/intel
@@ -3218,11 +3218,11 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 </div>
 <p>For the default deployment, the following 5 containers should have started:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CONTAINER ID   IMAGE                                                   COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
-b3e1388fa2ca   opea/nginx:${RELEASE_VERSION}                           &quot;/usr/local/bin/star…&quot;   32 hours ago   Up 2 hours   0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp                                                      codetrans-gaudi-nginx-server
-3b5fa9a722da   opea/codetrans-ui:${RELEASE_VERSION}                    &quot;docker-entrypoint.s…&quot;   32 hours ago   Up 2 hours   0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                              codetrans-gaudi-ui-server
-d3b37f3d1faa   opea/codetrans:${RELEASE_VERSION}                       &quot;python codetrans.py&quot;    32 hours ago   Up 2 hours   0.0.0.0:7777-&gt;7777/tcp, :::7777-&gt;7777/tcp                                              codetrans-gaudi-backend-server
-24cae0db1a70   opea/llm-textgen:${RELEASE_VERSION}                     &quot;bash entrypoint.sh&quot;     32 hours ago   Up 2 hours   0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              codetrans-gaudi-llm-server
-b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                            &quot;python3 -m vllm.ent…&quot;   32 hours ago   Up 2 hours   0.0.0.0:9009-&gt;80/tcp, :::9009-&gt;80/tcp                                                  codetrans-gaudi-vllm-service
+b3e1388fa2ca   opea/nginx:${RELEASE_VERSION}                           "/usr/local/bin/star…"   32 hours ago   Up 2 hours   0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp                                                      codetrans-gaudi-nginx-server
+3b5fa9a722da   opea/codetrans-ui:${RELEASE_VERSION}                    "docker-entrypoint.s…"   32 hours ago   Up 2 hours   0.0.0.0:5173-&gt;5173/tcp, :::5173-&gt;5173/tcp                                              codetrans-gaudi-ui-server
+d3b37f3d1faa   opea/codetrans:${RELEASE_VERSION}                       "python codetrans.py"    32 hours ago   Up 2 hours   0.0.0.0:7777-&gt;7777/tcp, :::7777-&gt;7777/tcp                                              codetrans-gaudi-backend-server
+24cae0db1a70   opea/llm-textgen:${RELEASE_VERSION}                     "bash entrypoint.sh"     32 hours ago   Up 2 hours   0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              codetrans-gaudi-llm-server
+b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                            "python3 -m vllm.ent…"   32 hours ago   Up 2 hours   0.0.0.0:9009-&gt;80/tcp, :::9009-&gt;80/tcp                                                  codetrans-gaudi-vllm-service
 </pre></div>
 </div>
 <p>If any issues are encountered during deployment, refer to the <a class="reference internal" href="../../../../README_miscellaneous.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a> section.</p>
@@ -3231,8 +3231,8 @@ b98fa07a4f5c   opea/vllm:${RELEASE_VERSION}                            &quot;pyt
 <h3>Validate the Pipeline<a class="headerlink" href="#validate-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the CodeTrans services are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 <p><strong>Note</strong> : Access the CodeTrans UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservie used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a> section.</p>
@@ -3343,30 +3343,30 @@ docker<span class="w"> </span>logs<span class="w"> </span>codetrans-gaudi-tgi-se
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># either vLLM or TGI service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"inputs":"    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'Golang    \npackage main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'    ### Translated codes:","parameters":{"max_new_tokens":17, "do_sample": true}}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
 <li><p>LLM Microservice</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"query":"    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'Golang    \npackage main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'    ### Translated codes:"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
 <li><p>MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 </li>
 <li><p>Nginx Service</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 </li>

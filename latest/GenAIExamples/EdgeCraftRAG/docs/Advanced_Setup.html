@@ -3135,9 +3135,9 @@ You’ll need to decide the inferencing framework for these models.</p>
 <h4>Embedding and Reranking<a class="headerlink" href="#embedding-and-reranking" title="Link to this heading">¶</a></h4>
 <p>Embedding and reranking are usually servered by local OpenVINO inferencing, to prepare these 2 models:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare models for embedding, reranking:</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models"</span><span class="w"> </span><span class="c1"># Your model path for embedding, reranking and LLM models</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
-pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">"optimum[openvino]"</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
 </pre></div>
@@ -3158,12 +3158,12 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <h5>vLLM<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h5>
 <p>Alternatively, if you have discrete GPU and want to use vLLM, please prepare models for vLLM:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare LLM model for vLLM</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span><span class="w"> </span><span class="c1"># Your model id</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">"Qwen/Qwen3-8B"</span><span class="w"> </span><span class="c1"># Your model id</span>
 pip<span class="w"> </span>install<span class="w"> </span>modelscope
-modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">"</span>
 <span class="c1"># Optionally, you can also download models with huggingface:</span>
 <span class="c1"># pip install -U huggingface_hub</span>
-<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir &quot;${MODEL_PATH}/${LLM_MODEL}&quot;</span>
+<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir "${MODEL_PATH}/${LLM_MODEL}"</span>
 </pre></div>
 </div>
 </section>
@@ -3171,7 +3171,7 @@ modelscope<span class="w"> </span>download<span class="w"> </span>--model<span c
 </section>
 <section id="prepare-env-variables-and-configurations">
 <h3>Prepare env variables and configurations<a class="headerlink" href="#prepare-env-variables-and-configurations" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="c1"># Use `ip a` to check your active ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># Your host ip</span>
 
@@ -3183,7 +3183,7 @@ modelscope<span class="w"> </span>download<span class="w"> </span>--model<span c
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
 <span class="nb">export</span><span class="w"> </span><span class="nv">NO_PROXY</span><span class="o">=</span><span class="si">${</span><span class="nv">NO_PROXY</span><span class="si">}</span>,<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>,edgecraftrag,edgecraftrag-server
 <span class="c1"># If you have a HF mirror configured, it will be imported to the container</span>
-<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint&quot;</span>
+<span class="c1"># export HF_ENDPOINT=https://hf-mirror.com # your HF mirror endpoint"</span>
 
 <span class="c1"># Make sure all 3 folders have 1000:1000 permission, otherwise</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOC_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/workspace
@@ -3194,7 +3194,7 @@ chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </
 
 <span class="c1"># Check whether system support NPU</span>
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>/dev/accel<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">ACCEL_DEV</span><span class="o">=</span><span class="s2">&quot;/dev/accel:/dev/accel&quot;</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">ACCEL_DEV</span><span class="o">=</span><span class="s2">"/dev/accel:/dev/accel"</span>
 <span class="k">fi</span>
 </pre></div>
 </div>
@@ -3269,10 +3269,10 @@ Model preparation is the same as Arc manual deployment section, please refer to 
 <h2>Deploy EC-RAG on multi GPUs<a class="headerlink" href="#deploy-ec-rag-on-multi-gpus" title="Link to this heading">¶</a></h2>
 <p>In this sample, we will use Qwen3-30B-A3B deployment on 4 Arc B60 GPUs as an example.
 Before started, please prepare models into MODEL_PATH and prepare docker images</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># Same default model path used by quick_start.sh</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models"</span><span class="w"> </span><span class="c1"># Same default model path used by quick_start.sh</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">"Qwen/Qwen3-30B-A3B"</span>
 pip<span class="w"> </span>install<span class="w"> </span>modelscope
-modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">"</span>
 
 <span class="c1"># vLLM envs</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="c1"># for multi GPU, you can change TP value</span>

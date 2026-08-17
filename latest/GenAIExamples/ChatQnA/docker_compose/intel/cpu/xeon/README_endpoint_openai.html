@@ -3165,13 +3165,13 @@ cd GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon/
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>GenAIExamples/ChatQnA/docker_compose/intel/cpu/xeon
 <span class="nb">source</span><span class="w"> </span>set_env.sh<span class="w"> </span><span class="c1"># source environment variables then override below.</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">&quot;External_Public_IP&quot;</span><span class="w"> </span><span class="c1"># e.g. export host_ip=$(hostname -I | awk &#39;{print $1}&#39;)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;Your_Huggingface_API_Token&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;key for openAI-like endpoint&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="s2">"External_Public_IP"</span><span class="w"> </span><span class="c1"># e.g. export host_ip=$(hostname -I | awk '{print $1}')</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">"Your_Huggingface_API_Token"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">"key for openAI-like endpoint"</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="c1"># e.g. &quot;google/gemma-3-1b-it:free&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w">  </span><span class="c1"># e.g. &quot;https://openrouter.ai/api&quot; (please make sure to omit /v1 suffix)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="c1"># Can set if any no proxy variables. See set_env.sh</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span><span class="c1"># e.g. "google/gemma-3-1b-it:free"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">""</span><span class="w">  </span><span class="c1"># e.g. "https://openrouter.ai/api" (please make sure to omit /v1 suffix)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span><span class="c1"># Can set if any no proxy variables. See set_env.sh</span>
 </pre></div>
 </div>
 <p>Consult the section on <a class="reference internal" href="#chatqna-configuration"><span class="xref myst">ChatQnA Service configuration</span></a> for information on how service specific configuration parameters affect deployments.</p>
@@ -3238,15 +3238,15 @@ CPU example with Open Telemetry feature:</p>
 </div>
 <p>For the endpoint-based deployment, the following 9 containers should be running:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">                                                   </span>COMMAND<span class="w">                  </span>CREATED<span class="w">          </span>STATUS<span class="w">                    </span>PORTS<span class="w">                                                                                  </span>NAMES
-04f0e3607457<span class="w">   </span>opea/nginx:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                           </span><span class="s2">&quot;/docker-entrypoint.…&quot;</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:8080-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8080-&gt;80/tcp<span class="w">                                                </span>chatqna-xeon-nginx-server
-6d7fe1bfd0a5<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                      </span><span class="s2">&quot;docker-entrypoint.s…&quot;</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-xeon-ui-server
-71d01fe8bc94<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                         </span><span class="s2">&quot;python chatqna.py&quot;</span><span class="w">      </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-xeon-backend-server
-ea12fab1c70e<span class="w">   </span>opea/retriever:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                       </span><span class="s2">&quot;python opea_retriev…&quot;</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">17</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
-253622403ed6<span class="w">   </span>opea/dataprep:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                        </span><span class="s2">&quot;sh -c &#39;python </span><span class="k">$(</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>…<span class="s2">&quot;   17 minutes ago   Up 17 minutes (healthy)   0.0.0.0:6007-&gt;5000/tcp, [::]:6007-&gt;5000/tcp                                            dataprep-redis-server</span>
-<span class="s2">a552cf4f0dd0   redis/redis-stack:7.2.0-v9                              &quot;</span>/entrypoint.sh<span class="s2">&quot;         17 minutes ago   Up 17 minutes (healthy)   0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp   redis-vector-db</span>
-<span class="s2">6795a52137f7   ghcr.io/huggingface/text-embeddings-inference:cpu-1.5   &quot;</span>text-embeddings-rou…<span class="s2">&quot;   17 minutes ago   Up 17 minutes             0.0.0.0:6006-&gt;80/tcp, [::]:6006-&gt;80/tcp                                                tei-embedding-server</span>
-<span class="s2">3e55313e714b   opea/llm-textgen:</span><span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="s2">                     &quot;</span>bash<span class="w"> </span>entrypoint.sh<span class="s2">&quot;     17 minutes ago   Up 17 minutes             0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              textgen-service-endpoint-openai</span>
-<span class="s2">10318f82c943   ghcr.io/huggingface/text-embeddings-inference:cpu-1.5   &quot;</span>text-embeddings-rou…<span class="s2">&quot;   17 minutes ago   Up 17 minutes             0.0.0.0:8808-&gt;80/tcp, [::]:8808-&gt;80/tcp                                                tei-reranking-server</span>
+04f0e3607457<span class="w">   </span>opea/nginx:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                           </span><span class="s2">"/docker-entrypoint.…"</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:8080-&gt;80/tcp,<span class="w"> </span><span class="o">[</span>::<span class="o">]</span>:8080-&gt;80/tcp<span class="w">                                                </span>chatqna-xeon-nginx-server
+6d7fe1bfd0a5<span class="w">   </span>opea/chatqna-ui:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                      </span><span class="s2">"docker-entrypoint.s…"</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:5173-&gt;5173/tcp,<span class="w"> </span>:::5173-&gt;5173/tcp<span class="w">                                              </span>chatqna-xeon-ui-server
+71d01fe8bc94<span class="w">   </span>opea/chatqna:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                         </span><span class="s2">"python chatqna.py"</span><span class="w">      </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">16</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:8888-&gt;8888/tcp,<span class="w"> </span>:::8888-&gt;8888/tcp<span class="w">                                              </span>chatqna-xeon-backend-server
+ea12fab1c70e<span class="w">   </span>opea/retriever:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                       </span><span class="s2">"python opea_retriev…"</span><span class="w">   </span><span class="m">17</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">17</span><span class="w"> </span>minutes<span class="w">             </span><span class="m">0</span>.0.0.0:7000-&gt;7000/tcp,<span class="w"> </span>:::7000-&gt;7000/tcp<span class="w">                                              </span>retriever-redis-server
+253622403ed6<span class="w">   </span>opea/dataprep:<span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="w">                        </span><span class="s2">"sh -c 'python </span><span class="k">$(</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>…<span class="s2">"   17 minutes ago   Up 17 minutes (healthy)   0.0.0.0:6007-&gt;5000/tcp, [::]:6007-&gt;5000/tcp                                            dataprep-redis-server</span>
+<span class="s2">a552cf4f0dd0   redis/redis-stack:7.2.0-v9                              "</span>/entrypoint.sh<span class="s2">"         17 minutes ago   Up 17 minutes (healthy)   0.0.0.0:6379-&gt;6379/tcp, :::6379-&gt;6379/tcp, 0.0.0.0:8001-&gt;8001/tcp, :::8001-&gt;8001/tcp   redis-vector-db</span>
+<span class="s2">6795a52137f7   ghcr.io/huggingface/text-embeddings-inference:cpu-1.5   "</span>text-embeddings-rou…<span class="s2">"   17 minutes ago   Up 17 minutes             0.0.0.0:6006-&gt;80/tcp, [::]:6006-&gt;80/tcp                                                tei-embedding-server</span>
+<span class="s2">3e55313e714b   opea/llm-textgen:</span><span class="si">${</span><span class="nv">RELEASE_VERSION</span><span class="si">}</span><span class="s2">                     "</span>bash<span class="w"> </span>entrypoint.sh<span class="s2">"     17 minutes ago   Up 17 minutes             0.0.0.0:9000-&gt;9000/tcp, :::9000-&gt;9000/tcp                                              textgen-service-endpoint-openai</span>
+<span class="s2">10318f82c943   ghcr.io/huggingface/text-embeddings-inference:cpu-1.5   "</span>text-embeddings-rou…<span class="s2">"   17 minutes ago   Up 17 minutes             0.0.0.0:8808-&gt;80/tcp, [::]:8808-&gt;80/tcp                                                tei-reranking-server</span>
 </pre></div>
 </div>
 <p>If any issues are encountered during deployment, refer to the <a class="reference internal" href="../../../../README_miscellaneous.html##troubleshooting"><span class="std std-ref">troubleshooting</span></a> section.</p>
@@ -3255,10 +3255,10 @@ ea12fab1c70e<span class="w">   </span>opea/retriever:<span class="si">${</span><
 <h3>Test the Pipeline<a class="headerlink" href="#test-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the ChatQnA services are running, test the pipeline using the following command. This will send a sample query to the ChatQnA service and return a response.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">        &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">    }&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">        "messages": "What is the revenue of Nike in 2023?"</span>
+<span class="s1">    }'</span>
 </pre></div>
 </div>
 <p><strong>Note</strong> : Access the ChatQnA UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:8080</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">8080</span></code> port is opened in the firewall. To validate each microservice used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate microservices</span></a> section.</p>
@@ -3330,7 +3330,7 @@ ea12fab1c70e<span class="w">   </span>opea/retriever:<span class="si">${</span><
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_BACKEND_SERVICE_ENDPOINT=${BACKEND_SERVICE_ENDPOINT}</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APP_DATA_PREP_SERVICE_URL=${DATAPREP_SERVICE_ENDPOINT}</span>
 <span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5174:80&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"5174:80"</span>
 <span class="w">  </span><span class="nt">depends_on</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chatqna-xeon-backend-server</span>
 <span class="w">  </span><span class="nt">ipc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
@@ -3342,7 +3342,7 @@ ea12fab1c70e<span class="w">   </span>opea/retriever:<span class="si">${</span><
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opea/chatqna-conversation-ui:latest</span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"80:80"</span>
 </pre></div>
 </div>
 <p>Here is an example of running ChatQnA (default UI):</p>
@@ -3359,8 +3359,8 @@ For details on how to verify the correctness of the response, refer to <a class=
 Send a test request to the TEI Embedding Service to ensure it is running correctly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:6006/embed<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"inputs":"What is Deep Learning?"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>If you receive a connection error, ensure that the service is running and the port 6006 is open in the firewall.</p>
@@ -3370,11 +3370,11 @@ Send a test request to the TEI Embedding Service to ensure it is running correct
 is determined by the embedding model.
 Here we use the model <code class="docutils literal notranslate"><span class="pre">EMBEDDING_MODEL_ID=&quot;BAAI/bge-base-en-v1.5&quot;</span></code>, which vector size is 768.</p>
 <p>Check the vector dimension of your embedding model, set <code class="docutils literal notranslate"><span class="pre">your_embedding</span></code> dimension equal to it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)"</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;test\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"{\"text\":\"test\",\"embedding\":</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>If the response indicates an invalid embedding vector, verify that the vector size matches the model’s expected dimension.</p>
@@ -3386,8 +3386,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8808/rerank<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"query":"What is Deep Learning?", "texts": ["Deep Learning is not...", "Deep learning is..."]}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
@@ -3404,40 +3404,40 @@ INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span
 </ol>
 <p>You may also test your underlying LLM endpoint. E.g., if OpenRouter.ai:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>https://openrouter.ai/api/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;model&quot;: ${LLM_MODEL_ID},</span>
-<span class="s1">  &quot;messages&quot;: [</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">  "model": ${LLM_MODEL_ID},</span>
+<span class="s1">  "messages": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">      &quot;content&quot;: &quot;What is the meaning of life?&quot;</span>
+<span class="s1">      "role": "user",</span>
+<span class="s1">      "content": "What is the meaning of life?"</span>
 <span class="s1">    }</span>
 <span class="s1">  ]</span>
-<span class="s1">}&#39;</span>
+<span class="s1">}'</span>
 </pre></div>
 </div>
 <p>To test the OPEA service that is based on the above:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "${LLM_MODEL_ID}", "messages": [{"role": "user", "content": "What is Deep Learning?"}], "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <ol class="arabic" start="5">
 <li><p><strong>MegaService</strong></p>
 <p>Use the following <code class="docutils literal notranslate"><span class="pre">curl</span></code> command to test the MegaService:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;</span>
-<span class="s1">       }&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8888/v1/chatqna<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">       "messages": "What is the revenue of Nike in 2023?"</span>
+<span class="s1">       }'</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Nginx Service</strong></p>
 <p>Use the following curl command to test the Nginx Service:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/chatqna<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;: &quot;What is the revenue of Nike in 2023?&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"messages": "What is the revenue of Nike in 2023?"}'</span>
 </pre></div>
 </div>
 </li>
@@ -3450,37 +3450,37 @@ Or run this command to get the file on a terminal.</p>
 </pre></div>
 </div>
 <p>Upload:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./nke-10k-2023.pdf&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./nke-10k-2023.pdf"</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by uploading a local file for processing. Update the file path according to your environment.</p>
 <p>Add Knowledge Base via HTTP Links:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s1">&#39;link_list=[&quot;https://opea.dev&quot;]&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/ingest"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s1">'link_list=["https://opea.dev"]'</span>
 </pre></div>
 </div>
 <p>This command updates a knowledge base by submitting a list of HTTP links for processing.</p>
 <p>Also, you are able to get the file list that you uploaded:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/get"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span>
 </pre></div>
 </div>
 <p>Then you will get the response JSON like this. Notice that the returned <code class="docutils literal notranslate"><span class="pre">name</span></code>/<code class="docutils literal notranslate"><span class="pre">id</span></code> of the uploaded link is <code class="docutils literal notranslate"><span class="pre">https://xxx.txt</span></code>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nke-10k-2023.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nke-10k-2023.pdf&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nke-10k-2023.pdf"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nke-10k-2023.pdf"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"File"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://opea.dev.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://opea.dev.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://opea.dev.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://opea.dev.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"File"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -3488,19 +3488,19 @@ Or run this command to get the file on a terminal.</p>
 <p>To delete the file/link you uploaded:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">file_path</span></code> here should be the <code class="docutils literal notranslate"><span class="pre">id</span></code> get from <code class="docutils literal notranslate"><span class="pre">/v1/dataprep/get</span></code> API.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete link</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://opea.dev.txt&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "https://opea.dev.txt"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span>
 
 <span class="c1"># delete file</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;nke-10k-2023.pdf&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "nke-10k-2023.pdf"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span>
 
 <span class="c1"># delete all uploaded files and links</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:6007/v1/dataprep/delete"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "all"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span>
 </pre></div>
 </div>
 </li>
@@ -3518,29 +3518,29 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <li><p>Network monitoring tools</p></li>
 </ul>
 <p>Example using cURL with timing data:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;\nTime Statistics:\n-----------------\n\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-w<span class="w"> </span><span class="s2">"\nTime Statistics:\n-----------------\n\</span>
 <span class="s2">DNS Lookup: %{time_namelookup}s\n\</span>
 <span class="s2">TCP Connect: %{time_connect}s\n\</span>
 <span class="s2">TLS Handshake: %{time_appconnect}s\n\</span>
 <span class="s2">First Byte: %{time_starttransfer}s\n\</span>
-<span class="s2">Total Time: %{time_total}s\n&quot;</span><span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
--d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;,</span>
-<span class="s1">  &quot;messages&quot;: [</span>
+<span class="s2">Total Time: %{time_total}s\n"</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">  "model": "${LLM_MODEL_ID}",</span>
+<span class="s1">  "messages": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">      &quot;content&quot;: &quot;What is machine learning?&quot;</span>
+<span class="s1">      "role": "user",</span>
+<span class="s1">      "content": "What is machine learning?"</span>
 <span class="s1">    }</span>
 <span class="s1">  ]</span>
-<span class="s1">}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="s1">}'</span><span class="w"> </span><span class="se">\</span>
 <span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span>/v1/chat/completions
 </pre></div>
 </div>
 <p>You can also use tools like <code class="docutils literal notranslate"><span class="pre">ab</span></code> (Apache Benchmark) for load testing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ab<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-c<span class="w"> </span><span class="m">10</span><span class="w"> </span>-p<span class="w"> </span>payload.json<span class="w"> </span>-T<span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ab<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-c<span class="w"> </span><span class="m">10</span><span class="w"> </span>-p<span class="w"> </span>payload.json<span class="w"> </span>-T<span class="w"> </span><span class="s1">'application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span><span class="si">${</span><span class="nv">LLM_ENDPOINT</span><span class="si">}</span>/v1/chat/completions
 </pre></div>
 </div>

@@ -3122,30 +3122,30 @@
 <h3>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h3>
 <p>In order to start Native LLM service, you need to setup the following environment variables first.</p>
 <p>For LLM model, both <code class="docutils literal notranslate"><span class="pre">Qwen</span></code>, <code class="docutils literal notranslate"><span class="pre">Falcon3</span></code> and <code class="docutils literal notranslate"><span class="pre">Phi4</span></code> models are supported. Users can set different models by changing the <code class="docutils literal notranslate"><span class="pre">LLM_MODEL_ID</span></code> below.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen2-7B-Instruct&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_huggingface_token&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">"Qwen/Qwen2-7B-Instruct"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="s2">"your_huggingface_token"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEXTGEN_PORT</span><span class="o">=</span><span class="m">10512</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaTextGenNative&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OpeaTextGenNative"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 </pre></div>
 </div>
 <blockquote>
 <div><p>Note: If you want to run “microsoft/Phi-4-multimodal-instruct”, please download the <a class="reference external" href="https://huggingface.co/microsoft/Phi-4-multimodal-instruct/tree/main">model weights</a> manually and put at <code class="docutils literal notranslate"><span class="pre">/path/to/Phi-4-multimodal-instruct</span></code> locally, then setup following environment.</p>
 </div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;/path/to/Phi-4-multimodal-instruct&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaTextGenNativePhi4Multimodal&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">"/path/to/Phi-4-multimodal-instruct"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OpeaTextGenNativePhi4Multimodal"</span>
 </pre></div>
 </div>
 </section>
 <section id="build-docker-image">
 <h3>Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">## For `Qwen` and `Falcon`</span>
-<span class="nv">dockerfile_path</span><span class="o">=</span><span class="s2">&quot;comps/llms/src/text-generation/Dockerfile.intel_hpu&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">image_name</span><span class="o">=</span><span class="s2">&quot;opea/llm-textgen-gaudi:latest&quot;</span>
+<span class="nv">dockerfile_path</span><span class="o">=</span><span class="s2">"comps/llms/src/text-generation/Dockerfile.intel_hpu"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">image_name</span><span class="o">=</span><span class="s2">"opea/llm-textgen-gaudi:latest"</span>
 
 <span class="c1">## For `Phi4`</span>
-<span class="c1"># dockerfile_path=&quot;comps/llms/src/text-generation/Dockerfile.intel_hpu_phi4&quot;</span>
-<span class="c1"># export image_name=&quot;opea/llm-textgen-phi4-gaudi:latest&quot;</span>
+<span class="c1"># dockerfile_path="comps/llms/src/text-generation/Dockerfile.intel_hpu_phi4"</span>
+<span class="c1"># export image_name="opea/llm-textgen-phi4-gaudi:latest"</span>
 
 <span class="nb">cd</span><span class="w"> </span>../../../../../
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span><span class="nv">$image_name</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span><span class="nv">$dockerfile_path</span><span class="w"> </span>.
@@ -3160,15 +3160,15 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="option-a-run-docker-with-cli">
 <h3>Option A: Run Docker with CLI<a class="headerlink" href="#option-a-run-docker-with-cli" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;llm-native-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$TEXTGEN_PORT</span>:9000<span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TOKENIZERS_PARALLELISM</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="nv">$LLM_COMPONENT_NAME</span><span class="w"> </span><span class="nv">$image_name</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--name<span class="o">=</span><span class="s2">"llm-native-server"</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$TEXTGEN_PORT</span>:9000<span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TOKENIZERS_PARALLELISM</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="nv">$LLM_COMPONENT_NAME</span><span class="w"> </span><span class="nv">$image_name</span>
 </pre></div>
 </div>
 </section>
 <section id="option-a-run-docker-with-docker-compose">
 <h3>Option A: Run Docker with Docker Compose<a class="headerlink" href="#option-a-run-docker-with-docker-compose" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;textgen-native-gaudi&quot;</span>
-<span class="c1"># export service_name=&quot;textgen-native-phi4-gaudi&quot; # For Phi-4-mini-instruct</span>
-<span class="c1"># export service_name=&quot;textgen-native-phi4-multimodal-gaudi&quot; #Phi-4-multimodal-instruct</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"textgen-native-gaudi"</span>
+<span class="c1"># export service_name="textgen-native-phi4-gaudi" # For Phi-4-mini-instruct</span>
+<span class="c1"># export service_name="textgen-native-phi4-multimodal-gaudi" #Phi-4-multimodal-instruct</span>
 <span class="nb">cd</span><span class="w"> </span>comps/llms/deployment/docker_compose
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_text-generation.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
 </pre></div>
@@ -3182,7 +3182,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/health_check<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3190,22 +3190,22 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>Consume LLM Service<a class="headerlink" href="#consume-llm-service" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"What is Deep Learning?", "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>If you run a multimodal model such as <code class="docutils literal notranslate"><span class="pre">Phi-4-multimodal-instruct</span></code>, you can try with image or audio input.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#image</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;What is shown in this image?&quot;, &quot;image_path&quot;:&quot;/path/to/image&quot;, &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"What is shown in this image?", "image_path":"/path/to/image", "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 <span class="c1">#audio</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Based on the attached audio, generate a comprehensive text transcription of the spoken content.&quot;, &quot;audio_path&quot;:&quot;/path/to/audio&quot;, &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Based on the attached audio, generate a comprehensive text transcription of the spoken content.", "audio_path":"/path/to/audio", "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

@@ -3112,7 +3112,7 @@
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="m">0</span>.0.0.0
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="m">8666</span>
-<span class="c1"># TEI_EMBEDDING_ENDPOINT=&quot;http://${your_ip}:6060&quot;  # uncomment if you want to use the hosted embedding service, example: &quot;http://127.0.0.1:6060&quot;</span>
+<span class="c1"># TEI_EMBEDDING_ENDPOINT="http://${your_ip}:6060"  # uncomment if you want to use the hosted embedding service, example: "http://127.0.0.1:6060"</span>
 </pre></div>
 </div>
 <section id="configuration">
@@ -3126,9 +3126,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pathway</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pw</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">pw</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-    <span class="s2">&quot;./data&quot;</span><span class="p">,</span>
-    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">,</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;streaming&quot;</span><span class="p">,</span>
+    <span class="s2">"./data"</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">"binary"</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"streaming"</span><span class="p">,</span>
     <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>  <span class="c1"># This creates a Pathway connector that tracks</span>
 <span class="c1"># all the files in the ./data directory</span>
@@ -3161,17 +3161,17 @@ Whenever a file is added or modified in one of the sources, Pathway will automat
 docker<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_HOST</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-v<span class="w"> </span>./data:/app/data<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span>:<span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>opea/vectorstore-pathway:latest
 
 <span class="c1"># with the hosted embedder (network argument is needed for the vector server to reach to the embedding service)</span>
-docker<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_HOST</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-v<span class="w"> </span>./data:/app/data<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span>:<span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>--network<span class="o">=</span><span class="s2">&quot;host&quot;</span><span class="w"> </span>opea/vectorstore-pathway:latest
+docker<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_HOST</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="si">${</span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-v<span class="w"> </span>./data:/app/data<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span>:<span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>--network<span class="o">=</span><span class="s2">"host"</span><span class="w"> </span>opea/vectorstore-pathway:latest
 </pre></div>
 </div>
 </section>
 <section id="health-check-the-vector-store">
 <h2>Health check the vector store<a class="headerlink" href="#health-check-the-vector-store" title="Link to this heading">¶</a></h2>
 <p>Wait until the server finishes indexing the docs, and send the following request to check it.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s2">&quot;http://</span><span class="nv">$PATHWAY_HOST</span><span class="s2">:</span><span class="nv">$PATHWAY_PORT</span><span class="s2">/v1/statistics&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: */*&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">'POST'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"http://</span><span class="nv">$PATHWAY_HOST</span><span class="s2">:</span><span class="nv">$PATHWAY_PORT</span><span class="s2">/v1/statistics"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'accept: */*'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>This should respond with something like:</p>

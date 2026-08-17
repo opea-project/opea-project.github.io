@@ -3163,18 +3163,18 @@
 <p>Before starting the guardrail service, we first need to start the TGI server that will be hosting the guardrail model.</p>
 <p>Choose one of the following before starting your TGI server.</p>
 <p><strong>For LlamaGuard:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/Meta-Llama-Guard-2-8B&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">"meta-llama/Meta-Llama-Guard-2-8B"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">GUARDRAILS_COMPONENT_NAME</span><span class="o">=</span>OPEA_LLAMA_GUARD
 </pre></div>
 </div>
 <p>Or</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;meta-llama/LlamaGuard-7b&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">"meta-llama/LlamaGuard-7b"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">GUARDRAILS_COMPONENT_NAME</span><span class="o">=</span>OPEA_LLAMA_GUARD
 </pre></div>
 </div>
 <p><em>Other variations of LlamaGuard are also an option to use but are not guaranteed to work OOB.</em></p>
 <p><strong>For Wild Guard:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;allenai/wildguard&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_MODEL_ID</span><span class="o">=</span><span class="s2">"allenai/wildguard"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">GUARDRAILS_COMPONENT_NAME</span><span class="o">=</span>OPEA_WILD_GUARD
 </pre></div>
 </div>
@@ -3184,7 +3184,7 @@
 </pre></div>
 </div>
 <p>Once the container is starting up and loading the model, set the endpoint that you will use to make requests to the TGI server:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SAFETY_GUARD_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p><strong>Verify that the TGI Server is ready for inference</strong></p>
@@ -3195,8 +3195,8 @@
 <p>If the last line of the log contains something like <code class="docutils literal notranslate"><span class="pre">INFO</span> <span class="pre">text_generation_router::server:</span> <span class="pre">router/src/server.rs:2209:</span> <span class="pre">Connected</span></code> then your TGI server is ready and the following curl should work:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;How do you buy a tiger in the US?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:32}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"inputs":"How do you buy a tiger in the US?","parameters":{"max_new_tokens":32}}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>Check the logs again with the <code class="docutils literal notranslate"><span class="pre">logs</span></code> command to confirm that the curl request resulted in <code class="docutils literal notranslate"><span class="pre">Success</span></code>.</p>
@@ -3250,7 +3250,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h4>Run Docker with CLI (Option B)<a class="headerlink" href="#run-docker-with-cli-option-b" title="Link to this heading">¶</a></h4>
 <p><strong>To run with LLama Guard:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;llamaguard-guardrails-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">"llamaguard-guardrails-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span>:<span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3263,7 +3263,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </div>
 <p><strong>To run with WildGuard:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;wildguard-guardrails-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">"wildguard-guardrails-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span>:<span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3271,7 +3271,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">SAFETY_GUARD_ENDPOINT</span><span class="o">=</span><span class="nv">$SAFETY_GUARD_ENDPOINT</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="nv">$HF_TOKEN</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">GUARDRAILS_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_WILD_GUARD&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">GUARDRAILS_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_WILD_GUARD"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>opea/guardrails:latest
 </pre></div>
 </div>
@@ -3284,7 +3284,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:<span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span>/v1/health_check<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3292,8 +3292,8 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h3>Consume Guardrails Service<a class="headerlink" href="#consume-guardrails-service" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:<span class="si">${</span><span class="nv">GUARDRAIL_PORT</span><span class="si">}</span>/v1/guardrails<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;How do you buy a tiger in the US?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:32}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"text":"How do you buy a tiger in the US?","parameters":{"max_new_tokens":32}}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>This request should return text containing:

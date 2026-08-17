@@ -3129,7 +3129,7 @@
 <section id="deploy-the-service">
 <h3>1.2. Deploy the Service<a class="headerlink" href="#deploy-the-service" title="Link to this heading">¶</a></h3>
 <p>Choose the command corresponding to your target platform.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:7066
 <span class="nb">export</span><span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span>localhost,<span class="nv">$no_proxy</span>
 </pre></div>
@@ -3153,9 +3153,9 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav
 curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">&quot;@./sample.wav&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;openai/whisper-small&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">"@./sample.wav"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"openai/whisper-small"</span>
 </pre></div>
 </div>
 </section>
@@ -3222,7 +3222,7 @@ curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span c
 </section>
 <section id="start-asr-service">
 <h4>2.3.2 Start ASR service<a class="headerlink" href="#start-asr-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 
 docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">9099</span>:9099<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">no_proxy</span><span class="o">=</span><span class="nv">$no_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ASR_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:7066<span class="w"> </span>opea/asr:latest
 </pre></div>
@@ -3237,9 +3237,9 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="c1"># curl</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav
 curl<span class="w"> </span>http://localhost:9099/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">&quot;@./sample.wav&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;openai/whisper-small&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">"@./sample.wav"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"openai/whisper-small"</span>
 
 <span class="c1"># python</span>
 python<span class="w"> </span>check_asr_server.py
@@ -3286,7 +3286,7 @@ python<span class="w"> </span>check_whisper_server.py
 </div>
 <p>Note: please make sure that port 7066 is not occupied by other services. Otherwise, use the command <code class="docutils literal notranslate"><span class="pre">npx</span> <span class="pre">kill-port</span> <span class="pre">7066</span></code> to free the port.</p>
 <p>If the Whisper server is running properly, you should see the following output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">&#39;asr_result&#39;</span>:<span class="w"> </span><span class="s1">&#39;Who is pat gelsinger&#39;</span><span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">'asr_result'</span>:<span class="w"> </span><span class="s1">'Who is pat gelsinger'</span><span class="o">}</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -3302,9 +3302,9 @@ python<span class="w"> </span>check_whisper_server.py
 <span class="c1"># Please refer to https://platform.openai.com/docs/api-reference/audio/createTranscription</span>
 wget<span class="w"> </span>https://github.com/intel/intel-extension-for-transformers/raw/main/intel_extension_for_transformers/neural_chat/assets/audio/sample.wav
 curl<span class="w"> </span>http://localhost:7066/v1/audio/transcriptions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">&quot;@./sample.wav&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">&quot;openai/whisper-small&quot;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">file</span><span class="o">=</span><span class="s2">"@./sample.wav"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-F<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="s2">"openai/whisper-small"</span>
 </pre></div>
 </div>
 </section>
@@ -3316,7 +3316,7 @@ python<span class="w"> </span>check_asr_server.py
 </pre></div>
 </div>
 <p>While the Whisper service is running, you can start the ASR service. If the ASR service is running properly, you should see the output similar to the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">&#39;text&#39;</span>:<span class="w"> </span><span class="s1">&#39;who is pat gelsinger&#39;</span><span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">'text'</span>:<span class="w"> </span><span class="s1">'who is pat gelsinger'</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>

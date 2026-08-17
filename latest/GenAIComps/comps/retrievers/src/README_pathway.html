@@ -3118,7 +3118,7 @@
 <div><p>Note that Docker compose will start this service as well, this step is thus optional.</p>
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">model</span><span class="o">=</span>BAAI/bge-base-en-v1.5
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6060&quot;</span><span class="w">  </span><span class="c1"># if you want to use the hosted embedding service, example: &quot;http://127.0.0.1:6060&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6060"</span><span class="w">  </span><span class="c1"># if you want to use the hosted embedding service, example: "http://127.0.0.1:6060"</span>
 
 <span class="c1"># then run:</span>
 docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">6060</span>:80<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--pull<span class="w"> </span>always<span class="w"> </span>ghcr.io/huggingface/text-embeddings-inference:cpu-1.6<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$model</span>
@@ -3127,15 +3127,15 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <p>Health check the embedding service with:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="m">127</span>.0.0.1:6060/embed<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"inputs":"What is Deep Learning?"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>If the model supports re-ranking, you can also use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span><span class="m">127</span>.0.0.1:6060/rerank<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;What is Deep Learning?&quot;, &quot;texts&quot;: [&quot;Deep Learning is not...&quot;, &quot;Deep learning is...&quot;]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"query":"What is Deep Learning?", "texts": ["Deep Learning is not...", "Deep learning is..."]}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3153,7 +3153,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># make sure you are in the root folder of the repo</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>opea/retriever:latest<span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--build-arg<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-f<span class="w"> </span>comps/retrievers/pathway/langchain/Dockerfile<span class="w"> </span>.
 
-docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_HOST</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--network<span class="o">=</span><span class="s2">&quot;host&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">RETRIEVER_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_RETRIEVER_PATHWAY&quot;</span><span class="w"> </span>opea/retriever:latest
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_HOST</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="si">${</span><span class="nv">PATHWAY_PORT</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>--network<span class="o">=</span><span class="s2">"host"</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">RETRIEVER_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_RETRIEVER_PATHWAY"</span><span class="w"> </span>opea/retriever:latest
 </pre></div>
 </div>
 </section>
@@ -3164,7 +3164,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATHWAY_HOST</span><span class="o">=</span><span class="m">0</span>.0.0.0
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATHWAY_PORT</span><span class="o">=</span><span class="m">8666</span>
 <span class="nv">model</span><span class="o">=</span>BAAI/bge-base-en-v1.5
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6060&quot;</span><span class="w">  </span><span class="c1"># if you want to use the hosted embedding service, example: &quot;http://127.0.0.1:6060&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:6060"</span><span class="w">  </span><span class="c1"># if you want to use the hosted embedding service, example: "http://127.0.0.1:6060"</span>
 </pre></div>
 </div>
 <p>Text embeddings inference service expects the <code class="docutils literal notranslate"><span class="pre">RETRIEVE_MODEL_ID</span></code> variable to be set.</p>
@@ -3174,18 +3174,18 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <p>Note that following docker compose sets the <code class="docutils literal notranslate"><span class="pre">network_mode:</span> <span class="pre">host</span></code> in retriever image to allow local vector store connection.
 This will start the both the embedding and retriever services:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../deployment/docker_compose
-<span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;retriever-pathway&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"retriever-pathway"</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
 </pre></div>
 </div>
 <p>Make sure the retriever service is working as expected:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://0.0.0.0:7000/v1/health_check<span class="w">   </span>-X<span class="w"> </span>GET<span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://0.0.0.0:7000/v1/health_check<span class="w">   </span>-X<span class="w"> </span>GET<span class="w">   </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>send an example query:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">exm_embeddings</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">exm_embeddings</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)"</span><span class="k">)</span>
 
-curl<span class="w"> </span>http://0.0.0.0:7000/v1/retrieval<span class="w">   </span>-X<span class="w"> </span>POST<span class="w">   </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">exm_embeddings</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+curl<span class="w"> </span>http://0.0.0.0:7000/v1/retrieval<span class="w">   </span>-X<span class="w"> </span>POST<span class="w">   </span>-d<span class="w"> </span><span class="s2">"{\"text\":\"What is the revenue of Nike in 2023?\",\"embedding\":</span><span class="si">${</span><span class="nv">exm_embeddings</span><span class="si">}</span><span class="s2">}"</span><span class="w">   </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

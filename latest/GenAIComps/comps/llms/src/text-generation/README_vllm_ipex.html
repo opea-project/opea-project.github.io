@@ -3138,8 +3138,8 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY</span><span class="o">=</span>intel
 <span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span><span class="m">0</span>.10.0-b4
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">&#39;{printf &quot;%s\n&quot;, $3}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RENDER_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">&#39;{printf &quot;%s\n&quot;, $3}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">'{printf "%s\n", $3}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RENDER_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">'{printf "%s\n", $3}'</span><span class="k">)</span>
 
 <span class="nv">HF_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_HOME</span><span class="p">:=~/.cache/huggingface</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span>HF_HOME
@@ -3150,10 +3150,10 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_PORT</span><span class="o">=</span><span class="m">41090</span>
 
 <span class="c1"># Single-Arc GPU, select GPU index as needed</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">&quot;level_zero:0&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">"level_zero:0"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="m">1</span>
 <span class="c1"># Multi-Arc GPU, select GPU indices as needed</span>
-<span class="c1"># export ONEAPI_DEVICE_SELECTOR=&quot;level_zero:0;level_zero:1&quot;</span>
+<span class="c1"># export ONEAPI_DEVICE_SELECTOR="level_zero:0;level_zero:1"</span>
 <span class="c1"># export TENSOR_PARALLEL_SIZE=2</span>
 </pre></div>
 </div>
@@ -3177,16 +3177,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="use-the-llm-service-api">
 <h3>Use the LLM Service API<a class="headerlink" href="#use-the-llm-service-api" title="Link to this heading">¶</a></h3>
 <p>Send a POST request with a prompt.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:41090/v1/chat/completions<span class="w"> </span>-XPOST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;model&quot;: &quot;Qwen/Qwen3-8B-AWQ&quot;,</span>
-<span class="s1">    &quot;messages&quot;: [</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:41090/v1/chat/completions<span class="w"> </span>-XPOST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "model": "Qwen/Qwen3-8B-AWQ",</span>
+<span class="s1">    "messages": [</span>
 <span class="s1">      {</span>
-<span class="s1">        &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">        &quot;content&quot;: &quot;What is Deep Learning?&quot;</span>
+<span class="s1">        "role": "user",</span>
+<span class="s1">        "content": "What is Deep Learning?"</span>
 <span class="s1">      }</span>
 <span class="s1">    ],</span>
-<span class="s1">    &quot;max_tokens&quot;: 512</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">    "max_tokens": 512</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>

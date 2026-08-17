@@ -3118,16 +3118,16 @@
 <p>Change the job target endpoint to the microservice you want to track metrics for. Make sure the service exposes a <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> that follows Prometheus conventions.</p>
 <p>Here is an example of exporting metrics data from a TGI microservice (inside a Kubernetes cluster) to Prometheus.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># A scrape configuration containing exactly one endpoint to scrape:</span>
-<span class="c1"># Here it&#39;s Prometheus itself.</span>
+<span class="c1"># Here it's Prometheus itself.</span>
 <span class="nt">scrape_configs</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tgi&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">"tgi"</span>
 
-<span class="w">    </span><span class="c1"># metrics_path defaults to &#39;/metrics&#39;</span>
-<span class="w">    </span><span class="c1"># scheme defaults to &#39;http&#39;.</span>
+<span class="w">    </span><span class="c1"># metrics_path defaults to '/metrics'</span>
+<span class="w">    </span><span class="c1"># scheme defaults to 'http'.</span>
 
 <span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;llm-dependency-svc.default.svc.cluster.local:9009&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"llm-dependency-svc.default.svc.cluster.local:9009"</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <p>Next, run Prometheus server <code class="docutils literal notranslate"><span class="pre">nohup</span> <span class="pre">./prometheus</span> <span class="pre">--config.file=./prometheus.yml</span> <span class="pre">&amp;</span></code>.</p>
@@ -3144,10 +3144,10 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </div>
 <p>Add the following configuration to <code class="docutils literal notranslate"><span class="pre">prometheus.yml</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scrape_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;prometheus-node-exporter&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">"prometheus-node-exporter"</span>
 <span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/metrics</span>
 <span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;&lt;NODE1_IP&gt;:9100&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;&lt;NODE2_IP&gt;:9100&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&lt;NODE1_IP&gt;:9100"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;NODE2_IP&gt;:9100"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <p>The following Grafana dashboards rely on Prometheus Node Exporter:</p>
@@ -3170,11 +3170,11 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </div>
 <p>Add the following configuration to <code class="docutils literal notranslate"><span class="pre">prometheus.yml</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scrape_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;prometheus-gaudi-exporter&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">"prometheus-gaudi-exporter"</span>
 <span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s</span>
 <span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/metrics</span>
 <span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;&lt;NODE1_IP&gt;:41611&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;&lt;NODE2_IP&gt;:41611&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"&lt;NODE1_IP&gt;:41611"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"&lt;NODE2_IP&gt;:41611"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">...</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <p>The following Grafana dashboard rely on Intel Gaudi Prometheus Metrics Exporter:</p>

@@ -3125,7 +3125,7 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT_PORT</span><span class="o">=</span><span class="m">8008</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">DOCSUM_PORT</span><span class="o">=</span><span class="m">9000</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MAX_INPUT_TOKENS</span><span class="o">=</span><span class="m">2048</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MAX_TOTAL_TOKENS</span><span class="o">=</span><span class="m">4096</span>
@@ -3159,9 +3159,9 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <li><p>Start the backend LLM service (<a class="reference internal" href="#../../../third_parties/tgi"><span class="xref myst">TGI</span></a> or <a class="reference internal" href="#../../../third_parties/vllm"><span class="xref myst">vLLM</span></a>).</p></li>
 <li><p>Start DocSum microservice:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DocSum_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaDocSumTgi&quot;</span><span class="w"> </span><span class="c1"># or &quot;OpeaDocSumvLLM&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DocSum_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OpeaDocSumTgi"</span><span class="w"> </span><span class="c1"># or "OpeaDocSumvLLM"</span>
 docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;llm-docsum-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="o">=</span><span class="s2">"llm-docsum-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span><span class="m">9000</span>:9000<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3178,8 +3178,8 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </section>
 <section id="option-b-run-with-docker-compose">
 <h4>Option B: Run with Docker Compose<a class="headerlink" href="#option-b-run-with-docker-compose" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;docsum-tgi&quot;</span>
-<span class="c1"># Alternatives: &quot;docsum-tgi-gaudi&quot;, &quot;docsum-vllm&quot;, &quot;docsum-vllm-gaudi&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"docsum-tgi"</span>
+<span class="c1"># Alternatives: "docsum-tgi-gaudi", "docsum-vllm", "docsum-vllm-gaudi"</span>
 
 <span class="nb">cd</span><span class="w"> </span>../../deployment/docker_compose/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_doc-summarization.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
@@ -3204,7 +3204,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/health_check<span class="w"> </span><span class="se">\</span>
 -X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3226,20 +3226,20 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable stream to receive a stream response. By default, this is set to True.</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.", "max_tokens":32, "language":"en"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 <span class="c1"># Disable stream to receive a non-stream response.</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;, &quot;stream&quot;:false}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.", "max_tokens":32, "language":"en", "stream":false}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 <span class="c1"># Use Chinese mode</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;2024年9月26日，北京——今日，英特尔正式发布英特尔® 至强® 6性能核处理器（代号Granite Rapids），为AI、数据分析、科学计算等计算密集型业务提供卓越性能。&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;zh&quot;, &quot;stream&quot;:false}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"2024年9月26日，北京——今日，英特尔正式发布英特尔® 至强® 6性能核处理器（代号Granite Rapids），为AI、数据分析、科学计算等计算密集型业务提供卓越性能。", "max_tokens":32, "language":"zh", "stream":false}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3254,8 +3254,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <p>Truncate mode will truncate the input text and keep only the first chunk, whose length is equal to <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;, &quot;summary_type&quot;: &quot;truncate&quot;, &quot;chunk_size&quot;: 2000}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.", "max_tokens":32, "language":"en", "summary_type": "truncate", "chunk_size": 2000}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p><strong>summary_type=map_reduce</strong></p>
@@ -3263,8 +3263,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">50,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;, &quot;summary_type&quot;: &quot;map_reduce&quot;, &quot;chunk_size&quot;: 2000, &quot;stream&quot;:false, &quot;timeout&quot;:200}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.", "max_tokens":32, "language":"en", "summary_type": "map_reduce", "chunk_size": 2000, "stream":false, "timeout":200}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p><strong>summary_type=refine</strong></p>
@@ -3272,8 +3272,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <p>In this mode, default <code class="docutils literal notranslate"><span class="pre">chunk_size</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">min(MAX_TOTAL_TOKENS</span> <span class="pre">-</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">input.max_tokens</span> <span class="pre">-</span> <span class="pre">128,</span> <span class="pre">MAX_INPUT_TOKENS)</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:9000/v1/docsum<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;, &quot;max_tokens&quot;:32, &quot;language&quot;:&quot;en&quot;, &quot;summary_type&quot;: &quot;refine&quot;, &quot;chunk_size&quot;: 2000, &quot;timeout&quot;:200}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.", "max_tokens":32, "language":"en", "summary_type": "refine", "chunk_size": 2000, "timeout":200}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

@@ -3127,11 +3127,11 @@ You need to ingest your knowledge documents into the vector database.</p>
 </section>
 <section id="start-the-retriever-service">
 <h4>1.2.2 Start the retriever service<a class="headerlink" href="#start-the-retriever-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="c1"># If you&#39;ve configured the server with the default env values then:</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="c1"># If you've configured the server with the default env values then:</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MARIADB_CONNECTION_URL</span><span class="o">=</span>mariadb+mariadbconnector://dbuser:password@<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>$:3306/vectordb
 
-docker<span class="w"> </span>run<span class="w">  </span>-d<span class="w"> </span>--rm<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;retriever-mariadb-vector&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">MARIADB_CONNECTION_URL</span><span class="o">=</span><span class="nv">$MARIADB_CONNECTION_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">RETRIEVER_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_RETRIEVER_MARIADBVECTOR&quot;</span><span class="w"> </span>opea/retriever:latest
+docker<span class="w"> </span>run<span class="w">  </span>-d<span class="w"> </span>--rm<span class="w"> </span>--name<span class="o">=</span><span class="s2">"retriever-mariadb-vector"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">7000</span>:7000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">MARIADB_CONNECTION_URL</span><span class="o">=</span><span class="nv">$MARIADB_CONNECTION_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">RETRIEVER_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_RETRIEVER_MARIADBVECTOR"</span><span class="w"> </span>opea/retriever:latest
 </pre></div>
 </div>
 </section>
@@ -3150,18 +3150,18 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>2.1 Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:7000/v1/health_check<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
 <section id="consume-embedding-service">
 <h3>2.2 Consume Embedding Service<a class="headerlink" href="#consume-embedding-service" title="Link to this heading">¶</a></h3>
 <p>To consume the Retriever Microservice, you can generate a mock embedding vector of length 768 with Python.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)&quot;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import random; embedding = [random.uniform(-1, 1) for _ in range(768)]; print(embedding)"</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>:7000/v1/retrieval<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;{\&quot;text\&quot;:\&quot;What is the revenue of Nike in 2023?\&quot;,\&quot;embedding\&quot;:</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"{\"text\":\"What is the revenue of Nike in 2023?\",\"embedding\":</span><span class="si">${</span><span class="nv">your_embedding</span><span class="si">}</span><span class="s2">}"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

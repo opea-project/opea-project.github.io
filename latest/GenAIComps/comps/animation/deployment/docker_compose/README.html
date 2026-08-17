@@ -3146,14 +3146,14 @@
 <span class="nb">cd</span><span class="w"> </span>../../..
 
 <span class="c1"># Validate the Animation service endpoint</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9066/v1/animation<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
 -d<span class="w"> </span>@comps/animation/src/assets/audio/sample_question.json
 </pre></div>
 </div>
 <p>The expected output will be a JSON object containing the path to the generated video file:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;wav2lip_result&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;.../GenAIComps/comps/animation/src/assets/outputs/result.mp4&quot;</span><span class="w"> </span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">"wav2lip_result"</span><span class="p">:</span><span class="w"> </span><span class="s2">".../GenAIComps/comps/animation/src/assets/outputs/result.mp4"</span><span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
 <p>The generated video <code class="docutils literal notranslate"><span class="pre">result.mp4</span></code> will be available in the <code class="docutils literal notranslate"><span class="pre">comps/animation/src/assets/outputs/</span></code> directory.</p>
@@ -3207,20 +3207,20 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 <p>Set the necessary environment variables for the containers.</p>
 <ul>
 <li><p><strong>For Intel® Xeon® CPU:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DEVICE</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DEVICE</span><span class="o">=</span><span class="s2">"cpu"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">WAV2LIP_PORT</span><span class="o">=</span><span class="m">7860</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHECKPOINT_PATH</span><span class="o">=</span><span class="s1">&#39;/usr/local/lib/python3.11/site-packages/Wav2Lip/checkpoints/wav2lip_gan.pth&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="s1">&#39;/usr/bin/python3.11&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CHECKPOINT_PATH</span><span class="o">=</span><span class="s1">'/usr/local/lib/python3.11/site-packages/Wav2Lip/checkpoints/wav2lip_gan.pth'</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="s1">'/usr/bin/python3.11'</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>For Intel® Gaudi® 2 HPU:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DEVICE</span><span class="o">=</span><span class="s2">&quot;hpu&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DEVICE</span><span class="o">=</span><span class="s2">"hpu"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">WAV2LIP_PORT</span><span class="o">=</span><span class="m">7860</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CHECKPOINT_PATH</span><span class="o">=</span><span class="s1">&#39;/usr/local/lib/python3.10/dist-packages/Wav2Lip/checkpoints/wav2lip_gan.pth&#39;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="s1">&#39;/usr/bin/python3.10&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CHECKPOINT_PATH</span><span class="o">=</span><span class="s1">'/usr/local/lib/python3.10/dist-packages/Wav2Lip/checkpoints/wav2lip_gan.pth'</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="s1">'/usr/bin/python3.10'</span>
 </pre></div>
 </div>
 </li>
@@ -3232,7 +3232,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 <h4>2.4.1. Run Wav2Lip Microservice<a class="headerlink" href="#run-wav2lip-microservice" title="Link to this heading">¶</a></h4>
 <ul>
 <li><p><strong>For Intel® Xeon® CPU:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--privileged<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;wav2lip-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$WAV2LIP_PORT</span>:<span class="nv">$WAV2LIP_PORT</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--privileged<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">"wav2lip-service"</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$WAV2LIP_PORT</span>:<span class="nv">$WAV2LIP_PORT</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 -w<span class="w"> </span>/home/user/comps/animation/src<span class="w"> </span><span class="se">\</span>
 -v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/comps/animation/src/assets:/home/user/comps/animation/src/assets<span class="w"> </span><span class="se">\</span>
 -e<span class="w"> </span><span class="nv">PYTHON</span><span class="o">=</span><span class="nv">$PYTHON_PATH</span><span class="w"> </span><span class="se">\</span>
@@ -3244,7 +3244,7 @@ opea/wav2lip:latest
 </div>
 </li>
 <li><p><strong>For Intel® Gaudi® 2 HPU:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--privileged<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;wav2lip-gaudi-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$WAV2LIP_PORT</span>:<span class="nv">$WAV2LIP_PORT</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--privileged<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">"wav2lip-gaudi-service"</span><span class="w"> </span>-p<span class="w"> </span><span class="nv">$WAV2LIP_PORT</span>:<span class="nv">$WAV2LIP_PORT</span><span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 -w<span class="w"> </span>/home/user/comps/animation/src<span class="w"> </span><span class="se">\</span>
 -v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/comps/animation/src/assets:/home/user/comps/animation/src/assets<span class="w"> </span><span class="se">\</span>
 -e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span><span class="se">\</span>
@@ -3260,7 +3260,7 @@ opea/wav2lip-gaudi:latest
 </section>
 <section id="run-animation-microservice">
 <h4>2.4.2. Run Animation Microservice<a class="headerlink" href="#run-animation-microservice" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;animation-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9066</span>:9066<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">"animation-service"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9066</span>:9066<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">WAV2LIP_ENDPOINT</span><span class="o">=</span>http://<span class="nv">$ip_address</span>:<span class="nv">$WAV2LIP_PORT</span><span class="w"> </span><span class="se">\</span>
@@ -3274,7 +3274,7 @@ opea/wav2lip-gaudi:latest
 <p>After starting both containers, test the animation service endpoint. Make sure you are in the root directory of the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> repository.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The ip_address variable should be set from step 2.3</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9066/v1/animation<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
 -d<span class="w"> </span>@comps/animation/src/assets/audio/sample_question.json
 </pre></div>
 </div>

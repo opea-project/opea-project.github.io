@@ -3217,12 +3217,12 @@ torch.xpu.device_count<span class="o">()</span>
 <section id="dataset-json-prepare">
 <h2>Dataset JSON prepare<a class="headerlink" href="#dataset-json-prepare" title="Link to this heading">¶</a></h2>
 <p>Prepare dataset json as the following example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="s2">&quot;video_name&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;sentences&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;sentence 1&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sentence 2&quot;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="s2">"video_name"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"sentences"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"sentence 1"</span><span class="p">,</span>
+        <span class="s2">"sentence 2"</span><span class="p">,</span>
         <span class="o">...</span>
-        <span class="s2">&quot;sentence n&quot;</span>
+        <span class="s2">"sentence n"</span>
         <span class="p">]</span>
     <span class="p">}</span>
 </pre></div>
@@ -3243,15 +3243,15 @@ For a more detailed guide, please refer to <a class="reference internal" href="#
 <a class="reference external" href="https://papers.neurips.cc/paper_files/paper/2022/hash/00bb4e415ef117f2dee2fc3b778d806d-Abstract-Conference.html">Scaling &amp; Shifting Your Features: A New Baseline for Efficient Model Tuning</a><br />
 <a class="reference external" href="https://openreview.net/forum?id=Hk6dkJQFx">Revisiting Batch Normalization For Practical Domain Adaptation</a></p>
 <p>Example</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">&quot;peft&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bitfit&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;keep_module_keywords&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                </span><span class="s2">&quot;ln_post&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;visual.proj&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;ln_final&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;text_projection&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logit_scale&quot;</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">"peft"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bitfit"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"keep_module_keywords"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">"ln_post"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"visual.proj"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"ln_final"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"text_projection"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"logit_scale"</span>
 <span class="w">            </span><span class="p">]</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -3265,20 +3265,20 @@ For a more detailed guide, please refer to <a class="reference internal" href="#
 <p>Select partial layers for finetune based on the parameter updates after training a given steps/epochs. The metric for importance can be either the l2 norm of param updates or angle based, which is introduced in the following paper:</p>
 <p><a class="reference external" href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/html/3155_ECCV_2020_paper.php">Angle-based Search Space Shrinking for Neural Architecture Search</a></p>
 <p>Example</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">&quot;peft&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ibs&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;pre_batch_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;num_pre_epochs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;retain_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;l2norm&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;normalization&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;keep_module_keywords&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                </span><span class="s2">&quot;ln_post&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;visual.proj&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;ln_final&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;text_projection&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logit_scale&quot;</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nt">"peft"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ibs"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"pre_batch_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"num_pre_epochs"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"retain_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"metric"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l2norm"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"normalization"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"keep_module_keywords"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">"ln_post"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"visual.proj"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"ln_final"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"text_projection"</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">"logit_scale"</span>
 <span class="w">            </span><span class="p">]</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -3395,20 +3395,20 @@ For a more detailed guide, please refer to <a class="reference internal" href="#
 <section id="use-optuna-to-automatic-get-the-best-param">
 <h1>Use optuna to automatic get the best param<a class="headerlink" href="#use-optuna-to-automatic-get-the-best-param" title="Link to this heading">¶</a></h1>
 <p>You can enable optuna to automatic get the best param by adding <code class="docutils literal notranslate"><span class="pre">optuna_cfg</span></code> configs to config files like:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="s2">&quot;optuna_cfg&quot;</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;n_trials&quot;</span>:<span class="w"> </span><span class="m">30</span>,
-<span class="w">        </span><span class="s2">&quot;n_warmup_steps&quot;</span>:10,
-<span class="w">        </span><span class="s2">&quot;sampler&quot;</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">            </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;TPESampler&quot;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="s2">"optuna_cfg"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">"n_trials"</span>:<span class="w"> </span><span class="m">30</span>,
+<span class="w">        </span><span class="s2">"n_warmup_steps"</span>:10,
+<span class="w">        </span><span class="s2">"sampler"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="s2">"name"</span>:<span class="w"> </span><span class="s2">"TPESampler"</span>
 <span class="w">        </span><span class="o">}</span>,
-<span class="w">        </span><span class="s2">&quot;opt_params&quot;</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">            </span><span class="s2">&quot;coef_lr&quot;</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">                </span><span class="s2">&quot;range&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.02,0.5<span class="o">]</span>,
-<span class="w">                </span><span class="s2">&quot;log&quot;</span>:<span class="w"> </span><span class="nb">false</span>
+<span class="w">        </span><span class="s2">"opt_params"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="s2">"coef_lr"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="s2">"range"</span>:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.02,0.5<span class="o">]</span>,
+<span class="w">                </span><span class="s2">"log"</span>:<span class="w"> </span><span class="nb">false</span>
 <span class="w">            </span><span class="o">}</span>,
-<span class="w">            </span><span class="s2">&quot;weight_decay&quot;</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">                </span><span class="s2">&quot;range&quot;</span>:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.01,0.5<span class="o">]</span>,
-<span class="w">                </span><span class="s2">&quot;log&quot;</span>:<span class="w"> </span><span class="nb">false</span>
+<span class="w">            </span><span class="s2">"weight_decay"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="s2">"range"</span>:<span class="w"> </span><span class="o">[</span><span class="m">0</span>.01,0.5<span class="o">]</span>,
+<span class="w">                </span><span class="s2">"log"</span>:<span class="w"> </span><span class="nb">false</span>
 <span class="w">            </span><span class="o">}</span>
 <span class="w">        </span><span class="o">}</span>
 <span class="w">    </span><span class="o">}</span>

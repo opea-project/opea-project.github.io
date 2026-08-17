@@ -3134,10 +3134,10 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p>Deploy the Video-LLaMA service and the LVM microservice using Docker Compose.</p>
 <ol class="arabic">
 <li><p>Export the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_LLAMA_PORT</span><span class="o">=</span><span class="m">11506</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VIDEO_LLAMA_PORT</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VIDEO_LLAMA_PORT</span><span class="s2">"</span>
 </pre></div>
 </div>
 </li>
@@ -3159,8 +3159,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <p>Send a POST request with a <code class="docutils literal notranslate"><span class="pre">video_url</span></code> and a prompt. You can specify which part of the video to analyze with <code class="docutils literal notranslate"><span class="pre">chunk_start</span></code> and <code class="docutils literal notranslate"><span class="pre">chunk_duration</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;video_url&quot;:&quot;https://github.com/DAMO-NLP-SG/Video-LLaMA/raw/main/examples/silence_girl.mp4&quot;,&quot;chunk_start&quot;: 0,&quot;chunk_duration&quot;: 9,&quot;prompt&quot;:&quot;What is the person doing?&quot;,&quot;max_new_tokens&quot;: 150}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"video_url":"https://github.com/DAMO-NLP-SG/Video-LLaMA/raw/main/examples/silence_girl.mp4","chunk_start": 0,"chunk_duration": 9,"prompt":"What is the person doing?","max_new_tokens": 150}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

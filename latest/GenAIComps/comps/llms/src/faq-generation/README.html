@@ -3124,7 +3124,7 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT_PORT</span><span class="o">=</span><span class="m">8008</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">FAQ_PORT</span><span class="o">=</span><span class="m">9000</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_api_token</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">your_hf_llm_model</span><span class="si">}</span>
 </pre></div>
 </div>
@@ -3153,9 +3153,9 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <li><p>Start the backend LLM service (<a class="reference internal" href="#../../../third_parties/tgi"><span class="xref myst">TGI</span></a> or <a class="reference internal" href="#../../../third_parties/vllm"><span class="xref myst">vLLM</span></a>).</p></li>
 <li><p>Start FAQGen microservice:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FAQGen_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaFaqGenTgi&quot;</span><span class="w"> </span><span class="c1"># or &quot;OpeaFaqGenvLLM&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FAQGen_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OpeaFaqGenTgi"</span><span class="w"> </span><span class="c1"># or "OpeaFaqGenvLLM"</span>
 docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;llm-faqgen-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="o">=</span><span class="s2">"llm-faqgen-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span><span class="m">9000</span>:9000<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3170,11 +3170,11 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 </section>
 <section id="option-b-run-with-docker-compose">
 <h4>Option B: Run with Docker Compose<a class="headerlink" href="#option-b-run-with-docker-compose" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;faqgen-tgi&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"faqgen-tgi"</span>
 <span class="c1"># Alternatives:</span>
-<span class="c1"># export service_name=&quot;faqgen-tgi-gaudi&quot;</span>
-<span class="c1"># export service_name=&quot;faqgen-vllm&quot;</span>
-<span class="c1"># export service_name=&quot;faqgen-vllm-gaudi&quot;</span>
+<span class="c1"># export service_name="faqgen-tgi-gaudi"</span>
+<span class="c1"># export service_name="faqgen-vllm"</span>
+<span class="c1"># export service_name="faqgen-vllm-gaudi"</span>
 
 <span class="nb">cd</span><span class="w"> </span>../../deployment/docker_compose/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_faq-generation.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
@@ -3190,7 +3190,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQ_PORT</span><span class="si">}</span>/v1/health_check<span class="w"> </span><span class="se">\</span>
 -X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3200,15 +3200,15 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <span class="c1"># Set stream to True. Default will be True.</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQ_PORT</span><span class="si">}</span>/v1/faqgen<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,&quot;max_tokens&quot;: 128}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.","max_tokens": 128}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 <span class="c1"># Non-Streaming Response</span>
 <span class="c1"># Set stream to False.</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FAQ_PORT</span><span class="si">}</span>/v1/faqgen<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;messages&quot;:&quot;Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.&quot;,&quot;max_tokens&quot;: 128, &quot;stream&quot;:false}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"messages":"Text Embeddings Inference (TEI) is a toolkit for deploying and serving open source text embeddings and sequence classification models. TEI enables high-performance extraction for the most popular models, including FlagEmbedding, Ember, GTE and E5.","max_tokens": 128, "stream":false}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

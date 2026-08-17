@@ -3117,8 +3117,8 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/</span>
 <span class="go">scripts/update_dependency.sh</span>
 <span class="go">helm dependency update visualqna</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
+<span class="go">export HFTOKEN="insert-your-huggingface-token-here"</span>
+<span class="go">export MODELDIR="/mnt/opea-models"</span>
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>CPU<span class="w"> </span>with<span class="w"> </span>vLLM
 <span class="go">helm install visualqna visualqna --set global.HF_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR}</span>
 <span class="gp"># </span>To<span class="w"> </span>use<span class="w"> </span>Gaudi<span class="w"> </span>with<span class="w"> </span>vLLM
@@ -3141,15 +3141,15 @@
 <p>Run the command <code class="docutils literal notranslate"><span class="pre">kubectl</span> <span class="pre">port-forward</span> <span class="pre">svc/visualqna</span> <span class="pre">8888:8888</span></code> to expose the service for access.</p>
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:8888/v1/visualqna \</span>
-<span class="go">    -H &quot;Content-Type: application/json&quot; \</span>
-<span class="go">    -d &#39;{&quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;,&quot;text&quot;: &quot;What is in this image?&quot;}, {&quot;type&quot;: &quot;image_url&quot;, &quot;image_url&quot;: {&quot;url&quot;: &quot;https://www.ilankelman.org/stopsigns/australia.jpg&quot;}}]}], &quot;max_tokens&quot;: 300}&#39;</span>
+<span class="go">    -H "Content-Type: application/json" \</span>
+<span class="go">    -d '{"messages": [{"role": "user", "content": [{"type": "text","text": "What is in this image?"}, {"type": "image_url", "image_url": {"url": "https://www.ilankelman.org/stopsigns/australia.jpg"}}]}], "max_tokens": 300}'</span>
 </pre></div>
 </div>
 </section>
 <section id="verify-the-workload-through-ui">
 <h3>Verify the workload through UI<a class="headerlink" href="#verify-the-workload-through-ui" title="Link to this heading">¶</a></h3>
 <p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with the NGINX port. You can find the NGINX port using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>visualqna-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>visualqna-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">'jsonpath={.spec.ports[0].nodePort}'</span><span class="k">)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$port</span>
 </pre></div>
 </div>

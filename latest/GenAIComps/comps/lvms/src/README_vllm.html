@@ -3151,10 +3151,10 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p>Deploy the vLLM service and the LVM microservice using Docker Compose.</p>
 <ol class="arabic">
 <li><p>Export the required environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LVM_PORT</span><span class="o">=</span><span class="m">9399</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_PORT</span><span class="o">=</span><span class="m">11507</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VLLM_PORT</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VLLM_PORT</span><span class="s2">"</span>
 
 <span class="c1"># Option 1: for LLaVA model</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>llava-hf/llava-1.5-7b-hf
@@ -3188,8 +3188,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <p>Send a POST request with an image (base64 encoded) and a prompt.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:9399/v1/lvm<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;:&quot;What is this?&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"image": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC", "prompt":"What is this?"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

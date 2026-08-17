@@ -3135,9 +3135,9 @@
 <h4>Embedding 与 Reranking<a class="headerlink" href="#embedding-reranking" title="Link to this heading">¶</a></h4>
 <p>Embedding 与 Reranking 通常由本地 OpenVINO 推理提供，可按如下方式准备：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 准备 embedding、reranking 模型：</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># embedding、reranking、LLM 模型目录</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models"</span><span class="w"> </span><span class="c1"># embedding、reranking、LLM 模型目录</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$MODEL_PATH</span>
-pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">&quot;optimum[openvino]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span><span class="s2">"optimum[openvino]"</span>
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-small-en-v1.5<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-small-en-v1.5<span class="w"> </span>--task<span class="w"> </span>sentence-similarity
 optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"> </span>openvino<span class="w"> </span>-m<span class="w"> </span>BAAI/bge-reranker-large<span class="w"> </span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span>/BAAI/bge-reranker-large<span class="w"> </span>--task<span class="w"> </span>text-classification
 </pre></div>
@@ -3158,12 +3158,12 @@ optimum-cli<span class="w"> </span><span class="nb">export</span><span class="w"
 <h5>vLLM<a class="headerlink" href="#vllm" title="Link to this heading">¶</a></h5>
 <p>如果你有独立 GPU 并希望使用 vLLM，可按如下方式准备模型：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 准备 vLLM 的 LLM 模型</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-8B&quot;</span><span class="w"> </span><span class="c1"># 模型 ID</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">"Qwen/Qwen3-8B"</span><span class="w"> </span><span class="c1"># 模型 ID</span>
 pip<span class="w"> </span>install<span class="w"> </span>modelscope
-modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">"</span>
 <span class="c1"># 可选：也可以使用 huggingface 下载模型：</span>
 <span class="c1"># pip install -U huggingface_hub</span>
-<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir &quot;${MODEL_PATH}/${LLM_MODEL}&quot;</span>
+<span class="c1"># huggingface-cli download $LLM_MODEL --local-dir "${MODEL_PATH}/${LLM_MODEL}"</span>
 </pre></div>
 </div>
 </section>
@@ -3171,7 +3171,7 @@ modelscope<span class="w"> </span>download<span class="w"> </span>--model<span c
 </section>
 <section id="id2">
 <h3>准备环境变量与配置<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="c1"># 可使用 `ip a` 查看当前活动 ip</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="nv">$ip_address</span><span class="w"> </span><span class="c1"># 主机 IP</span>
 
@@ -3194,7 +3194,7 @@ chown<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </
 
 <span class="c1"># 判断当前系统是否支持NPU</span>
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>/dev/accel<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">ACCEL_DEV</span><span class="o">=</span><span class="s2">&quot;/dev/accel:/dev/accel&quot;</span>
+<span class="w">  </span><span class="nb">export</span><span class="w"> </span><span class="nv">ACCEL_DEV</span><span class="o">=</span><span class="s2">"/dev/accel:/dev/accel"</span>
 <span class="k">fi</span>
 </pre></div>
 </div>
@@ -3269,10 +3269,10 @@ EC-RAG 镜像准备与本地推理章节一致，请参考 <a class="reference i
 <h2>在多 GPU 上部署 EC-RAG<a class="headerlink" href="#gpu-ec-rag" title="Link to this heading">¶</a></h2>
 <p>本示例以 4 张 Arc B60 部署 Qwen3-30B-A3B 为例。<br />
 开始前请先准备模型到 <code class="docutils literal notranslate"><span class="pre">MODEL_PATH</span></code> 并准备好 Docker 镜像。</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models&quot;</span><span class="w"> </span><span class="c1"># 与 quick_start.sh 一致的默认模型路径</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">&quot;Qwen/Qwen3-30B-A3B&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/workspace/models"</span><span class="w"> </span><span class="c1"># 与 quick_start.sh 一致的默认模型路径</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL</span><span class="o">=</span><span class="s2">"Qwen/Qwen3-30B-A3B"</span>
 pip<span class="w"> </span>install<span class="w"> </span>modelscope
-modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">&quot;</span>
+modelscope<span class="w"> </span>download<span class="w"> </span>--model<span class="w"> </span><span class="nv">$LLM_MODEL</span><span class="w"> </span>--local_dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">MODEL_PATH</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LLM_MODEL</span><span class="si">}</span><span class="s2">"</span>
 
 <span class="c1"># vLLM 环境变量</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TP</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="c1"># 多卡时可按需调整 TP</span>

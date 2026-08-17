@@ -3138,7 +3138,7 @@
 <h3>1. Upload a training file<a class="headerlink" href="#upload-a-training-file" title="Link to this heading">¶</a></h3>
 <p>Download a training file <code class="docutils literal notranslate"><span class="pre">alpaca_data.json</span></code> and upload it to the server with below command, this file can be downloaded in <a class="reference external" href="https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json">here</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># upload a training file</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@./alpaca_data.json&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">&quot;fine-tune&quot;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/files<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@./alpaca_data.json"</span><span class="w"> </span>-F<span class="w"> </span><span class="nv">purpose</span><span class="o">=</span><span class="s2">"fine-tune"</span>
 </pre></div>
 </div>
 </section>
@@ -3148,11 +3148,11 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a finetuning job</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;training_file&quot;: &quot;alpaca_data.json&quot;,</span>
-<span class="s1">    &quot;model&quot;: &quot;meta-llama/Llama-2-7b-chat-hf&quot;</span>
-<span class="s1">  }&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "training_file": "alpaca_data.json",</span>
+<span class="s1">    "model": "meta-llama/Llama-2-7b-chat-hf"</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 <p>The outputs of the finetune job (adapter_model.safetensors, adapter_config,json… ) are stored in <code class="docutils literal notranslate"><span class="pre">/home/user/comps/finetuning/src/output</span></code> and other execution logs are stored in <code class="docutils literal notranslate"><span class="pre">/home/user/ray_results</span></code></p>
@@ -3164,13 +3164,13 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">yo
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs<span class="w"> </span>-X<span class="w"> </span>GET
 
 <span class="c1"># retrieve one finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/retrieve<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># cancel one finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/fine_tuning/jobs/cancel<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 
 <span class="c1"># list checkpoints of a finetuning job</span>
-curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;fine_tuning_job_id&quot;: ${fine_tuning_job_id}}&#39;</span>
+curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:8015/v1/finetune/list_checkpoints<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"fine_tuning_job_id": ${fine_tuning_job_id}}'</span>
 </pre></div>
 </div>
 </section>

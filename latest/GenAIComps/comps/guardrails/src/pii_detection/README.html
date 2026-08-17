@@ -3164,13 +3164,13 @@
 </div>
 <p>Set the port that this service will use and the component name</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_PORT</span><span class="o">=</span><span class="m">9080</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_NATIVE_PII&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_NATIVE_PII"</span>
 </pre></div>
 </div>
 <p>By default, this microservice uses <code class="docutils literal notranslate"><span class="pre">OPEA_NATIVE_PII</span></code> which uses <a class="reference external" href="https://microsoft.github.io/presidio/"><code class="docutils literal notranslate"><span class="pre">Microsoft</span> <span class="pre">Presidio</span></code></a> to locally invoke <a class="reference external" href="https://huggingface.co/StanfordAIMI/stanford-deidentifier-base"><code class="docutils literal notranslate"><span class="pre">StanfordAIMI/stanford-deidentifier-base</span></code></a> within a Transformers-based AnalyzerEngine.</p>
 <section id="alternatively-if-you-are-using-prediction-guard-set-the-following-component-name-and-prediction-guard-api-key">
 <h4>Alternatively, if you are using Prediction Guard, set the following component name and Prediction Guard API Key:<a class="headerlink" href="#alternatively-if-you-are-using-prediction-guard-set-the-following-component-name-and-prediction-guard-api-key" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;PREDICTIONGUARD_PII_DETECTION&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PII_DETECTION_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"PREDICTIONGUARD_PII_DETECTION"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="si">${</span><span class="nv">your_predictionguard_api_key</span><span class="si">}</span>
 </pre></div>
 </div>
@@ -3220,7 +3220,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <section id="run-docker-with-cli-option-b">
 <h5>Run Docker with CLI (Option B)<a class="headerlink" href="#run-docker-with-cli-option-b" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--name<span class="o">=</span><span class="s2">&quot;guardrails-pii-detection-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--name<span class="o">=</span><span class="s2">"guardrails-pii-detection-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>:9080<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3254,7 +3254,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <section id="id4">
 <h5>Run Docker with CLI (Option B)<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;pii-predictionguard-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">"pii-predictionguard-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>:9080<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">PREDICTIONGUARD_API_KEY</span><span class="o">=</span><span class="nv">$PREDICTIONGUARD_API_KEY</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span>PII_DETECTION_COMPONENT_NAME:<span class="w"> </span><span class="si">${</span><span class="nv">PREDICTIONGUARD_PII_DETECTION</span><span class="si">}</span>
@@ -3288,8 +3288,8 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <p><strong>Bash Example</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:<span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>/v1/pii<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;My name is John Doe and my phone number is (555) 555-5555.&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"text":"My name is John Doe and my phone number is (555) 555-5555."}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p><strong>Python Example:</strong></p>
@@ -3297,49 +3297,49 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="n">pii_detection_port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PII_DETECTION_PORT&quot;</span><span class="p">)</span>
-<span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
-<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="n">pii_detection_port</span><span class="si">}</span><span class="s2">/v1/pii&quot;</span>
-<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;My name is John Doe and my phone number is (555) 555-5555.&quot;</span><span class="p">}</span>
+<span class="n">pii_detection_port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"PII_DETECTION_PORT"</span><span class="p">)</span>
+<span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"http"</span><span class="p">:</span> <span class="s2">""</span><span class="p">}</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"http://localhost:</span><span class="si">{</span><span class="n">pii_detection_port</span><span class="si">}</span><span class="s2">/v1/pii"</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"My name is John Doe and my phone number is (555) 555-5555."</span><span class="p">}</span>
 
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
     <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>  <span class="c1"># Raise an exception for unsuccessful HTTP status codes</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Request successful!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Request successful!"</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An error occurred:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"An error occurred:"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output</strong>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4631406f5f91728e45ad27eba062bb4b&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detected_pii&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4631406f5f91728e45ad27eba062bb4b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"detected_pii"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;entity_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PHONE_NUMBER&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9992861151695251</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;analysis_explanation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;recognition_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;recognizer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;recognizer_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer_140427422846672&quot;</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PHONE_NUMBER"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9992861151695251</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"analysis_explanation"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recognition_metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"recognizer_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransformersRecognizer"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"recognizer_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransformersRecognizer_140427422846672"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;entity_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PERSON&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8511614799499512</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;analysis_explanation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;recognition_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;recognizer_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;recognizer_identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransformersRecognizer_140427422846672&quot;</span>
+<span class="w">      </span><span class="nt">"entity_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PERSON"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8511614799499512</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"analysis_explanation"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"recognition_metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"recognizer_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransformersRecognizer"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"recognizer_identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransformersRecognizer_140427422846672"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;new_prompt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nt">"new_prompt"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3347,12 +3347,12 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <section id="id8">
 <h3>For Prediction Guard Microservice<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:<span class="si">${</span><span class="nv">PII_DETECTION_PORT</span><span class="si">}</span>/v1/pii<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">      &quot;prompt&quot;: &quot;My name is John Doe and my phone number is (555) 555-5555.&quot;,</span>
-<span class="s1">      &quot;replace&quot;: true,</span>
-<span class="s1">      &quot;replace_method&quot;: &quot;random&quot;</span>
-<span class="s1">      }&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">      "prompt": "My name is John Doe and my phone number is (555) 555-5555.",</span>
+<span class="s1">      "replace": true,</span>
+<span class="s1">      "replace_method": "random"</span>
+<span class="s1">      }'</span>
 </pre></div>
 </div>
 <p>API parameters for Prediction Guard microservice:</p>

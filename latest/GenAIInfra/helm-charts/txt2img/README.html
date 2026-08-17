@@ -3113,8 +3113,8 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/</span>
 <span class="go">scripts/update_dependency.sh</span>
 <span class="go">helm dependency update txt2img</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
+<span class="go">export HFTOKEN="insert-your-huggingface-token-here"</span>
+<span class="go">export MODELDIR="/mnt/opea-models"</span>
 <span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Xeon
 <span class="go">helm install txt2img txt2img --set global.HF_TOKEN=${HFTOKEN} --set global.modelUseHostPath=${MODELDIR}</span>
 <span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Gaudi
@@ -3138,15 +3138,15 @@
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:9379/v1/text2image \</span>
 <span class="go">    -XPOST \</span>
-<span class="go">    -d &#39;{&quot;prompt&quot;:&quot;An astronaut riding a green horse&quot;, &quot;num_images_per_prompt&quot;:1}&#39; \</span>
-<span class="go">    -H &#39;Content-Type: application/json&#39;</span>
+<span class="go">    -d '{"prompt":"An astronaut riding a green horse", "num_images_per_prompt":1}' \</span>
+<span class="go">    -H 'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
 <section id="verify-the-workload-through-ui">
 <h3>Verify the workload through UI<a class="headerlink" href="#verify-the-workload-through-ui" title="Link to this heading">¶</a></h3>
 <p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with the NGINX port. You can find the NGINX port using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>txt2img-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>txt2img-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">'jsonpath={.spec.ports[0].nodePort}'</span><span class="k">)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$port</span>
 </pre></div>
 </div>

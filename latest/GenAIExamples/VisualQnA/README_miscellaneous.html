@@ -3182,11 +3182,11 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p>If you get errors like “Access Denied”, <a class="reference internal" href="docker_compose/intel/cpu/xeon/README.html#validate-microservices"><span class="std std-ref">validate micro service</span></a> first. A simple example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">http_proxy</span><span class="o">=</span><span class="s2">""</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;,&quot;parameters&quot;:{&quot;max_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"inputs":"    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'Golang    \npackage main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'    ### Translated codes:","parameters":{"max_tokens":17, "do_sample": true}}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
@@ -3206,7 +3206,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>OPEA microservice and <a class="reference external" href="https://huggingface.co/docs/text-generation-inference/en/index">TGI</a>/<a class="reference external" href="https://huggingface.co/docs/text-embeddings-inference/en/index">TEI</a> serving can easily be traced through <a class="reference external" href="https://www.jaegertracing.io/">Jaeger</a> dashboards in conjunction with <a class="reference external" href="https://opentelemetry.io/">OpenTelemetry</a> Tracing feature. Follow the <a class="reference external" href="https://github.com/opea-project/GenAIComps/tree/main/comps/cores/telemetry#tracing">README</a> to trace additional functions if needed.</p>
 <p>Tracing data is exported to http://{EXTERNAL_IP}:4318/v1/traces via Jaeger.
 Users could also get the external IP via below command.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ip<span class="w"> </span>route<span class="w"> </span>get<span class="w"> </span><span class="m">8</span>.8.8.8<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">&#39;src \K[^ ]+&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ip<span class="w"> </span>route<span class="w"> </span>get<span class="w"> </span><span class="m">8</span>.8.8.8<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">'src \K[^ ]+'</span>
 </pre></div>
 </div>
 <p>Access the Jaeger dashboard UI at http://{EXTERNAL_IP}:16686</p>

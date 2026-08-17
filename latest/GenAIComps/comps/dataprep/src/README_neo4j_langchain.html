@@ -3124,7 +3124,7 @@
 <span class="w">    </span>--name<span class="w"> </span>neo4j-apoc<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-d<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_AUTH</span><span class="o">=</span>neo4j/password<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_PLUGINS</span><span class="o">=</span><span class="se">\[\&quot;</span>apoc<span class="se">\&quot;\]</span><span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span><span class="nv">NEO4J_PLUGINS</span><span class="o">=</span><span class="se">\[\"</span>apoc<span class="se">\"\]</span><span class="w">  </span><span class="se">\</span>
 <span class="w">    </span>neo4j:latest
 </pre></div>
 </div>
@@ -3149,7 +3149,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-docker-with-cli">
 <h3>Run Docker with CLI<a class="headerlink" href="#run-docker-with-cli" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;dataprep-neo4j-server&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">6007</span>:6007<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_DATAPREP_NEO4J_LANGCHAIN&quot;</span><span class="w"> </span>opea/dataprep-neo4j:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"dataprep-neo4j-server"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">6007</span>:6007<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_DATAPREP_NEO4J_LANGCHAIN"</span><span class="w"> </span>opea/dataprep-neo4j:latest
 </pre></div>
 </div>
 </section>
@@ -3165,17 +3165,17 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h2>Invoke Microservice<a class="headerlink" href="#invoke-microservice" title="Link to this heading">¶</a></h2>
 <p>Once document preparation microservice for Neo4J is started, user can use below command to invoke the microservice to convert the document to embedding and save to the database.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./file1.txt"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
 <p>You can specify chunk_size and chunk_size by the following commands.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./file1.txt&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_size=1500&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;chunk_overlap=100&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./file1.txt"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"chunk_size=1500"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"chunk_overlap=100"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
@@ -3183,10 +3183,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <p>Note: If you specify “table_strategy=llm”, You should first start TGI Service, please refer to 1.2.1, 1.3.1 in https://github.com/opea-project/GenAIComps/tree/main/comps/llms/README.md, and then <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">TGI_LLM_ENDPOINT=&quot;http://${your_ip}:8008&quot;</span></code>.</p>
 <p>For ensure the quality and comprehensiveness of the extracted entities, we recommend to use <code class="docutils literal notranslate"><span class="pre">gpt-4o</span></code> as the default model for parsing the document. To enable the openai service, please <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">OPENAI_KEY=xxxx</span></code> before using this services.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: multipart/form-data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;files=@./your_file.pdf&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;process_table=true&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-F<span class="w"> </span><span class="s2">&quot;table_strategy=hq&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: multipart/form-data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"files=@./your_file.pdf"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"process_table=true"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-F<span class="w"> </span><span class="s2">"table_strategy=hq"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>

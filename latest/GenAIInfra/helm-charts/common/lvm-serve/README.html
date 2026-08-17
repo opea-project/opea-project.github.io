@@ -3112,8 +3112,8 @@
 <p>To install the chart, run the following:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/common</span>
 <span class="go">export MODELDIR=/mnt/opea-models</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export LVM_MODEL_ID=&quot;llava-hf/llava-1.5-7b-hf&quot;</span>
+<span class="go">export HFTOKEN="insert-your-huggingface-token-here"</span>
+<span class="go">export LVM_MODEL_ID="llava-hf/llava-1.5-7b-hf"</span>
 <span class="gp"># </span>To<span class="w"> </span>deploy<span class="w"> </span>lvm-llava<span class="w"> </span>microserice<span class="w"> </span>on<span class="w"> </span>CPU
 <span class="go">helm install lvm-serve lvm-serve --set global.modelUseHostPath=${MODELDIR} --set global.HF_TOKEN=${HFTOKEN} --set LVM_MODEL_ID=${LVM_MODEL_ID}</span>
 <span class="gp"># </span>To<span class="w"> </span>deploy<span class="w"> </span>lvm-llava<span class="w">  </span>microserice<span class="w"> </span>on<span class="w"> </span>Gaudi
@@ -3134,15 +3134,15 @@
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Verify<span class="w"> </span>with<span class="w"> </span>lvm-llava
 <span class="go">pip install Pillow requests</span>
-<span class="go">image_b64_str=$(python -c &#39;import base64;from io import BytesIO;import PIL.Image;import requests;image_path = &quot;https://avatars.githubusercontent.com/u/39623753?s=40&amp;v=4&quot;;image = PIL.Image.open(requests.get(image_path, stream=True, timeout=3000).raw);buffered = BytesIO();image.save(buffered, format=&quot;PNG&quot;);img_b64_str = base64.b64encode(buffered.getvalue()).decode();print(img_b64_str)&#39;)</span>
-<span class="go">body=&quot;{\&quot;img_b64_str\&quot;: \&quot;${image_b64_str}\&quot;, \&quot;prompt\&quot;: \&quot;What is this?\&quot;, \&quot;max_new_tokens\&quot;: 32}&quot;</span>
-<span class="go">url=&quot;http://localhost:9399/generate&quot;</span>
-<span class="go">curl $url -XPOST -d &quot;$body&quot; -H &#39;Content-Type: application/json&#39;</span>
+<span class="go">image_b64_str=$(python -c 'import base64;from io import BytesIO;import PIL.Image;import requests;image_path = "https://avatars.githubusercontent.com/u/39623753?s=40&amp;v=4";image = PIL.Image.open(requests.get(image_path, stream=True, timeout=3000).raw);buffered = BytesIO();image.save(buffered, format="PNG");img_b64_str = base64.b64encode(buffered.getvalue()).decode();print(img_b64_str)')</span>
+<span class="go">body="{\"img_b64_str\": \"${image_b64_str}\", \"prompt\": \"What is this?\", \"max_new_tokens\": 32}"</span>
+<span class="go">url="http://localhost:9399/generate"</span>
+<span class="go">curl $url -XPOST -d "$body" -H 'Content-Type: application/json'</span>
 
 <span class="gp"># </span>Verify<span class="w"> </span>with<span class="w"> </span>lvm-video-llama
-<span class="go">body=&#39;{&quot;image&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC&quot;, &quot;prompt&quot;: &quot;Describe the image.&quot;, &quot;max_new_tokens&quot;: 32}&#39;</span>
-<span class="go">url=&quot;http://localhost:9399/v1/lvm-serve&quot;</span>
-<span class="go">curl $url -XPOST -d &quot;$body&quot; -H &#39;Content-Type: application/json&#39;</span>
+<span class="go">body='{"image": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8/5+hnoEIwDiqkL4KAcT9GO0U4BxoAAAAAElFTkSuQmCC", "prompt": "Describe the image.", "max_new_tokens": 32}'</span>
+<span class="go">url="http://localhost:9399/v1/lvm-serve"</span>
+<span class="go">curl $url -XPOST -d "$body" -H 'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

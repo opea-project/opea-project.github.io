@@ -3130,11 +3130,11 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="start-the-data-preparation-service">
 <h4>1.2.2 Start the data preparation service<a class="headerlink" href="#start-the-data-preparation-service" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="c1"># If you&#39;ve configured the server with the default env values then:</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="c1"># If you've configured the server with the default env values then:</span>
 <span class="nb">export</span><span class="w"> </span>MARIADB_CONNECTION_URL:<span class="w"> </span>mariadb+mariadbconnector://dbuser:password@<span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span>$:3306/vectordb
 
-docker<span class="w"> </span>run<span class="w">  </span>-d<span class="w"> </span>--rm<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;dataprep-mariadb-vector&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5000</span>:5000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">MARIADB_CONNECTION_URL</span><span class="o">=</span><span class="nv">$MARIADB_CONNECTION_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OPEA_DATAPREP_MARIADBVECTOR&quot;</span><span class="w"> </span>opea/dataprep:latest
+docker<span class="w"> </span>run<span class="w">  </span>-d<span class="w"> </span>--rm<span class="w"> </span>--name<span class="o">=</span><span class="s2">"dataprep-mariadb-vector"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">5000</span>:5000<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">MARIADB_CONNECTION_URL</span><span class="o">=</span><span class="nv">$MARIADB_CONNECTION_URL</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">DATAPREP_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OPEA_DATAPREP_MARIADBVECTOR"</span><span class="w"> </span>opea/dataprep:latest
 </pre></div>
 </div>
 </section>
@@ -3152,10 +3152,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <section id="consume-upload-api">
 <h3>2.1 Consume Upload API<a class="headerlink" href="#consume-upload-api" title="Link to this heading">¶</a></h3>
 <p>Once the data preparation microservice for MariaDB Vector is started, one can use the below command to invoke the microservice to convert documents/links to embeddings and save them to the vector store.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">document</span><span class="o">=</span><span class="s2">&quot;/path/to/document&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">document</span><span class="o">=</span><span class="s2">"/path/to/document"</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;path&quot;:&quot;${document}&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"path":"${document}"}'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/ingest
 </pre></div>
 </div>
@@ -3164,23 +3164,23 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <h3>2.2 Consume get API<a class="headerlink" href="#consume-get-api" title="Link to this heading">¶</a></h3>
 <p>To get the structure of the uploaded files, use the <code class="docutils literal notranslate"><span class="pre">get</span></code> API endpoint:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>http://localhost:6007/v1/dataprep/get
 </pre></div>
 </div>
 <p>A JSON formatted response similar to the one below will follow:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uploaded_file_1.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uploaded_file_1.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploaded_file_1.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploaded_file_1.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"File"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uploaded_file_2.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uploaded_file_2.txt&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploaded_file_2.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploaded_file_2.txt"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"File"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -3191,19 +3191,19 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <p>To delete uploaded files/links, use the <code class="docutils literal notranslate"><span class="pre">delete</span></code> API endpoint.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">file_path</span></code> is the <code class="docutils literal notranslate"><span class="pre">id</span></code> returned by the <code class="docutils literal notranslate"><span class="pre">/v1/dataprep/get</span></code> API.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># delete link</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete&quot;</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;https://www.ces.tech/.txt&quot;}&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete"</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "https://www.ces.tech/.txt"}'</span>
 
 <span class="c1"># delete file</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete&quot;</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;uploaded_file_1.txt&quot;}&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete"</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "uploaded_file_1.txt"}'</span>
 
 <span class="c1"># delete all files and links</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete&quot;</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;file_path&quot;: &quot;all&quot;}&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">"http://</span><span class="si">${</span><span class="nv">HOST_IP</span><span class="si">}</span><span class="s2">:5000/v1/dataprep/delete"</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"file_path": "all"}'</span>
 </pre></div>
 </div>
 </section>

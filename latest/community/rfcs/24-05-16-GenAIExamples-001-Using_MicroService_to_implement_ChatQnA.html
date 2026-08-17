@@ -3156,34 +3156,34 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">construct_rag_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">embedding</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"embedding"</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">6000</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/embeddings&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">"/v1/embeddings"</span><span class="p">,</span>
             <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">EMBEDDING</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">retriever</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;retriever&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"retriever"</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">7000</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/retrieval&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">"/v1/retrieval"</span><span class="p">,</span>
             <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">RETRIEVER</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">rerank</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rerank&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"rerank"</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/reranking&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">"/v1/reranking"</span><span class="p">,</span>
             <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">RERANK</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">llm</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;llm&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"llm"</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/chat/completions&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">"/v1/chat/completions"</span><span class="p">,</span>
             <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">LLM</span><span class="p">,</span>
         <span class="p">)</span>
@@ -3191,19 +3191,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">retriever</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">retriever</span><span class="p">,</span> <span class="n">rerank</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="o">.</span><span class="n">flow_to</span><span class="p">(</span><span class="n">rerank</span><span class="p">,</span> <span class="n">llm</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rag_gateway</span> <span class="o">=</span> <span class="n">ChatQnAGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_gateway</span> <span class="o">=</span> <span class="n">ChatQnAGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rag_port</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">construct_data_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dataprep</span> <span class="o">=</span> <span class="n">MicroService</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dataprep&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">"dataprep"</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="n">SERVICE_HOST_IP</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;/v1/dataprep&quot;</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="s2">"/v1/dataprep"</span><span class="p">,</span>
             <span class="n">use_remote_service</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">service_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">DATAPREP</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_service</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dataprep</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_gateway</span> <span class="o">=</span> <span class="n">DataPrepGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_gateway</span> <span class="o">=</span> <span class="n">DataPrepGateway</span><span class="p">(</span><span class="n">megaservice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_service</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_port</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">start_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">construct_rag_service</span><span class="p">()</span>
@@ -3211,7 +3211,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rag_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_gateway</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">chatqna</span> <span class="o">=</span> <span class="n">ChatQnAService</span><span class="p">()</span>
     <span class="n">chatqna</span><span class="o">.</span><span class="n">start_service</span><span class="p">()</span>
 </pre></div>
@@ -3252,8 +3252,8 @@
 <p>The following Python code demonstrates how to use the YAML configurations to initialize the microservices and megaservices, and set up the gateways for user interaction.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">comps</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServiceOrchestratorWithYaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">comps</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatQnAGateway</span><span class="p">,</span> <span class="n">DataPrepGateway</span>
-<span class="n">data_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">&quot;dataprep.yaml&quot;</span><span class="p">)</span>
-<span class="n">rag_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">&quot;rag.yaml&quot;</span><span class="p">)</span>
+<span class="n">data_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">"dataprep.yaml"</span><span class="p">)</span>
+<span class="n">rag_service</span> <span class="o">=</span> <span class="n">ServiceOrchestratorWithYaml</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="o">=</span><span class="s2">"rag.yaml"</span><span class="p">)</span>
 <span class="n">rag_gateway</span> <span class="o">=</span> <span class="n">ChatQnAGateway</span><span class="p">(</span><span class="n">data_service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8888</span><span class="p">)</span>
 <span class="n">data_gateway</span> <span class="o">=</span> <span class="n">DataPrepGateway</span><span class="p">(</span><span class="n">data_service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9999</span><span class="p">)</span>
 <span class="c1"># Start gateways</span>
@@ -3269,7 +3269,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">megaservice</span><span class="p">,</span>
-        <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span>
         <span class="n">port</span><span class="o">=</span><span class="mi">8888</span><span class="p">,</span>
         <span class="n">endpoint</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">CHAT_QNA</span><span class="p">),</span>
         <span class="n">input_datatype</span><span class="o">=</span><span class="n">ChatCompletionRequest</span><span class="p">,</span>
@@ -3284,13 +3284,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">define_default_routes</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">define_default_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_SERVICE</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_service</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"POST"</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_SERVICE</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_service</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_PARAMETERS</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_parameter</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">]</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">MegaServiceEndpoint</span><span class="o">.</span><span class="n">LIST_PARAMETERS</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_parameter</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"POST"</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="n">methods</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3300,13 +3300,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">gateway</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclasses must implement this method"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">list_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclasses must implement this method"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">list_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclasses must implement this method&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclasses must implement this method"</span><span class="p">)</span>
 
     <span class="o">...</span>
 </pre></div>

@@ -3165,14 +3165,14 @@ Run the following command in your terminal to list network interfaces:</p>
 </pre></div>
 </div>
 <p>In this example, the (<code class="docutils literal notranslate"><span class="pre">host_ip</span></code>) would be (<code class="docutils literal notranslate"><span class="pre">10.101.16.119</span></code>).</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your host&#39;s external IP address
-export host_ip=&quot;your_external_ip_address&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your host's external IP address
+export host_ip="your_external_ip_address"
 </pre></div>
 </div>
 <p><strong><em>ii) Generate a HuggingFace Access Token:</em></strong><br />
 Some HuggingFace resources, such as some models, are only accessible if you have an access token. If you do not already have a HuggingFace access token, you can create one by first creating an account by following the steps provided at <a class="reference external" href="https://huggingface.co/">HuggingFace</a> and then generating a <a class="reference external" href="https://huggingface.co/docs/transformers.js/en/guides/private#step-1-generating-a-user-access-token">user access token</a>.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Replace with your Hugging Face Hub API token
-export HF_TOKEN=&quot;your_huggingface_token&quot;
+export HF_TOKEN="your_huggingface_token"
 </pre></div>
 </div>
 <p><strong><em>iii) Set environment variables:</em></strong>
@@ -3183,8 +3183,8 @@ export model_cache=/home/documentation/data_codetrans/data # Path to save cache 
 </div>
 <p>Optional: Configure proxy settings if needed:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span> ```bash
- export http_proxy=&quot;Your_HTTP_Proxy&quot;           # http proxy if any
- export https_proxy=&quot;Your_HTTPs_Proxy&quot;         # https proxy if any
+ export http_proxy="Your_HTTP_Proxy"           # http proxy if any
+ export https_proxy="Your_HTTPs_Proxy"         # https proxy if any
  export no_proxy=localhost,127.0.0.1,$host_ip  # additional no proxies if needed
  export NGINX_PORT=${your_nginx_port}          # your usable port for nginx, 80 for example
  ```
@@ -3242,11 +3242,11 @@ export model_cache=/home/documentation/data_codetrans/data # Path to save cache 
 </div>
 <p>For the default deployment, the following 5 containers should have started:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>                      <span class="n">COMMAND</span>                  <span class="n">CREATED</span>         <span class="n">STATUS</span>                   <span class="n">PORTS</span>                                         <span class="n">NAMES</span>
-<span class="mi">68497</span><span class="n">c3f3a6d</span>   <span class="n">opea</span><span class="o">/</span><span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>          <span class="s2">&quot;/docker-entrypoint.…&quot;</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">49</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>           <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">nginx</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">97</span><span class="n">eafa7f5979</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>   <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">49</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">872287</span><span class="n">b18499</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="p">:</span><span class="n">latest</span>      <span class="s2">&quot;python code_transla…&quot;</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">50</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7777</span><span class="o">-&gt;</span><span class="mi">7777</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">7777</span><span class="o">-&gt;</span><span class="mi">7777</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">2</span><span class="n">fbb6af847dd</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="p">:</span><span class="n">latest</span>    <span class="s2">&quot;bash entrypoint.sh&quot;</span>     <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">50</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
-<span class="mi">532</span><span class="n">cdf3c79ce</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="p">:</span><span class="n">latest</span>           <span class="s2">&quot;python3 -m vllm.ent…&quot;</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">3</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
+<span class="mi">68497</span><span class="n">c3f3a6d</span>   <span class="n">opea</span><span class="o">/</span><span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>          <span class="s2">"/docker-entrypoint.…"</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">49</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">80</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>           <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">nginx</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">97</span><span class="n">eafa7f5979</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="o">-</span><span class="n">ui</span><span class="p">:</span><span class="n">latest</span>   <span class="s2">"docker-entrypoint.s…"</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">49</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">5173</span><span class="o">-&gt;</span><span class="mi">5173</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">ui</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">872287</span><span class="n">b18499</span>   <span class="n">opea</span><span class="o">/</span><span class="n">codetrans</span><span class="p">:</span><span class="n">latest</span>      <span class="s2">"python code_transla…"</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">50</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">7777</span><span class="o">-&gt;</span><span class="mi">7777</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">7777</span><span class="o">-&gt;</span><span class="mi">7777</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">backend</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">2</span><span class="n">fbb6af847dd</span>   <span class="n">opea</span><span class="o">/</span><span class="n">llm</span><span class="o">-</span><span class="n">textgen</span><span class="p">:</span><span class="n">latest</span>    <span class="s2">"bash entrypoint.sh"</span>     <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">50</span> <span class="n">seconds</span>            <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">9000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">llm</span><span class="o">-</span><span class="n">server</span>
+<span class="mi">532</span><span class="n">cdf3c79ce</span>   <span class="n">opea</span><span class="o">/</span><span class="n">vllm</span><span class="p">:</span><span class="n">latest</span>           <span class="s2">"python3 -m vllm.ent…"</span>   <span class="mi">3</span> <span class="n">minutes</span> <span class="n">ago</span>   <span class="n">Up</span> <span class="mi">3</span> <span class="n">minutes</span> <span class="p">(</span><span class="n">healthy</span><span class="p">)</span>   <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="p">[::]:</span><span class="mi">8008</span><span class="o">-&gt;</span><span class="mi">80</span><span class="o">/</span><span class="n">tcp</span>       <span class="n">codetrans</span><span class="o">-</span><span class="n">epyc</span><span class="o">-</span><span class="n">vllm</span><span class="o">-</span><span class="n">service</span>
 </pre></div>
 </div>
 <p>If any issues are encountered during deployment, refer to the <a class="reference internal" href="../../../../README_miscellaneous.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a> section.</p>
@@ -3255,8 +3255,8 @@ export model_cache=/home/documentation/data_codetrans/data # Path to save cache 
 <h3>Validate the Pipeline<a class="headerlink" href="#validate-the-pipeline" title="Link to this heading">¶</a></h3>
 <p>Once the CodeTrans services are running, test the pipeline using the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 <p><strong>Note</strong> : Access the CodeTrans UI by web browser through this URL: <code class="docutils literal notranslate"><span class="pre">http://${host_ip}:80</span></code>. Please confirm the <code class="docutils literal notranslate"><span class="pre">80</span></code> port is opened in the firewall. To validate each microservie used in the pipeline refer to the <a class="reference internal" href="#validate-microservices"><span class="xref myst">Validate Microservices</span></a> section.</p>
@@ -3360,39 +3360,39 @@ docker<span class="w"> </span>logs<span class="w"> </span>codetrans-epyc-tgi-ser
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># either vLLM or TGI service</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;messages&quot;: [</span>
-<span class="s1">      {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Please translate the following Golang code into Python code.&quot;},</span>
-<span class="s1">      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n&quot;}</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "messages": [</span>
+<span class="s1">      {"role": "system", "content": "Please translate the following Golang code into Python code."},</span>
+<span class="s1">      {"role": "user", "content": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n"}</span>
 <span class="s1">    ],</span>
-<span class="s1">    &quot;parameters&quot;: {</span>
-<span class="s1">      &quot;max_new_tokens&quot;: 17,</span>
-<span class="s1">      &quot;do_sample&quot;: true</span>
+<span class="s1">    "parameters": {</span>
+<span class="s1">      "max_new_tokens": 17,</span>
+<span class="s1">      "do_sample": true</span>
 <span class="s1">    }</span>
-<span class="s1">  }&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="s1">  }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
 <li><p>LLM Microservice</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:9000/v1/chat/completions<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;query&quot;:&quot;    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;Golang    \npackage main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n    &#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;    ### Translated codes:&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"query":"    ### System: Please translate the following Golang codes into  Python codes.    ### Original codes:    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'Golang    \npackage main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n    '</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">''</span><span class="se">\'</span><span class="s1">'    ### Translated codes:"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
 <li><p>MegaService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:7777/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 </li>
 <li><p>Nginx Service</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">NGINX_PORT</span><span class="si">}</span>/v1/codetrans<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;language_from&quot;: &quot;Golang&quot;,&quot;language_to&quot;: &quot;Python&quot;,&quot;source_code&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n}&quot;}&#39;</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"language_from": "Golang","language_to": "Python","source_code": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n}"}'</span>
 </pre></div>
 </div>
 </li>
@@ -3406,24 +3406,24 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <section id="start-vllm-profiling">
 <h5>Start vLLM profiling<a class="headerlink" href="#start-vllm-profiling" title="Link to this heading">¶</a></h5>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/start_profile<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;}&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct"}'</span>
 </pre></div>
 </div>
 <p>After vLLM profiling is started, users could start asking questions and get responses from vLLM MicroService</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">   </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;messages&quot;: [</span>
-<span class="s1">         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Please translate the following Golang code into Python code.&quot;},</span>
-<span class="s1">         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;package main\n\nimport \&quot;fmt\&quot;\nfunc main() {\n    fmt.Println(\&quot;Hello, World!\&quot;);\n&quot;}</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">       "messages": [</span>
+<span class="s1">         {"role": "system", "content": "Please translate the following Golang code into Python code."},</span>
+<span class="s1">         {"role": "user", "content": "package main\n\nimport \"fmt\"\nfunc main() {\n    fmt.Println(\"Hello, World!\");\n"}</span>
 <span class="s1">       ],</span>
-<span class="s1">       &quot;parameters&quot;: {</span>
-<span class="s1">         &quot;max_new_tokens&quot;: 17,</span>
-<span class="s1">         &quot;do_sample&quot;: true</span>
+<span class="s1">       "parameters": {</span>
+<span class="s1">         "max_new_tokens": 17,</span>
+<span class="s1">         "do_sample": true</span>
 <span class="s1">       }</span>
-<span class="s1">     }&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="s1">     }'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3432,8 +3432,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ho
 <p>By following command, users could stop vLLM profiling and generate a *.pt.trace.json.gz file as profiling result<br />
 under /mnt folder in codetrans-epyc-vllm-service docker instance.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:8008/stop_profile<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;Qwen/Qwen2.5-Coder-7B-Instruct&quot;}&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"model": "Qwen/Qwen2.5-Coder-7B-Instruct"}'</span>
 </pre></div>
 </div>
 <p>After vllm profiling is stopped, users could use below command to get the *.pt.trace.json.gz file under /mnt folder.</p>

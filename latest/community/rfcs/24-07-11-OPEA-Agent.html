@@ -3132,7 +3132,7 @@
 </ul>
 <p>Multi Agent example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl ${ip_addr}:${SUPERVISOR_AGENT_PORT}/v1/chat/completions -X POST \
--d &quot;{&#39;input&#39;: &#39;Generate a Analyst Stock Recommendations by taking an average of all analyst recommendations and classifying them as Strong Buy, Buy, Hold, Underperform or Sell.&#39;}&quot;
+-d "{'input': 'Generate a Analyst Stock Recommendations by taking an average of all analyst recommendations and classifying them as Strong Buy, Buy, Hold, Underperform or Sell.'}"
 </pre></div>
 </div>
 <p><img alt="image" src="https://github.com/xuechendi/docs/assets/4355494/d96b5e26-95a5-4611-9a32-a546eaa324a4" /></p>
@@ -3205,10 +3205,10 @@
 <li><p>Most common API, should be working with any existing client uses openAI.</p></li>
 <li><p>will not be able to memorize user historical session, human_in_loop agent will not work using this API.</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;/v1/chat/completions&quot;</span><span class="p">:</span> <span class="p">{</span>
-                      <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                      <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-                      <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"/v1/chat/completions"</span><span class="p">:</span> <span class="p">{</span>
+                      <span class="s2">"model"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="s2">"messages"</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                      <span class="s2">"tools"</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
                   <span class="p">}</span>
 </pre></div>
 </div>
@@ -3225,27 +3225,27 @@
 <li><p>openAI assistant API is tagged with ‘beta’, not stable</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># assistants API is used to create agent runtime instance with a set of tool / append addition instructions</span>
-<span class="o">-</span> <span class="s2">&quot;/v1/assistants&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;instructions&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="nb">list</span>
+<span class="o">-</span> <span class="s2">"/v1/assistants"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"instructions"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">"name"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">"tools"</span><span class="p">:</span> <span class="nb">list</span>
                     <span class="p">}</span>
 
 <span class="c1"># threads API is to used maintain conversation session with one user. It can be resumed from previous, can tracking long term memories.</span>
-<span class="o">-</span> <span class="s2">&quot;/v1/threads/ &quot;</span><span class="p">:</span> <span class="p">{</span> <span class="c1"># empty is allowed }</span>
+<span class="o">-</span> <span class="s2">"/v1/threads/ "</span><span class="p">:</span> <span class="p">{</span> <span class="c1"># empty is allowed }</span>
 
 
 <span class="c1"># threads messages API is to add a task content to thread_1 (the thread created by threads API)</span>
-<span class="o">-</span> <span class="s2">&quot;/v1/threads/thread_1/messages&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="nb">str</span>
+<span class="o">-</span> <span class="s2">"/v1/threads/thread_1/messages"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">"role"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="s2">"content"</span><span class="p">:</span> <span class="nb">str</span>
                         <span class="p">}</span>
 
 <span class="c1"># threads run API is to start to execute agent thread using run api</span>
 
-<span class="o">-</span> <span class="s2">&quot;/v1/threads/thread_1/runs&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;assistant_id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="s1">&#39;instructions&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="o">-</span> <span class="s2">"/v1/threads/thread_1/runs"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s1">'assistant_id'</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="s1">'instructions'</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                         <span class="p">}</span>
 </pre></div>
 </div>
@@ -3256,24 +3256,24 @@
 <p><img alt="image" src="https://github.com/user-attachments/assets/38e83fa4-57d8-4146-9061-e5153472b5f4" /></p>
 <section id="spec-for-any-agent-role-agent-planner-executor">
 <h4>SPEC for any agent Role - agent, planner, executor<a class="headerlink" href="#spec-for-any-agent-role-agent-planner-executor" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;/v1/chat/completions&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-                        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"/v1/chat/completions"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"model"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">"messages"</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                        <span class="s2">"tools"</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
                     <span class="p">}</span>
-<span class="s2">&quot;/v1/assistants&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;instructions&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="nb">list</span>
+<span class="s2">"/v1/assistants"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"instructions"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">"name"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">"tools"</span><span class="p">:</span> <span class="nb">list</span>
                     <span class="p">}</span>
-<span class="s2">&quot;/v1/threads/: </span><span class="si">{}</span>
-<span class="s2">&quot;/v1/threads/thread_1/runs&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s1">&#39;assistant_id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="s1">&#39;instructions&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="s2">"/v1/threads/: </span><span class="si">{}</span>
+<span class="s2">"/v1/threads/thread_1/runs"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s1">'assistant_id'</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="s1">'instructions'</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                         <span class="p">}</span>
-<span class="s2">&quot;/v1/threads/thread_1/messages&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="nb">str</span>
+<span class="s2">"/v1/threads/thread_1/messages"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">"role"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="s2">"content"</span><span class="p">:</span> <span class="nb">str</span>
                         <span class="p">}</span>
 </pre></div>
 </div>

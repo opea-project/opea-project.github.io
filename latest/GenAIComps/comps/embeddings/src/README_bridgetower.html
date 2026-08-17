@@ -3150,7 +3150,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h3>Run Docker with Docker Compose<a class="headerlink" href="#run-docker-with-docker-compose" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_mmei_port</span><span class="o">=</span><span class="m">8080</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">EMBEDDER_PORT</span><span class="o">=</span><span class="nv">$your_mmei_port</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$your_mmei_port</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MMEI_EMBEDDING_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$your_mmei_port</span><span class="s2">"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">your_embedding_port_microservice</span><span class="o">=</span><span class="m">6600</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MM_EMBEDDING_PORT_MICROSERVICE</span><span class="o">=</span><span class="nv">$your_embedding_port_microservice</span>
 <span class="nb">cd</span><span class="w"> </span>comps/embeddings/deployment/docker_compose/
@@ -3179,7 +3179,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p>Verify that the embedding service is running properly by checking its health status with this command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:6000/v1/health_check<span class="w"> </span><span class="se">\</span>
 -X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3189,16 +3189,16 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p><strong>Compute a Joint Embedding of an Image-Text Pair</strong>
 To generate a joint embedding of a text and image input, use the following API request:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://0.0.0.0:6600/v1/embeddings<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: {&quot;text&quot; : &quot;This is some sample text.&quot;}, &quot;image&quot; : {&quot;url&quot;: &quot;https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true&quot;}}&#39;</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">'{"text": {"text" : "This is some sample text."}, "image" : {"url": "https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true"}}'</span>
 </pre></div>
 </div>
 <p>In this example, the input is a text and an image URL. The service will return a vectorized embedding that represents both the text and image.</p>
 <p><strong>Compute Text-Only Embedding</strong></p>
 <p>To generate an embedding for just a text input, use this request:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://0.0.0.0:6600/v1/embeddings<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot; : &quot;This is some sample text.&quot;}&#39;</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">'{"text" : "This is some sample text."}'</span>
 </pre></div>
 </div>
 <p>This request will return an embedding representing the semantic meaning of the input text.</p>
@@ -3211,7 +3211,7 @@ To generate a joint embedding of a text and image input, use the following API r
 <li><p>Download the necessary data</p></li>
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download model</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;model data directory&gt;&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">"&lt;model data directory&gt;"</span>
 huggingface-cli<span class="w"> </span>download<span class="w"> </span>--cache-dir<span class="w"> </span><span class="nv">$DATA_PATH</span><span class="w"> </span>BridgeTower/bridgetower-large-itm-mlm-itc
 <span class="c1"># Download image for warmup</span>
 <span class="nb">cd</span><span class="w"> </span><span class="nv">$DATA_PATH</span>
@@ -3224,14 +3224,14 @@ wget<span class="w"> </span>https://llava-vl.github.io/static/images/view.jpg
 <ul class="simple">
 <li><p>For Gaudi HPU:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;model data directory&gt;&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">"&lt;model data directory&gt;"</span>
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>multimodal-bridgetower-embedding-gaudi-serving-offline<span class="w"> </span>multimodal-bridgetower-embedding-gaudi-server-offline<span class="w"> </span>-d
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>For Xeon CPU:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;model data directory&gt;&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATA_PATH</span><span class="o">=</span><span class="s2">"&lt;model data directory&gt;"</span>
 docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>multimodal-bridgetower-embedding-serving-offline<span class="w"> </span>multimodal-bridgetower-embedding-server-offline<span class="w"> </span>-d
 </pre></div>
 </div>

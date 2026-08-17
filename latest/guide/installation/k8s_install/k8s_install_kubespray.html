@@ -3138,8 +3138,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate key pair in the operation machine</span>
 <span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">b</span> <span class="mi">4096</span>
 <span class="c1"># manually copy the public key to the K8s master and worker nodes</span>
-<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">master</span> <span class="s2">&quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
-<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">worker</span> <span class="s2">&quot;mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys&quot;</span>
+<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">master</span> <span class="s2">"mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys"</span>
+<span class="n">cat</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="o">.</span><span class="n">pub</span> <span class="o">|</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@k8s</span><span class="o">-</span><span class="n">worker</span> <span class="s2">"mkdir -p ~/.ssh &amp;&amp; cat &gt;&gt; ~/.ssh/authorized_keys"</span>
 </pre></div>
 </div>
 </section>
@@ -3203,7 +3203,7 @@ All of those settings are stored in group vars defined in <code class="docutils 
 <p>For K&amp;s settings look in <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml</span></code></p>
 <p><strong><em>NOTE:</em></strong> If you noted issues on <code class="docutils literal notranslate"><span class="pre">TASK</span> <span class="pre">[kubernetes/control-plane</span> <span class="pre">:</span> <span class="pre">Kubeadm</span> <span class="pre">|</span> <span class="pre">Initialize</span> <span class="pre">first</span> <span class="pre">master]</span></code> in K&amp; deployment, change the port on which API Server will be listening on from 6443 to 8080. By default Kubespray configures kube_control_plane hosts with insecure access to kube-apiserver via port 8080. Refer to <a class="reference external" href="https://github.com/kubernetes-sigs/kubespray/blob/master/docs/getting_started/getting-started.md">kubespray getting-started</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The port the API Server will be listening on.</span>
-<span class="n">kube_apiserver_ip</span><span class="p">:</span> <span class="s2">&quot;{{ kube_service_addresses | ansible.utils.ipaddr(&#39;net&#39;) | ansible.utils.ipaddr(1) | ansible.utils.ipaddr(&#39;address&#39;) }}&quot;</span>
+<span class="n">kube_apiserver_ip</span><span class="p">:</span> <span class="s2">"{{ kube_service_addresses | ansible.utils.ipaddr('net') | ansible.utils.ipaddr(1) | ansible.utils.ipaddr('address') }}"</span>
 <span class="n">kube_apiserver_port</span><span class="p">:</span> <span class="mi">8080</span>  <span class="c1"># (http)</span>
 </pre></div>
 </div>
@@ -3215,7 +3215,7 @@ All of those settings are stored in group vars defined in <code class="docutils 
 <span class="c1"># The option `--become` is required, as for example cleaning up SSL keys in /etc/,</span>
 <span class="c1"># uninstalling old packages and interacting with various systemd daemons.</span>
 <span class="c1"># Without --become the playbook will fail to run!</span>
-<span class="c1"># And be mindful that it will remove the current Kubernetes cluster (if it&#39;s running)!</span>
+<span class="c1"># And be mindful that it will remove the current Kubernetes cluster (if it's running)!</span>
 <span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span> <span class="o">-</span><span class="n">i</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">inventory</span><span class="o">.</span><span class="n">ini</span>  <span class="o">--</span><span class="n">become</span> <span class="o">--</span><span class="n">become</span><span class="o">-</span><span class="n">user</span><span class="o">=</span><span class="n">root</span> <span class="o">-</span><span class="n">e</span> <span class="n">override_system_hostname</span><span class="o">=</span><span class="n">false</span> <span class="n">reset</span><span class="o">.</span><span class="n">yml</span>
 </pre></div>
 </div>
@@ -3274,7 +3274,7 @@ kube-system                  nodelocaldns-wvktt                         1/1     
 </pre></div>
 </div>
 <p>Edit your single-node inventory <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/hosts.ini</span></code> to replace the node name from <code class="docutils literal notranslate"><span class="pre">node1</span></code> to your real node name (for example <code class="docutils literal notranslate"><span class="pre">k8s-master</span></code>) using following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;s/node1/k8s-master/g&quot;</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">hosts</span><span class="o">.</span><span class="n">ini</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s2">"s/node1/k8s-master/g"</span> <span class="n">inventory</span><span class="o">/</span><span class="n">mycluster</span><span class="o">/</span><span class="n">hosts</span><span class="o">.</span><span class="n">ini</span>
 </pre></div>
 </div>
 <p>Then your single-node inventory will look like below:</p>
@@ -3358,17 +3358,17 @@ kube-system                  nodelocaldns-wvktt                         1/1     
 <h3>How to config proxy?<a class="headerlink" href="#how-to-config-proxy" title="Link to this heading">¶</a></h3>
 <p>If your nodes need proxy to access internet, you will need extra configurations during deploying K8s.</p>
 <p>We assume your proxy is as below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">&quot;http://proxy.fake-proxy.com:911&quot;</span>
-<span class="o">-</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">&quot;http://proxy.fake-proxy.com:912&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">http_proxy</span><span class="o">=</span><span class="s2">"http://proxy.fake-proxy.com:911"</span>
+<span class="o">-</span> <span class="n">https_proxy</span><span class="o">=</span><span class="s2">"http://proxy.fake-proxy.com:912"</span>
 </pre></div>
 </div>
 <p>You can change parameters in <code class="docutils literal notranslate"><span class="pre">inventory/mycluster/group_vars/all/all.yml</span></code> to set <code class="docutils literal notranslate"><span class="pre">http_proxy</span></code>,<code class="docutils literal notranslate"><span class="pre">https_proxy</span></code>, and <code class="docutils literal notranslate"><span class="pre">additional_no_proxy</span></code> as following. Please make sure you’ve added all the nodes’ ip addresses into the <code class="docutils literal notranslate"><span class="pre">additional_no_proxy</span></code> parameter. In this example, we use <code class="docutils literal notranslate"><span class="pre">192.168.121.0/24</span></code> to represent all nodes’ ip addresses.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## Set these proxy values in order to update package manager and docker daemon to use proxies and custom CA for https_proxy if needed</span>
-<span class="n">http_proxy</span><span class="p">:</span> <span class="s2">&quot;http://proxy.fake-proxy.com:911&quot;</span>
-<span class="n">https_proxy</span><span class="p">:</span> <span class="s2">&quot;http://proxy.fake-proxy.com:912&quot;</span>
+<span class="n">http_proxy</span><span class="p">:</span> <span class="s2">"http://proxy.fake-proxy.com:911"</span>
+<span class="n">https_proxy</span><span class="p">:</span> <span class="s2">"http://proxy.fake-proxy.com:912"</span>
 
 <span class="c1">## If you need exclude all cluster nodes from proxy and other resources, add other resources here.</span>
-<span class="n">additional_no_proxy</span><span class="p">:</span> <span class="s2">&quot;localhost,127.0.0.1,192.168.121.0/24&quot;</span>
+<span class="n">additional_no_proxy</span><span class="p">:</span> <span class="s2">"localhost,127.0.0.1,192.168.121.0/24"</span>
 </pre></div>
 </div>
 </section>

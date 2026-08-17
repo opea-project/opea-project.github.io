@@ -3143,17 +3143,17 @@ LLM hosting is done with TGI for Gaudi’s and natively running on CPUs for CPU.
 </section>
 <section id="environment-variables-configure-llm-parameters-based-on-the-model-selected">
 <h2>Environment variables : Configure LLM Parameters based on the model selected.<a class="headerlink" href="#environment-variables-configure-llm-parameters-based-on-the-model-selected" title="Link to this heading">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export LLM_ID=${LLM_ID:-&quot;Babelscape/rebel-large&quot;}
-export SPAN_LENGTH=${SPAN_LENGTH:-&quot;1024&quot;}
-export OVERLAP=${OVERLAP:-&quot;100&quot;}
-export MAX_LENGTH=${MAX_NEW_TOKENS:-&quot;256&quot;}
-export HF_TOKEN=&quot;&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export LLM_ID=${LLM_ID:-"Babelscape/rebel-large"}
+export SPAN_LENGTH=${SPAN_LENGTH:-"1024"}
+export OVERLAP=${OVERLAP:-"100"}
+export MAX_LENGTH=${MAX_NEW_TOKENS:-"256"}
+export HF_TOKEN=""
 export LLM_MODEL_ID=${LLM_ID}
 export TGI_PORT=8008
 </pre></div>
 </div>
 <p>##Echo env variables</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>echo &quot;Extractor details&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>echo "Extractor details"
 echo LLM_ID=${LLM_ID}
 echo SPAN_LENGTH=${SPAN_LENGTH}
 echo OVERLAP=${OVERLAP}
@@ -3163,26 +3163,26 @@ echo MAX_LENGTH=${MAX_LENGTH}
 <section id="start-tgi-service">
 <h3>Start TGI Service<a class="headerlink" href="#start-tgi-service" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">"mistralai/Mistral-7B-Instruct-v0.3"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TGI_PORT</span><span class="o">=</span><span class="m">8008</span>
 
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;text2graph-tgi-endpoint&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL_ID</span>
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"text2graph-tgi-endpoint"</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TGI_PORT</span>:80<span class="w"> </span>-v<span class="w"> </span>./data:/data<span class="w"> </span>--shm-size<span class="w"> </span>1g<span class="w"> </span>-e<span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">model</span><span class="o">=</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="w"> </span>ghcr.io/huggingface/text-generation-inference:2.4.1<span class="w"> </span>--model-id<span class="w"> </span><span class="nv">$LLM_MODEL_ID</span>
 </pre></div>
 </div>
 </section>
 <section id="verify-the-tgi-service">
 <h3>Verify the TGI Service<a class="headerlink" href="#verify-the-tgi-service" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">your_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span>/generate<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;inputs&quot;:&quot;What is Deep Learning?&quot;,&quot;parameters&quot;:{&quot;max_new_tokens&quot;:17, &quot;do_sample&quot;: true}}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"inputs":"What is Deep Learning?","parameters":{"max_new_tokens":17, "do_sample": true}}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
 <section id="setup-environment-variables-to-host-tgi">
 <h3>Setup Environment Variables to host TGI<a class="headerlink" href="#setup-environment-variables-to-host-tgi" title="Link to this heading">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TGI_LLM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">your_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">TGI_PORT</span><span class="si">}</span><span class="s2">"</span>
 </pre></div>
 </div>
 </section>

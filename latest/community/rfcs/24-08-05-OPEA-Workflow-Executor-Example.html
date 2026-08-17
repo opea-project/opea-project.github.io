@@ -3170,20 +3170,20 @@
 <p><img alt="image" src="https://github.com/user-attachments/assets/241c1aba-2a24-48da-8005-ec7bfe657179" /></p>
 <p>In the workflow serving, this output will be returned through the <code class="docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">Data</span> <span class="pre">Retriever</span></code> tool. The LLM can then answer the user’s original question based on this output.</p>
 <p>An example of the agent microservice in action is shown below, where the user prompts the agent with workflow parameters included in the query.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:<span class="si">${</span><span class="nv">port</span><span class="si">}</span>/start<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;query&quot;: &quot;I have a data with gender Female, tenure 55, MonthlyAvgCharges 103.7. Predict if this entry will churn. My workflow is 8925.&quot;</span>
-<span class="s1">    }&#39;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:<span class="si">${</span><span class="nv">port</span><span class="si">}</span>/start<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "query": "I have a data with gender Female, tenure 55, MonthlyAvgCharges 103.7. Predict if this entry will churn. My workflow is 8925."</span>
+<span class="s1">    }'</span>
 
-data:<span class="w"> </span><span class="s2">&quot;Based on the data retrieved from the workflow, the entry with gender Female, tenure 55, and MonthlyAvgCharges 103.7 is predicted to churn&quot;</span>
+data:<span class="w"> </span><span class="s2">"Based on the data retrieved from the workflow, the entry with gender Female, tenure 55, and MonthlyAvgCharges 103.7 is predicted to churn"</span>
 
 data:<span class="w"> </span><span class="o">[</span>DONE<span class="o">]</span>
 </pre></div>
 </div>
 <p>The user has to provide a <code class="docutils literal notranslate"><span class="pre">workflow_id</span></code> and workflow <code class="docutils literal notranslate"><span class="pre">params</span></code> in the query. <code class="docutils literal notranslate"><span class="pre">workflow_id</span></code> a unique id used for serving the workflow to the microservice. Notice that the <code class="docutils literal notranslate"><span class="pre">query</span></code> string includes all the workflow <code class="docutils literal notranslate"><span class="pre">params</span></code> which the user defined in the workflow. The agent will extract these parameters into a dictionary format for the workflow <code class="docutils literal notranslate"><span class="pre">Serving</span> <span class="pre">Parameters</span></code> as shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">,</span> 
-    <span class="s2">&quot;tenure&quot;</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> 
-    <span class="s2">&quot;MonthlyAvgCharges&quot;</span><span class="p">:</span> <span class="mf">103.7</span>
+    <span class="s2">"gender"</span><span class="p">:</span> <span class="s2">"Female"</span><span class="p">,</span> 
+    <span class="s2">"tenure"</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> 
+    <span class="s2">"MonthlyAvgCharges"</span><span class="p">:</span> <span class="mf">103.7</span>
 <span class="p">}</span>
 </pre></div>
 </div>

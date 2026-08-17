@@ -3125,11 +3125,11 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd GenAIInfra/helm-charts/</span>
 <span class="go">scripts/update_dependency.sh</span>
 <span class="go">helm dependency update searchqna</span>
-<span class="go">export MODELDIR=&quot;/mnt/opea-models&quot;</span>
-<span class="go">export MODEL=&quot;Intel/neural-chat-7b-v3-3&quot;</span>
-<span class="go">export HFTOKEN=&quot;insert-your-huggingface-token-here&quot;</span>
-<span class="go">export GOOGLE_API_KEY=&quot;insert-your-google-api-key-here&quot;</span>
-<span class="go">export GOOGLE_CSE_ID=&quot;insert-your-google-search-engine-id-here&quot;</span>
+<span class="go">export MODELDIR="/mnt/opea-models"</span>
+<span class="go">export MODEL="Intel/neural-chat-7b-v3-3"</span>
+<span class="go">export HFTOKEN="insert-your-huggingface-token-here"</span>
+<span class="go">export GOOGLE_API_KEY="insert-your-google-api-key-here"</span>
+<span class="go">export GOOGLE_CSE_ID="insert-your-google-search-engine-id-here"</span>
 
 <span class="gp"># </span>To<span class="w"> </span>run<span class="w"> </span>on<span class="w"> </span>Xeon
 <span class="go">helm install searchqna searchqna --set global.modelUseHostPath=${MODELDIR} --set global.HF_TOKEN=${HFTOKEN} --set web-retriever.GOOGLE_API_KEY=${GOOGLE_API_KEY} --web-retriever.GOOGLE_CSE_ID=${GOOGLE_CSE_ID} --set tgi.LLM_MODEL_ID=${MODEL} --set llm-uservice.LLM_MODEL_ID=${MODEL}</span>
@@ -3154,15 +3154,15 @@
 <p>Open another terminal and run the following command to verify the service if working:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://localhost:3008/v1/searchqna \</span>
 <span class="go">  -X POST \</span>
-<span class="go">  -d &#39;{&quot;messages&quot;: &quot;What is the latest news? Give me also the source link.&quot;, &quot;stream&quot;: &quot;True&quot;}&#39; \</span>
-<span class="go">  -H &#39;Content-Type: application/json&#39;</span>
+<span class="go">  -d '{"messages": "What is the latest news? Give me also the source link.", "stream": "True"}' \</span>
+<span class="go">  -H 'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
 <section id="verify-the-workload-through-ui">
 <h3>Verify the workload through UI<a class="headerlink" href="#verify-the-workload-through-ui" title="Link to this heading">¶</a></h3>
 <p>The UI has already been installed via the Helm chart. To access it, use the external IP of one your Kubernetes node along with the NGINX port. You can find the NGINX port using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>searchqna-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>searchqna-nginx<span class="w"> </span>--output<span class="o">=</span><span class="s1">'jsonpath={.spec.ports[0].nodePort}'</span><span class="k">)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$port</span>
 </pre></div>
 </div>

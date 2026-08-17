@@ -3138,9 +3138,9 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">REGISTRY</span><span class="o">=</span>intel
 <span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span><span class="m">0</span>.10.0-b4
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">&#39;{printf &quot;%s\n&quot;, $3}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">RENDER_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">&#39;{printf &quot;%s\n&quot;, $3}&#39;</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIDEO_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>video<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">'{printf "%s\n", $3}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RENDER_GROUP_ID</span><span class="o">=</span><span class="k">$(</span>getent<span class="w"> </span>group<span class="w"> </span>render<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F:<span class="w"> </span><span class="s1">'{printf "%s\n", $3}'</span><span class="k">)</span>
 
 <span class="nv">HF_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_HOME</span><span class="p">:=~/.cache/huggingface</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span>HF_HOME
@@ -3149,13 +3149,13 @@
 <span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span>Qwen/Qwen2.5-VL-7B-Instruct
 <span class="nb">export</span><span class="w"> </span><span class="nv">LOAD_QUANTIZATION</span><span class="o">=</span>fp8
 <span class="nb">export</span><span class="w"> </span><span class="nv">VLLM_PORT</span><span class="o">=</span><span class="m">41091</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VLLM_PORT</span><span class="s2">&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LVM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="nv">$ip_address</span><span class="s2">:</span><span class="nv">$VLLM_PORT</span><span class="s2">"</span>
 
 <span class="c1"># Single-Arc GPU, select GPU index as needed</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">&quot;level_zero:0&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_DEVICE_SELECTOR</span><span class="o">=</span><span class="s2">"level_zero:0"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TENSOR_PARALLEL_SIZE</span><span class="o">=</span><span class="m">1</span>
 <span class="c1"># Multi-Arc GPU, select GPU indices as needed</span>
-<span class="c1"># export ONEAPI_DEVICE_SELECTOR=&quot;level_zero:0;level_zero:1&quot;</span>
+<span class="c1"># export ONEAPI_DEVICE_SELECTOR="level_zero:0;level_zero:1"</span>
 <span class="c1"># export TENSOR_PARALLEL_SIZE=2</span>
 </pre></div>
 </div>
@@ -3179,27 +3179,27 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 <section id="use-the-lvm-service-api">
 <h3>Use the LVM Service API<a class="headerlink" href="#use-the-lvm-service-api" title="Link to this heading">¶</a></h3>
 <p>Send a POST request with an image url and a prompt.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:41091/v1/chat/completions<span class="w"> </span>-XPOST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;model&quot;: &quot;Qwen/Qwen2.5-VL-7B-Instruct&quot;,</span>
-<span class="s1">    &quot;messages&quot;: [</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:41091/v1/chat/completions<span class="w"> </span>-XPOST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "model": "Qwen/Qwen2.5-VL-7B-Instruct",</span>
+<span class="s1">    "messages": [</span>
 <span class="s1">      {</span>
-<span class="s1">        &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">        &quot;content&quot;: [</span>
+<span class="s1">        "role": "user",</span>
+<span class="s1">        "content": [</span>
 <span class="s1">          {</span>
-<span class="s1">            &quot;type&quot;: &quot;text&quot;,</span>
-<span class="s1">            &quot;text&quot;: &quot;Describe the image.&quot;</span>
+<span class="s1">            "type": "text",</span>
+<span class="s1">            "text": "Describe the image."</span>
 <span class="s1">          },</span>
 <span class="s1">          {</span>
-<span class="s1">            &quot;type&quot;: &quot;image_url&quot;,</span>
-<span class="s1">            &quot;image_url&quot;: {</span>
-<span class="s1">              &quot;url&quot;: &quot;http://farm6.staticflickr.com/5268/5602445367_3504763978_z.jpg&quot;</span>
+<span class="s1">            "type": "image_url",</span>
+<span class="s1">            "image_url": {</span>
+<span class="s1">              "url": "http://farm6.staticflickr.com/5268/5602445367_3504763978_z.jpg"</span>
 <span class="s1">            }</span>
 <span class="s1">          }</span>
 <span class="s1">        ]</span>
 <span class="s1">      }</span>
 <span class="s1">    ],</span>
-<span class="s1">    &quot;max_tokens&quot;: 512</span>
-<span class="s1">  }&#39;</span>
+<span class="s1">    "max_tokens": 512</span>
+<span class="s1">  }'</span>
 </pre></div>
 </div>
 </section>

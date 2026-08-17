@@ -3408,8 +3408,8 @@ docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</s
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEXTGEN_PORT</span><span class="o">=</span><span class="m">9000</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;Intel/neural-chat-7b-v3-3&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">"http://</span><span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">LLM_ENDPOINT_PORT</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">"Intel/neural-chat-7b-v3-3"</span>
 </pre></div>
 </div>
 </section>
@@ -3417,9 +3417,9 @@ docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</s
 <h4>Option A: Run Docker with CLI<a class="headerlink" href="#option-a-run-docker-with-cli" title="Link to this heading">¶</a></h4>
 <p>1: Start backend LLM service (<a class="reference internal" href="#../../../third_parties/tgi/"><span class="xref myst">TGI</span></a>, <a class="reference internal" href="#../../../third_parties/vllm/"><span class="xref myst">vLLM</span></a>, <a class="reference internal" href="#../../../third_parties/ollama/"><span class="xref myst">Ollama</span></a>).</p>
 <p>2: Start TextGen Microservice:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">&quot;OpeaTextGenService&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLM_COMPONENT_NAME</span><span class="o">=</span><span class="s2">"OpeaTextGenService"</span>
 docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;llm-textgen-server&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="o">=</span><span class="s2">"llm-textgen-server"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="nv">$TEXTGEN_PORT</span>:9000<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span><span class="se">\</span>
@@ -3436,11 +3436,11 @@ docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</spa
 <section id="option-b-run-with-docker-compose">
 <h4>Option B: Run with Docker Compose<a class="headerlink" href="#option-b-run-with-docker-compose" title="Link to this heading">¶</a></h4>
 <p>Set <code class="docutils literal notranslate"><span class="pre">service_name</span></code> to match backend service.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;textgen-service-tgi&quot;</span>
-<span class="c1"># export service_name=&quot;textgen-service-tgi-gaudi&quot;</span>
-<span class="c1"># export service_name=&quot;textgen-service-vllm&quot;</span>
-<span class="c1"># export service_name=&quot;textgen-service-vllm-gaudi&quot;</span>
-<span class="c1"># export service_name=&quot;textgen-service-ollama&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"textgen-service-tgi"</span>
+<span class="c1"># export service_name="textgen-service-tgi-gaudi"</span>
+<span class="c1"># export service_name="textgen-service-vllm"</span>
+<span class="c1"># export service_name="textgen-service-vllm-gaudi"</span>
+<span class="c1"># export service_name="textgen-service-ollama"</span>
 
 <span class="nb">cd</span><span class="w"> </span>../../deployment/docker_compose/
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose_text-generation.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
@@ -3456,7 +3456,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3>Check Service Status<a class="headerlink" href="#check-service-status" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXTGEN_PORT</span><span class="si">}</span>/v1/health_check<span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3467,19 +3467,19 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># stream mode</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXTGEN_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "${LLM_MODEL_ID}", "messages": "What is Deep Learning?", "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXTGEN_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What is Deep Learning?&quot;}], &quot;max_tokens&quot;:17}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "${LLM_MODEL_ID}", "messages": [{"role": "user", "content": "What is Deep Learning?"}], "max_tokens":17}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 
 <span class="c1">#Non-stream mode</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">host_ip</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXTGEN_PORT</span><span class="si">}</span>/v1/chat/completions<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;: &quot;${LLM_MODEL_ID}&quot;, &quot;messages&quot;: &quot;What is Deep Learning?&quot;, &quot;max_tokens&quot;:17, &quot;stream&quot;:false}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">    </span>-d<span class="w"> </span><span class="s1">'{"model": "${LLM_MODEL_ID}", "messages": "What is Deep Learning?", "max_tokens":17, "stream":false}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <!--Below are links used in these document. They are not rendered: -->

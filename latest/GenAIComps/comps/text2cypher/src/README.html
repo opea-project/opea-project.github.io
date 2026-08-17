@@ -3157,7 +3157,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-docker-with-cli-option-a">
 <h4>Run Docker with CLI (Option A)<a class="headerlink" href="#run-docker-with-cli-option-a" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;comps-langchain-text2cypher&quot;</span><span class="w">  </span>-p<span class="w"> </span><span class="m">9097</span>:8080<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/text2cypher:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w">  </span>--name<span class="o">=</span><span class="s2">"comps-langchain-text2cypher"</span><span class="w">  </span>-p<span class="w"> </span><span class="m">9097</span>:8080<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>opea/text2cypher:latest
 </pre></div>
 </div>
 </section>
@@ -3165,11 +3165,11 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h4>Run via docker compose (Option B)<a class="headerlink" href="#run-via-docker-compose-option-b" title="Link to this heading">¶</a></h4>
 <section id="setup-environment-variables">
 <h5>Setup Environment Variables.<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h5>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">HF_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">HF_TOKEN</span><span class="si">}</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_USER</span><span class="o">=</span>neo4j
 <span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_PASSWORD</span><span class="o">=</span>neo4jtest
-<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URL</span><span class="o">=</span><span class="s2">&quot;bolt://</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="s2">:7687&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NEO4J_URL</span><span class="o">=</span><span class="s2">"bolt://</span><span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span><span class="s2">:7687"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">TEXT2CYPHER_PORT</span><span class="o">=</span><span class="m">11801</span>
 </pre></div>
 </div>
@@ -3194,16 +3194,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <li><p>Execute Cypher Query with Pre-seeded Data and Schema:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXT2CYPHER_PORT</span><span class="si">}</span>/v1/text2cypher<span class="se">\</span>
 <span class="w">      </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;what are the symptoms for Diabetes?&quot;,&quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_USERNAME</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_PASSWPORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;url&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_URL</span><span class="si">}</span><span class="s1">&#39;&quot; }}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">      </span>-d<span class="w"> </span><span class="s1">'{"input_text": "what are the symptoms for Diabetes?","conn_str": {"user": "'</span><span class="si">${</span><span class="nv">NEO4J_USERNAME</span><span class="si">}</span><span class="s1">'","password": "'</span><span class="si">${</span><span class="nv">NEO4J_PASSWPORD</span><span class="si">}</span><span class="s1">'","url": "'</span><span class="si">${</span><span class="nv">NEO4J_URL</span><span class="si">}</span><span class="s1">'" }}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </li>
 <li><p>Execute Cypher Query with User Data and Schema:</p></li>
 </ul>
 <p>Define customized cypher_insert statements:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">cypher_insert</span><span class="o">=</span><span class="s1">&#39;</span>
-<span class="s1"> LOAD CSV WITH HEADERS FROM &quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vQCEUxVlMZwwI2sn2T1aulBrRzJYVpsM9no8AEsYOOklCDTljoUIBHItGnqmAez62wwLpbvKMr7YoHI/pub?gid=0&amp;single=true&amp;output=csv&quot; AS rows</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">cypher_insert</span><span class="o">=</span><span class="s1">'</span>
+<span class="s1"> LOAD CSV WITH HEADERS FROM "https://docs.google.com/spreadsheets/d/e/2PACX-1vQCEUxVlMZwwI2sn2T1aulBrRzJYVpsM9no8AEsYOOklCDTljoUIBHItGnqmAez62wwLpbvKMr7YoHI/pub?gid=0&amp;single=true&amp;output=csv" AS rows</span>
 <span class="s1"> MERGE (d:disease {name:rows.Disease})</span>
 <span class="s1"> MERGE (dt:diet {name:rows.Diet})</span>
 <span class="s1"> MERGE (d)-[:HOME_REMEDY]-&gt;(dt)</span>
@@ -3216,16 +3216,16 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 
 <span class="s1"> MERGE (p:precaution {name:rows.Precaution})</span>
 <span class="s1"> MERGE (d)-[:PREVENTION]-&gt;(p)</span>
-<span class="s1">&#39;</span>
+<span class="s1">'</span>
 </pre></div>
 </div>
 <p>Pass the cypher_insert to the cypher2text service. The user can also specify whether to refresh the Neo4j database using the refresh_db option.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TEXT2CYPHER_PORT</span><span class="si">}</span>/v1/text2cypher<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input_text&quot;: &quot;what are the symptoms for Diabetes?&quot;, \</span>
-<span class="s1">             &quot;conn_str&quot;: {&quot;user&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_USERNAME</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;password&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_PASSWPORD</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;url&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">NEO4J_URL</span><span class="si">}</span><span class="s1">&#39;&quot; } \</span>
-<span class="s1">             &quot;seeding&quot;: {&quot;cypher_insert&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">cypher_insert</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;refresh_db&quot;: &quot;True&quot; }}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">        </span>-d<span class="w"> </span><span class="s1">'{"input_text": "what are the symptoms for Diabetes?", \</span>
+<span class="s1">             "conn_str": {"user": "'</span><span class="si">${</span><span class="nv">NEO4J_USERNAME</span><span class="si">}</span><span class="s1">'","password": "'</span><span class="si">${</span><span class="nv">NEO4J_PASSWPORD</span><span class="si">}</span><span class="s1">'","url": "'</span><span class="si">${</span><span class="nv">NEO4J_URL</span><span class="si">}</span><span class="s1">'" } \</span>
+<span class="s1">             "seeding": {"cypher_insert": "'</span><span class="si">${</span><span class="nv">cypher_insert</span><span class="si">}</span><span class="s1">'","refresh_db": "True" }}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>

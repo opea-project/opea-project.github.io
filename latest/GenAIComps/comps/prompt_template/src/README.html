@@ -3138,7 +3138,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 </section>
 <section id="run-the-docker-container">
 <h4>2.2. Run the Docker Container:<a class="headerlink" href="#run-the-docker-container" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">&quot;prompt-template-microservice&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="o">=</span><span class="s2">"prompt-template-microservice"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-p<span class="w"> </span><span class="m">7900</span>:7900<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--net<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--ipc<span class="o">=</span>host<span class="w"> </span><span class="se">\</span>
@@ -3153,7 +3153,7 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h4>3.1. Check Status<a class="headerlink" href="#check-status" title="Link to this heading">¶</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:7900/v1/health_check<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 </section>
@@ -3163,18 +3163,18 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h5>3.2.1 Default Template Generation<a class="headerlink" href="#default-template-generation" title="Link to this heading">¶</a></h5>
 <p>Generates the prompt using the default template:</p>
 <p><strong>Example Input</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
 <span class="s">{</span>
-<span class="s">  &quot;data&quot;: {</span>
-<span class="s">    &quot;user_prompt&quot;: &quot;What is Deep Learning?&quot;,</span>
-<span class="s">    &quot;reranked_docs&quot;: [{ &quot;text&quot;: &quot;Deep Learning is a subfield of machine learning...&quot; }]</span>
+<span class="s">  "data": {</span>
+<span class="s">    "user_prompt": "What is Deep Learning?",</span>
+<span class="s">    "reranked_docs": [{ "text": "Deep Learning is a subfield of machine learning..." }]</span>
 <span class="s">  },</span>
-<span class="s">  &quot;conversation_history&quot;: [</span>
-<span class="s">    { &quot;question&quot;: &quot;Hello&quot;, &quot;answer&quot;: &quot;Hello as well&quot; },</span>
-<span class="s">    { &quot;question&quot;: &quot;How are you?&quot;, &quot;answer&quot;: &quot;I am good, thank you!&quot; }</span>
+<span class="s">  "conversation_history": [</span>
+<span class="s">    { "question": "Hello", "answer": "Hello as well" },</span>
+<span class="s">    { "question": "How are you?", "answer": "I am good, thank you!" }</span>
 <span class="s">  ],</span>
-<span class="s">  &quot;system_prompt_template&quot;: &quot;&quot;,</span>
-<span class="s">  &quot;user_prompt_template&quot;: &quot;&quot;</span>
+<span class="s">  "system_prompt_template": "",</span>
+<span class="s">  "user_prompt_template": ""</span>
 <span class="s">}</span>
 <span class="s">JSON_DATA</span>
 </pre></div>
@@ -3182,24 +3182,24 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p><strong>Example Output</strong></p>
 <p>A chat_template starting with the default assistant description.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4e799abdf5f09433adc276b511a8b0ae&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What is Deep Learning?&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_new_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;typical_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;frequency_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;presence_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repetition_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;input_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;output_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;chat_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;### You are a helpful, respectful, and honest assistant to help the user with questions. Please refer to the search results obtained from the local knowledge base. Refer also to the conversation history if you think it is relevant to the current question. Ignore all information that you think is not relevant to the question. If you don&#39;\&#39;&#39;t know the answer to a question, please don&#39;\&#39;&#39;t share false information. \n ### Search results: [File: Unknown Source]\nDeep Learning is...\n### Conversation history: User: Hello\nAssistant: Hello as well\nUser: How are you?\nAssistant: I am good, thank you!\nUser: Who are you?\nAssistant: I am a robot\n### Question: What is Deep Learning? \n\n### Answer:&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;documents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4e799abdf5f09433adc276b511a8b0ae"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What is Deep Learning?"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_new_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_k"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"typical_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"frequency_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"presence_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"repetition_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"stream"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"input_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"output_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"chat_template"</span><span class="p">:</span><span class="w"> </span><span class="s2">"### You are a helpful, respectful, and honest assistant to help the user with questions. Please refer to the search results obtained from the local knowledge base. Refer also to the conversation history if you think it is relevant to the current question. Ignore all information that you think is not relevant to the question. If you don'\''t know the answer to a question, please don'\''t share false information. \n ### Search results: [File: Unknown Source]\nDeep Learning is...\n### Conversation history: User: Hello\nAssistant: Hello as well\nUser: How are you?\nAssistant: I am good, thank you!\nUser: Who are you?\nAssistant: I am a robot\n### Question: What is Deep Learning? \n\n### Answer:"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"documents"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3208,14 +3208,14 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h5>3.2.2 Custom Prompt Template<a class="headerlink" href="#custom-prompt-template" title="Link to this heading">¶</a></h5>
 <p>You can provide custom system and user prompt templates:</p>
 <p><strong>Example Input</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
 <span class="s">{</span>
-<span class="s">  &quot;data&quot;: {</span>
-<span class="s">    &quot;initial_query&quot;: &quot;What is Deep Learning?&quot;,</span>
-<span class="s">    &quot;reranked_docs&quot;: [{ &quot;text&quot;: &quot;Deep Learning is...&quot; }]</span>
+<span class="s">  "data": {</span>
+<span class="s">    "initial_query": "What is Deep Learning?",</span>
+<span class="s">    "reranked_docs": [{ "text": "Deep Learning is..." }]</span>
 <span class="s">  },</span>
-<span class="s">  &quot;system_prompt_template&quot;: &quot;### Please refer to the search results obtained from the local knowledge base. But be careful to not incorporate information that you think is not relevant to the question. If you don&#39;t know the answer to a question, please don&#39;t share false information. ### Search results: {reranked_docs}&quot;,</span>
-<span class="s">  &quot;user_prompt_template&quot;: &quot;### Question: {initial_query} \\n### Answer:&quot;</span>
+<span class="s">  "system_prompt_template": "### Please refer to the search results obtained from the local knowledge base. But be careful to not incorporate information that you think is not relevant to the question. If you don't know the answer to a question, please don't share false information. ### Search results: {reranked_docs}",</span>
+<span class="s">  "user_prompt_template": "### Question: {initial_query} \\n### Answer:"</span>
 <span class="s">}</span>
 <span class="s">JSON_DATA</span>
 </pre></div>
@@ -3223,24 +3223,24 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p><strong>Example Output</strong></p>
 <p>Custom instructions about using search results in the chat_template.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b1f1cec396954d5dc1b942f5959d556d&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What is Deep Learning?&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_new_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;typical_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;frequency_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;presence_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repetition_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;input_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;output_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;chat_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;### Please refer to the search results obtained from the local knowledge base. But be careful to not incorporate information that you think is not relevant to the question. If you don&#39;\&#39;&#39;t know the answer to a question, please don&#39;\&#39;&#39;t share false information. ### Search results: [File: Unknown Source]\nDeep Learning is...\n### Question: What is Deep Learning? \n### Answer:&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;documents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b1f1cec396954d5dc1b942f5959d556d"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What is Deep Learning?"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_new_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_k"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"typical_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"frequency_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"presence_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"repetition_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"stream"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"input_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"output_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"chat_template"</span><span class="p">:</span><span class="w"> </span><span class="s2">"### Please refer to the search results obtained from the local knowledge base. But be careful to not incorporate information that you think is not relevant to the question. If you don'\''t know the answer to a question, please don'\''t share false information. ### Search results: [File: Unknown Source]\nDeep Learning is...\n### Question: What is Deep Learning? \n### Answer:"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"documents"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -3249,15 +3249,15 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <h5>3.2.3 Translation Scenario<a class="headerlink" href="#translation-scenario" title="Link to this heading">¶</a></h5>
 <p>Using a translation-related prompt template:</p>
 <p><strong>Example Input</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span>@-<span class="w"> </span>http://localhost:7900/v1/prompt_template<span class="w"> </span><span class="s">&lt;&lt;JSON_DATA</span>
 <span class="s">{</span>
-<span class="s">  &quot;data&quot;: {</span>
-<span class="s">    &quot;initial_query&quot;: &quot;What is Deep Learning?&quot;,</span>
-<span class="s">    &quot;source_lang&quot;: &quot;chinese&quot;,</span>
-<span class="s">    &quot;target_lang&quot;: &quot;english&quot;</span>
+<span class="s">  "data": {</span>
+<span class="s">    "initial_query": "What is Deep Learning?",</span>
+<span class="s">    "source_lang": "chinese",</span>
+<span class="s">    "target_lang": "english"</span>
 <span class="s">  },</span>
-<span class="s">  &quot;system_prompt_template&quot;: &quot;### You are a helpful, respectful, and honest assistant to help the user with translations. Translate this from {source_lang} to {target_lang}.&quot;,</span>
-<span class="s">  &quot;user_prompt_template&quot;: &quot;### Question: {initial_query} \\n### Answer:&quot;</span>
+<span class="s">  "system_prompt_template": "### You are a helpful, respectful, and honest assistant to help the user with translations. Translate this from {source_lang} to {target_lang}.",</span>
+<span class="s">  "user_prompt_template": "### Question: {initial_query} \\n### Answer:"</span>
 <span class="s">}</span>
 <span class="s">JSON_DATA</span>
 </pre></div>
@@ -3265,24 +3265,24 @@ docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </
 <p><strong>Example Output</strong></p>
 <p>A translation instruction like: Translate this from chinese to english.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4f5e0024c2330a7be065b370d02e061f&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;什么是深度学习？&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_new_tokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_k&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;top_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;typical_p&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;frequency_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;presence_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repetition_penalty&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;input_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;output_guardrail_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;chat_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;### You are a helpful, respectful, and honest assistant to help the user with translations. Translate this from chinese to english.\n### Question: 什么是深度学习？ \n### Answer:&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;documents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4f5e0024c2330a7be065b370d02e061f"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"什么是深度学习？"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"max_new_tokens"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_k"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"top_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"typical_p"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.95</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"frequency_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"presence_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"repetition_penalty"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.03</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"stream"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"input_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"output_guardrail_params"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"chat_template"</span><span class="p">:</span><span class="w"> </span><span class="s2">"### You are a helpful, respectful, and honest assistant to help the user with translations. Translate this from chinese to english.\n### Question: 什么是深度学习？ \n### Answer:"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"documents"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>

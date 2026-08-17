@@ -3142,10 +3142,10 @@
 <section id="validate-the-service">
 <h3>1.3. Validate the Service<a class="headerlink" href="#validate-the-service" title="Link to this heading">¶</a></h3>
 <p>Once the container is running, you can validate the service. <strong>Note:</strong> Run this command from the root of the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> repository.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9369/v1/image2video<span class="w"> </span>-XPOST<span class="w"> </span><span class="se">\</span>
--d<span class="w"> </span><span class="s1">&#39;{&quot;images_path&quot;:[{&quot;image_path&quot;:&quot;https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+-d<span class="w"> </span><span class="s1">'{"images_path":[{"image_path":"https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png"}]}'</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>The expected output will be a JSON object containing the path to the generated video file.</p>
@@ -3188,7 +3188,7 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 <section id="configure-environment-variables">
 <h3>2.3. Configure Environment Variables<a class="headerlink" href="#configure-environment-variables" title="Link to this heading">¶</a></h3>
 <p>Set the necessary environment variables for validation.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 </pre></div>
 </div>
 </section>
@@ -3196,13 +3196,13 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 <h3>2.4. Run the Microservice Container<a class="headerlink" href="#run-the-microservice-container" title="Link to this heading">¶</a></h3>
 <section id="run-image-to-video-microservice-on-xeon">
 <h4>2.4.1. Run Image-to-Video Microservice on Xeon<a class="headerlink" href="#run-image-to-video-microservice-on-xeon" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;image2video-service&quot;</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="m">9369</span>:9369<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/image2video:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">"image2video-service"</span><span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-p<span class="w"> </span><span class="m">9369</span>:9369<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/image2video:latest
 </pre></div>
 </div>
 </section>
 <section id="run-image-to-video-microservice-on-gaudi">
 <h4>2.4.2. Run Image-to-Video Microservice on Gaudi<a class="headerlink" href="#run-image-to-video-microservice-on-gaudi" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;image2video-gaudi-service&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9369</span>:9369<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/image2video-gaudi:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span><span class="s2">"image2video-gaudi-service"</span><span class="w"> </span>-p<span class="w"> </span><span class="m">9369</span>:9369<span class="w"> </span>--runtime<span class="o">=</span>habana<span class="w"> </span>-e<span class="w"> </span><span class="nv">HABANA_VISIBLE_DEVICES</span><span class="o">=</span>all<span class="w"> </span>-e<span class="w"> </span><span class="nv">OMPI_MCA_btl_vader_single_copy_mechanism</span><span class="o">=</span>none<span class="w"> </span>--cap-add<span class="o">=</span>sys_nice<span class="w"> </span>--ipc<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$http_proxy</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$https_proxy</span><span class="w"> </span>opea/image2video-gaudi:latest
 </pre></div>
 </div>
 </section>
@@ -3212,8 +3212,8 @@ curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip
 <p>After starting the container, test the service endpoint. Make sure you are in the root directory of the <code class="docutils literal notranslate"><span class="pre">GenAIComps</span></code> repository.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The ip_address variable should be set from step 2.3</span>
 curl<span class="w"> </span>http://<span class="si">${</span><span class="nv">ip_address</span><span class="si">}</span>:9369/v1/image2video<span class="w"> </span>-XPOST<span class="w"> </span><span class="se">\</span>
--d<span class="w"> </span><span class="s1">&#39;{&quot;images_path&quot;:[{&quot;image_path&quot;:&quot;https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png&quot;}]}&#39;</span><span class="w"> </span><span class="se">\</span>
--H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span>
+-d<span class="w"> </span><span class="s1">'{"images_path":[{"image_path":"https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/svd/rocket.png"}]}'</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span>
 </pre></div>
 </div>
 <p>You should see a successful response with the path to the output video.</p>

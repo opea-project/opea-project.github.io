@@ -3123,7 +3123,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-itd<span class="w"> </
 <section id="running-in-air-gapped-environment">
 <h3>Running in air gapped environment<a class="headerlink" href="#running-in-air-gapped-environment" title="Link to this heading">¶</a></h3>
 <p>To run the service in air gapped environment, please pre-download the model <code class="docutils literal notranslate"><span class="pre">lj1995/GPT-SoVITS</span></code> and set the environment variable <code class="docutils literal notranslate"><span class="pre">llm_download</span></code> to “False”.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export llm_download=&quot;False&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export llm_download="False"
 git clone https://huggingface.co/lj1995/GPT-SoVITS pretrained_models
 docker run -itd -p 9880:9880 -e llm_download=$llm_download -v ./pretrained_models/:/home/user/GPT-SoVITS/GPT_SoVITS/pretrained_models/ opea/gpt-sovits:latest
 </pre></div>
@@ -3135,28 +3135,28 @@ docker run -itd -p 9880:9880 -e llm_download=$llm_download -v ./pretrained_model
 <ul class="simple">
 <li><p>Chinese only</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;text&quot;: &quot;先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。&quot;,</span>
-<span class="s1">    &quot;text_language&quot;: &quot;zh&quot;</span>
-<span class="s1">}&#39;</span><span class="w"> </span>--output<span class="w"> </span>out.wav
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "text": "先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。",</span>
+<span class="s1">    "text_language": "zh"</span>
+<span class="s1">}'</span><span class="w"> </span>--output<span class="w"> </span>out.wav
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>English only</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;text&quot;: &quot;Discuss the evolution of text-to-speech (TTS) technology from its early beginnings to the present day. Highlight the advancements in natural language processing that have contributed to more realistic and human-like speech synthesis. Also, explore the various applications of TTS in education, accessibility, and customer service, and predict future trends in this field. Write a comprehensive overview of text-to-speech (TTS) technology.&quot;,</span>
-<span class="s1">    &quot;text_language&quot;: &quot;en&quot;</span>
-<span class="s1">}&#39;</span><span class="w"> </span>--output<span class="w"> </span>out.wav
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "text": "Discuss the evolution of text-to-speech (TTS) technology from its early beginnings to the present day. Highlight the advancements in natural language processing that have contributed to more realistic and human-like speech synthesis. Also, explore the various applications of TTS in education, accessibility, and customer service, and predict future trends in this field. Write a comprehensive overview of text-to-speech (TTS) technology.",</span>
+<span class="s1">    "text_language": "en"</span>
+<span class="s1">}'</span><span class="w"> </span>--output<span class="w"> </span>out.wav
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Auto detection of languages</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;text&quot;: &quot;Hi 你好，这里是一个 cross-lingual 的例子。&quot;,</span>
-<span class="s1">    &quot;text_language&quot;: &quot;auto&quot;</span>
-<span class="s1">}&#39;</span><span class="w"> </span>--output<span class="w"> </span>out.wav
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "text": "Hi 你好，这里是一个 cross-lingual 的例子。",</span>
+<span class="s1">    "text_language": "auto"</span>
+<span class="s1">}'</span><span class="w"> </span>--output<span class="w"> </span>out.wav
 </pre></div>
 </div>
 <ul class="simple">
@@ -3167,17 +3167,17 @@ docker run -itd -p 9880:9880 -e llm_download=$llm_download -v ./pretrained_model
 
 docker<span class="w"> </span>cp<span class="w"> </span>chinese_poem1.wav<span class="w"> </span>gpt-sovits-service:/home/user/chinese_poem1.wav
 
-curl<span class="w"> </span>localhost:9880/change_refer<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;refer_wav_path&quot;: &quot;/home/user/chinese_poem1.wav&quot;,</span>
-<span class="s1">    &quot;prompt_text&quot;: &quot;窗前明月光，疑是地上霜，举头望明月，低头思故乡。&quot;,</span>
-<span class="s1">    &quot;prompt_language&quot;: &quot;zh&quot;</span>
-<span class="s1">}&#39;</span>
+curl<span class="w"> </span>localhost:9880/change_refer<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "refer_wav_path": "/home/user/chinese_poem1.wav",</span>
+<span class="s1">    "prompt_text": "窗前明月光，疑是地上霜，举头望明月，低头思故乡。",</span>
+<span class="s1">    "prompt_language": "zh"</span>
+<span class="s1">}'</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>openai protocol compatible request</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/v1/audio/speech<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;:&quot;你好呀，你是谁. Hello, who are you?&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>--output<span class="w"> </span>speech.mp3
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>localhost:9880/v1/audio/speech<span class="w"> </span>-XPOST<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"input":"你好呀，你是谁. Hello, who are you?"}'</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span>--output<span class="w"> </span>speech.mp3
 </pre></div>
 </div>
 </section>

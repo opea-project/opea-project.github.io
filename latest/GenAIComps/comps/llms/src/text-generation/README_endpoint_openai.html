@@ -3138,17 +3138,17 @@ docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</s
 <section id="setup-environment-variables">
 <h2>Setup Environment Variables<a class="headerlink" href="#setup-environment-variables" title="Link to this heading">¶</a></h2>
 <p>The key environment variable is <code class="docutils literal notranslate"><span class="pre">LLM_ENDPOINT</span></code>, which specifies the URL of the OpenAI-compatible API. This can be a local address (e.g., for vLLM or TGI) or a remote address.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="c1"># e.g. &quot;google/gemma-3-1b-it:free&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="w">  </span><span class="c1"># e.g., &quot;http://localhost:8000&quot; (for local vLLM) or &quot;https://openrouter.ai/api&quot; (please make sure to omit /v1 suffix)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">host_ip</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_MODEL_ID</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span><span class="c1"># e.g. "google/gemma-3-1b-it:free"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LLM_ENDPOINT</span><span class="o">=</span><span class="s2">""</span><span class="w">  </span><span class="c1"># e.g., "http://localhost:8000" (for local vLLM) or "https://openrouter.ai/api" (please make sure to omit /v1 suffix)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">""</span>
 </pre></div>
 </div>
 </section>
 <hr class="docutils" />
 <section id="start-microservice">
 <h2>Start Microservice<a class="headerlink" href="#start-microservice" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">&quot;textgen-service-endpoint-openai&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">service_name</span><span class="o">=</span><span class="s2">"textgen-service-endpoint-openai"</span>
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>comps/llms/deployment/docker_compose/compose_text-generation.yaml<span class="w"> </span>up<span class="w"> </span><span class="si">${</span><span class="nv">service_name</span><span class="si">}</span><span class="w"> </span>-d
 </pre></div>
 </div>
@@ -3162,23 +3162,23 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h2>Consume Microservice<a class="headerlink" href="#consume-microservice" title="Link to this heading">¶</a></h2>
 <p>You can first test the remote/local endpoint with <code class="docutils literal notranslate"><span class="pre">curl</span></code>. If you’re using a service like OpenRouter, you can test it directly first:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>https://openrouter.ai/api/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;model&quot;: &quot;&#39;</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="s1">&#39;&quot;,</span>
-<span class="s1">  &quot;messages&quot;: [</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$OPENAI_API_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">  "model": "'</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="s1">'",</span>
+<span class="s1">  "messages": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;role&quot;: &quot;user&quot;,</span>
-<span class="s1">      &quot;content&quot;: &quot;Tell me a joke?&quot;</span>
+<span class="s1">      "role": "user",</span>
+<span class="s1">      "content": "Tell me a joke?"</span>
 <span class="s1">    }</span>
 <span class="s1">  ]</span>
-<span class="s1">}&#39;</span>
+<span class="s1">}'</span>
 </pre></div>
 </div>
 <p>Then you can test the OPEA text generation service that wrapped the endpoint, with the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:9000/v1/chat/completions<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;:&quot;&#39;</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="s1">&#39;&quot;,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Tell me a joke?&quot;}]}&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"model":"'</span><span class="si">${</span><span class="nv">LLM_MODEL_ID</span><span class="si">}</span><span class="s1">'","messages":[{"role":"user","content":"Tell me a joke?"}]}'</span>
 </pre></div>
 </div>
 </section>
